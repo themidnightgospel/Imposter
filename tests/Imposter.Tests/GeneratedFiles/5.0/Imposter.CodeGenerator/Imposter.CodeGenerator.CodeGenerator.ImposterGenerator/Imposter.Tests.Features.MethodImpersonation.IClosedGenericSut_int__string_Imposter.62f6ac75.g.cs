@@ -199,9 +199,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					string result = _resultGenerator.Invoke(age);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(age);
+						foreach (var callback in _callbacks)
+						{
+							callback(age);
+						}
 					}
 
 					return result;

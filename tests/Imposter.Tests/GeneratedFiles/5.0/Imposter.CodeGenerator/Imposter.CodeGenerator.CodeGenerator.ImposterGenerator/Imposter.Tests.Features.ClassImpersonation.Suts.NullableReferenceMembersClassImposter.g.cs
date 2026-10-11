@@ -205,9 +205,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					}
 
 					string? result = _resultGenerator.Invoke(value);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(value);
+						foreach (var callback in _callbacks)
+						{
+							callback(value);
+						}
 					}
 
 					return result;
@@ -642,9 +645,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				{
 					EnsureGetterConfigured();
 					global::System.Threading.Interlocked.Increment(ref _invocationCount);
-					foreach (var getterCallback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						getterCallback();
+						foreach (var getterCallback in _callbacks)
+						{
+							getterCallback();
+						}
 					}
 
 					if (_defaultPropertyBehaviour.IsOn)
@@ -735,10 +741,13 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				{
 					EnsureSetterConfigured();
 					_invocationHistory.Push(value);
-					foreach (var(criteria, setterCallback)in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						if (criteria.Matches(value))
-							setterCallback(value);
+						foreach (var(criteria, setterCallback)in _callbacks)
+						{
+							if (criteria.Matches(value))
+								setterCallback(value);
+						}
 					}
 
 					if (_useBaseImplementation)
@@ -1178,9 +1187,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 					internal string? Invoke(IndexerIndexerArguments arguments, global::System.Func<string?>? baseImplementation = null)
 					{
-						foreach (var callback in _callbacks)
+						if (!_callbacks.IsEmpty)
 						{
-							callback(arguments.key);
+							foreach (var callback in _callbacks)
+							{
+								callback(arguments.key);
+							}
 						}
 
 						global::System.Func<IndexerIndexerArguments, global::System.Func<string?>?, string?> generator = ResolveNextGenerator(arguments);
@@ -1284,28 +1296,34 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					IndexerIndexerArguments arguments = new IndexerIndexerArguments(key);
 					_invocationHistory.Push((arguments, value));
 					bool matchedCallback = false;
-					foreach (var registration in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						if (registration.Criteria.Matches(arguments))
+						foreach (var registration in _callbacks)
 						{
-							registration.Callback(arguments.key, value);
-							matchedCallback = true;
+							if (registration.Criteria.Matches(arguments))
+							{
+								registration.Callback(arguments.key, value);
+								matchedCallback = true;
+							}
 						}
 					}
 
 					bool invokedBaseImplementation = false;
-					foreach (var criteria in _baseCriteria)
+					if (!_baseCriteria.IsEmpty)
 					{
-						if (criteria.Matches(arguments))
+						foreach (var criteria in _baseCriteria)
 						{
-							if (baseImplementation == null)
+							if (criteria.Matches(arguments))
 							{
-								throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
-							}
+								if (baseImplementation == null)
+								{
+									throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
+								}
 
-							baseImplementation();
-							invokedBaseImplementation = true;
-							break;
+								baseImplementation();
+								invokedBaseImplementation = true;
+								break;
+							}
 						}
 					}
 

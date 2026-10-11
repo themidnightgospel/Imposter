@@ -199,9 +199,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 					}
 
 					global::System.Span<byte> result = _resultGenerator.Invoke(size);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(size);
+						foreach (var callback in _callbacks)
+						{
+							callback(size);
+						}
 					}
 
 					return result;

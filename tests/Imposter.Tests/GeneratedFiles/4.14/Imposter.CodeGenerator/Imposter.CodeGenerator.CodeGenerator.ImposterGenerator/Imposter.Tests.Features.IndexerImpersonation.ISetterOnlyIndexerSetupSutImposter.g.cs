@@ -181,12 +181,15 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 					IndexerIndexerArguments arguments = new IndexerIndexerArguments(key);
 					_invocationHistory.Push((arguments, value));
 					bool matchedCallback = false;
-					foreach (var registration in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						if (registration.Criteria.Matches(arguments))
+						foreach (var registration in _callbacks)
 						{
-							registration.Callback(arguments.key, value);
-							matchedCallback = true;
+							if (registration.Criteria.Matches(arguments))
+							{
+								registration.Callback(arguments.key, value);
+								matchedCallback = true;
+							}
 						}
 					}
 

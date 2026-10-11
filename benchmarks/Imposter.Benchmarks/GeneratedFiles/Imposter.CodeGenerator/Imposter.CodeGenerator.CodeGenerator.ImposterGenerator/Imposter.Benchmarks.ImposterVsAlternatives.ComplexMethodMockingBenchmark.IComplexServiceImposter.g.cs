@@ -207,9 +207,12 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 					}
 
 					string result = _resultGenerator.Invoke(route, severity, context);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(route, severity, context);
+						foreach (var callback in _callbacks)
+						{
+							callback(route, severity, context);
+						}
 					}
 
 					return result;

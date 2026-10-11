@@ -245,9 +245,12 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					}
 
 					int result = _resultGenerator.Invoke(a, b);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(a, b);
+						foreach (var callback in _callbacks)
+						{
+							callback(a, b);
+						}
 					}
 
 					return result;
@@ -629,9 +632,12 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					}
 
 					string result = _resultGenerator.Invoke(template, value);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(template, value);
+						foreach (var callback in _callbacks)
+						{
+							callback(template, value);
+						}
 					}
 
 					return result;
@@ -1009,9 +1015,12 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					}
 
 					int result = _resultGenerator.Invoke(in input);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(in input);
+						foreach (var callback in _callbacks)
+						{
+							callback(in input);
+						}
 					}
 
 					return result;
@@ -1389,9 +1398,12 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					}
 
 					int result = _resultGenerator.Invoke(value);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(value);
+						foreach (var callback in _callbacks)
+						{
+							callback(value);
+						}
 					}
 
 					return result;
@@ -1738,9 +1750,12 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					}
 
 					int result_1 = _resultGenerator.Invoke(out result);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(out result);
+						foreach (var callback in _callbacks)
+						{
+							callback(out result);
+						}
 					}
 
 					return result_1;
@@ -2119,9 +2134,12 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					}
 
 					int result = _resultGenerator.Invoke(ref state);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(ref state);
+						foreach (var callback in _callbacks)
+						{
+							callback(ref state);
+						}
 					}
 
 					return result;
@@ -2499,9 +2517,12 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					}
 
 					int result = _resultGenerator.Invoke(values);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(values);
+						foreach (var callback in _callbacks)
+						{
+							callback(values);
+						}
 					}
 
 					return result;

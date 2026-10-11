@@ -218,9 +218,12 @@ namespace System.Net.Http
 					}
 
 					_resultGenerator.Invoke(disposing);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(disposing);
+						foreach (var callback in _callbacks)
+						{
+							callback(disposing);
+						}
 					}
 				}
 
@@ -596,9 +599,12 @@ namespace System.Net.Http
 					}
 
 					global::System.Net.Http.HttpResponseMessage result = _resultGenerator.Invoke(request, cancellationToken);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(request, cancellationToken);
+						foreach (var callback in _callbacks)
+						{
+							callback(request, cancellationToken);
+						}
 					}
 
 					return result;
@@ -996,9 +1002,12 @@ namespace System.Net.Http
 					}
 
 					global::System.Threading.Tasks.Task<global::System.Net.Http.HttpResponseMessage> result = _resultGenerator.Invoke(request, cancellationToken);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(request, cancellationToken);
+						foreach (var callback in _callbacks)
+						{
+							callback(request, cancellationToken);
+						}
 					}
 
 					return result;

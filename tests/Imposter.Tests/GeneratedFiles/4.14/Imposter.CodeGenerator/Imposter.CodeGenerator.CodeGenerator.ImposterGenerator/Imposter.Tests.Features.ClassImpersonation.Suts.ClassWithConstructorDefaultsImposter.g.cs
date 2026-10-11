@@ -174,9 +174,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					}
 
 					int result = _resultGenerator.Invoke();
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback();
+						foreach (var callback in _callbacks)
+						{
+							callback();
+						}
 					}
 
 					return result;

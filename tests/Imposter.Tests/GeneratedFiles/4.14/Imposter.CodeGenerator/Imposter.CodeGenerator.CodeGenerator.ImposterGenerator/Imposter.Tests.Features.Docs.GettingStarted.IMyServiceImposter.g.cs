@@ -175,9 +175,12 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
 					}
 
 					int result = _resultGenerator.Invoke();
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback();
+						foreach (var callback in _callbacks)
+						{
+							callback();
+						}
 					}
 
 					return result;
@@ -549,9 +552,12 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
 					}
 
 					int result = _resultGenerator.Invoke(value);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(value);
+						foreach (var callback in _callbacks)
+						{
+							callback(value);
+						}
 					}
 
 					return result;
@@ -1397,9 +1403,12 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
 
 					internal int Invoke(IndexerIndexerArguments arguments, global::System.Func<int>? baseImplementation = null)
 					{
-						foreach (var callback in _callbacks)
+						if (!_callbacks.IsEmpty)
 						{
-							callback(arguments.key);
+							foreach (var callback in _callbacks)
+							{
+								callback(arguments.key);
+							}
 						}
 
 						global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int> generator = ResolveNextGenerator(arguments);
@@ -1486,12 +1495,15 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
 					IndexerIndexerArguments arguments = new IndexerIndexerArguments(key);
 					_invocationHistory.Push((arguments, value));
 					bool matchedCallback = false;
-					foreach (var registration in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						if (registration.Criteria.Matches(arguments))
+						foreach (var registration in _callbacks)
 						{
-							registration.Callback(arguments.key, value);
-							matchedCallback = true;
+							if (registration.Criteria.Matches(arguments))
+							{
+								registration.Callback(arguments.key, value);
+								matchedCallback = true;
+							}
 						}
 					}
 

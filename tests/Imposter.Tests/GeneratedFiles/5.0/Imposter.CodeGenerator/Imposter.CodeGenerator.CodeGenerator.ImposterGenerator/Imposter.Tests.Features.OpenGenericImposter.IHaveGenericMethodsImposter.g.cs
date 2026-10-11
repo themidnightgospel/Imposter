@@ -261,9 +261,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					}
 
 					_resultGenerator.Invoke(item);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(item);
+						foreach (var callback in _callbacks)
+						{
+							callback(item);
+						}
 					}
 				}
 
@@ -670,9 +673,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					}
 
 					TResult result = _resultGenerator.Invoke();
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback();
+						foreach (var callback in _callbacks)
+						{
+							callback();
+						}
 					}
 
 					return result;
@@ -1141,9 +1147,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					}
 
 					global::System.Threading.Tasks.Task<TItem> result = _resultGenerator.Invoke(items);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(items);
+						foreach (var callback in _callbacks)
+						{
+							callback(items);
+						}
 					}
 
 					return result;
@@ -1648,9 +1657,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					}
 
 					global::System.Threading.Tasks.Task<TResult> result = _resultGenerator.Invoke(items);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(items);
+						foreach (var callback in _callbacks)
+						{
+							callback(items);
+						}
 					}
 
 					return result;

@@ -203,9 +203,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					decimal result = _resultGenerator.Invoke(invoicItems, purchaceHistory);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(invoicItems, purchaceHistory);
+						foreach (var callback in _callbacks)
+						{
+							callback(invoicItems, purchaceHistory);
+						}
 					}
 
 					return result;

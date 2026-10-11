@@ -206,9 +206,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					}
 
 					string? result = _resultGenerator.Invoke(key);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(key);
+						foreach (var callback in _callbacks)
+						{
+							callback(key);
+						}
 					}
 
 					return result;
@@ -586,9 +589,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					}
 
 					global::System.Threading.Tasks.Task<string?> result = _resultGenerator.Invoke(key);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(key);
+						foreach (var callback in _callbacks)
+						{
+							callback(key);
+						}
 					}
 
 					return result;

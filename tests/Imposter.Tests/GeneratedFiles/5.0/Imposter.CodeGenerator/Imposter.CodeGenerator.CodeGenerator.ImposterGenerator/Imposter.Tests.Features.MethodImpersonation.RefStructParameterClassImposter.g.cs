@@ -174,9 +174,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					int result = _resultGenerator.Invoke(cursor);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(cursor);
+						foreach (var callback in _callbacks)
+						{
+							callback(cursor);
+						}
 					}
 
 					return result;

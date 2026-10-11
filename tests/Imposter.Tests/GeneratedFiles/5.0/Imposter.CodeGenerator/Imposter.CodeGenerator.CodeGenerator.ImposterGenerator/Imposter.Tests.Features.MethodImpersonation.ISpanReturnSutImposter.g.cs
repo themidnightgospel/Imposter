@@ -213,9 +213,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					global::System.Span<byte> result = _resultGenerator.Invoke(size);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(size);
+						foreach (var callback in _callbacks)
+						{
+							callback(size);
+						}
 					}
 
 					return result;
@@ -639,9 +642,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					global::System.ReadOnlySpan<T> result = _resultGenerator.Invoke(item, count);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(item, count);
+						foreach (var callback in _callbacks)
+						{
+							callback(item, count);
+						}
 					}
 
 					return result;
@@ -1074,9 +1080,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					global::System.ReadOnlySpan<char> result = _resultGenerator.Invoke(text);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(text);
+						foreach (var callback in _callbacks)
+						{
+							callback(text);
+						}
 					}
 
 					return result;

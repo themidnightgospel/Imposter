@@ -374,9 +374,12 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 					internal int Invoke(IndexerIndexerArguments arguments, global::Imposter.Tests.Features.IndexerImpersonation.Locator locator, IndexerIndexerBaseGetter? baseImplementation = null)
 					{
-						foreach (var callback in _callbacks)
+						if (!_callbacks.IsEmpty)
 						{
-							callback(arguments.row, locator);
+							foreach (var callback in _callbacks)
+							{
+								callback(arguments.row, locator);
+							}
 						}
 
 						IndexerIndexerReturnHandler generator = ResolveNextGenerator(arguments);
@@ -480,28 +483,34 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 					IndexerIndexerArguments arguments = new IndexerIndexerArguments(row);
 					_invocationHistory.Push((arguments, value));
 					bool matchedCallback = false;
-					foreach (var registration in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						if (registration.Criteria.Matches(arguments))
+						foreach (var registration in _callbacks)
 						{
-							registration.Callback(arguments.row, locator, value);
-							matchedCallback = true;
+							if (registration.Criteria.Matches(arguments))
+							{
+								registration.Callback(arguments.row, locator, value);
+								matchedCallback = true;
+							}
 						}
 					}
 
 					bool invokedBaseImplementation = false;
-					foreach (var criteria in _baseCriteria)
+					if (!_baseCriteria.IsEmpty)
 					{
-						if (criteria.Matches(arguments))
+						foreach (var criteria in _baseCriteria)
 						{
-							if (baseImplementation == null)
+							if (criteria.Matches(arguments))
 							{
-								throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
-							}
+								if (baseImplementation == null)
+								{
+									throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
+								}
 
-							baseImplementation(locator, value);
-							invokedBaseImplementation = true;
-							break;
+								baseImplementation(locator, value);
+								invokedBaseImplementation = true;
+								break;
+							}
 						}
 					}
 

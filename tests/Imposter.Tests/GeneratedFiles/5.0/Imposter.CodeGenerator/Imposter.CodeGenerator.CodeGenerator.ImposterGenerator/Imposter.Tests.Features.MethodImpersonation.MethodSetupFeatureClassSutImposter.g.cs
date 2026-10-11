@@ -244,9 +244,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					global::System.Threading.Tasks.ValueTask<string> result = _resultGenerator.Invoke(prefix, suffix);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(prefix, suffix);
+						foreach (var callback in _callbacks)
+						{
+							callback(prefix, suffix);
+						}
 					}
 
 					return result;
@@ -678,9 +681,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					int result = _resultGenerator.Invoke(age);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(age);
+						foreach (var callback in _callbacks)
+						{
+							callback(age);
+						}
 					}
 
 					return result;
@@ -1086,9 +1092,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					int result = _resultGenerator.Invoke(ref seed, out doubled, adjustments);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(ref seed, out doubled, adjustments);
+						foreach (var callback in _callbacks)
+						{
+							callback(ref seed, out doubled, adjustments);
+						}
 					}
 
 					return result;
@@ -1499,9 +1508,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					global::System.Threading.Tasks.Task<int> result = _resultGenerator.Invoke(left, right);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(left, right);
+						foreach (var callback in _callbacks)
+						{
+							callback(left, right);
+						}
 					}
 
 					return result;
@@ -1933,9 +1945,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					int result = _resultGenerator.Invoke(value);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(value);
+						foreach (var callback in _callbacks)
+						{
+							callback(value);
+						}
 					}
 
 					return result;
@@ -2334,9 +2349,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					_resultGenerator.Invoke(delta);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(delta);
+						foreach (var callback in _callbacks)
+						{
+							callback(delta);
+						}
 					}
 				}
 

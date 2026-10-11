@@ -168,9 +168,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					}
 
 					TException result = _resultGenerator.Invoke();
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback();
+						foreach (var callback in _callbacks)
+						{
+							callback();
+						}
 					}
 
 					return result;
@@ -509,9 +512,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				{
 					EnsureGetterConfigured();
 					global::System.Threading.Interlocked.Increment(ref _invocationCount);
-					foreach (var getterCallback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						getterCallback();
+						foreach (var getterCallback in _callbacks)
+						{
+							getterCallback();
+						}
 					}
 
 					if (_defaultPropertyBehaviour.IsOn)
@@ -881,9 +887,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 					internal TException Invoke(IndexerIndexerArguments arguments, global::System.Func<TException>? baseImplementation = null)
 					{
-						foreach (var callback in _callbacks)
+						if (!_callbacks.IsEmpty)
 						{
-							callback(arguments.index);
+							foreach (var callback in _callbacks)
+							{
+								callback(arguments.index);
+							}
 						}
 
 						global::System.Func<IndexerIndexerArguments, global::System.Func<TException>?, TException> generator = ResolveNextGenerator(arguments);

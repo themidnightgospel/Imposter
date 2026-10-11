@@ -223,9 +223,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					}
 
 					int result = _resultGenerator.Invoke(out o, ref r, in d, args);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(out o, ref r, in d, args);
+						foreach (var callback in _callbacks)
+						{
+							callback(out o, ref r, in d, args);
+						}
 					}
 
 					return result;
@@ -579,9 +582,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					}
 
 					int result = _resultGenerator.Invoke();
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback();
+						foreach (var callback in _callbacks)
+						{
+							callback();
+						}
 					}
 
 					return result;
@@ -953,9 +959,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					}
 
 					int result = _resultGenerator.Invoke(v);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(v);
+						foreach (var callback in _callbacks)
+						{
+							callback(v);
+						}
 					}
 
 					return result;

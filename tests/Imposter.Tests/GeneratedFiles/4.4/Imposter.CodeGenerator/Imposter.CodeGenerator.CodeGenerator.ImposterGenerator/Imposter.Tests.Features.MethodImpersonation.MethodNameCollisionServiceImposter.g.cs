@@ -264,9 +264,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					T result = _resultGenerator.Invoke(out value, valueAdapted);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(out value, valueAdapted);
+						foreach (var callback in _callbacks)
+						{
+							callback(out value, valueAdapted);
+						}
 					}
 
 					return result;
@@ -754,9 +757,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					T result = _resultGenerator.Invoke(ref value, valueAdapted);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(ref value, valueAdapted);
+						foreach (var callback in _callbacks)
+						{
+							callback(ref value, valueAdapted);
+						}
 					}
 
 					return result;
@@ -1205,9 +1211,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					int result = _resultGenerator.Invoke(invocationBehavior, methodDisplayName, invocationImposter);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(invocationBehavior, methodDisplayName, invocationImposter);
+						foreach (var callback in _callbacks)
+						{
+							callback(invocationBehavior, methodDisplayName, invocationImposter);
+						}
 					}
 
 					return result;
@@ -1649,9 +1658,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					Called result = _resultGenerator.Invoke(value);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(value);
+						foreach (var callback in _callbacks)
+						{
+							callback(value);
+						}
 					}
 
 					return result;

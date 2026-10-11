@@ -261,18 +261,20 @@ internal static partial class InvocationImposterGroupBuilder
             : result.ToStatementSyntax();
     }
 
-    private static ForEachStatementSyntax InvokeCallbacks(
+    private static IfStatementSyntax InvokeCallbacks(
         in ImposterTargetMethodMetadata method,
         ArgumentListSyntax arguments
     )
     {
         var callback = method.MethodImposter.InvokeMethod.CallbackIterationVariableName;
 
-        return ForEachStatement(
-            Var,
-            Identifier(callback),
-            CallbacksIdentifier(method),
-            Block(IdentifierName(callback).Call(arguments).ToStatementSyntax())
+        return ConcurrentQueueSyntaxHelper.UnlessEmpty(
+            ForEachStatement(
+                Var,
+                Identifier(callback),
+                CallbacksIdentifier(method),
+                Block(IdentifierName(callback).Call(arguments).ToStatementSyntax())
+            )
         );
     }
 

@@ -254,9 +254,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					}
 
 					_resultGenerator.Invoke(arg);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(arg);
+						foreach (var callback in _callbacks)
+						{
+							callback(arg);
+						}
 					}
 				}
 
@@ -704,9 +707,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					}
 
 					TResult result = _resultGenerator.Invoke(source);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(source);
+						foreach (var callback in _callbacks)
+						{
+							callback(source);
+						}
 					}
 
 					return result;
@@ -1181,9 +1187,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					}
 
 					TArg result = _resultGenerator.Invoke(input);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(input);
+						foreach (var callback in _callbacks)
+						{
+							callback(input);
+						}
 					}
 
 					return result;

@@ -196,9 +196,12 @@ namespace Imposter.Tests.Features.ClassImpersonation
 				{
 					EnsureGetterConfigured();
 					global::System.Threading.Interlocked.Increment(ref _invocationCount);
-					foreach (var getterCallback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						getterCallback();
+						foreach (var getterCallback in _callbacks)
+						{
+							getterCallback();
+						}
 					}
 
 					if (_defaultPropertyBehaviour.IsOn)

@@ -344,32 +344,34 @@ internal static class IndexerSetterBuilder
                         : EmptyArgumentListSyntax
                 );
 
-            baseCriteriaLoop = ForEachStatement(
-                Var,
-                Identifier(setter.CriteriaParameterName),
-                IdentifierName(setter.BaseImplementationCriteriaField.Value.Name),
-                Block(
-                    IfStatement(
-                        IdentifierName(setter.CriteriaParameterName)
-                            .Dot(IdentifierName("Matches"))
-                            .Call(Argument(argumentsVariable)),
-                        new BlockBuilder()
-                            .AddStatement(
-                                IfStatement(
-                                    IdentifierName(setter.BaseImplementationParameter.Name)
-                                        .IsNull(),
-                                    Block(
-                                        ThrowMissingImposter(
-                                            setter.PropertyDisplayNameField.Name,
-                                            setter.SetterSuffix
+            baseCriteriaLoop = ConcurrentQueueSyntaxHelper.UnlessEmpty(
+                ForEachStatement(
+                    Var,
+                    Identifier(setter.CriteriaParameterName),
+                    IdentifierName(setter.BaseImplementationCriteriaField.Value.Name),
+                    Block(
+                        IfStatement(
+                            IdentifierName(setter.CriteriaParameterName)
+                                .Dot(IdentifierName("Matches"))
+                                .Call(Argument(argumentsVariable)),
+                            new BlockBuilder()
+                                .AddStatement(
+                                    IfStatement(
+                                        IdentifierName(setter.BaseImplementationParameter.Name)
+                                            .IsNull(),
+                                        Block(
+                                            ThrowMissingImposter(
+                                                setter.PropertyDisplayNameField.Name,
+                                                setter.SetterSuffix
+                                            )
                                         )
                                     )
                                 )
-                            )
-                            .AddExpression(baseImplementationCall)
-                            .AddExpression(invokedBaseIdentifier?.Assign(True))
-                            .AddStatement(BreakStatement())
-                            .Build()
+                                .AddExpression(baseImplementationCall)
+                                .AddExpression(invokedBaseIdentifier?.Assign(True))
+                                .AddStatement(BreakStatement())
+                                .Build()
+                        )
                     )
                 )
             );
@@ -395,7 +397,7 @@ internal static class IndexerSetterBuilder
                         False
                     )
             )
-            .AddStatement(foreachStatement);
+            .AddStatement(ConcurrentQueueSyntaxHelper.UnlessEmpty(foreachStatement));
 
         if (invokedBaseIdentifier is not null)
         {

@@ -364,9 +364,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 					internal T Invoke(IndexerIndexerArguments arguments, global::System.Func<T>? baseImplementation = null)
 					{
-						foreach (var callback in _callbacks)
+						if (!_callbacks.IsEmpty)
 						{
-							callback(arguments.index);
+							foreach (var callback in _callbacks)
+							{
+								callback(arguments.index);
+							}
 						}
 
 						global::System.Func<IndexerIndexerArguments, global::System.Func<T>?, T> generator = ResolveNextGenerator(arguments);
@@ -453,12 +456,15 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					IndexerIndexerArguments arguments = new IndexerIndexerArguments(index);
 					_invocationHistory.Push((arguments, value));
 					bool matchedCallback = false;
-					foreach (var registration in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						if (registration.Criteria.Matches(arguments))
+						foreach (var registration in _callbacks)
 						{
-							registration.Callback(arguments.index, value);
-							matchedCallback = true;
+							if (registration.Criteria.Matches(arguments))
+							{
+								registration.Callback(arguments.index, value);
+								matchedCallback = true;
+							}
 						}
 					}
 
@@ -934,9 +940,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 					internal int Invoke(Indexer_1IndexerArguments arguments, global::System.Func<int>? baseImplementation = null)
 					{
-						foreach (var callback in _callbacks)
+						if (!_callbacks.IsEmpty)
 						{
-							callback(arguments.key);
+							foreach (var callback in _callbacks)
+							{
+								callback(arguments.key);
+							}
 						}
 
 						global::System.Func<Indexer_1IndexerArguments, global::System.Func<int>?, int> generator = ResolveNextGenerator(arguments);
@@ -1023,12 +1032,15 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					Indexer_1IndexerArguments arguments = new Indexer_1IndexerArguments(key);
 					_invocationHistory.Push((arguments, value));
 					bool matchedCallback = false;
-					foreach (var registration in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						if (registration.Criteria.Matches(arguments))
+						foreach (var registration in _callbacks)
 						{
-							registration.Callback(arguments.key, value);
-							matchedCallback = true;
+							if (registration.Criteria.Matches(arguments))
+							{
+								registration.Callback(arguments.key, value);
+								matchedCallback = true;
+							}
 						}
 					}
 
@@ -1509,9 +1521,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 					internal T Invoke(Indexer_2IndexerArguments arguments, global::System.Func<T>? baseImplementation = null)
 					{
-						foreach (var callback in _callbacks)
+						if (!_callbacks.IsEmpty)
 						{
-							callback(arguments.key, arguments.index);
+							foreach (var callback in _callbacks)
+							{
+								callback(arguments.key, arguments.index);
+							}
 						}
 
 						global::System.Func<Indexer_2IndexerArguments, global::System.Func<T>?, T> generator = ResolveNextGenerator(arguments);
@@ -1598,12 +1613,15 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					Indexer_2IndexerArguments arguments = new Indexer_2IndexerArguments(key, index);
 					_invocationHistory.Push((arguments, value));
 					bool matchedCallback = false;
-					foreach (var registration in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						if (registration.Criteria.Matches(arguments))
+						foreach (var registration in _callbacks)
 						{
-							registration.Callback(arguments.key, arguments.index, value);
-							matchedCallback = true;
+							if (registration.Criteria.Matches(arguments))
+							{
+								registration.Callback(arguments.key, arguments.index, value);
+								matchedCallback = true;
+							}
 						}
 					}
 

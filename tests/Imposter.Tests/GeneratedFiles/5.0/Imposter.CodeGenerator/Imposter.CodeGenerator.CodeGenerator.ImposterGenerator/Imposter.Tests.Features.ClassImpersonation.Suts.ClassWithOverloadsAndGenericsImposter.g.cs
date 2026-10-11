@@ -282,9 +282,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					}
 
 					T result = _resultGenerator.Invoke(item);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(item);
+						foreach (var callback in _callbacks)
+						{
+							callback(item);
+						}
 					}
 
 					return result;
@@ -742,9 +745,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					}
 
 					string result = _resultGenerator.Invoke(value);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(value);
+						foreach (var callback in _callbacks)
+						{
+							callback(value);
+						}
 					}
 
 					return result;
@@ -1148,9 +1154,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					}
 
 					string result = _resultGenerator.Invoke(value, padding);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(value, padding);
+						foreach (var callback in _callbacks)
+						{
+							callback(value, padding);
+						}
 					}
 
 					return result;
@@ -1596,9 +1605,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					}
 
 					TFirst result = _resultGenerator.Invoke(first, second);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(first, second);
+						foreach (var callback in _callbacks)
+						{
+							callback(first, second);
+						}
 					}
 
 					return result;

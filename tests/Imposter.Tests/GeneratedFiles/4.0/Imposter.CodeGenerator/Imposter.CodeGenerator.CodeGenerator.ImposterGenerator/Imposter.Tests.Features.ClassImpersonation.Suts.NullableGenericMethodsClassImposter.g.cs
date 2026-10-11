@@ -255,9 +255,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					}
 
 					T? result = _resultGenerator.Invoke(value);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(value);
+						foreach (var callback in _callbacks)
+						{
+							callback(value);
+						}
 					}
 
 					return result;
@@ -767,9 +770,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					}
 
 					T result = _resultGenerator.Invoke(value);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(value);
+						foreach (var callback in _callbacks)
+						{
+							callback(value);
+						}
 					}
 
 					return result;

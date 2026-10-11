@@ -290,9 +290,12 @@ namespace Imposter.Tests.Features.InterfaceSetup
 					}
 
 					T result = _resultGenerator.Invoke(value);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(value);
+						foreach (var callback in _callbacks)
+						{
+							callback(value);
+						}
 					}
 
 					return result;
@@ -728,9 +731,12 @@ namespace Imposter.Tests.Features.InterfaceSetup
 					}
 
 					int result = _resultGenerator.Invoke(value);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(value);
+						foreach (var callback in _callbacks)
+						{
+							callback(value);
+						}
 					}
 
 					return result;
@@ -1108,9 +1114,12 @@ namespace Imposter.Tests.Features.InterfaceSetup
 					}
 
 					int result = _resultGenerator.Invoke(value);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(value);
+						foreach (var callback in _callbacks)
+						{
+							callback(value);
+						}
 					}
 
 					return result;
@@ -1456,9 +1465,12 @@ namespace Imposter.Tests.Features.InterfaceSetup
 					}
 
 					_resultGenerator.Invoke();
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback();
+						foreach (var callback in _callbacks)
+						{
+							callback();
+						}
 					}
 				}
 
@@ -1803,9 +1815,12 @@ namespace Imposter.Tests.Features.InterfaceSetup
 					}
 
 					_resultGenerator.Invoke(value);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(value);
+						foreach (var callback in _callbacks)
+						{
+							callback(value);
+						}
 					}
 				}
 
@@ -2156,9 +2171,12 @@ namespace Imposter.Tests.Features.InterfaceSetup
 					}
 
 					_resultGenerator.Invoke(value);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(value);
+						foreach (var callback in _callbacks)
+						{
+							callback(value);
+						}
 					}
 				}
 
@@ -2508,9 +2526,12 @@ namespace Imposter.Tests.Features.InterfaceSetup
 				{
 					EnsureGetterConfigured();
 					global::System.Threading.Interlocked.Increment(ref _invocationCount);
-					foreach (var getterCallback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						getterCallback();
+						foreach (var getterCallback in _callbacks)
+						{
+							getterCallback();
+						}
 					}
 
 					if (_defaultPropertyBehaviour.IsOn)
@@ -2594,10 +2615,13 @@ namespace Imposter.Tests.Features.InterfaceSetup
 				{
 					EnsureSetterConfigured();
 					_invocationHistory.Push(value);
-					foreach (var(criteria, setterCallback)in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						if (criteria.Matches(value))
-							setterCallback(value);
+						foreach (var(criteria, setterCallback)in _callbacks)
+						{
+							if (criteria.Matches(value))
+								setterCallback(value);
+						}
 					}
 
 					if (_defaultPropertyBehaviour.IsOn)
@@ -2833,9 +2857,12 @@ namespace Imposter.Tests.Features.InterfaceSetup
 				{
 					EnsureGetterConfigured();
 					global::System.Threading.Interlocked.Increment(ref _invocationCount);
-					foreach (var getterCallback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						getterCallback();
+						foreach (var getterCallback in _callbacks)
+						{
+							getterCallback();
+						}
 					}
 
 					if (_defaultPropertyBehaviour.IsOn)
@@ -2919,10 +2946,13 @@ namespace Imposter.Tests.Features.InterfaceSetup
 				{
 					EnsureSetterConfigured();
 					_invocationHistory.Push(value);
-					foreach (var(criteria, setterCallback)in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						if (criteria.Matches(value))
-							setterCallback(value);
+						foreach (var(criteria, setterCallback)in _callbacks)
+						{
+							if (criteria.Matches(value))
+								setterCallback(value);
+						}
 					}
 
 					if (_defaultPropertyBehaviour.IsOn)
@@ -4200,9 +4230,12 @@ namespace Imposter.Tests.Features.InterfaceSetup
 
 					internal string Invoke(IndexerIndexerArguments arguments, global::System.Func<string>? baseImplementation = null)
 					{
-						foreach (var callback in _callbacks)
+						if (!_callbacks.IsEmpty)
 						{
-							callback(arguments.index);
+							foreach (var callback in _callbacks)
+							{
+								callback(arguments.index);
+							}
 						}
 
 						global::System.Func<IndexerIndexerArguments, global::System.Func<string>?, string> generator = ResolveNextGenerator(arguments);
@@ -4289,12 +4322,15 @@ namespace Imposter.Tests.Features.InterfaceSetup
 					IndexerIndexerArguments arguments = new IndexerIndexerArguments(index);
 					_invocationHistory.Push((arguments, value));
 					bool matchedCallback = false;
-					foreach (var registration in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						if (registration.Criteria.Matches(arguments))
+						foreach (var registration in _callbacks)
 						{
-							registration.Callback(arguments.index, value);
-							matchedCallback = true;
+							if (registration.Criteria.Matches(arguments))
+							{
+								registration.Callback(arguments.index, value);
+								matchedCallback = true;
+							}
 						}
 					}
 
@@ -4770,9 +4806,12 @@ namespace Imposter.Tests.Features.InterfaceSetup
 
 					internal string Invoke(Indexer_1IndexerArguments arguments, global::System.Func<string>? baseImplementation = null)
 					{
-						foreach (var callback in _callbacks)
+						if (!_callbacks.IsEmpty)
 						{
-							callback(arguments.index);
+							foreach (var callback in _callbacks)
+							{
+								callback(arguments.index);
+							}
 						}
 
 						global::System.Func<Indexer_1IndexerArguments, global::System.Func<string>?, string> generator = ResolveNextGenerator(arguments);
@@ -4859,12 +4898,15 @@ namespace Imposter.Tests.Features.InterfaceSetup
 					Indexer_1IndexerArguments arguments = new Indexer_1IndexerArguments(index);
 					_invocationHistory.Push((arguments, value));
 					bool matchedCallback = false;
-					foreach (var registration in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						if (registration.Criteria.Matches(arguments))
+						foreach (var registration in _callbacks)
 						{
-							registration.Callback(arguments.index, value);
-							matchedCallback = true;
+							if (registration.Criteria.Matches(arguments))
+							{
+								registration.Callback(arguments.index, value);
+								matchedCallback = true;
+							}
 						}
 					}
 

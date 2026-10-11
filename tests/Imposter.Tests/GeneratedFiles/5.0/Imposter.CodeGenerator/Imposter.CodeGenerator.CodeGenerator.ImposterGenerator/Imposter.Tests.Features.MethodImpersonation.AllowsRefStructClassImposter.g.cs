@@ -222,9 +222,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					T result = _resultGenerator.Invoke(value);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(value);
+						foreach (var callback in _callbacks)
+						{
+							callback(value);
+						}
 					}
 
 					return result;
@@ -678,9 +681,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					int result = _resultGenerator.Invoke(value, scale);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(value, scale);
+						foreach (var callback in _callbacks)
+						{
+							callback(value, scale);
+						}
 					}
 
 					return result;

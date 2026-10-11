@@ -212,9 +212,12 @@ namespace Imposter.Tests.Features.Docs.Methods.ProtectedMethods
 					}
 
 					int result = _resultGenerator.Invoke(value);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(value);
+						foreach (var callback in _callbacks)
+						{
+							callback(value);
+						}
 					}
 
 					return result;
@@ -614,9 +617,12 @@ namespace Imposter.Tests.Features.Docs.Methods.ProtectedMethods
 					}
 
 					int result = _resultGenerator.Invoke(value);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(value);
+						foreach (var callback in _callbacks)
+						{
+							callback(value);
+						}
 					}
 
 					return result;

@@ -368,9 +368,12 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 					internal int Invoke(IndexerIndexerArguments arguments, global::Imposter.Tests.Features.IndexerImpersonation.Locator locator, IndexerIndexerBaseGetter? baseImplementation = null)
 					{
-						foreach (var callback in _callbacks)
+						if (!_callbacks.IsEmpty)
 						{
-							callback(arguments.row, locator);
+							foreach (var callback in _callbacks)
+							{
+								callback(arguments.row, locator);
+							}
 						}
 
 						IndexerIndexerReturnHandler generator = ResolveNextGenerator(arguments);
@@ -457,12 +460,15 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 					IndexerIndexerArguments arguments = new IndexerIndexerArguments(row);
 					_invocationHistory.Push((arguments, value));
 					bool matchedCallback = false;
-					foreach (var registration in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						if (registration.Criteria.Matches(arguments))
+						foreach (var registration in _callbacks)
 						{
-							registration.Callback(arguments.row, locator, value);
-							matchedCallback = true;
+							if (registration.Criteria.Matches(arguments))
+							{
+								registration.Callback(arguments.row, locator, value);
+								matchedCallback = true;
+							}
 						}
 					}
 
@@ -937,9 +943,12 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 					internal string Invoke(Indexer_1IndexerArguments arguments, global::Imposter.Tests.Features.IndexerImpersonation.Locator locator, Indexer_1IndexerBaseGetter? baseImplementation = null)
 					{
-						foreach (var callback in _callbacks)
+						if (!_callbacks.IsEmpty)
 						{
-							callback(locator);
+							foreach (var callback in _callbacks)
+							{
+								callback(locator);
+							}
 						}
 
 						Indexer_1IndexerReturnHandler generator = ResolveNextGenerator(arguments);
@@ -1026,12 +1035,15 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 					Indexer_1IndexerArguments arguments = new Indexer_1IndexerArguments();
 					_invocationHistory.Push((arguments, value));
 					bool matchedCallback = false;
-					foreach (var registration in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						if (registration.Criteria.Matches(arguments))
+						foreach (var registration in _callbacks)
 						{
-							registration.Callback(locator, value);
-							matchedCallback = true;
+							if (registration.Criteria.Matches(arguments))
+							{
+								registration.Callback(locator, value);
+								matchedCallback = true;
+							}
 						}
 					}
 

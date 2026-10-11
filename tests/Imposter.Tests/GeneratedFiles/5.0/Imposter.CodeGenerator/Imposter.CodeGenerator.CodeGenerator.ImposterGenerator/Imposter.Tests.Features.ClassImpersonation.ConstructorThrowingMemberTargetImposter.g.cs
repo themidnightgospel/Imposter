@@ -173,9 +173,12 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					}
 
 					_resultGenerator.Invoke();
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback();
+						foreach (var callback in _callbacks)
+						{
+							callback();
+						}
 					}
 				}
 

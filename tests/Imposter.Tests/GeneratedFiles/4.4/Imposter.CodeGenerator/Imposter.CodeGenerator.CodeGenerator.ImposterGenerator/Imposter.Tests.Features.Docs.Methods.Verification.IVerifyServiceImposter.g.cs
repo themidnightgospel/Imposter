@@ -210,9 +210,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Verification
 					}
 
 					int result = _resultGenerator.Invoke(a, b);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(a, b);
+						foreach (var callback in _callbacks)
+						{
+							callback(a, b);
+						}
 					}
 
 					return result;
@@ -589,9 +592,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Verification
 					}
 
 					_resultGenerator.Invoke(v);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(v);
+						foreach (var callback in _callbacks)
+						{
+							callback(v);
+						}
 					}
 				}
 

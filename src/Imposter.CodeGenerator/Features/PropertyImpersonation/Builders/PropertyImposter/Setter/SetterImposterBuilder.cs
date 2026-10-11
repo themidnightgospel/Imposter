@@ -244,7 +244,6 @@ internal static class SetterImposterBuilder
             return statements;
         }
 
-        // A callback with criteria runs only for a value they match.
         static StatementSyntax InvokeCallbacks(in PropertySetterImposterMetadata setterImposter)
         {
             var value = IdentifierName(setterImposter.SetMethod.ValueParameter.Name);
@@ -252,17 +251,24 @@ internal static class SetterImposterBuilder
                 .Call(Argument(value))
                 .ToStatementSyntax();
 
-            if (setterImposter.CallbacksField.TupleTypeSyntax is null)
-            {
-                return ForEachStatement(
-                    type: Var,
-                    identifier: Identifier("setterCallback"),
-                    expression: IdentifierName(CallbacksFieldMetadata.Name),
-                    statement: Block(invokeCallback)
-                );
-            }
+            return ConcurrentQueueSyntaxHelper.UnlessEmpty(
+                setterImposter.CallbacksField.TupleTypeSyntax is null
+                    ? ForEachStatement(
+                        type: Var,
+                        identifier: Identifier("setterCallback"),
+                        expression: IdentifierName(CallbacksFieldMetadata.Name),
+                        statement: Block(invokeCallback)
+                    )
+                    : CriteriaCallbacksLoop(value, invokeCallback)
+            );
+        }
 
-            return ForEachVariableStatement(
+        // A callback with criteria runs only for a value they match.
+        static ForEachVariableStatementSyntax CriteriaCallbacksLoop(
+            IdentifierNameSyntax value,
+            StatementSyntax invokeCallback
+        ) =>
+            ForEachVariableStatement(
                 variable: DeclarationExpression(
                     Var,
                     ParenthesizedVariableDesignation(
@@ -288,7 +294,6 @@ internal static class SetterImposterBuilder
                     )
                 )
             );
-        }
 
         // A value passed through can't be kept, so the setter only counts it.
         static StatementSyntax TrackSetterInvocation(

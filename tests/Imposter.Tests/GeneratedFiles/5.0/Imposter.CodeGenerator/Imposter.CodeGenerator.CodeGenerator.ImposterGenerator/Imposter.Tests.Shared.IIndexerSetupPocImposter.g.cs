@@ -207,9 +207,12 @@ namespace Imposter.Tests.Shared
 					}
 
 					string result = _resultGenerator.Invoke(name, lastname, in dog);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(name, lastname, in dog);
+						foreach (var callback in _callbacks)
+						{
+							callback(name, lastname, in dog);
+						}
 					}
 
 					return result;

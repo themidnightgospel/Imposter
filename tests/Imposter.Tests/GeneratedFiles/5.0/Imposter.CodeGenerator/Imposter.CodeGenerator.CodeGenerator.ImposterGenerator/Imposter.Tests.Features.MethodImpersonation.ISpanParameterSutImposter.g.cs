@@ -273,9 +273,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					bool result = _resultGenerator.Invoke(items, item);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(items, item);
+						foreach (var callback in _callbacks)
+						{
+							callback(items, item);
+						}
 					}
 
 					return result;
@@ -708,9 +711,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					global::System.Threading.Tasks.Task<int> result = _resultGenerator.Invoke(data);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(data);
+						foreach (var callback in _callbacks)
+						{
+							callback(data);
+						}
 					}
 
 					return result;
@@ -1175,9 +1181,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					_resultGenerator.Invoke(buffer, value);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(buffer, value);
+						foreach (var callback in _callbacks)
+						{
+							callback(buffer, value);
+						}
 					}
 				}
 
@@ -1587,9 +1596,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					int result = _resultGenerator.Invoke(text, start);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(text, start);
+						foreach (var callback in _callbacks)
+						{
+							callback(text, start);
+						}
 					}
 
 					return result;
@@ -1966,9 +1978,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					_resultGenerator.Invoke(buffer);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(buffer);
+						foreach (var callback in _callbacks)
+						{
+							callback(buffer);
+						}
 					}
 				}
 

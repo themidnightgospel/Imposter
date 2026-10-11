@@ -174,9 +174,12 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					}
 
 					int result = _resultGenerator.Invoke();
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback();
+						foreach (var callback in _callbacks)
+						{
+							callback();
+						}
 					}
 
 					return result;
@@ -605,9 +608,12 @@ namespace Imposter.Tests.Features.ClassImpersonation
 				{
 					EnsureGetterConfigured();
 					global::System.Threading.Interlocked.Increment(ref _invocationCount);
-					foreach (var getterCallback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						getterCallback();
+						foreach (var getterCallback in _callbacks)
+						{
+							getterCallback();
+						}
 					}
 
 					if (_defaultPropertyBehaviour.IsOn)
@@ -698,10 +704,13 @@ namespace Imposter.Tests.Features.ClassImpersonation
 				{
 					EnsureSetterConfigured();
 					_invocationHistory.Push(value);
-					foreach (var(criteria, setterCallback)in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						if (criteria.Matches(value))
-							setterCallback(value);
+						foreach (var(criteria, setterCallback)in _callbacks)
+						{
+							if (criteria.Matches(value))
+								setterCallback(value);
+						}
 					}
 
 					if (_useBaseImplementation)

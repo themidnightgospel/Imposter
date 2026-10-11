@@ -341,9 +341,12 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 					internal string Invoke(IndexerIndexerArguments arguments, global::System.Func<string>? baseImplementation = null)
 					{
-						foreach (var callback in _callbacks)
+						if (!_callbacks.IsEmpty)
 						{
-							callback(arguments.key);
+							foreach (var callback in _callbacks)
+							{
+								callback(arguments.key);
+							}
 						}
 
 						global::System.Func<IndexerIndexerArguments, global::System.Func<string>?, string> generator = ResolveNextGenerator(arguments);
@@ -760,9 +763,12 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 					internal int Invoke(Indexer_1IndexerArguments arguments, global::System.Func<int>? baseImplementation = null)
 					{
-						foreach (var callback in _callbacks)
+						if (!_callbacks.IsEmpty)
 						{
-							callback(arguments.key);
+							foreach (var callback in _callbacks)
+							{
+								callback(arguments.key);
+							}
 						}
 
 						global::System.Func<Indexer_1IndexerArguments, global::System.Func<int>?, int> generator = ResolveNextGenerator(arguments);

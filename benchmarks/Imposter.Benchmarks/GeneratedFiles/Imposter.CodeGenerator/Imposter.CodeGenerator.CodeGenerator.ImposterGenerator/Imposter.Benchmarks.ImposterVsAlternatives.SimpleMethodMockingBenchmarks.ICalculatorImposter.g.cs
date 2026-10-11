@@ -199,9 +199,12 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 					}
 
 					int result = _resultGenerator.Invoke(input);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(input);
+						foreach (var callback in _callbacks)
+						{
+							callback(input);
+						}
 					}
 
 					return result;

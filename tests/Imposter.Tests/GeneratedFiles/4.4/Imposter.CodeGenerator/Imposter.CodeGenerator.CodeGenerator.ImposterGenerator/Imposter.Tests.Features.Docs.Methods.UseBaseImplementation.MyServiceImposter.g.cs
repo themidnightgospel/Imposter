@@ -223,9 +223,12 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 					}
 
 					int result = _resultGenerator.Invoke(a, b);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(a, b);
+						foreach (var callback in _callbacks)
+						{
+							callback(a, b);
+						}
 					}
 
 					return result;
@@ -625,9 +628,12 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 					}
 
 					int result = _resultGenerator.Invoke(v);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(v);
+						foreach (var callback in _callbacks)
+						{
+							callback(v);
+						}
 					}
 
 					return result;
@@ -1027,9 +1033,12 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 					}
 
 					global::System.Threading.Tasks.Task result = _resultGenerator.Invoke(s);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(s);
+						foreach (var callback in _callbacks)
+						{
+							callback(s);
+						}
 					}
 
 					return result;

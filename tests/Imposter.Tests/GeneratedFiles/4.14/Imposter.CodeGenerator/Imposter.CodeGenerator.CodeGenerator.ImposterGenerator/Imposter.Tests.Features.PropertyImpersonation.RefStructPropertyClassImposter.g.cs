@@ -216,9 +216,12 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 				{
 					EnsureGetterConfigured();
 					global::System.Threading.Interlocked.Increment(ref _invocationCount);
-					foreach (var getterCallback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						getterCallback();
+						foreach (var getterCallback in _callbacks)
+						{
+							getterCallback();
+						}
 					}
 
 					var nextReturnValue = NextReturnValue();
@@ -288,9 +291,12 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 				{
 					EnsureSetterConfigured();
 					global::System.Threading.Interlocked.Increment(ref _invocationCount);
-					foreach (var setterCallback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						setterCallback(value);
+						foreach (var setterCallback in _callbacks)
+						{
+							setterCallback(value);
+						}
 					}
 
 					if (_useBaseImplementation)

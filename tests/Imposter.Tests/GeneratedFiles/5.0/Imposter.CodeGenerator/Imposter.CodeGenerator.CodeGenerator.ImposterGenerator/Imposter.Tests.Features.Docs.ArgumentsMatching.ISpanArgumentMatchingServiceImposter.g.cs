@@ -199,9 +199,12 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					}
 
 					int result = _resultGenerator.Invoke(text);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(text);
+						foreach (var callback in _callbacks)
+						{
+							callback(text);
+						}
 					}
 
 					return result;

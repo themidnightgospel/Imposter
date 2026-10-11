@@ -237,9 +237,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					}
 
 					_resultGenerator.Invoke(item, index);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(item, index);
+						foreach (var callback in _callbacks)
+						{
+							callback(item, index);
+						}
 					}
 				}
 
@@ -591,9 +594,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					}
 
 					int result = _resultGenerator.Invoke(item);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(item);
+						foreach (var callback in _callbacks)
+						{
+							callback(item);
+						}
 					}
 
 					return result;
@@ -940,9 +946,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					}
 
 					T result = _resultGenerator.Invoke();
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback();
+						foreach (var callback in _callbacks)
+						{
+							callback();
+						}
 					}
 
 					return result;
@@ -1321,9 +1330,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					}
 
 					_resultGenerator.Invoke(payload, category, priority);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(payload, category, priority);
+						foreach (var callback in _callbacks)
+						{
+							callback(payload, category, priority);
+						}
 					}
 				}
 
@@ -1644,9 +1656,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					}
 
 					T result = _resultGenerator.Invoke();
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback();
+						foreach (var callback in _callbacks)
+						{
+							callback();
+						}
 					}
 
 					return result;
@@ -2018,9 +2033,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					}
 
 					bool result = _resultGenerator.Invoke(value);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(value);
+						foreach (var callback in _callbacks)
+						{
+							callback(value);
+						}
 					}
 
 					return result;

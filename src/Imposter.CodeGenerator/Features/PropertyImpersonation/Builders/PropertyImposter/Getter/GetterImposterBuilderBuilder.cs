@@ -604,11 +604,13 @@ internal static class GetterImposterBuilderBuilder
         static StatementSyntax InvokeGetterCallbacks(
             in PropertyGetterImposterBuilderMetadata builder
         ) =>
-            ForEachStatement(
-                type: Var,
-                identifier: Identifier("getterCallback"),
-                expression: IdentifierName(builder.CallbacksField.Name),
-                statement: Block(IdentifierName("getterCallback").Call().ToStatementSyntax())
+            ConcurrentQueueSyntaxHelper.UnlessEmpty(
+                ForEachStatement(
+                    type: Var,
+                    identifier: Identifier("getterCallback"),
+                    expression: IdentifierName(builder.CallbacksField.Name),
+                    statement: Block(IdentifierName("getterCallback").Call().ToStatementSyntax())
+                )
             );
 
         static StatementSyntax TrackGetterInvocation(

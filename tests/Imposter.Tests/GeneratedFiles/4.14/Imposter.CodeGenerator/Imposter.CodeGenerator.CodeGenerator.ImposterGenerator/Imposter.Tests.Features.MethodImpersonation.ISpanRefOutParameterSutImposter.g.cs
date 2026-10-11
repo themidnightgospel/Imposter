@@ -220,9 +220,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					int result = _resultGenerator.Invoke(ref buffer);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(ref buffer);
+						foreach (var callback in _callbacks)
+						{
+							callback(ref buffer);
+						}
 					}
 
 					return result;
@@ -599,9 +602,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					_resultGenerator.Invoke(ref buffer);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(ref buffer);
+						foreach (var callback in _callbacks)
+						{
+							callback(ref buffer);
+						}
 					}
 				}
 
@@ -954,9 +960,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					bool result = _resultGenerator.Invoke(out items);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(out items);
+						foreach (var callback in _callbacks)
+						{
+							callback(out items);
+						}
 					}
 
 					return result;
@@ -1361,9 +1370,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					bool result = _resultGenerator.Invoke(out data);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(out data);
+						foreach (var callback in _callbacks)
+						{
+							callback(out data);
+						}
 					}
 
 					return result;

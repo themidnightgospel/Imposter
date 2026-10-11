@@ -400,9 +400,12 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 					internal int Invoke(IndexerIndexerArguments arguments_1, global::System.Func<int>? baseImplementation_1 = null)
 					{
-						foreach (var callback in _callbacks)
+						if (!_callbacks.IsEmpty)
 						{
-							callback(arguments_1.arguments, arguments_1.baseImplementation, arguments_1.invokedBaseImplementation, arguments_1.matchedCallback, arguments_1.registration, arguments_1.getterInvocationImposter, arguments_1.criteria);
+							foreach (var callback in _callbacks)
+							{
+								callback(arguments_1.arguments, arguments_1.baseImplementation, arguments_1.invokedBaseImplementation, arguments_1.matchedCallback, arguments_1.registration, arguments_1.getterInvocationImposter, arguments_1.criteria);
+							}
 						}
 
 						global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int> generator = ResolveNextGenerator(arguments_1);
@@ -506,28 +509,34 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 					IndexerIndexerArguments arguments_1 = new IndexerIndexerArguments(arguments, baseImplementation, invokedBaseImplementation, matchedCallback, registration, getterInvocationImposter, criteria);
 					_invocationHistory.Push((arguments_1, value));
 					bool matchedCallback_1 = false;
-					foreach (var registration_1 in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						if (registration_1.Criteria.Matches(arguments_1))
+						foreach (var registration_1 in _callbacks)
 						{
-							registration_1.Callback(arguments_1.arguments, arguments_1.baseImplementation, arguments_1.invokedBaseImplementation, arguments_1.matchedCallback, arguments_1.registration, arguments_1.getterInvocationImposter, arguments_1.criteria, value);
-							matchedCallback_1 = true;
+							if (registration_1.Criteria.Matches(arguments_1))
+							{
+								registration_1.Callback(arguments_1.arguments, arguments_1.baseImplementation, arguments_1.invokedBaseImplementation, arguments_1.matchedCallback, arguments_1.registration, arguments_1.getterInvocationImposter, arguments_1.criteria, value);
+								matchedCallback_1 = true;
+							}
 						}
 					}
 
 					bool invokedBaseImplementation_1 = false;
-					foreach (var criteria_1 in _baseCriteria)
+					if (!_baseCriteria.IsEmpty)
 					{
-						if (criteria_1.Matches(arguments_1))
+						foreach (var criteria_1 in _baseCriteria)
 						{
-							if (baseImplementation_1 == null)
+							if (criteria_1.Matches(arguments_1))
 							{
-								throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
-							}
+								if (baseImplementation_1 == null)
+								{
+									throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
+								}
 
-							baseImplementation_1();
-							invokedBaseImplementation_1 = true;
-							break;
+								baseImplementation_1();
+								invokedBaseImplementation_1 = true;
+								break;
+							}
 						}
 					}
 

@@ -182,9 +182,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					global::System.Threading.Tasks.Task<int> result = _resultGenerator.Invoke(out count);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(out count);
+						foreach (var callback in _callbacks)
+						{
+							callback(out count);
+						}
 					}
 
 					return result;
@@ -607,9 +610,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					global::System.Threading.Tasks.Task<int> result = _resultGenerator.Invoke(ref position);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(ref position);
+						foreach (var callback in _callbacks)
+						{
+							callback(ref position);
+						}
 					}
 
 					return result;
@@ -1029,9 +1035,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					global::System.Threading.Tasks.ValueTask<int> result = _resultGenerator.Invoke(in key);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(in key);
+						foreach (var callback in _callbacks)
+						{
+							callback(in key);
+						}
 					}
 
 					return result;

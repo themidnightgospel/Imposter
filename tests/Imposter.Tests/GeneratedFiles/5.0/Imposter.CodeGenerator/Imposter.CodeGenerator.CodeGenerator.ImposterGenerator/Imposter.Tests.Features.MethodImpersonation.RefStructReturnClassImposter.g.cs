@@ -203,9 +203,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					global::Imposter.Tests.Features.MethodImpersonation.Slot result = _resultGenerator.Invoke(size);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(size);
+						foreach (var callback in _callbacks)
+						{
+							callback(size);
+						}
 					}
 
 					return result;

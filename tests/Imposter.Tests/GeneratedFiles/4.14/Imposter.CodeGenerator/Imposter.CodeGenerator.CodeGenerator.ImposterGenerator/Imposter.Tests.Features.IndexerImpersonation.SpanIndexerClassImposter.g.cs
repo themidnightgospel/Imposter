@@ -370,9 +370,12 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 					internal int Invoke(IndexerIndexerArguments arguments, global::System.Func<int>? baseImplementation = null)
 					{
-						foreach (var callback in _callbacks)
+						if (!_callbacks.IsEmpty)
 						{
-							callback(arguments.key);
+							foreach (var callback in _callbacks)
+							{
+								callback(arguments.key);
+							}
 						}
 
 						global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int> generator = ResolveNextGenerator(arguments);
@@ -476,28 +479,34 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 					IndexerIndexerArguments arguments = new IndexerIndexerArguments(key);
 					_invocationHistory.Push((arguments, value));
 					bool matchedCallback = false;
-					foreach (var registration in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						if (registration.Criteria.Matches(arguments))
+						foreach (var registration in _callbacks)
 						{
-							registration.Callback(arguments.key, value);
-							matchedCallback = true;
+							if (registration.Criteria.Matches(arguments))
+							{
+								registration.Callback(arguments.key, value);
+								matchedCallback = true;
+							}
 						}
 					}
 
 					bool invokedBaseImplementation = false;
-					foreach (var criteria in _baseCriteria)
+					if (!_baseCriteria.IsEmpty)
 					{
-						if (criteria.Matches(arguments))
+						foreach (var criteria in _baseCriteria)
 						{
-							if (baseImplementation == null)
+							if (criteria.Matches(arguments))
 							{
-								throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
-							}
+								if (baseImplementation == null)
+								{
+									throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
+								}
 
-							baseImplementation();
-							invokedBaseImplementation = true;
-							break;
+								baseImplementation();
+								invokedBaseImplementation = true;
+								break;
+							}
 						}
 					}
 

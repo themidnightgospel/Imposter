@@ -188,9 +188,12 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					}
 
 					global::System.Threading.Tasks.Task<int> result = _resultGenerator.Invoke();
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback();
+						foreach (var callback in _callbacks)
+						{
+							callback();
+						}
 					}
 
 					return result;
@@ -584,9 +587,12 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					}
 
 					_resultGenerator.Invoke();
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback();
+						foreach (var callback in _callbacks)
+						{
+							callback();
+						}
 					}
 				}
 
@@ -1000,9 +1006,12 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					}
 
 					string result = _resultGenerator.Invoke(ref input, out output, expected);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(ref input, out output, expected);
+						foreach (var callback in _callbacks)
+						{
+							callback(ref input, out output, expected);
+						}
 					}
 
 					return result;
@@ -1503,9 +1512,12 @@ namespace Imposter.Tests.Features.ClassImpersonation
 				{
 					EnsureGetterConfigured();
 					global::System.Threading.Interlocked.Increment(ref _invocationCount);
-					foreach (var getterCallback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						getterCallback();
+						foreach (var getterCallback in _callbacks)
+						{
+							getterCallback();
+						}
 					}
 
 					if (_defaultPropertyBehaviour.IsOn)
@@ -1596,10 +1608,13 @@ namespace Imposter.Tests.Features.ClassImpersonation
 				{
 					EnsureSetterConfigured();
 					_invocationHistory.Push(value);
-					foreach (var(criteria, setterCallback)in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						if (criteria.Matches(value))
-							setterCallback(value);
+						foreach (var(criteria, setterCallback)in _callbacks)
+						{
+							if (criteria.Matches(value))
+								setterCallback(value);
+						}
 					}
 
 					if (_useBaseImplementation)
@@ -2354,9 +2369,12 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 					internal int Invoke(IndexerIndexerArguments arguments, global::System.Func<int>? baseImplementation = null)
 					{
-						foreach (var callback in _callbacks)
+						if (!_callbacks.IsEmpty)
 						{
-							callback(arguments.key);
+							foreach (var callback in _callbacks)
+							{
+								callback(arguments.key);
+							}
 						}
 
 						global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int> generator = ResolveNextGenerator(arguments);
@@ -2460,28 +2478,34 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					IndexerIndexerArguments arguments = new IndexerIndexerArguments(key);
 					_invocationHistory.Push((arguments, value));
 					bool matchedCallback = false;
-					foreach (var registration in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						if (registration.Criteria.Matches(arguments))
+						foreach (var registration in _callbacks)
 						{
-							registration.Callback(arguments.key, value);
-							matchedCallback = true;
+							if (registration.Criteria.Matches(arguments))
+							{
+								registration.Callback(arguments.key, value);
+								matchedCallback = true;
+							}
 						}
 					}
 
 					bool invokedBaseImplementation = false;
-					foreach (var criteria in _baseCriteria)
+					if (!_baseCriteria.IsEmpty)
 					{
-						if (criteria.Matches(arguments))
+						foreach (var criteria in _baseCriteria)
 						{
-							if (baseImplementation == null)
+							if (criteria.Matches(arguments))
 							{
-								throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
-							}
+								if (baseImplementation == null)
+								{
+									throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
+								}
 
-							baseImplementation();
-							invokedBaseImplementation = true;
-							break;
+								baseImplementation();
+								invokedBaseImplementation = true;
+								break;
+							}
 						}
 					}
 

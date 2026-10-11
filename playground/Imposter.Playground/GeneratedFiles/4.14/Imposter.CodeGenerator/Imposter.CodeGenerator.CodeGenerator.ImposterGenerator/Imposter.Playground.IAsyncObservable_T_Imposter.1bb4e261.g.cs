@@ -198,9 +198,12 @@ namespace Imposter.Playground
 					}
 
 					_resultGenerator.Invoke(item);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(item);
+						foreach (var callback in _callbacks)
+						{
+							callback(item);
+						}
 					}
 				}
 

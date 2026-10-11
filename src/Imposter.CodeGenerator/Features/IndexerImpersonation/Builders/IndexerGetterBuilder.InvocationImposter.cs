@@ -197,20 +197,22 @@ internal static partial class IndexerGetterBuilder
         var getter = indexer.GetterImplementation;
         var arguments = IdentifierName(getter.ArgumentsVariableName);
 
-        var invokeCallbacks = ForEachStatement(
-            Var,
-            Identifier(IndexerGetterImposterMetadata.CallbackVariableName),
-            IdentifierName(getter.Invocation.CallbacksField.Name),
-            Block(
-                IdentifierName(IndexerGetterImposterMetadata.CallbackVariableName)
-                    .Call(
-                        BuildDelegateInvocationArguments(
-                            arguments,
-                            indexer,
-                            indexer.GetterPassedThroughKeyNames
+        var invokeCallbacks = ConcurrentQueueSyntaxHelper.UnlessEmpty(
+            ForEachStatement(
+                Var,
+                Identifier(IndexerGetterImposterMetadata.CallbackVariableName),
+                IdentifierName(getter.Invocation.CallbacksField.Name),
+                Block(
+                    IdentifierName(IndexerGetterImposterMetadata.CallbackVariableName)
+                        .Call(
+                            BuildDelegateInvocationArguments(
+                                arguments,
+                                indexer,
+                                indexer.GetterPassedThroughKeyNames
+                            )
                         )
-                    )
-                    .ToStatementSyntax()
+                        .ToStatementSyntax()
+                )
             )
         );
 

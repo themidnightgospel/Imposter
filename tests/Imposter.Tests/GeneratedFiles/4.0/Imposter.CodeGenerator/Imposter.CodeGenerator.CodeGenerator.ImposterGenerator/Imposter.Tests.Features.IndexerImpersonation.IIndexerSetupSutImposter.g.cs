@@ -374,9 +374,12 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 					internal int Invoke(IndexerIndexerArguments arguments, global::System.Func<int>? baseImplementation = null)
 					{
-						foreach (var callback in _callbacks)
+						if (!_callbacks.IsEmpty)
 						{
-							callback(arguments.key1, arguments.key2, arguments.key3);
+							foreach (var callback in _callbacks)
+							{
+								callback(arguments.key1, arguments.key2, arguments.key3);
+							}
 						}
 
 						global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int> generator = ResolveNextGenerator(arguments);
@@ -463,12 +466,15 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 					IndexerIndexerArguments arguments = new IndexerIndexerArguments(key1, key2, key3);
 					_invocationHistory.Push((arguments, value));
 					bool matchedCallback = false;
-					foreach (var registration in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						if (registration.Criteria.Matches(arguments))
+						foreach (var registration in _callbacks)
 						{
-							registration.Callback(arguments.key1, arguments.key2, arguments.key3, value);
-							matchedCallback = true;
+							if (registration.Criteria.Matches(arguments))
+							{
+								registration.Callback(arguments.key1, arguments.key2, arguments.key3, value);
+								matchedCallback = true;
+							}
 						}
 					}
 
@@ -944,9 +950,12 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 					internal int Invoke(Indexer_1IndexerArguments arguments, global::System.Func<int>? baseImplementation = null)
 					{
-						foreach (var callback in _callbacks)
+						if (!_callbacks.IsEmpty)
 						{
-							callback(arguments.key1);
+							foreach (var callback in _callbacks)
+							{
+								callback(arguments.key1);
+							}
 						}
 
 						global::System.Func<Indexer_1IndexerArguments, global::System.Func<int>?, int> generator = ResolveNextGenerator(arguments);
@@ -1033,12 +1042,15 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 					Indexer_1IndexerArguments arguments = new Indexer_1IndexerArguments(key1);
 					_invocationHistory.Push((arguments, value));
 					bool matchedCallback = false;
-					foreach (var registration in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						if (registration.Criteria.Matches(arguments))
+						foreach (var registration in _callbacks)
 						{
-							registration.Callback(arguments.key1, value);
-							matchedCallback = true;
+							if (registration.Criteria.Matches(arguments))
+							{
+								registration.Callback(arguments.key1, value);
+								matchedCallback = true;
+							}
 						}
 					}
 

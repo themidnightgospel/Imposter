@@ -206,9 +206,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					}
 
 					int result = _resultGenerator.Invoke(value);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(value);
+						foreach (var callback in _callbacks)
+						{
+							callback(value);
+						}
 					}
 
 					return result;
@@ -586,9 +589,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					}
 
 					int? result = _resultGenerator.Invoke(value);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(value);
+						foreach (var callback in _callbacks)
+						{
+							callback(value);
+						}
 					}
 
 					return result;
@@ -1007,9 +1013,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				{
 					EnsureGetterConfigured();
 					global::System.Threading.Interlocked.Increment(ref _invocationCount);
-					foreach (var getterCallback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						getterCallback();
+						foreach (var getterCallback in _callbacks)
+						{
+							getterCallback();
+						}
 					}
 
 					if (_defaultPropertyBehaviour.IsOn)
@@ -1100,10 +1109,13 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				{
 					EnsureSetterConfigured();
 					_invocationHistory.Push(value);
-					foreach (var(criteria, setterCallback)in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						if (criteria.Matches(value))
-							setterCallback(value);
+						foreach (var(criteria, setterCallback)in _callbacks)
+						{
+							if (criteria.Matches(value))
+								setterCallback(value);
+						}
 					}
 
 					if (_useBaseImplementation)
@@ -1406,9 +1418,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				{
 					EnsureGetterConfigured();
 					global::System.Threading.Interlocked.Increment(ref _invocationCount);
-					foreach (var getterCallback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						getterCallback();
+						foreach (var getterCallback in _callbacks)
+						{
+							getterCallback();
+						}
 					}
 
 					if (_defaultPropertyBehaviour.IsOn)
@@ -1499,10 +1514,13 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				{
 					EnsureSetterConfigured();
 					_invocationHistory.Push(value);
-					foreach (var(criteria, setterCallback)in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						if (criteria.Matches(value))
-							setterCallback(value);
+						foreach (var(criteria, setterCallback)in _callbacks)
+						{
+							if (criteria.Matches(value))
+								setterCallback(value);
+						}
 					}
 
 					if (_useBaseImplementation)
@@ -2232,9 +2250,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 					internal int Invoke(IndexerIndexerArguments arguments, global::System.Func<int>? baseImplementation = null)
 					{
-						foreach (var callback in _callbacks)
+						if (!_callbacks.IsEmpty)
 						{
-							callback(arguments.index);
+							foreach (var callback in _callbacks)
+							{
+								callback(arguments.index);
+							}
 						}
 
 						global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int> generator = ResolveNextGenerator(arguments);
@@ -2321,12 +2342,15 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					IndexerIndexerArguments arguments = new IndexerIndexerArguments(index);
 					_invocationHistory.Push((arguments, value));
 					bool matchedCallback = false;
-					foreach (var registration in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						if (registration.Criteria.Matches(arguments))
+						foreach (var registration in _callbacks)
 						{
-							registration.Callback(arguments.index, value);
-							matchedCallback = true;
+							if (registration.Criteria.Matches(arguments))
+							{
+								registration.Callback(arguments.index, value);
+								matchedCallback = true;
+							}
 						}
 					}
 
@@ -2807,9 +2831,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 					internal int? Invoke(Indexer_1IndexerArguments arguments, global::System.Func<int?>? baseImplementation = null)
 					{
-						foreach (var callback in _callbacks)
+						if (!_callbacks.IsEmpty)
 						{
-							callback(arguments.index, arguments.indexNullable);
+							foreach (var callback in _callbacks)
+							{
+								callback(arguments.index, arguments.indexNullable);
+							}
 						}
 
 						global::System.Func<Indexer_1IndexerArguments, global::System.Func<int?>?, int?> generator = ResolveNextGenerator(arguments);
@@ -2896,12 +2923,15 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					Indexer_1IndexerArguments arguments = new Indexer_1IndexerArguments(index, indexNullable);
 					_invocationHistory.Push((arguments, value));
 					bool matchedCallback = false;
-					foreach (var registration in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						if (registration.Criteria.Matches(arguments))
+						foreach (var registration in _callbacks)
 						{
-							registration.Callback(arguments.index, arguments.indexNullable, value);
-							matchedCallback = true;
+							if (registration.Criteria.Matches(arguments))
+							{
+								registration.Callback(arguments.index, arguments.indexNullable, value);
+								matchedCallback = true;
+							}
 						}
 					}
 

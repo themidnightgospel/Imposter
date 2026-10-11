@@ -199,9 +199,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					int result = _resultGenerator.Invoke(in data);
-					foreach (var callback in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						callback(in data);
+						foreach (var callback in _callbacks)
+						{
+							callback(in data);
+						}
 					}
 
 					return result;

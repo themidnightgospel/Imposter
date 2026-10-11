@@ -348,9 +348,12 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 					internal global::Imposter.Tests.Features.IndexerImpersonation.Marker Invoke(IndexerIndexerArguments arguments, IndexerIndexerBaseGetter? baseImplementation = null)
 					{
-						foreach (var callback in _callbacks)
+						if (!_callbacks.IsEmpty)
 						{
-							callback(arguments.index);
+							foreach (var callback in _callbacks)
+							{
+								callback(arguments.index);
+							}
 						}
 
 						IndexerIndexerReturnHandler generator = ResolveNextGenerator(arguments);
@@ -434,11 +437,14 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 					EnsureSetterConfigured();
 					IndexerIndexerArguments arguments = new IndexerIndexerArguments(index);
 					_invocationHistory.Push(arguments);
-					foreach (var registration in _callbacks)
+					if (!_callbacks.IsEmpty)
 					{
-						if (registration.Criteria.Matches(arguments))
+						foreach (var registration in _callbacks)
 						{
-							registration.Callback(arguments.index, value);
+							if (registration.Criteria.Matches(arguments))
+							{
+								registration.Callback(arguments.index, value);
+							}
 						}
 					}
 				}
