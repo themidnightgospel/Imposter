@@ -13,29 +13,29 @@ using global::Imposter.Tests.Features.MethodImpersonation;
 namespace Imposter.Tests.Features.MethodImpersonation
 {
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-	internal sealed class IClosedGenericSutImposter<TInput, TOutput> : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSut<int, string>>, IClosedGenericSutImposter<TInput, TOutput>.IClosedGenericSutSetup
+	internal sealed class IClosedGenericSutImposter<TInput, TOutput> : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSut<TInput, TOutput>>, IClosedGenericSutImposter<TInput, TOutput>.IClosedGenericSutSetup
 	{
 		private readonly GenericMethodMethodImposter _genericMethodMethodImposter;
 		private readonly GenericMethodMethodInvocationHistoryCollection _genericMethodMethodInvocationHistoryCollection = new GenericMethodMethodInvocationHistoryCollection();
-		public IGenericMethodMethodImposterBuilder GenericMethod(global::Imposter.Abstractions.Arg<int> age)
+		public IGenericMethodMethodImposterBuilder GenericMethod(global::Imposter.Abstractions.Arg<TInput> age)
 		{
 			return new GenericMethodMethodImposter.Builder(_genericMethodMethodImposter, _genericMethodMethodInvocationHistoryCollection, new GenericMethodArgumentsCriteria(age));
 		}
 
 		private ImposterTargetInstance _imposterInstance;
-		global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSut<int, string> global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSut<int, string>>.Instance()
+		global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSut<TInput, TOutput> global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSut<TInput, TOutput>>.Instance()
 		{
 			return _imposterInstance;
 		}
 
-		public delegate string GenericMethodDelegate(int age);
-		public delegate void GenericMethodCallbackDelegate(int age);
-		public delegate global::System.Exception GenericMethodExceptionGeneratorDelegate(int age);
+		public delegate TOutput GenericMethodDelegate(TInput age);
+		public delegate void GenericMethodCallbackDelegate(TInput age);
+		public delegate global::System.Exception GenericMethodExceptionGeneratorDelegate(TInput age);
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class GenericMethodArguments
 		{
-			public int age;
-			internal GenericMethodArguments(int age)
+			public TInput age;
+			internal GenericMethodArguments(TInput age)
 			{
 				this.age = age;
 			}
@@ -44,9 +44,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class GenericMethodArgumentsCriteria
 		{
-			public global::Imposter.Abstractions.Arg<int> age { get; }
+			public global::Imposter.Abstractions.Arg<TInput> age { get; }
 
-			public GenericMethodArgumentsCriteria(global::Imposter.Abstractions.Arg<int> age)
+			public GenericMethodArgumentsCriteria(global::Imposter.Abstractions.Arg<TInput> age)
 			{
 				this.age = age;
 			}
@@ -67,9 +67,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		internal class GenericMethodMethodInvocationHistory : IGenericMethodMethodInvocationHistory
 		{
 			internal GenericMethodArguments Arguments;
-			internal string? Result;
+			internal TOutput? Result;
 			internal global::System.Exception? Exception;
-			public GenericMethodMethodInvocationHistory(GenericMethodArguments Arguments, string? Result, global::System.Exception? Exception)
+			public GenericMethodMethodInvocationHistory(GenericMethodArguments Arguments, TOutput? Result, global::System.Exception? Exception)
 			{
 				this.Arguments = Arguments;
 				this.Result = Result;
@@ -115,7 +115,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		class GenericMethodMethodInvocationImposterGroup
 		{
-			internal static GenericMethodMethodInvocationImposterGroup Default = new GenericMethodMethodInvocationImposterGroup(new GenericMethodArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
+			internal static GenericMethodMethodInvocationImposterGroup Default = new GenericMethodMethodInvocationImposterGroup(new GenericMethodArgumentsCriteria(global::Imposter.Abstractions.Arg<TInput>.Any()));
 			internal GenericMethodArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
@@ -156,7 +156,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 			}
 
-			public string Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int age)
+			public TOutput Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, TInput age)
 			{
 				var invocationImposter = GetInvocationImposter();
 				if (invocationImposter == null)
@@ -186,7 +186,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				private readonly global::System.Collections.Concurrent.ConcurrentQueue<GenericMethodCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<GenericMethodCallbackDelegate>();
 				internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
 
-				public string Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int age)
+				public TOutput Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, TInput age)
 				{
 					if (_resultGenerator == null)
 					{
@@ -198,7 +198,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 						_resultGenerator = DefaultResultGenerator;
 					}
 
-					string result = _resultGenerator.Invoke(age);
+					TOutput result = _resultGenerator.Invoke(age);
 					if (!_callbacks.IsEmpty)
 					{
 						foreach (var callback in _callbacks)
@@ -220,9 +220,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_resultGenerator = resultGenerator;
 				}
 
-				internal void Returns(string value)
+				internal void Returns(TOutput value)
 				{
-					_resultGenerator = (int age) =>
+					_resultGenerator = (TInput age) =>
 					{
 						return value;
 					};
@@ -230,13 +230,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				internal void Throws(GenericMethodExceptionGeneratorDelegate exceptionGenerator)
 				{
-					_resultGenerator = (int age) =>
+					_resultGenerator = (TInput age) =>
 					{
 						throw exceptionGenerator(age);
 					};
 				}
 
-				internal static string DefaultResultGenerator(int age)
+				internal static TOutput DefaultResultGenerator(TInput age)
 				{
 					return default !;
 				}
@@ -263,7 +263,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			IGenericMethodMethodInvocationImposterGroupContinuation Throws(global::System.Exception exception);
 			IGenericMethodMethodInvocationImposterGroupContinuation Throws(GenericMethodExceptionGeneratorDelegate exceptionGenerator);
 			IGenericMethodMethodInvocationImposterGroupContinuation Returns(GenericMethodDelegate resultGenerator);
-			IGenericMethodMethodInvocationImposterGroupContinuation Returns(string value);
+			IGenericMethodMethodInvocationImposterGroupContinuation Returns(TOutput value);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -301,7 +301,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				return null;
 			}
 
-			public string Invoke(int age)
+			public TOutput Invoke(TInput age)
 			{
 				var arguments = new GenericMethodArguments(age);
 				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
@@ -309,7 +309,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
 					{
-						throw new global::Imposter.Abstractions.MissingImposterException("string IClosedGenericSut<int, string>.GenericMethod(int age)");
+						throw new global::Imposter.Abstractions.MissingImposterException("TOutput IClosedGenericSut<TInput, TOutput>.GenericMethod(TInput age)");
 					}
 
 					matchingInvocationImposterGroup = GenericMethodMethodInvocationImposterGroup.Default;
@@ -317,7 +317,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				try
 				{
-					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "string IClosedGenericSut<int, string>.GenericMethod(int age)", age);
+					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "TOutput IClosedGenericSut<TInput, TOutput>.GenericMethod(TInput age)", age);
 					_genericMethodMethodInvocationHistoryCollection.Add(new GenericMethodMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
@@ -346,7 +346,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				IGenericMethodMethodInvocationImposterGroupContinuation IGenericMethodMethodInvocationImposterGroup.Throws<TException>()
 				{
-					_currentInvocationImposter.Throws((int age) =>
+					_currentInvocationImposter.Throws((TInput age) =>
 					{
 						throw new TException();
 					});
@@ -355,7 +355,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				IGenericMethodMethodInvocationImposterGroupContinuation IGenericMethodMethodInvocationImposterGroup.Throws(global::System.Exception exception)
 				{
-					_currentInvocationImposter.Throws((int age) =>
+					_currentInvocationImposter.Throws((TInput age) =>
 					{
 						throw exception;
 					});
@@ -364,7 +364,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				IGenericMethodMethodInvocationImposterGroupContinuation IGenericMethodMethodInvocationImposterGroup.Throws(GenericMethodExceptionGeneratorDelegate exceptionGenerator)
 				{
-					_currentInvocationImposter.Throws((int age) =>
+					_currentInvocationImposter.Throws((TInput age) =>
 					{
 						throw exceptionGenerator.Invoke(age);
 					});
@@ -383,7 +383,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					return this;
 				}
 
-				IGenericMethodMethodInvocationImposterGroupContinuation IGenericMethodMethodInvocationImposterGroup.Returns(string value)
+				IGenericMethodMethodInvocationImposterGroupContinuation IGenericMethodMethodInvocationImposterGroup.Returns(TOutput value)
 				{
 					_currentInvocationImposter.Returns(value);
 					return this;
@@ -414,15 +414,15 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IClosedGenericSutSetup
 		{
-			IGenericMethodMethodImposterBuilder GenericMethod(global::Imposter.Abstractions.Arg<int> age);
+			IGenericMethodMethodImposterBuilder GenericMethod(global::Imposter.Abstractions.Arg<TInput> age);
 		}
 
-		IGenericMethodMethodImposterBuilder IClosedGenericSutSetup.GenericMethod(global::Imposter.Abstractions.Arg<int> age)
+		IGenericMethodMethodImposterBuilder IClosedGenericSutSetup.GenericMethod(global::Imposter.Abstractions.Arg<TInput> age)
 		{
 			return this.GenericMethod(age);
 		}
 
-		public IClosedGenericSutSetup For(global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSut<int, string>? interfaceType)
+		public IClosedGenericSutSetup For(global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSut<TInput, TOutput>? interfaceType)
 		{
 			return this;
 		}
@@ -434,7 +434,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		class ImposterTargetInstance : global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSut<int, string>
+		class ImposterTargetInstance : global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSut<TInput, TOutput>
 		{
 			private readonly IClosedGenericSutImposter<TInput, TOutput> _imposter;
 			public ImposterTargetInstance(IClosedGenericSutImposter<TInput, TOutput> _imposter)
@@ -442,7 +442,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				this._imposter = _imposter;
 			}
 
-			public string GenericMethod(int age)
+			public TOutput GenericMethod(TInput age)
 			{
 				return _imposter._genericMethodMethodImposter.Invoke(age);
 			}
@@ -452,7 +452,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	internal static class IClosedGenericSutImposterExtensions
 	{
-		extension <TInput, TOutput>(global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSut<int, string> imposter)
+		extension <TInput, TOutput>(global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSut<TInput, TOutput> imposter)
 		{
 			internal static global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSutImposter<TInput, TOutput> Imposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit) => new global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSutImposter<TInput, TOutput>(invocationBehavior);
 		}

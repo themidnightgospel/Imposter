@@ -18,12 +18,15 @@ internal static class ImposterTypeCollisions
 
     // Same-named types nested in different classes, for example, would get imposters of the same type in the same
     // namespace. Each such declaration reports IMP007, naming another target of its group, and is not generated.
+    // Registrations of one target, such as closed and open ones of a generic type, share its imposter instead: the
+    // first generates it, and the others only report their diagnostics.
     private static IEnumerable<GenerateImposterDeclaration> MarkSameImposterTypes(
         IReadOnlyList<GenerateImposterDeclaration> declarations
     )
     {
         var sameImposterTypeAs =
             new Dictionary<GenerateImposterDeclaration, GenerateImposterDeclaration>();
+        var repeatedRegistrations = new HashSet<GenerateImposterDeclaration>();
 
         foreach (
             var group in declarations
@@ -33,6 +36,12 @@ internal static class ImposterTypeCollisions
                 .Where(group => group.Length > 1)
         )
         {
+            if (group.Select(it => it.Target).Distinct().Count() == 1)
+            {
+                repeatedRegistrations.UnionWith(group.Skip(1));
+                continue;
+            }
+
             for (var index = 0; index < group.Length; index++)
             {
                 sameImposterTypeAs[group[index]] = group[(index + 1) % group.Length];
@@ -55,7 +64,8 @@ internal static class ImposterTypeCollisions
                     }.ToEquatableArray(),
                     Target = null,
                 }
-                : declaration
+            : repeatedRegistrations.Contains(declaration) ? declaration with { Target = null }
+            : declaration
         );
     }
 

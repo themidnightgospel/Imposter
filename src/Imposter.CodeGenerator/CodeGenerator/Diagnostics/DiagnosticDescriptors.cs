@@ -48,7 +48,7 @@ public static class DiagnosticDescriptors
         DiagnosticCategories.Imposter,
         DiagnosticSeverity.Warning,
         true,
-        description: "A closed generic target generates the same generic imposter as its open type, with type parameters that have no effect.",
+        description: "A closed generic target generates the same generic imposter as its open type; the type arguments in the registration have no effect.",
         helpLinkUri: HelpUrl + "#imp006"
     );
 

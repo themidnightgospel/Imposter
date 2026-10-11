@@ -121,7 +121,7 @@ public class ImposterHintNameTests
             [
                 "Imposters.Sample.HintNames.IServiceImposter.g.cs",
                 "Sample.HintNames.IRepository_TEntity_Imposter.6b1618b2.g.cs",
-                "Imposters.Sample.HintNames.IPair_int__string_Imposter.7902b867.g.cs",
+                "Imposters.Sample.HintNames.IPair_TFirst__TSecond_Imposter.ab4a0431.g.cs",
                 "Sample.HintNames.Outer.IInnerImposter.g.cs",
                 "IGlobalServiceImposter.g.cs",
             ],
@@ -129,11 +129,11 @@ public class ImposterHintNameTests
         );
     }
 
-    // `IFoo<int>` and `IFoo_int_` both sanitize to `IFoo_int_`.
+    // A closed registration is named after its open type, so `IFoo<int>` and `IFoo_T_` both sanitize to `IFoo_T_`.
     private const string ClosedGenericAndUnderscoreNamedTargets = /*lang=csharp*/
         """
         [assembly: Imposter.Abstractions.GenerateImposter(typeof(Sample.HintNames.Collisions.IFoo<int>))]
-        [assembly: Imposter.Abstractions.GenerateImposter(typeof(Sample.HintNames.Collisions.IFoo_int_))]
+        [assembly: Imposter.Abstractions.GenerateImposter(typeof(Sample.HintNames.Collisions.IFoo_T_))]
 
         namespace Sample.HintNames.Collisions
         {
@@ -142,7 +142,7 @@ public class ImposterHintNameTests
                 T Get();
             }
 
-            public interface IFoo_int_
+            public interface IFoo_T_
             {
                 void Run();
             }
@@ -169,12 +169,13 @@ public class ImposterHintNameTests
         }
         """;
 
-    // In the dedicated namespace both imposters share `Imposters.Sample.HintNames.Collisions.IPair_int__string_`,
-    // but their type names differ, so only the hint names collide.
+    // In the dedicated namespace both imposters share `Imposters.Sample.HintNames.Collisions.IPair_TFirst__TSecond_`,
+    // the closed registration's being named after its open type, but their type names differ, so only the hint names
+    // collide.
     private const string DedicatedNamespaceClosedGenericAndUnderscoreNamedTargets = /*lang=csharp*/
         """
         [assembly: Imposter.Abstractions.GenerateImposter(typeof(Sample.HintNames.Collisions.IPair<int, string>), false)]
-        [assembly: Imposter.Abstractions.GenerateImposter(typeof(Sample.HintNames.Collisions.IPair_int__string_), false)]
+        [assembly: Imposter.Abstractions.GenerateImposter(typeof(Sample.HintNames.Collisions.IPair_TFirst__TSecond_), false)]
 
         namespace Sample.HintNames.Collisions
         {
@@ -183,7 +184,7 @@ public class ImposterHintNameTests
                 TFirst First(TSecond second);
             }
 
-            public interface IPair_int__string_
+            public interface IPair_TFirst__TSecond_
             {
                 void Run();
             }

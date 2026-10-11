@@ -73,8 +73,9 @@ public class ImposterTypeNameCollisionTests
         runResult.Results.Single().GeneratedSources.ShouldBeEmpty();
     }
 
+    // They describe one imposter, the generic type's, so they don't collide.
     [Fact]
-    public async Task GivenTwoClosedRegistrationsOfOneGenericType_WhenGeneratorRuns_ShouldReportIMP007ForEach()
+    public async Task GivenTwoClosedRegistrationsOfOneGenericType_WhenGeneratorRuns_ShouldReportOnlyIMP006ForEach()
     {
         var compilation = await CreateCompilationAsync(
             LanguageVersion.CSharp9,
@@ -94,8 +95,8 @@ public class ImposterTypeNameCollisionTests
             .GetRunResult()
             .Diagnostics.Select(diagnostic => diagnostic.Id)
             .ShouldBe([
-                DiagnosticDescriptors.ImposterTypeNameCollision.Id,
-                DiagnosticDescriptors.ImposterTypeNameCollision.Id,
+                DiagnosticDescriptors.ClosedGenericImposterTarget.Id,
+                DiagnosticDescriptors.ClosedGenericImposterTarget.Id,
             ]);
     }
 

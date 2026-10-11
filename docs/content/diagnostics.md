@@ -47,7 +47,7 @@ This is a bug in Imposter. Please [open an issue](https://github.com/themidnight
 
 ## IMP006: Closed generic imposter target { #imp006 }
 
-A closed generic type such as `typeof(IRepository<User>)` was registered. It generates the same generic imposter as the open type, `IRepositoryImposter<T>`, and the type arguments in the registration have no effect.
+A closed generic type such as `typeof(IRepository<User>)` was registered. It generates the same generic imposter as the open type, `IRepositoryImposter<T>`, and the type arguments in the registration have no effect. With `putInTheSameNamespace: false`, the imposter also goes into the open type's namespace, such as `Imposters.Sample.IRepository_T_`. Registrations of one generic type, closed or open, share that one imposter.
 
 Register the open generic type instead, for example `typeof(IRepository<>)`, and choose the type arguments where you create the imposter. See [Generics](generics.md).
 
@@ -64,7 +64,7 @@ An imposter is named after its target, `IServiceImposter` for `IService`, and by
     [assembly: GenerateImposter(typeof(Sample.B.IService), putInTheSameNamespace: false)]
     ```
 
-Register one of them, or both, with `putInTheSameNamespace: false`. Its imposter then goes into a namespace of its own, such as `Imposters.Sample.B.IService`. Two closed registrations of one generic type, such as `IRepository<int>` and `IRepository<string>`, collide too; register the open type instead (see [IMP006](#imp006)).
+Register one of them, or both, with `putInTheSameNamespace: false`. Its imposter then goes into a namespace of its own, such as `Imposters.Sample.B.IService`.
 
 ## IMP008: Abstract members the project cannot override { #imp008 }
 

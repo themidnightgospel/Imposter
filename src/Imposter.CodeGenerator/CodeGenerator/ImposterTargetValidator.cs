@@ -12,8 +12,32 @@ namespace Imposter.CodeGenerator.CodeGenerator;
 internal static class ImposterTargetValidator
 {
     // IMP002, IMP004 and IMP008 to IMP013 stop the target's generation; IMP006 only warns. Collisions between targets
-    // (IMP007) are found once all targets are known.
+    // (IMP007) are found once all targets are known. A closed generic registration generates its open type's
+    // imposter, so the open type is what's validated.
     internal static (EquatableArray<DiagnosticModel> Diagnostics, bool CanGenerate) Validate(
+        INamedTypeSymbol registeredTarget,
+        MemberAccess memberAccess
+    )
+    {
+        var (diagnostics, canGenerate) = ValidateTarget(
+            registeredTarget.OriginalDefinition,
+            memberAccess
+        );
+
+        return canGenerate && IsClosedGenericType(registeredTarget)
+            ? (
+                Single(
+                    DiagnosticDescriptors.ClosedGenericImposterTarget,
+                    LocationModel.From(registeredTarget),
+                    registeredTarget.ToDisplayString(),
+                    registeredTarget.ConstructUnboundGenericType().ToDisplayString()
+                ),
+                true
+            )
+            : (diagnostics, canGenerate);
+    }
+
+    private static (EquatableArray<DiagnosticModel> Diagnostics, bool CanGenerate) ValidateTarget(
         INamedTypeSymbol target,
         MemberAccess memberAccess
     )
@@ -128,17 +152,7 @@ internal static class ImposterTargetValidator
             );
         }
 
-        return IsClosedGenericType(target)
-            ? (
-                Single(
-                    DiagnosticDescriptors.ClosedGenericImposterTarget,
-                    location,
-                    targetDisplayName,
-                    target.ConstructUnboundGenericType().ToDisplayString()
-                ),
-                true
-            )
-            : (default, true);
+        return (default, true);
     }
 
     internal static bool IsInterfaceOrNonSealedClass(INamedTypeSymbol typeSymbol) =>

@@ -46,7 +46,7 @@ public interface IGeneric<TFirst, TSecond>
         var compilation = testContext.Compilation;
 
         var imposterSource = result.GeneratedSources.Single(source =>
-            source.HintName == "Imposters.Sample.IGeneric_int__string_Imposter.4a90a9f3.g.cs"
+            source.HintName == "Imposters.Sample.IGeneric_TFirst__TSecond_Imposter.7d396b95.g.cs"
         );
         var namespaceLine = imposterSource
             .SourceText.ToString()
@@ -61,15 +61,12 @@ public interface IGeneric<TFirst, TSecond>
         namespaceLine.ShouldNotContain(">");
     }
 
+    // A closed registration is named after its open type.
     private static string BuildSanitizedSuffix(CSharpCompilation compilation)
     {
         var interfaceSymbol = compilation.GetTypeByMetadataName("Sample.IGeneric`2")!;
-        var constructed = interfaceSymbol.Construct(
-            compilation.GetSpecialType(SpecialType.System_Int32),
-            compilation.GetSpecialType(SpecialType.System_String)
-        );
 
-        var display = constructed.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+        var display = interfaceSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
         const string globalPrefix = "global::";
         if (display.StartsWith(globalPrefix, StringComparison.Ordinal))
         {
