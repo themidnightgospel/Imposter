@@ -36,7 +36,18 @@ internal sealed class TypeParameterRenamer : CSharpSyntaxRewriter
     }
 
     public override SyntaxNode? VisitIdentifierName(IdentifierNameSyntax node) =>
-        _replacementMap.TryGetValue(node.Identifier.ValueText, out var replacementName)
+        CanNameATypeParameter(node)
+        && _replacementMap.TryGetValue(node.Identifier.ValueText, out var replacementName)
             ? replacementName.WithTriviaFrom(node)
             : base.VisitIdentifierName(node);
+
+    // Each part of a qualified name, such as global::System.Collections, is an alias, a namespace or a type, and the
+    // name after a member access's dot is a member.
+    private static bool CanNameATypeParameter(IdentifierNameSyntax name) =>
+        name.Parent switch
+        {
+            QualifiedNameSyntax or AliasQualifiedNameSyntax => false,
+            MemberAccessExpressionSyntax memberAccess => memberAccess.Expression == name,
+            _ => true,
+        };
 }
