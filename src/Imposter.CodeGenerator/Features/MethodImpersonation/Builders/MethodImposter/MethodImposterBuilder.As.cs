@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
-using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
@@ -55,7 +54,7 @@ internal static partial class MethodImposterBuilder
 
         var returnAdapter = ReturnStatement(
             GenericName(
-                    Identifier(MethodImposterMetadata.AdapterName),
+                    Identifier(method.MethodImposter.AdapterName),
                     TypeArguments(method.TargetGenericTypeArguments)
                 )
                 .New(Argument(ThisExpression()).ToSingleArgumentList())

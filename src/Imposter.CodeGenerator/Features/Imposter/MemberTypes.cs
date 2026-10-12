@@ -27,32 +27,42 @@ internal sealed class MemberTypes
         return
         [
             .. _types
-                .Where(it =>
-                    NamesATypeParameterAfterItself(it.Type)
-                    || Declarations(it.Type).Any(type => Clashes(type, declarations))
+                .GroupBy(it => it.UniqueName, it => it.Type)
+                .Where(member =>
+                    DeclaresATypeParameterNamedLikeItsTypes([.. member])
+                    || member.Any(type =>
+                        Declarations(type).Any(declaration => Clashes(declaration, declarations))
+                    )
                 )
-                .Select(it => it.UniqueName),
+                .Select(member => member.Key),
         ];
     }
 
-    // A generic method's types declare its type parameters, and C# doesn't let a type name one after itself (CS0694),
-    // which a method type parameter named like one of its types would make it do.
-    private static bool NamesATypeParameterAfterItself(MemberDeclarationSyntax type) =>
-        type switch
-        {
-            TypeDeclarationSyntax declaration => Declares(
-                declaration.TypeParameterList,
-                declaration.Identifier.Text
-            ),
-            DelegateDeclarationSyntax @delegate => Declares(
-                @delegate.TypeParameterList,
-                @delegate.Identifier.Text
-            ),
-            _ => false,
-        };
+    // A generic method's types declare its type parameters, so a method type parameter named like one of its types
+    // would either be declared by that type (CS0694) or hide it from the others that refer to it.
+    private static bool DeclaresATypeParameterNamedLikeItsTypes(
+        IReadOnlyCollection<MemberDeclarationSyntax> types
+    )
+    {
+        var typeNames = new HashSet<string>(
+            types
+                .SelectMany(Declarations)
+                .Where(it => it.TypeArity is not null)
+                .Select(it => it.Name)
+        );
 
-    private static bool Declares(TypeParameterListSyntax? typeParameters, string name) =>
-        typeParameters?.Parameters.Any(it => it.Identifier.Text == name) == true;
+        return types.SelectMany(TypeParameterNames).Any(typeNames.Contains);
+    }
+
+    private static IEnumerable<string> TypeParameterNames(MemberDeclarationSyntax type) =>
+        (
+            type switch
+            {
+                TypeDeclarationSyntax declaration => declaration.TypeParameterList,
+                DelegateDeclarationSyntax @delegate => @delegate.TypeParameterList,
+                _ => null,
+            }
+        )?.Parameters.Select(it => it.Identifier.Text) ?? [];
 
     // The type itself is among the declarations, so another one sharing its name means a clash.
     private static bool Clashes(Declaration type, ILookup<string, Declaration> declarations) =>

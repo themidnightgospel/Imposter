@@ -159,6 +159,27 @@ public class GeneratedTypeNameCollisionTests
         );
     }
 
+    [Fact]
+    public async Task GivenMethodTypeParameterNamedLikeItsImpostersAdapter_WhenImposterIsUsed_ShouldCompile()
+    {
+        await AssertInterfaceCompiles(
+            "public interface IService { int Get<Adapter>(Adapter value, int count); }",
+            "imposter.Get<string>(Arg<string>.Any(), Arg<int>.Any()).Returns(1); _ = imposter.Instance().Get(\"\", 0);",
+            nameof(GeneratedTypeNameCollisionTests)
+        );
+    }
+
+    // Inside the method's generic types the type parameter would hide the method's other type of that name.
+    [Fact]
+    public async Task GivenMethodTypeParameterNamedLikeAnotherOfItsTypes_WhenImposterIsUsed_ShouldCompile()
+    {
+        await AssertInterfaceCompiles(
+            "public interface IService { int Get<GetMethodImposterCollection>(GetMethodImposterCollection value, int count); }",
+            "imposter.Get<string>(Arg<string>.Any(), Arg<int>.Any()).Returns(1); _ = imposter.Instance().Get(\"\", 0);",
+            nameof(GeneratedTypeNameCollisionTests)
+        );
+    }
+
     // CurrentProperty's delegate and the ref struct property Current's would both be CurrentPropertyDelegate.
     [Fact]
     public async Task GivenMethodDerivingARefStructPropertysDelegateName_WhenImposterIsUsed_ShouldCompile()
