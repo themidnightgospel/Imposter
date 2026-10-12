@@ -152,6 +152,40 @@ public class RefReturnDiagnosticTests
         );
     }
 
+    // A derived interface that re-abstracts the member takes the default body away, so the imposter would have to
+    // implement it.
+    [Fact]
+    public async Task GivenReabstractedMethodReturningByReference_WhenGeneratorRuns_ShouldReportIMP011()
+    {
+        var result = await RunGenerator(
+            "public interface IBase { ref int Get() => throw null!; void Run(); } public interface IService : IBase { abstract ref int IBase.Get(); }"
+        );
+
+        result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefReturnId);
+    }
+
+    [Fact]
+    public async Task GivenMethodReturningByReferenceReabstractedOneLevelUp_WhenGeneratorRuns_ShouldReportIMP011()
+    {
+        var result = await RunGenerator(
+            "public interface IBase { ref int Get() => throw null!; } public interface IMiddle : IBase { abstract ref int IBase.Get(); } public interface IService : IMiddle { void Run(); }"
+        );
+
+        result.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(RefReturnId);
+    }
+
+    // A member that re-abstracts and then supplies a default body again keeps that body.
+    [Fact]
+    public async Task GivenReabstractedMethodReturningByReferenceGivenABodyAgain_WhenImposterIsUsed_ShouldCompile()
+    {
+        await AssertCompiles(
+            "Sample.IService",
+            "public interface IBase { ref int Get() => throw null!; } public interface IMiddle : IBase { abstract ref int IBase.Get(); } public interface IService : IMiddle { ref int IBase.Get() => throw null!; int Plain(); }",
+            "var imposter = new Sample.IServiceImposter(); imposter.Plain().Returns(1); imposter.Instance().Plain();",
+            nameof(RefReturnDiagnosticTests)
+        );
+    }
+
     [Fact]
     public async Task GivenEventWhoseDelegateReturnsByReference_WhenGeneratorRuns_ShouldNotReportDiagnostics()
     {
