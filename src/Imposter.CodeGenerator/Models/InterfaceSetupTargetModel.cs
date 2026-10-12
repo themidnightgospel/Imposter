@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Imposter.CodeGenerator.Helpers;
 using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator.Models;
@@ -14,7 +15,9 @@ internal sealed record InterfaceSetupTargetModel(
 {
     internal static InterfaceSetupTargetModel From(INamedTypeSymbol target) =>
         new(
-            target.TypeParameters.Select(parameter => parameter.Name).ToEquatableArray(),
+            target
+                .TypeParameters.Select(parameter => parameter.NameInGeneratedCode())
+                .ToEquatableArray(),
             target
                 .AllInterfaces.Prepend(target)
                 .Select(InterfaceSetupInterfaceModel.From)
