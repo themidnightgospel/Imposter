@@ -15,7 +15,8 @@ internal sealed class MemberTypes
     internal void Add(string uniqueName, MemberDeclarationSyntax type) =>
         _types.Add((uniqueName, type));
 
-    // The unique names of the members whose types clash with another member of the imposter.
+    // The unique names of the members whose types clash with another member of the imposter, or with a type parameter
+    // they declare.
     internal HashSet<string> UniqueNamesOfClashingTypes(ClassDeclarationSyntax imposter)
     {
         var declarations = imposter
@@ -26,10 +27,32 @@ internal sealed class MemberTypes
         return
         [
             .. _types
-                .Where(it => Declarations(it.Type).Any(type => Clashes(type, declarations)))
+                .Where(it =>
+                    NamesATypeParameterAfterItself(it.Type)
+                    || Declarations(it.Type).Any(type => Clashes(type, declarations))
+                )
                 .Select(it => it.UniqueName),
         ];
     }
+
+    // A generic method's types declare its type parameters, and C# doesn't let a type name one after itself (CS0694),
+    // which a method type parameter named like one of its types would make it do.
+    private static bool NamesATypeParameterAfterItself(MemberDeclarationSyntax type) =>
+        type switch
+        {
+            TypeDeclarationSyntax declaration => Declares(
+                declaration.TypeParameterList,
+                declaration.Identifier.Text
+            ),
+            DelegateDeclarationSyntax @delegate => Declares(
+                @delegate.TypeParameterList,
+                @delegate.Identifier.Text
+            ),
+            _ => false,
+        };
+
+    private static bool Declares(TypeParameterListSyntax? typeParameters, string name) =>
+        typeParameters?.Parameters.Any(it => it.Identifier.Text == name) == true;
 
     // The type itself is among the declarations, so another one sharing its name means a clash.
     private static bool Clashes(Declaration type, ILookup<string, Declaration> declarations) =>

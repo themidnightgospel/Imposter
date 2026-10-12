@@ -1,4 +1,6 @@
+using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -72,7 +74,10 @@ internal readonly struct MethodImposterMetadata
         InvocationImposterGroupsField = new InvocationImposterGroupsFieldMetadata(
             method.ReservedParameterNames
         );
+        // A generic method's imposter declares the method's type parameters, which its builder class can't be named
+        // after.
         Builder = new MethodImposterBuilderMetadata(
+            new NameSet(method.Model.TypeParameters.Select(it => it.Name)).Use("Builder"),
             Syntax,
             method.Model.IsGenericMethod ? Collection.Syntax : null,
             method.ArgumentsCriteria.Syntax,

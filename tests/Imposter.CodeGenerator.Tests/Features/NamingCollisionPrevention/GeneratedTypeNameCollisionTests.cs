@@ -127,6 +127,38 @@ public class GeneratedTypeNameCollisionTests
         );
     }
 
+    // A generic method's types declare its type parameters, and a type can't name a type parameter after itself.
+    [Fact]
+    public async Task GivenMethodTypeParameterNamedLikeItsDelegate_WhenImposterIsUsed_ShouldCompile()
+    {
+        await AssertInterfaceCompiles(
+            "public interface IService { int Get<GetDelegate>(GetDelegate value); }",
+            "imposter.Get<string>(Arg<string>.Any()).Returns(1); _ = imposter.Instance().Get(\"\");",
+            nameof(GeneratedTypeNameCollisionTests)
+        );
+    }
+
+    [Fact]
+    public async Task GivenMethodTypeParameterNamedLikeItsBuilderInterface_WhenImposterIsUsed_ShouldCompile()
+    {
+        await AssertInterfaceCompiles(
+            "public interface IService { int Get<IGetMethodImposterBuilder>(IGetMethodImposterBuilder value); }",
+            "imposter.Get<string>(Arg<string>.Any()).Returns(1); _ = imposter.Instance().Get(\"\");",
+            nameof(GeneratedTypeNameCollisionTests)
+        );
+    }
+
+    // The method imposter nests a class named Builder unless that name is taken.
+    [Fact]
+    public async Task GivenMethodTypeParameterNamedLikeItsImpostersBuilder_WhenImposterIsUsed_ShouldCompile()
+    {
+        await AssertInterfaceCompiles(
+            "public interface IService { int Get<Builder>(Builder value); }",
+            "imposter.Get<string>(Arg<string>.Any()).Returns(1); _ = imposter.Instance().Get(\"\");",
+            nameof(GeneratedTypeNameCollisionTests)
+        );
+    }
+
     // CurrentProperty's delegate and the ref struct property Current's would both be CurrentPropertyDelegate.
     [Fact]
     public async Task GivenMethodDerivingARefStructPropertysDelegateName_WhenImposterIsUsed_ShouldCompile()
