@@ -50,6 +50,9 @@ internal sealed record ImposterTargetModel(
         var indexersWithTheSameSetup = FindIndexersWithTheSameSetup(indexers);
         var nonIndexers = properties.Where(property => !property.IsIndexer).ToArray();
         var events = GetEvents(target, memberAccess);
+        // Two interfaces can declare a method, a property and an event of one name, which the imposter can't, so
+        // those collide like members of one kind.
+        var namesOfSeveralKinds = NamesOfSeveralKinds(methods, nonIndexers, events);
 
         return new ImposterTargetModel(
             target.Name,
@@ -67,7 +70,7 @@ internal sealed record ImposterTargetModel(
                 .ToEquatableArray(),
             ToTargetMembers(
                 methods,
-                isInterface ? DetectCollisions(methods, MethodKey) : null,
+                isInterface ? DetectCollisions(methods, MethodKey, namesOfSeveralKinds) : null,
                 method =>
                     MethodModel.From(
                         method,
@@ -78,13 +81,15 @@ internal sealed record ImposterTargetModel(
             ),
             ToTargetMembers(
                 InEmitOrder(nonIndexers),
-                isInterface ? DetectCollisions(nonIndexers, property => property.Name) : null,
+                isInterface
+                    ? DetectCollisions(nonIndexers, property => property.Name, namesOfSeveralKinds)
+                    : null,
                 property => PropertyModel.From(property, memberAccess, false),
                 isInterface
             ),
             ToTargetMembers(
                 InEmitOrder(indexers),
-                isInterface ? DetectCollisions(indexers, IndexerKey) : null,
+                isInterface ? DetectCollisions(indexers, IndexerKey, namesOfSeveralKinds) : null,
                 indexer =>
                     PropertyModel.From(
                         indexer,
@@ -95,7 +100,9 @@ internal sealed record ImposterTargetModel(
             ),
             ToTargetMembers(
                 InEmitOrder(events),
-                isInterface ? DetectCollisions(events, @event => @event.Name) : null,
+                isInterface
+                    ? DetectCollisions(events, @event => @event.Name, namesOfSeveralKinds)
+                    : null,
                 @event => EventModel.From(@event, memberAccess),
                 isInterface
             ),
@@ -148,19 +155,25 @@ internal sealed record ImposterTargetModel(
             _ => [],
         };
 
+    // An event whose type doesn't bind, as in code being edited, is a compile error the user already sees, so the
+    // imposter leaves it out.
     internal static IReadOnlyCollection<IEventSymbol> GetEvents(
         INamedTypeSymbol target,
         MemberAccess memberAccess
     ) =>
         target.TypeKind switch
         {
-            TypeKind.Interface => target.GetAllInterfaceEvents(),
+            TypeKind.Interface => target.GetAllInterfaceEvents().Where(HasDelegateType).ToArray(),
             TypeKind.Class => target
                 .GetAllOverridableEvents()
                 .Where(memberAccess.IsAccessible)
+                .Where(HasDelegateType)
                 .ToArray(),
             _ => [],
         };
+
+    private static bool HasDelegateType(IEventSymbol @event) =>
+        @event.Type is INamedTypeSymbol { DelegateInvokeMethod: not null };
 
     private static IEnumerable<TSymbol> InEmitOrder<TSymbol>(IEnumerable<TSymbol> members)
         where TSymbol : ISymbol =>
@@ -171,16 +184,31 @@ internal sealed record ImposterTargetModel(
                 StringComparer.Ordinal
             );
 
-    // Members of different interfaces that collide on the instance are implemented explicitly.
+    // Members of different interfaces that collide on the instance are implemented explicitly: members of one kind with
+    // the same key, and members whose name another kind of member has.
     private static HashSet<TSymbol> DetectCollisions<TSymbol>(
-        IEnumerable<TSymbol> members,
-        Func<TSymbol, string> key
+        IReadOnlyCollection<TSymbol> members,
+        Func<TSymbol, string> key,
+        HashSet<string> namesOfSeveralKinds
     )
         where TSymbol : class, ISymbol =>
         new(
-            members.GroupBy(key).Where(group => group.Count() > 1).SelectMany(group => group),
+            members
+                .GroupBy(key)
+                .Where(group => group.Count() > 1)
+                .SelectMany(group => group)
+                .Concat(members.Where(member => namesOfSeveralKinds.Contains(member.Name))),
             SymbolEqualityComparer.Default
         );
+
+    private static HashSet<string> NamesOfSeveralKinds(params IEnumerable<ISymbol>[] kinds) =>
+        [
+            .. kinds
+                .SelectMany(kind => kind.Select(member => member.Name).Distinct())
+                .GroupBy(name => name)
+                .Where(group => group.Count() > 1)
+                .Select(group => group.Key),
+        ];
 
     // A setup matches a parameter passed by value, in, ref or ref readonly with the same Arg<T>, and leaves out the ref
     // structs it only passes through, so overloads that differ only in those would get setups with the same signature.
