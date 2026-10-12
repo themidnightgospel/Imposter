@@ -75,7 +75,7 @@ internal static class InterfaceSetupViewBuilder
     private static MethodDeclarationSyntax BuildMethodDeclaration(
         in InterfaceSetupMemberMetadata member
     ) =>
-        MethodSignature(member, ArgParameters(member.Model.Parameters))
+        MethodSignature(member, ArgParameters(member.Model.MatchedParameters))
             .AddModifiers(HidingModifiers(member))
             .AddConstraintClauses(TypeParameterConstraintClauses(member.Model.TypeParameters))
             .WithSemicolon()
@@ -86,7 +86,7 @@ internal static class InterfaceSetupViewBuilder
         ExplicitInterfaceSpecifierSyntax specifier
     )
     {
-        var parameters = ArgParameters(member.Model.Parameters);
+        var parameters = ArgParameters(member.Model.MatchedParameters);
         var setup = ThisExpression()
             .Dot(
                 (SimpleNameSyntax)WithMethodGenericArguments(
@@ -119,7 +119,7 @@ internal static class InterfaceSetupViewBuilder
     private static IndexerDeclarationSyntax BuildIndexerDeclaration(
         in InterfaceSetupMemberMetadata member
     ) =>
-        IndexerSignature(member, ArgParameters(member.Model.Parameters))
+        IndexerSignature(member, ArgParameters(member.Model.MatchedParameters))
             .WithModifiers(HidingModifiers(member))
             .WithAccessorList(GetOnlyAccessorList);
 
@@ -128,7 +128,7 @@ internal static class InterfaceSetupViewBuilder
         ExplicitInterfaceSpecifierSyntax specifier
     )
     {
-        var parameters = ArgParameters(member.Model.Parameters);
+        var parameters = ArgParameters(member.Model.MatchedParameters);
         var arguments = ForwardedArguments(parameters);
         ExpressionSyntax setup = member.IsSetUpByMethod
             ? IdentifierName(member.SetupName).Call(ArgumentList(arguments))

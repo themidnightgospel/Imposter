@@ -55,7 +55,8 @@ internal readonly ref struct ImposterEventCoreMetadata
         Parameters = @event
             .DelegateParameters.Select(model => new EventParameterMetadata(
                 model,
-                tupleElementNames
+                tupleElementNames,
+                @event.IsAsync
             ))
             .ToArray();
         MatchedParameters = Parameters.Where(parameter => !parameter.IsPassedThrough).ToArray();

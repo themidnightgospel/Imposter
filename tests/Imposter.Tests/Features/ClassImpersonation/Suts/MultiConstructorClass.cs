@@ -27,6 +27,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
             CtorSignature = $"guid:{correlationId}";
         }
 
+        internal MultiConstructorClass(in Guid correlationId)
+        {
+            CtorSignature = $"in-guid:{correlationId}";
+        }
+
         protected MultiConstructorClass(bool enabled)
         {
             CtorSignature = $"flag:{enabled}";

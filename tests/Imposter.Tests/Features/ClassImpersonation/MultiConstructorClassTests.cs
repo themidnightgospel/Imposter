@@ -22,6 +22,16 @@ namespace Imposter.Tests.Features.ClassImpersonation
         }
 
         [Fact]
+        public void GivenByValueAndInConstructorOverloads_WhenPassingInArgument_ShouldPreserveOverloadSelection()
+        {
+            var correlationId = Guid.NewGuid();
+
+            var imposter = new MultiConstructorClassImposter(in correlationId);
+
+            imposter.Instance().CtorSignature.ShouldBe($"in-guid:{correlationId}");
+        }
+
+        [Fact]
         public void GivenImposterConstructors_WhenPassingInvocationBehavior_ShouldAcceptBehavior()
         {
             var imposter = new MultiConstructorClassImposter(10, "beta", ImposterMode.Explicit);

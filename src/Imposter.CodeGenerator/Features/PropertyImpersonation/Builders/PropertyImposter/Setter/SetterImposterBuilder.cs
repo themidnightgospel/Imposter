@@ -143,7 +143,7 @@ internal static class SetterImposterBuilder
         );
         var bodyStatements = new List<StatementSyntax>
         {
-            IdentifierName(setterImposter.EnsureConfiguredMethod.Name).Call().ToStatementSyntax(),
+            IdentifierName(setterImposter.EnsureConfiguredMethodName).Call().ToStatementSyntax(),
             TrackSetterInvocation(setterImposter),
             InvokeCallbacks(setterImposter),
         };
@@ -415,7 +415,7 @@ internal static class SetterImposterBuilder
         in PropertySetterImposterMetadata setterImposter
     ) =>
         EnsureConfiguredMethod(
-            setterImposter.EnsureConfiguredMethod.Name,
+            setterImposter.EnsureConfiguredMethodName,
             setterImposter.InvocationBehaviorField.Name,
             IdentifierName(setterImposter.HasConfiguredSetterField.Name),
             ThrowMissingImposter(setterImposter.PropertyDisplayNameField.Name, " (setter)")

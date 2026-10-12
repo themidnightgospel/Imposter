@@ -9,11 +9,15 @@ namespace Imposter.Tests.Features.EventImpersonation
 {
     public delegate Task TextReceivedAsyncHandler(object? sender, ReadOnlySpan<char> text);
 
+    public delegate Task InTextReceivedAsyncHandler(in ReadOnlySpan<char> text);
+
     public delegate ValueTask BufferFilledAsyncHandler(Span<byte> buffer);
 
     public interface IAsyncSpanEventSut
     {
         event TextReceivedAsyncHandler TextReceived;
+
+        event InTextReceivedAsyncHandler InTextReceived;
 
         event BufferFilledAsyncHandler BufferFilled;
     }

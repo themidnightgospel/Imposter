@@ -26,8 +26,8 @@ internal readonly struct EventParameterMetadata
 
     internal readonly ParameterSyntax ParameterSyntax;
 
-    // Passes this parameter on to a member that declares it the same way: a handler, a callback or the sync raise. A
-    // dynamic passes as the object it is.
+    // Passes this parameter on to a handler, a callback or the sync raise. A dynamic passes as the object it is;
+    // an async raise's span array needs an implicit conversion, so it passes without a ref-kind keyword.
     internal readonly ArgumentSyntax ForwardingArgument;
 
     internal readonly bool IsOut;
@@ -39,7 +39,7 @@ internal readonly struct EventParameterMetadata
     // reserves it for tuple elements.
     internal readonly string TupleElementName;
 
-    internal EventParameterMetadata(ParameterModel model, NameSet tupleElementNames)
+    internal EventParameterMetadata(ParameterModel model, NameSet tupleElementNames, bool isAsync)
     {
         Name = SyntaxFactoryHelper.EscapeKeyword(model.Name);
         TypeSyntax = SyntaxFactoryHelper.KeptTypeSyntaxIncludingNullable(model.Span, model.Type);
@@ -51,8 +51,10 @@ internal readonly struct EventParameterMetadata
         KeptValue = SyntaxFactoryHelper.KeptValue(IdentifierName(Name), model.Span, model.Type);
         RuntimeValue = SyntaxFactoryHelper.RuntimeValue(IdentifierName(Name), model.Type);
         ParameterSyntax = SyntaxFactoryHelper.ParameterSyntaxIncludingNullable(model);
-        ForwardingArgument = SyntaxFactoryHelper.PassesAsObject(model)
-            ? Argument(SyntaxFactoryHelper.AsObject(IdentifierName(Name), model.Type))
+        ForwardingArgument =
+            isAsync && model.Span is not null ? Argument(IdentifierName(Name))
+            : SyntaxFactoryHelper.PassesAsObject(model)
+                ? Argument(SyntaxFactoryHelper.AsObject(IdentifierName(Name), model.Type))
             : SyntaxFactoryHelper.ForwardingArgument(Name, model.RefKind);
         IsOut = model.RefKind == RefKind.Out;
         IsPassedThrough = model.IsPassedThrough;

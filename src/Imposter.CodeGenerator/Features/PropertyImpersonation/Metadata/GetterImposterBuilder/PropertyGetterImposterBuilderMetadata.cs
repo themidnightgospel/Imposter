@@ -38,7 +38,7 @@ internal readonly struct PropertyGetterImposterBuilderMetadata
 
     internal readonly MethodMetadata EnableBaseImplementationMethod;
 
-    internal readonly MethodMetadata EnsureConfiguredMethod;
+    internal readonly string EnsureConfiguredMethodName;
 
     internal PropertyGetterImposterBuilderMetadata(
         in ImposterPropertyCoreMetadata property,
@@ -73,6 +73,6 @@ internal readonly struct PropertyGetterImposterBuilderMetadata
             "EnableBaseImplementation",
             WellKnownTypes.Void
         );
-        EnsureConfiguredMethod = new MethodMetadata("EnsureGetterConfigured", WellKnownTypes.Void);
+        EnsureConfiguredMethodName = "EnsureGetterConfigured";
     }
 }

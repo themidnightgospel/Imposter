@@ -44,7 +44,9 @@ internal sealed record MethodModel(
             method.ToFullDisplayName(),
             method.ContainingNamespace.ToDisplayString(),
             TypeModel.From(method.ContainingType),
-            method.ContainingType.TypeParameters.Select(it => it.Name).ToEquatableArray(),
+            method
+                .ContainingType.TypeParameters.Select(it => it.NameInGeneratedCode())
+                .ToEquatableArray(),
             method.ContainingType.TypeKind == TypeKind.Class,
             method.IsAbstract,
             method.IsMethodAsync(),

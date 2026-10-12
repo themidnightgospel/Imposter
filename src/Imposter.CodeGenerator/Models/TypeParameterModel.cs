@@ -5,8 +5,9 @@ using Microsoft.CodeAnalysis;
 namespace Imposter.CodeGenerator.Models;
 
 /// <summary>
-/// A type parameter and the constraints generated code repeats for it. <see cref="IsReferenceType"/> and
-/// <see cref="IsValueType"/> also hold when only a constraint type, such as a base class, makes it one.
+/// A type parameter, under its name in generated code, and the constraints generated code repeats for it.
+/// <see cref="IsReferenceType"/> and <see cref="IsValueType"/> also hold when only a constraint type, such as a base
+/// class, makes it one.
 /// <see cref="AllowsRefStructs"/> is true for a method's type parameter that allows ref structs, which generated code
 /// repeats. A target's type parameter doesn't repeat it: its imposter keeps values of it, so it takes only type
 /// arguments that aren't ref structs.
@@ -27,7 +28,7 @@ internal sealed record TypeParameterModel(
 {
     internal static TypeParameterModel From(ITypeParameterSymbol typeParameter) =>
         new(
-            typeParameter.Name,
+            typeParameter.NameInGeneratedCode(),
             typeParameter.HasReferenceTypeConstraint,
             typeParameter.ReferenceTypeConstraintNullableAnnotation == NullableAnnotation.Annotated,
             typeParameter.HasUnmanagedTypeConstraint,

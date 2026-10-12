@@ -28,7 +28,7 @@ internal static class MethodImposterAdapterBuilder
         );
 
         var adapterClass = new ClassDeclarationBuilder(
-            MethodImposterMetadata.AdapterName,
+            method.MethodImposter.AdapterName,
             method.TargetGenericTypeParameterListSyntax
         )
             .WithTypeParameterConstraintClauses(method.TargetGenericTypeConstraintClauses)
@@ -41,7 +41,7 @@ internal static class MethodImposterAdapterBuilder
                 )
             )
             .AddMember(
-                new ConstructorBuilder(MethodImposterMetadata.AdapterName)
+                new ConstructorBuilder(method.MethodImposter.AdapterName)
                     .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
                     .AddParameter(
                         ParameterSyntax(

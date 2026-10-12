@@ -277,7 +277,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 				global::System.Collections.Generic.List<global::System.Threading.Tasks.Task> pendingTasks = new global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>();
 				foreach (var callback in _callbacks)
 				{
-					var task = callback(value);
+					var task = callback(in value);
 					if (task != default)
 					{
 						pendingTasks.Add(task);
@@ -293,7 +293,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 				foreach (var handler in EnumerateActiveHandlers())
 				{
 					_handlerInvocations.Enqueue((handler, value));
-					var task = handler(value);
+					var task = handler(in value);
 					if (task != default)
 					{
 						pendingTasks.Add(task);
@@ -588,7 +588,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 				global::System.Collections.Generic.List<global::System.Threading.Tasks.Task> pendingTasks = new global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>();
 				foreach (var callback in _callbacks)
 				{
-					var task = callback(value);
+					var task = callback(in value);
 					if (task != default)
 					{
 						pendingTasks.Add(task.AsTask());
@@ -604,7 +604,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 				foreach (var handler in EnumerateActiveHandlers())
 				{
 					_handlerInvocations.Enqueue((handler, value));
-					var task = handler(value);
+					var task = handler(in value);
 					if (task != default)
 					{
 						pendingTasks.Add(task.AsTask());

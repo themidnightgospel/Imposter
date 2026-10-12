@@ -451,6 +451,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			this._imposterInstance = new ImposterTargetInstance(this, correlationId);
 		}
 
+		public MultiConstructorClassImposter(in global::System.Guid correlationId, global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
+		{
+			this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, invocationBehavior);
+			this._imposterInstance = new ImposterTargetInstance(this, in correlationId);
+		}
+
 		public MultiConstructorClassImposter(bool enabled, global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
 			this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, invocationBehavior);
@@ -472,6 +478,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			}
 
 			internal ImposterTargetInstance(MultiConstructorClassImposter _imposter, global::System.Guid correlationId) : base(correlationId)
+			{
+				this._imposter = _imposter;
+			}
+
+			internal ImposterTargetInstance(MultiConstructorClassImposter _imposter, in global::System.Guid correlationId) : base(in correlationId)
 			{
 				this._imposter = _imposter;
 			}

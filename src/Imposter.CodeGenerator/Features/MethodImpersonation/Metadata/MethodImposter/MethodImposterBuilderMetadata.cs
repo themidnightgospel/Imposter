@@ -5,7 +5,7 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImp
 
 internal readonly struct MethodImposterBuilderMetadata
 {
-    internal readonly string Name = "Builder";
+    internal readonly string Name;
 
     internal readonly TypeSyntax Syntax;
 
@@ -21,6 +21,7 @@ internal readonly struct MethodImposterBuilderMetadata
 
     // methodImposterCollectionSyntax is null for a non-generic method, which has no collection.
     internal MethodImposterBuilderMetadata(
+        string name,
         NameSyntax methodImposterSyntax,
         NameSyntax? methodImposterCollectionSyntax,
         NameSyntax argumentCriteriaSyntax,
@@ -28,9 +29,10 @@ internal readonly struct MethodImposterBuilderMetadata
         NameSyntax methodInvocationImposterType
     )
     {
+        Name = name;
         Syntax = SyntaxFactory.QualifiedName(
             methodImposterSyntax,
-            SyntaxFactory.IdentifierName("Builder")
+            SyntaxFactory.IdentifierName(name)
         );
         ImposterParameter = methodImposterCollectionSyntax is not null
             ? new ParameterMetadata("imposterCollection", methodImposterCollectionSyntax)

@@ -76,7 +76,9 @@ internal readonly record struct ImposterTargetMethodParametersMetadata
                 InputParameters,
                 includeRefKind: false
             );
-        ArgParameterListSyntax = SyntaxFactoryHelper.ArgParameters(AllParameters);
+        ArgParameterListSyntax = SyntaxFactoryHelper.ArgParameters(
+            MatchedParameterMetadata.Select(parameter => parameter.Model)
+        );
         ArgAnyArgumentListSyntax = SyntaxFactoryHelper.ArgumentListSyntax(
             MatchedParameterMetadata.Select(parameter =>
                 Argument(parameter.ArgTypeSyntax.Dot(IdentifierName("Any")).Call())
