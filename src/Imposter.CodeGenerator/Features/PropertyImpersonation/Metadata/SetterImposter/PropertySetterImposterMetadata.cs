@@ -43,7 +43,7 @@ internal readonly struct PropertySetterImposterMetadata
 
     internal readonly MethodMetadata UseBaseImplementationMethod;
 
-    internal readonly MethodMetadata EnsureConfiguredMethod;
+    internal readonly string EnsureConfiguredMethodName;
 
     internal readonly MethodMetadata MarkConfiguredMethod;
 
@@ -91,7 +91,7 @@ internal readonly struct PropertySetterImposterMetadata
             "UseBaseImplementation",
             WellKnownTypes.Void
         );
-        EnsureConfiguredMethod = new MethodMetadata("EnsureSetterConfigured", WellKnownTypes.Void);
+        EnsureConfiguredMethodName = "EnsureSetterConfigured";
         MarkConfiguredMethod = new MethodMetadata("MarkConfigured", WellKnownTypes.Void);
     }
 }

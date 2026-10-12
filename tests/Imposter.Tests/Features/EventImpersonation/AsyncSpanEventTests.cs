@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Imposter.Abstractions;
 using Shouldly;
@@ -8,6 +9,31 @@ namespace Imposter.Tests.Features.EventImpersonation
     public class AsyncSpanEventTests
     {
         private readonly IAsyncSpanEventSutImposter _sut = new IAsyncSpanEventSutImposter();
+
+        [Fact]
+        public async Task GivenInSpanHandlerAndCallback_WhenRaisedAsyncWithArray_ShouldPassBothTheElements()
+        {
+            string? callbackText = null;
+            string? handlerText = null;
+            _sut.InTextReceived.Callback(
+                (in ReadOnlySpan<char> text) =>
+                {
+                    callbackText = text.ToString();
+                    return Task.CompletedTask;
+                }
+            );
+            _sut.Instance().InTextReceived += (in ReadOnlySpan<char> text) =>
+            {
+                handlerText = text.ToString();
+                return Task.CompletedTask;
+            };
+
+            await _sut.InTextReceived.RaiseAsync(new[] { 'a', 'b' });
+
+            callbackText.ShouldBe("ab");
+            handlerText.ShouldBe("ab");
+            _sut.InTextReceived.Raised(ReadOnlySpanArg<char>.Is('a', 'b'), Count.Once());
+        }
 
         [Fact]
         public async Task GivenSubscribedHandler_WhenRaisedAsyncWithArray_ShouldPassItASpanOverTheArray()

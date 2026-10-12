@@ -26,14 +26,9 @@ internal static partial class SyntaxFactoryHelper
         bool includeRefKind = true
     )
     {
-        var refKindKeyword = (includeRefKind, parameter.RefKind) switch
-        {
-            (false, _) => SyntaxKind.None,
-            (_, RefKind.Ref) => SyntaxKind.RefKeyword,
-            (_, RefKind.Out) => SyntaxKind.OutKeyword,
-            (_, RefKind.In or RefKinds.RefReadOnlyParameter) => SyntaxKind.InKeyword,
-            _ => SyntaxKind.None,
-        };
+        var refKindKeyword = includeRefKind
+            ? ForwardingKeyword(parameter.RefKind)
+            : SyntaxKind.None;
         var name = IdentifierName(EscapeKeyword(parameter.Name));
 
         return PassesAsObject(parameter, includeRefKind)
@@ -41,8 +36,8 @@ internal static partial class SyntaxFactoryHelper
             : Argument(null, Token(refKindKeyword), name);
     }
 
-    // Passes a variable on to a parameter of the given kind, with its `ref` or `out`. A `ref readonly` parameter needs
-    // the `in` written out (CS9192, CS9195); an `in` parameter takes the bare variable.
+    // Preserves the parameter's ref kind when forwarding a variable. Explicit `in` keeps an `in` overload selected
+    // over a by-value overload and avoids CS9192/CS9195 for `ref readonly` parameters.
     internal static ArgumentSyntax ForwardingArgument(string variableName, RefKind refKind) =>
         Argument(null, Token(ForwardingKeyword(refKind)), IdentifierName(variableName));
 
@@ -51,7 +46,7 @@ internal static partial class SyntaxFactoryHelper
         {
             RefKind.Ref => SyntaxKind.RefKeyword,
             RefKind.Out => SyntaxKind.OutKeyword,
-            RefKinds.RefReadOnlyParameter => SyntaxKind.InKeyword,
+            RefKind.In or RefKinds.RefReadOnlyParameter => SyntaxKind.InKeyword,
             _ => SyntaxKind.None,
         };
 

@@ -157,12 +157,12 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 			internal int Get(in int key)
 			{
-				return _getterImposter.Get(key);
+				return _getterImposter.Get(in key);
 			}
 
 			internal void Set(in int key, int value)
 			{
-				_setterImposter.Set(key, value, null);
+				_setterImposter.Set(in key, value, null);
 			}
 
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -628,12 +628,12 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 			{
 				get
 				{
-					return _imposter._IndexerIndexer.Get(key);
+					return _imposter._IndexerIndexer.Get(in key);
 				}
 
 				set
 				{
-					_imposter._IndexerIndexer.Set(key, value);
+					_imposter._IndexerIndexer.Set(in key, value);
 				}
 			}
 		}

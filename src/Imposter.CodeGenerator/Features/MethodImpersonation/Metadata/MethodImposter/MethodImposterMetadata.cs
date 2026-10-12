@@ -1,4 +1,6 @@
+using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -7,7 +9,7 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImp
 internal readonly struct MethodImposterMetadata
 {
     // A generic method imposter's nested class, which As returns to impersonate the method for other type arguments.
-    internal const string AdapterName = "Adapter";
+    internal readonly string AdapterName;
 
     internal readonly string Name;
 
@@ -72,7 +74,12 @@ internal readonly struct MethodImposterMetadata
         InvocationImposterGroupsField = new InvocationImposterGroupsFieldMetadata(
             method.ReservedParameterNames
         );
+        // A generic method's imposter declares the method's type parameters, which its nested classes can't be named
+        // after.
+        var nestedClassNames = new NameSet(method.Model.TypeParameters.Select(it => it.Name));
+        AdapterName = nestedClassNames.Use("Adapter");
         Builder = new MethodImposterBuilderMetadata(
+            nestedClassNames.Use("Builder"),
             Syntax,
             method.Model.IsGenericMethod ? Collection.Syntax : null,
             method.ArgumentsCriteria.Syntax,

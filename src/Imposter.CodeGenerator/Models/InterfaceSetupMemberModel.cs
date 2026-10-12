@@ -7,13 +7,14 @@ namespace Imposter.CodeGenerator.Models;
 /// <summary>
 /// A member of a target interface, as its setup view declares it. <see cref="HidesInheritedMember"/> is true when it
 /// hides a member of an interface its own interface inherits, so the view declares it with <c>new</c>.
+/// <see cref="MatchedParameters"/> leaves out the parameters the imposter only passes through.
 /// </summary>
 internal sealed record InterfaceSetupMemberModel(
     InterfaceSetupMemberKind Kind,
     string Name,
     TypeModel ContainingInterface,
     EquatableArray<TypeParameterModel> TypeParameters,
-    EquatableArray<ParameterModel> Parameters,
+    EquatableArray<ParameterModel> MatchedParameters,
     TypeModel? EventType,
     bool HidesInheritedMember
 )
@@ -26,7 +27,10 @@ internal sealed record InterfaceSetupMemberModel(
             member is IMethodSymbol method
                 ? method.TypeParameters.Select(TypeParameterModel.From).ToEquatableArray()
                 : default,
-            GetParameters(member).Select(ParameterModel.From).ToEquatableArray(),
+            ParameterModel
+                .MatchedParameters(GetParameters(member))
+                .Select(ParameterModel.From)
+                .ToEquatableArray(),
             member is IEventSymbol @event ? TypeModel.From(@event.Type) : null,
             member
                 .ContainingType.AllInterfaces.SelectMany(parent => parent.GetMembers(member.Name))

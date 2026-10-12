@@ -157,12 +157,12 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 			internal int Get(in int key, global::System.Func<int>? baseImplementation = null)
 			{
-				return _getterImposter.Get(key, baseImplementation);
+				return _getterImposter.Get(in key, baseImplementation);
 			}
 
 			internal void Set(in int key, int value, global::System.Action? baseImplementation = null)
 			{
-				_setterImposter.Set(key, value, baseImplementation);
+				_setterImposter.Set(in key, value, baseImplementation);
 			}
 
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -674,25 +674,25 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 				{
 					if (this._imposter == null)
 					{
-						return base[key];
+						return base[in key];
 					}
 
 					var keyCopy = key;
-					return _imposter._IndexerIndexer.Get(key, () => base[keyCopy]);
+					return _imposter._IndexerIndexer.Get(in key, () => base[in keyCopy]);
 				}
 
 				set
 				{
 					if (this._imposter == null)
 					{
-						base[key] = value;
+						base[in key] = value;
 						return;
 					}
 
 					var keyCopy = key;
-					_imposter._IndexerIndexer.Set(key, value, () =>
+					_imposter._IndexerIndexer.Set(in key, value, () =>
 					{
-						base[keyCopy] = value;
+						base[in keyCopy] = value;
 					});
 				}
 			}

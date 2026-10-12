@@ -62,7 +62,7 @@ internal readonly struct InterfaceSetupMemberMetadata
     {
         var result = new List<TypeParameterConstraintClauseSyntax>();
         var nullableParameters = SyntaxFactoryHelper
-            .ArgParameters(method.Parameters)
+            .ArgParameters(method.MatchedParameters)
             .DescendantNodes()
             .OfType<NullableTypeSyntax>()
             .Select(nullable => nullable.ElementType)

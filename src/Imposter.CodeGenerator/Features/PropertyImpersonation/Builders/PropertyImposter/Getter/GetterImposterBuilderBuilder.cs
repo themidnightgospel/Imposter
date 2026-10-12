@@ -522,7 +522,7 @@ internal static class GetterImposterBuilderBuilder
             .AddParameter(ParameterSyntax(builder.GetMethod.BaseImplementationParameter))
             .WithBody(
                 new BlockBuilder()
-                    .AddExpression(IdentifierName(builder.EnsureConfiguredMethod.Name).Call())
+                    .AddExpression(IdentifierName(builder.EnsureConfiguredMethodName).Call())
                     .AddStatement(TrackGetterInvocation(builder))
                     .AddStatement(InvokeGetterCallbacks(builder))
                     .AddStatement(
@@ -639,7 +639,7 @@ internal static class GetterImposterBuilderBuilder
         in PropertyGetterImposterBuilderMetadata builder
     ) =>
         EnsureConfiguredMethod(
-            builder.EnsureConfiguredMethod.Name,
+            builder.EnsureConfiguredMethodName,
             builder.InvocationBehaviorField.Name,
             IdentifierName(builder.HasConfiguredReturnField.Name),
             ThrowMissingImposter(builder.PropertyDisplayNameField.Name, " (getter)")

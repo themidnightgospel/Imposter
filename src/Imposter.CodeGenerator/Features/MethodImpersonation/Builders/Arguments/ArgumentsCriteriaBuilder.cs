@@ -35,12 +35,11 @@ public static class ArgumentsCriteriaBuilder
             argumentsCriteriaClass.AddMember(BuildAsMethod(method));
         }
 
-        return argumentsCriteriaClass
-            .Build()
+        return argumentsCriteriaClass.Build()
 #if DEBUG
-            .WithLeadingTriviaComment(method.DisplayName)
+        .WithLeadingTriviaComment(method.DisplayName)
 #endif
-            .WithTrailingTrivia(CarriageReturnLineFeed);
+        ;
     }
 
     // The Arg<T> criterion for one of the method's parameters.

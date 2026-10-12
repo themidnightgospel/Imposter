@@ -332,6 +332,317 @@ namespace Imposter.Tests.Features.EventImpersonation
 			}
 		}
 
+		public IInTextReceivedEventImposterBuilder InTextReceived => _InTextReceived;
+
+		private readonly InTextReceivedEventImposterBuilder _InTextReceived;
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public interface IInTextReceivedEventImposterBuilder : IInTextReceivedEventImposterSetupBuilder, IInTextReceivedEventImposterVerificationBuilder
+		{
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public interface IInTextReceivedEventImposterSetupBuilder
+		{
+			IInTextReceivedEventImposterSetupBuilder Callback(global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler callback);
+			global::System.Threading.Tasks.Task<IInTextReceivedEventImposterSetupBuilder> RaiseAsync(char[] text);
+			IInTextReceivedEventImposterSetupBuilder OnSubscribe(global::System.Action<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler> interceptor);
+			IInTextReceivedEventImposterSetupBuilder OnUnsubscribe(global::System.Action<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler> interceptor);
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public interface IInTextReceivedEventImposterVerificationBuilder
+		{
+			IInTextReceivedEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler> criteria, global::Imposter.Abstractions.Count count);
+			IInTextReceivedEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler> criteria, global::Imposter.Abstractions.Count count);
+			IInTextReceivedEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.ReadOnlySpanArg<char> textCriteria, global::Imposter.Abstractions.Count count);
+			IInTextReceivedEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler> handlerCriteria, global::Imposter.Abstractions.Count count);
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		internal sealed class InTextReceivedEventImposterBuilder : IInTextReceivedEventImposterBuilder, IInTextReceivedEventImposterSetupBuilder, IInTextReceivedEventImposterVerificationBuilder
+		{
+			private global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler? _activeHandlers;
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler> _subscribeHistory = new global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler> _unsubscribeHistory = new global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler>> _subscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler>>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler>> _unsubscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler>>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<char[]> _history = new global::System.Collections.Concurrent.ConcurrentQueue<char[]>();
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler Handler, char[] text)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler Handler, char[] text)>();
+			internal InTextReceivedEventImposterBuilder()
+			{
+			}
+
+			internal void Subscribe(global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler handler)
+			{
+				if (handler is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handler));
+				}
+
+				var handlers = _activeHandlers;
+				while (true)
+				{
+					var updated = (global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler?)global::System.Delegate.Combine(handlers, handler);
+					var observed = global::System.Threading.Interlocked.CompareExchange(ref _activeHandlers, updated, handlers);
+					if (object.ReferenceEquals(observed, handlers))
+					{
+						break;
+					}
+
+					handlers = observed;
+				}
+
+				_subscribeHistory.Enqueue(handler);
+				foreach (var interceptor in _subscribeInterceptors)
+				{
+					interceptor(handler);
+				}
+			}
+
+			internal void Unsubscribe(global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler handler)
+			{
+				if (handler is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handler));
+				}
+
+				var handlers = _activeHandlers;
+				while (true)
+				{
+					var updated = (global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler?)global::System.Delegate.Remove(handlers, handler);
+					var observed = global::System.Threading.Interlocked.CompareExchange(ref _activeHandlers, updated, handlers);
+					if (object.ReferenceEquals(observed, handlers))
+					{
+						break;
+					}
+
+					handlers = observed;
+				}
+
+				_unsubscribeHistory.Enqueue(handler);
+				foreach (var interceptor in _unsubscribeInterceptors)
+				{
+					interceptor(handler);
+				}
+			}
+
+			IInTextReceivedEventImposterSetupBuilder IInTextReceivedEventImposterSetupBuilder.Callback(global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler callback)
+			{
+				if (callback is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(callback));
+				}
+
+				_callbacks.Enqueue(callback);
+				return this;
+			}
+
+			async global::System.Threading.Tasks.Task<IInTextReceivedEventImposterSetupBuilder> IInTextReceivedEventImposterSetupBuilder.RaiseAsync(char[] text)
+			{
+				await RaiseCoreAsync(text).ConfigureAwait(false);
+				return this;
+			}
+
+			IInTextReceivedEventImposterVerificationBuilder IInTextReceivedEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler> criteria, global::Imposter.Abstractions.Count count)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = _subscribeHistory.Count(entry => criteria.Matches(entry));
+				EnsureCountMatches(actual, count, () =>
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					foreach (var entry in _subscribeHistory)
+					{
+						if (criteria.Matches(entry))
+						{
+							performedInvocations.Add("InTextReceived subscribed" + " handler: " + FormatValue(entry));
+						}
+					}
+
+					return string.Join(global::System.Environment.NewLine, performedInvocations);
+				});
+				return this;
+			}
+
+			IInTextReceivedEventImposterVerificationBuilder IInTextReceivedEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler> criteria, global::Imposter.Abstractions.Count count)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = _unsubscribeHistory.Count(entry => criteria.Matches(entry));
+				EnsureCountMatches(actual, count, () =>
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					foreach (var entry in _unsubscribeHistory)
+					{
+						if (criteria.Matches(entry))
+						{
+							performedInvocations.Add("InTextReceived unsubscribed" + " handler: " + FormatValue(entry));
+						}
+					}
+
+					return string.Join(global::System.Environment.NewLine, performedInvocations);
+				});
+				return this;
+			}
+
+			IInTextReceivedEventImposterSetupBuilder IInTextReceivedEventImposterSetupBuilder.OnSubscribe(global::System.Action<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler> interceptor)
+			{
+				if (interceptor is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(interceptor));
+				}
+
+				_subscribeInterceptors.Enqueue(interceptor);
+				return this;
+			}
+
+			IInTextReceivedEventImposterSetupBuilder IInTextReceivedEventImposterSetupBuilder.OnUnsubscribe(global::System.Action<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler> interceptor)
+			{
+				if (interceptor is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(interceptor));
+				}
+
+				_unsubscribeInterceptors.Enqueue(interceptor);
+				return this;
+			}
+
+			IInTextReceivedEventImposterVerificationBuilder IInTextReceivedEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.ReadOnlySpanArg<char> textCriteria, global::Imposter.Abstractions.Count count)
+			{
+				if (textCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(textCriteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = _history.Count(entry => textCriteria.Matches(entry));
+				EnsureCountMatches(actual, count, () =>
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					foreach (var entry in _history)
+					{
+						if (textCriteria.Matches(entry))
+						{
+							performedInvocations.Add("InTextReceived raised" + " text: " + FormatValue(entry));
+						}
+					}
+
+					return string.Join(global::System.Environment.NewLine, performedInvocations);
+				});
+				return this;
+			}
+
+			IInTextReceivedEventImposterVerificationBuilder IInTextReceivedEventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler> handlerCriteria, global::Imposter.Abstractions.Count count)
+			{
+				if (handlerCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handlerCriteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = _handlerInvocations.Count(entry => handlerCriteria.Matches(entry.Handler));
+				EnsureCountMatches(actual, count, () =>
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					foreach (var entry in _handlerInvocations)
+					{
+						if (handlerCriteria.Matches(entry.Handler))
+						{
+							performedInvocations.Add("InTextReceived handler invoked" + " handler: " + FormatValue(entry.Handler) + " text: " + FormatValue(entry.text));
+						}
+					}
+
+					return string.Join(global::System.Environment.NewLine, performedInvocations);
+				});
+				return this;
+			}
+
+			private async global::System.Threading.Tasks.Task RaiseCoreAsync(char[] text)
+			{
+				_history.Enqueue(text.ToArray());
+				global::System.Collections.Generic.List<global::System.Threading.Tasks.Task> pendingTasks = new global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>();
+				foreach (var callback in _callbacks)
+				{
+					var task = callback(text);
+					if (task != default)
+					{
+						pendingTasks.Add(task);
+					}
+				}
+
+				if (pendingTasks.Count > 0)
+				{
+					await global::System.Threading.Tasks.Task.WhenAll(pendingTasks).ConfigureAwait(false);
+				}
+
+				pendingTasks.Clear();
+				foreach (var handler in EnumerateActiveHandlers())
+				{
+					_handlerInvocations.Enqueue((handler, text.ToArray()));
+					var task = handler(text);
+					if (task != default)
+					{
+						pendingTasks.Add(task);
+					}
+				}
+
+				if (pendingTasks.Count > 0)
+				{
+					await global::System.Threading.Tasks.Task.WhenAll(pendingTasks).ConfigureAwait(false);
+				}
+			}
+
+			private global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler> EnumerateActiveHandlers()
+			{
+				var handlers = _activeHandlers;
+				if (handlers != null)
+				{
+					foreach (var handler in handlers.GetInvocationList())
+					{
+						yield return (global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler)handler;
+					}
+				}
+			}
+
+			private static void EnsureCountMatches(int actual, global::Imposter.Abstractions.Count expected, global::System.Func<string> performedInvocationsFactory)
+			{
+				if (!expected.Matches(actual))
+				{
+					throw new global::Imposter.Abstractions.VerificationFailedException(expected, actual, performedInvocationsFactory());
+				}
+			}
+
+			private static string FormatValue(object? value)
+			{
+				return "<" + (value?.ToString() ?? "null") + ">";
+			}
+		}
+
 		public ITextReceivedEventImposterBuilder TextReceived => _TextReceived;
 
 		private readonly TextReceivedEventImposterBuilder _TextReceived;
@@ -653,10 +964,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 		{
 			IBufferFilledEventImposterBuilder BufferFilled { get; }
 
+			IInTextReceivedEventImposterBuilder InTextReceived { get; }
+
 			ITextReceivedEventImposterBuilder TextReceived { get; }
 		}
 
 		IBufferFilledEventImposterBuilder IAsyncSpanEventSutSetup.BufferFilled => this.BufferFilled;
+
+		IInTextReceivedEventImposterBuilder IAsyncSpanEventSutSetup.InTextReceived => this.InTextReceived;
 
 		ITextReceivedEventImposterBuilder IAsyncSpanEventSutSetup.TextReceived => this.TextReceived;
 
@@ -668,6 +983,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 		public IAsyncSpanEventSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
 			this._BufferFilled = new BufferFilledEventImposterBuilder();
+			this._InTextReceived = new InTextReceivedEventImposterBuilder();
 			this._TextReceived = new TextReceivedEventImposterBuilder();
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
@@ -701,6 +1017,29 @@ namespace Imposter.Tests.Features.EventImpersonation
 					}
 
 					_imposter._BufferFilled.Unsubscribe(value);
+				}
+			}
+
+			public event global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler InTextReceived
+			{
+				add
+				{
+					if (value is null)
+					{
+						throw new global::System.ArgumentNullException(nameof(value));
+					}
+
+					_imposter._InTextReceived.Subscribe(value);
+				}
+
+				remove
+				{
+					if (value is null)
+					{
+						throw new global::System.ArgumentNullException(nameof(value));
+					}
+
+					_imposter._InTextReceived.Unsubscribe(value);
 				}
 			}
 
