@@ -91,7 +91,7 @@ Imposter is built to work reliably in multi-threaded and parallel test environme
 
 ## ⏱️ Benchmark
 
-`Square` method is setup to return `input * input` and ran it for 1, 10, 100, and 1000 iterations. see [benchmarks](https://github.com/themidnightgospel/Imposter/tree/master/benchmarks/Imposter.Benchmarks) for more details
+Each library sets up `Square` to return `input * input` and calls it, for 1, 10, 100 and 1,000 iterations. See [benchmarks](https://github.com/themidnightgospel/Imposter/tree/master/benchmarks/Imposter.Benchmarks) for the code.
 
 ```csharp
 public interface ICalculator
@@ -100,77 +100,9 @@ public interface ICalculator
 }
 ```
 
-| Method      | Iteration |                Mean |     Allocated |
-|------------ |-----------|--------------------:|--------------:|
-| Moq         | 1         |        78,776.14 ns |       13148 B |
-| NSubstitute | 1         |         1,624.16 ns |        7664 B |
-| FakeItEasy  | 1         |         1,939.11 ns |        5617 B |
-| Rocks       | 1         |            37.91 ns |         304 B |
-| Imposter    | 1         |       **188.72** ns |    **2408** B |
-| Moq         | 10        |     1,153,399.52 ns |      117789 B |
-| NSubstitute | 10        |        11,919.78 ns |       27897 B |
-| FakeItEasy  | 10        |         9,464.72 ns |       35727 B |
-| Rocks       | 10        |           627.42 ns |        1888 B |
-| Imposter    | 10        |     **1,712.15** ns |   **22424** B |
-| Moq         | 100       |     7,488,213.33 ns |     1445159 B |
-| NSubstitute | 100       |       205,099.09 ns |      222676 B |
-| FakeItEasy  | 100       |       172,337.20 ns |      732299 B |
-| Rocks       | 100       |        25,495.06 ns |       17728 B |
-| Imposter    | 100       |    **30,005.13** ns |  **222584** B |
-| Moq         | 1000      |    98,890,235.56 ns |    43233637 B |
-| NSubstitute | 1000      |    19,440,858.58 ns |     2174740 B |
-| FakeItEasy  | 1000      |    15,170,287.96 ns |    46895901 B |
-| Rocks       | 1000      |     1,868,905.85 ns |      176128 B |
-| Imposter    | 1000      | **2,256,458.40** ns | **2224184** B |
+![Benchmark results for Moq, NSubstitute, FakeItEasy, Rocks and Imposter](https://raw.githubusercontent.com/themidnightgospel/Imposter/benchmark-results/simple-method.svg)
 
-
-Benchmark Environment
-
-```
-BenchmarkDotNet v0.15.6, Windows 11 (10.0.26200.6899)
-13th Gen Intel Core i9-13900HX 2.20GHz, 1 CPU, 32 logical and 24 physical cores
-.NET SDK 10.0.100
-[Host]     : .NET 8.0.21 (8.0.21, 8.0.2125.47513), X64 RyuJIT x86-64-v3
-DefaultJob : .NET 8.0.21 (8.0.21, 8.0.2125.47513), X64 RyuJIT x86-64-v3
-```
-
-<details>
-<summary>Benchmarks on macOS (Apple M2 Pro)</summary>
-
-| Method      | Iteration |     Execution Time | Allocated Memory | 
-|-------------|-----------|-------------------:|-----------------:| 
-| Moq         | 1         |        62,199.5 ns |         12.85 KB | 
-| NSubstitute | 1         |         1,688.9 ns |          8.05 KB | 
-| FakeItEasy  | 1         |         2,023.3 ns |          5.68 KB | 
-| Rocks       | 1         |            46.2 ns |          0.30 KB | 
-| Imposter    | 1         |       **250.8 ns** |      **2.73 KB** | 
-| Moq         | 10        |       634,227.3 ns |        115.07 KB | 
-| NSubstitute | 10        |         9,484.3 ns |         28.46 KB | 
-| FakeItEasy  | 10        |         9,346.8 ns |         35.06 KB | 
-| Rocks       | 10        |           587.9 ns |          1.84 KB | 
-| Imposter    | 10        |     **2,419.2 ns** |     **25.65 KB** | 
-| Moq         | 100       |     6,619,086.5 ns |       1412.43 KB | 
-| NSubstitute | 100       |       224,316.0 ns |        236.98 KB | 
-| FakeItEasy  | 100       |       228,507.4 ns |        715.71 KB | 
-| Rocks       | 100       |        28,261.9 ns |         17.31 KB | 
-| Imposter    | 100       |    **36,118.9 ns** |    **254.87 KB** | 
-| Moq         | 1000      |    98,252,350.2 ns |      42221.29 KB | 
-| NSubstitute | 1000      |    25,223,566.8 ns |       2312.93 KB | 
-| FakeItEasy  | 1000      |    19,298,298.4 ns |      45797.90 KB | 
-| Rocks       | 1000      |     2,574,515.3 ns |        172.00 KB | 
-| Imposter    | 1000      | **4,011,942.7 ns** |   **2547.05 KB** | 
-
-
-Benchmark Environment
-
-```
-BenchmarkDotNet v0.15.6, macOS Sequoia 15.7.3 (24G419) [Darwin 24.6.0]
-Apple M2 Pro, 1 CPU, 10 logical and 10 physical cores
-.NET SDK 10.0.101
-[Host]     : .NET 10.0.1 (10.0.1, 10.0.125.57005), Arm64 RyuJIT armv8.0-a
-DefaultJob : .NET 10.0.1 (10.0.1, 10.0.125.57005), Arm64 RyuJIT armv8.0-a
-```
-</details>
+The [Benchmarks workflow](https://github.com/themidnightgospel/Imposter/actions/workflows/benchmarks.yml) reruns this comparison on a GitHub-hosted runner after every change to the code on master, so the table always shows the latest build. Shared runners are slower and noisier than a desktop machine: compare the libraries within the table rather than the absolute timings. The same results are available as [Markdown](https://github.com/themidnightgospel/Imposter/blob/benchmark-results/simple-method.md).
 
 ## ✨ Feature-Rich
 

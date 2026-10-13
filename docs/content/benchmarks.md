@@ -8,45 +8,26 @@ Overview of performance measurements using BenchmarkDotNet. The suite compares I
 - Invocation throughput: calling the configured method.
 - Parameterized iterations: 1, 10, 100, 1000 setups + calls.
 
-Primary scenario (see `ImposterVsOthersBenchmark.cs`):
+Primary scenario (see `benchmarks/Imposter.Benchmarks/ImposterVsAlternatives/SimpleMethodMockingBenchmarks.cs`), run with Moq, NSubstitute, FakeItEasy, Rocks and Imposter:
 
-```csharp
+```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/benchmarks/Imposter.Benchmarks/ImposterVsAlternatives/SimpleMethodMockingBenchmarks.cs#L109"}
 public interface ICalculator { int Square(int input); }
-// Benchmarks compare: Imposter vs Moq vs NSubstitute
 ```
 
 Additional microbenchmarks cover generator internals (syntax builders) and struct behaviors.
 
 ## Benchmark Results
 
-```text
-BenchmarkDotNet v0.15.2, Windows 11 (10.0.26200.6899)
-13th Gen Intel Core i9-13900HX 2.20GHz, 1 CPU, 32 logical and 24 physical cores
-.NET SDK 10.0.100-rc.2.25502.107
-  [Host]     : .NET 9.0.9 (9.0.925.41916), X64 RyuJIT AVX2
-  DefaultJob : .NET 9.0.9 (9.0.925.41916), X64 RyuJIT AVX2
+![Benchmark results for Moq, NSubstitute, FakeItEasy, Rocks and Imposter](https://raw.githubusercontent.com/themidnightgospel/Imposter/benchmark-results/simple-method.svg)
 
+The [Benchmarks workflow](https://github.com/themidnightgospel/Imposter/actions/workflows/benchmarks.yml) reruns this comparison on a GitHub-hosted runner after every change to the code on master, so the table always shows the latest build. Shared runners are slower and noisier than a desktop machine: compare the libraries within the table rather than the absolute timings. Allocations are exact.
 
-| Method   | Iteration | Mean            | Error           | StdDev          | Gen0      | Gen1      | Gen2     | Allocated   |
-|--------- |---------- |----------------:|----------------:|----------------:|----------:|----------:|---------:|------------:|
-| Imposter     | 1         |     57,888.4 ns |     1,152.97 ns |     1,861.83 ns |    0.6104 |    0.4883 |        - |    13.06 KB |
-| NSub     | 1         |      1,792.1 ns |        35.42 ns |        48.48 ns |    0.4120 |         - |        - |     7.73 KB |
-| Imposter | 1         |        187.8 ns |         3.41 ns |         3.02 ns |    0.1304 |    0.0010 |        - |      2.4 KB |
-| Imposter     | 10        |    561,381.0 ns |     9,870.99 ns |     8,750.38 ns |    5.8594 |    4.8828 |        - |    115.8 KB |
-| NSub     | 10        |     11,091.9 ns |       220.34 ns |       506.26 ns |    1.5869 |         - |        - |    29.18 KB |
-| Imposter | 10        |      1,897.5 ns |        25.95 ns |        23.01 ns |    1.2169 |    0.0877 |        - |    22.37 KB |
-| Imposter     | 100       |  5,659,959.7 ns |   106,879.17 ns |    89,248.95 ns |   62.5000 |   46.8750 |        - |  1417.69 KB |
-| NSub     | 100       |    317,054.3 ns |     5,962.06 ns |     5,576.92 ns |   13.1836 |    4.3945 |        - |   247.15 KB |
-| Imposter | 100       |     34,266.0 ns |       658.78 ns |       809.04 ns |   12.0239 |    5.6152 |        - |   222.05 KB |
-| Imposter     | 1000      | 87,595,090.5 ns | 1,733,629.98 ns | 1,536,817.82 ns | 2000.0000 | 1000.0000 | 666.6667 | 42282.98 KB |
-| NSub     | 1000      | 25,822,022.4 ns |   513,318.30 ns |   630,401.02 ns |  125.0000 |   62.5000 |        - |  2420.71 KB |
-| Imposter | 1000      |  2,635,074.0 ns |    51,717.64 ns |    61,566.17 ns |  117.1875 |  101.5625 |        - |  2218.93 KB |
-```
+The same results are available as [Markdown](https://github.com/themidnightgospel/Imposter/blob/benchmark-results/simple-method.md) and as the [BenchmarkDotNet JSON report](https://github.com/themidnightgospel/Imposter/blob/benchmark-results/simple-method.json).
 
 ## Run Locally
 
 ```bash
-dotnet run -c Release -p benchmarks/Imposter.Benchmarks/Imposter.Benchmarks.csproj
+dotnet run -c Release --project benchmarks/Imposter.Benchmarks/Imposter.Benchmarks.csproj -p:ROSLYN_VERSION=5.0
 ```
 
-BenchmarkDotNet will emit results under `benchmarks/Imposter.Benchmarks/BenchmarkDotNet.Artifacts/` (Markdown, CSV, and summary files).
+This runs the comparison above. Pass a filter to run another benchmark, for example `-- --filter *ComplexMethodMockingBenchmark*`. BenchmarkDotNet writes its reports (Markdown, CSV, HTML and JSON) to `BenchmarkDotNet.Artifacts/` in the directory you run it from.
