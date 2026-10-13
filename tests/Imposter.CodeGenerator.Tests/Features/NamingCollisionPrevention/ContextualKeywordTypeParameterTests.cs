@@ -158,13 +158,15 @@ public class ContextualKeywordTypeParameterTests
     }
 
     // Generated code renames a type parameter named like any contextual keyword its compiler knows, so a keyword that a
-    // later compiler adds is covered as soon as these tests run on that compiler.
+    // later compiler adds is covered as soon as these tests run on that compiler. Roslyn 4.0 and 4.4 also list a kind
+    // with no text, which names nothing.
     [Fact]
     public async Task GivenTypeParametersNamedLikeEveryContextualKeyword_WhenImpostersAreGenerated_ShouldCompile()
     {
         var keywords = SyntaxFacts
             .GetContextualKeywordKinds()
             .Select(SyntaxFacts.GetText)
+            .Where(SyntaxFacts.IsValidIdentifier)
             .ToArray();
         var registrations = keywords.Select(
             (_, index) =>
