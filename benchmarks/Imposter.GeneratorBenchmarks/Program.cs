@@ -193,6 +193,9 @@ static string Workload(bool generic)
         {
             source.AppendLine($"{entity} Get{member}({key} key);");
             source.AppendLine($"TResult Convert{member}<TResult>({entity} value, {key} key);");
+            source.AppendLine(
+                $"System.Threading.Tasks.Task<{entity}> Load{member}Async({key} key);"
+            );
             source.AppendLine($"{entity} Value{member} {{ get; set; }}");
         }
         source.AppendLine(

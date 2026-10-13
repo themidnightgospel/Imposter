@@ -1,8 +1,8 @@
 # Generator allocation benchmark
 
 This harness measures the generator on 20 interface targets with 10 ordinary methods,
-10 generic methods, 10 properties, an event, and an indexer each. It runs both plain
-targets and targets with `<TEntity, TKey>` parameters.
+10 generic methods, 10 async methods returning `Task<T>`, 10 properties, an event, and an
+indexer each. It runs both plain targets and targets with `<TEntity, TKey>` parameters.
 
 Cold runs use a fresh compilation and driver. Edit runs retain the driver and replace
 an unrelated syntax tree, forcing semantic models to be reconsidered while generated
@@ -44,7 +44,23 @@ constraints, and stable public names. Unit tests additionally compare formatting
 pointer and function-pointer types against display-part substitution. Existing runtime
 snapshots and the full test matrix provide a wider output-identity check.
 
+## Baseline with async methods
+
+Master `af8b195e`, the first workload with async methods (#374). Windows 11 x64, Intel Core
+i9-13900HX, .NET 10.0.12, Roslyn 5.0.0, in Release without verification-build flags. Adding
+the async methods raised each scenario by 30% to 32% on the same machine, so compare a change
+only with numbers from the same workload, not with the #370 table below.
+
+| Scenario | Bytes |
+| --- | ---: |
+| Plain targets, unrelated edit | 5,314,520 |
+| Generic targets, unrelated edit | 5,589,960 |
+| Plain targets, cold generation | 406,254,952 |
+| Generic targets, cold generation | 407,958,808 |
+
 ## Issue #370 measurements
+
+Measured before #374 added the async methods to the workload.
 
 Baseline: master `887e5089`. After: weak symbol-name cache and unchanged-name formatting
 fast path. Both used the harness above, .NET 10.0.11 (SDK 10.0.400), Roslyn 5.0.0,
