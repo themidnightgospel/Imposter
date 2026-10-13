@@ -1,18 +1,24 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace Imposter.CodeGenerator.Helpers;
 
-// Generated code declares its locals with var and its discards with _, and a member declaration that starts with record
-// or partial reads as a record or a partial member. A type parameter of one of these names takes another in generated
-// code, one that no name declared beside it there has. A nested type's parameters also share the imposter's scope
-// with its containing types' parameters, so names that shadow a containing parameter are renamed too.
+// Generated code writes a type parameter's name bare, where a contextual keyword can change what the code means: its
+// locals are declared with var and its discards with _, a member declaration that starts with record, partial, file,
+// required or extension reads as a record, a partial member, that modifier or an extension block, scoped can't name a
+// type, and await can't in an async lambda. So a type parameter named like any contextual keyword of the compiler that
+// runs the generator takes another name in generated code, one that no name declared beside it there has. A nested
+// type's parameters also share the imposter's scope with its containing types' parameters, so names that shadow a
+// containing parameter are renamed too.
 // A target's type parameter also cannot share the name of its generated imposter class.
 // A method's type parameters cannot share the fixed member names of the helper types that repeat them.
 internal static class TypeParameterNames
 {
-    private static readonly HashSet<string> NamesGeneratedCodeCantUse =
+    // Imposter identities, which name dedicated namespaces and files, rename only these, as they have since these were
+    // first renamed. The other names stay in the identities, so their imposters' namespaces don't change.
+    private static readonly HashSet<string> NamesRenamedInImposterIdentity =
     [
         "var",
         "_",
@@ -36,7 +42,7 @@ internal static class TypeParameterNames
             && GeneratedMethodMemberNames.Reserved.Contains(typeParameter.Name);
 
         return
-            NamesGeneratedCodeCantUse.Contains(typeParameter.Name)
+            SyntaxFacts.GetContextualKeywordKind(typeParameter.Name) != SyntaxKind.None
             || containingNames.Contains(typeParameter.Name)
             || imposterNames.Contains(typeParameter.Name)
             || clashesWithMethodMember
@@ -66,7 +72,7 @@ internal static class TypeParameterNames
             type.ToDisplayParts(SymbolDisplayFormat.FullyQualifiedFormat)
                 .Select(part =>
                     part.Symbol is ITypeParameterSymbol parameter
-                    && NamesGeneratedCodeCantUse.Contains(parameter.Name)
+                    && NamesRenamedInImposterIdentity.Contains(parameter.Name)
                         ? new NameSet(NamesBeside(parameter)).Use(parameter.Name)
                         : part.ToString()
                 )
