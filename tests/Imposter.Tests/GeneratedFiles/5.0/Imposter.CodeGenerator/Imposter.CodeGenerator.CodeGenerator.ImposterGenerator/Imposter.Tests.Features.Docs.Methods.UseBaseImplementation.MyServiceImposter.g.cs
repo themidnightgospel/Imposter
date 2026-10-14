@@ -137,7 +137,7 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 			internal AddArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private volatile MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _latestInvocationImposter;
 			internal volatile bool HasConfiguredOutcome;
 			public AddMethodInvocationImposterGroup(AddArgumentsCriteria argumentsCriteria)
 			{
@@ -155,22 +155,22 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 			{
 				if (_invocationImposters.IsEmpty)
 				{
-					return _lastestInvocationImposter;
+					return _latestInvocationImposter;
 				}
 
 				lock (_invocationImposters)
 				{
 					if (!_invocationImposters.TryPeek(out var invocationImposter))
 					{
-						return _lastestInvocationImposter;
+						return _latestInvocationImposter;
 					}
 
 					if (!invocationImposter.IsConfigured)
 					{
-						return _lastestInvocationImposter;
+						return _latestInvocationImposter;
 					}
 
-					_lastestInvocationImposter = invocationImposter;
+					_latestInvocationImposter = invocationImposter;
 					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
@@ -563,7 +563,7 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 			internal MightFailArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private volatile MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _latestInvocationImposter;
 			internal volatile bool HasConfiguredOutcome;
 			public MightFailMethodInvocationImposterGroup(MightFailArgumentsCriteria argumentsCriteria)
 			{
@@ -581,22 +581,22 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 			{
 				if (_invocationImposters.IsEmpty)
 				{
-					return _lastestInvocationImposter;
+					return _latestInvocationImposter;
 				}
 
 				lock (_invocationImposters)
 				{
 					if (!_invocationImposters.TryPeek(out var invocationImposter))
 					{
-						return _lastestInvocationImposter;
+						return _latestInvocationImposter;
 					}
 
 					if (!invocationImposter.IsConfigured)
 					{
-						return _lastestInvocationImposter;
+						return _latestInvocationImposter;
 					}
 
-					_lastestInvocationImposter = invocationImposter;
+					_latestInvocationImposter = invocationImposter;
 					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
@@ -989,7 +989,7 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 			internal ProcessAsyncArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private volatile MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _latestInvocationImposter;
 			internal volatile bool HasConfiguredOutcome;
 			public ProcessAsyncMethodInvocationImposterGroup(ProcessAsyncArgumentsCriteria argumentsCriteria)
 			{
@@ -1007,22 +1007,22 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 			{
 				if (_invocationImposters.IsEmpty)
 				{
-					return _lastestInvocationImposter;
+					return _latestInvocationImposter;
 				}
 
 				lock (_invocationImposters)
 				{
 					if (!_invocationImposters.TryPeek(out var invocationImposter))
 					{
-						return _lastestInvocationImposter;
+						return _latestInvocationImposter;
 					}
 
 					if (!invocationImposter.IsConfigured)
 					{
-						return _lastestInvocationImposter;
+						return _latestInvocationImposter;
 					}
 
-					_lastestInvocationImposter = invocationImposter;
+					_latestInvocationImposter = invocationImposter;
 					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}

@@ -96,7 +96,7 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
 		{
 			internal static GetNumberMethodInvocationImposterGroup Default = new GetNumberMethodInvocationImposterGroup();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private volatile MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _latestInvocationImposter;
 			internal volatile bool HasConfiguredOutcome;
 			public GetNumberMethodInvocationImposterGroup()
 			{
@@ -113,22 +113,22 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
 			{
 				if (_invocationImposters.IsEmpty)
 				{
-					return _lastestInvocationImposter;
+					return _latestInvocationImposter;
 				}
 
 				lock (_invocationImposters)
 				{
 					if (!_invocationImposters.TryPeek(out var invocationImposter))
 					{
-						return _lastestInvocationImposter;
+						return _latestInvocationImposter;
 					}
 
 					if (!invocationImposter.IsConfigured)
 					{
-						return _lastestInvocationImposter;
+						return _latestInvocationImposter;
 					}
 
-					_lastestInvocationImposter = invocationImposter;
+					_latestInvocationImposter = invocationImposter;
 					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
@@ -491,7 +491,7 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
 			internal IncrementArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private volatile MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _latestInvocationImposter;
 			internal volatile bool HasConfiguredOutcome;
 			public IncrementMethodInvocationImposterGroup(IncrementArgumentsCriteria argumentsCriteria)
 			{
@@ -509,22 +509,22 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
 			{
 				if (_invocationImposters.IsEmpty)
 				{
-					return _lastestInvocationImposter;
+					return _latestInvocationImposter;
 				}
 
 				lock (_invocationImposters)
 				{
 					if (!_invocationImposters.TryPeek(out var invocationImposter))
 					{
-						return _lastestInvocationImposter;
+						return _latestInvocationImposter;
 					}
 
 					if (!invocationImposter.IsConfigured)
 					{
-						return _lastestInvocationImposter;
+						return _latestInvocationImposter;
 					}
 
-					_lastestInvocationImposter = invocationImposter;
+					_latestInvocationImposter = invocationImposter;
 					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
