@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.Models;
 using Microsoft.CodeAnalysis;
@@ -85,9 +84,10 @@ internal sealed record GenerateImposterDeclaration(
 #else
             return declaration with
             {
-                Diagnostics = declaration
-                    .Diagnostics.Append(CrashDiagnosticsReporter.ToDiagnosticModel(ex))
-                    .ToEquatableArray(),
+                Diagnostics = new([
+                    .. declaration.Diagnostics,
+                    CrashDiagnosticsReporter.ToDiagnosticModel(ex),
+                ]),
             };
 #endif
         }
