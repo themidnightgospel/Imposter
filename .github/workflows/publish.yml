@@ -40,22 +40,11 @@ jobs:
         env:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
 
-      - name: extract release notes
-        id: extract-release-notes
-        run: |
-          {
-            echo 'RELEASE_NOTES<<EOF'
-            printf '%s\n' "$RELEASE_BODY"
-            echo 'EOF'
-          } >> "$GITHUB_OUTPUT"
-        env:
-          RELEASE_BODY: ${{ github.event.release.body }}
-
       - name: convert release notes markdown to text
         id: release-notes-text
         uses: koistya/strip-markdown@ac3bfef4f59b1654a253796403c7222a1f56b0e8 # v1
         with:
-          content: ${{ steps.extract-release-notes.outputs.RELEASE_NOTES }}
+          content: ${{ github.event.release.body }}
 
       - name: Setup .NET 8 SDK
         uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
