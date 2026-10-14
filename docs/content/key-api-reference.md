@@ -65,6 +65,17 @@ A compact list of the core types and fluent members you’ll use most. This is n
   - `Implicit` — missing setups return defaults (loose)
   - `Explicit` — missing setups throw `MissingImposterException` (strict)
 
+## Imposter Instance
+
+- `IHaveImposterInstance<TInstance>`
+  - Every generated imposter implements it; `Instance` is the target-typed object to hand to the code under test
+  - Use it as a generic constraint when a test helper takes any imposter of a target: `where TImposter : IHaveImposterInstance<TTarget>`
+- `ImposterExtensions`
+  - `Instance<TInstance>(this IHaveImposterInstance<TInstance> imposter)` — the usual call site: `imposter.Instance()`
+
+!!! note
+    `TypeCaster`, `SpanElementsComparer<T>` and `SetupCollection<T>` are also public, but only because generated imposters call them. They are hidden from IntelliSense and may change with the generator in the same package.
+
 ## Method Setups (generated)
 
 - Typical fluent members on a method setup builder:

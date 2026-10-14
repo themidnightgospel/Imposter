@@ -46,10 +46,11 @@ Public API for consumers and the generator. Lives in `src/Imposter.Abstractions`
   - Thrown by generated verifiers when counts don’t match.
 
 - `IHaveImposterInstance<T>` and `ImposterExtensions` (`src/Imposter.Abstractions/IHaveImposterInstance.cs`, `ImposterExtensions.cs`)
-  - Allows `imposter.Instance()` extension usage.
+  - Allows `imposter.Instance()` extension usage; the interface also serves as a generic constraint for helpers that take any imposter of a target.
 
 - `TypeCaster` (`src/Imposter.Abstractions/TypeCaster.cs`)
   - `TryCast<TIn,TOut>(in,out)`; `Cast<TIn,TOut>(in)` for safe conversions.
+  - Generated-code only, like `SpanElementsComparer<T>` and `SetupCollection<T>`: all three carry `[EditorBrowsable(EditorBrowsableState.Never)]` so they stay out of IntelliSense.
 
 ## How It’s Used
 

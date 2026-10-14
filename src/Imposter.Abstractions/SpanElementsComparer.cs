@@ -1,10 +1,16 @@
+using System.ComponentModel;
+
 namespace Imposter.Abstractions;
 
 /// <summary>
 /// Compares the arrays an imposter keeps span arguments in by their elements, so two span keys of an indexer that
-/// hold the same elements address the same value. Generated imposters use it.
+/// hold the same elements address the same value.
 /// </summary>
 /// <typeparam name="T">The span's element type.</typeparam>
+/// <remarks>
+/// It is public for generated imposters only and may change with the generator in the same package.
+/// </remarks>
+[EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class SpanElementsComparer<T> : IEqualityComparer<T[]>
 {
     private SpanElementsComparer() { }

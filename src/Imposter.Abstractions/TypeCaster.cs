@@ -1,10 +1,16 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Imposter.Abstractions;
 
 /// <summary>
 /// Provides safe casting helpers that avoid exceptions for incompatible types.
 /// </summary>
+/// <remarks>
+/// Generated imposters use it to pass values between a generic method's type parameters and those of its setups. It is
+/// public for that generated code only and may change with the generator in the same package.
+/// </remarks>
+[EditorBrowsable(EditorBrowsableState.Never)]
 public static class TypeCaster
 {
     /// <summary>
