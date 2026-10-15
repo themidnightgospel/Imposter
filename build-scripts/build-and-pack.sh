@@ -22,9 +22,10 @@ rm -rf "${artifacts_dir:?}"/*
 artifacts_dir="$(realpath "$artifacts_dir")"
 source_generator_path="$(realpath "${script_dir}/../src/Imposter.CodeGenerator")"
 
-# Pass only a path to MSBuild so release-note text is never parsed as command-line properties.
+# The release body is Markdown and nuget.org shows release notes as plain text. Pass only a path to MSBuild so
+# release-note text is never parsed as command-line properties.
 release_notes_file="${artifacts_dir}/release-notes.txt"
-printf '%s' "${RELEASE_NOTES}" > "${release_notes_file}"
+printf '%s' "${RELEASE_NOTES}" | python3 "${script_dir}/release-notes-to-text.py" > "${release_notes_file}"
 
 for roslyn_version in "${roslyn_versions[@]}"; do
     echo "building for Roslyn ${roslyn_version}"

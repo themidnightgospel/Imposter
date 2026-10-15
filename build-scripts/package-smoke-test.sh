@@ -2,7 +2,7 @@
 
 set -Eeuo pipefail
 
-# Packs the generator, checks that release notes survive unchanged, builds a small consumer project with
+# Packs the generator, checks that release notes convert to plain text and survive unchanged, builds a small consumer project with
 # IMPOSTER_LOG=true, and checks that the generator log reaches the build output.
 # This exercises what a NuGet consumer gets, which the in-repo tests (project references) do not.
 
@@ -15,12 +15,37 @@ version="0.0.0-smoke.$(date +%s)"
 rm -rf "${work_dir}"
 mkdir -p "${work_dir}/feed" "${work_dir}/consumer"
 
-# Keep shell and MSBuild expressions literal, including percent-encoded special characters.
+# The release body is Markdown with the constructs the release notes use. The conversion must drop the markup
+# and keep shell and MSBuild expressions literal, including percent-encoded special characters.
 release_notes_file="$(realpath "${work_dir}")/release notes.txt"
+expected_notes_file="${work_dir}/expected notes.txt"
 # shellcheck disable=SC2016 # The notes deliberately contain literal MSBuild expressions.
-printf '%s' 'Configure Arg<string>.Is("health").Callback(_ => { });
-Keep $(Version), @(Compile), 100%, %3B, %22 and %24 unchanged.
-Preserve XML characters <tag> & text and Unicode: café.' > "${release_notes_file}"
+printf '%s' '## Fixes
+
+- **Configure `Arg<string>.Is("health").Callback(_ => { })`** ([#1](https://example.invalid/1)).
+  Keep $(Version), @(Compile), 100%, %3B, %22 and %24 unchanged.
+
+| Call | Before |
+| --- | ---: |
+| method | 144 B |
+
+Preserve XML characters <tag> & text and Unicode: café.' | python3 build-scripts/release-notes-to-text.py > "${release_notes_file}"
+# shellcheck disable=SC2016
+printf '%s' 'Fixes
+
+- Configure Arg<string>.Is("health").Callback(_ => { }) (#1).
+  Keep $(Version), @(Compile), 100%, %3B, %22 and %24 unchanged.
+
+| Call | Before |
+| --- | ---: |
+| method | 144 B |
+
+Preserve XML characters <tag> & text and Unicode: café.' > "${expected_notes_file}"
+diff "${expected_notes_file}" "${release_notes_file}" || {
+    echo "release-notes-to-text.py changed the notes beyond dropping the markup"
+    exit 1
+}
+echo "Release notes converted to plain text"
 
 # The released package holds one analyzer build per Roslyn version; the compiler loads the newest one
 # it supports. A single build is enough here, so pack the one a .NET 10 SDK compiler loads.

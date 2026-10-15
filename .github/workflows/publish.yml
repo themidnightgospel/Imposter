@@ -40,12 +40,6 @@ jobs:
         env:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
 
-      - name: convert release notes markdown to text
-        id: release-notes-text
-        uses: koistya/strip-markdown@ac3bfef4f59b1654a253796403c7222a1f56b0e8 # v1
-        with:
-          content: ${{ github.event.release.body }}
-
       - name: Setup .NET 8 SDK
         uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
@@ -62,7 +56,7 @@ jobs:
       - name: build release
         run: bash ./build-scripts/build-and-pack.sh
         env:
-          RELEASE_NOTES: ${{ steps.release-notes-text.outputs.content }}
+          RELEASE_NOTES: ${{ github.event.release.body }}
           RELEASE_VERSION: ${{ steps.extract-version.outputs.RELEASE_VERSION }}
 
       - name: attest build provenance
