@@ -209,6 +209,11 @@ internal static class WellKnownTypes
                 IdentifierName("TypeCaster")
             );
 
+            internal static readonly NameSyntax AsyncCallbacks = QualifiedName(
+                Namespace,
+                IdentifierName("AsyncCallbacks")
+            );
+
             internal static readonly NameSyntax MissingImposterException = QualifiedName(
                 Namespace,
                 IdentifierName("MissingImposterException")

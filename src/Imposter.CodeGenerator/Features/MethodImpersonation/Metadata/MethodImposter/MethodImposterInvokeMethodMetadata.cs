@@ -25,6 +25,8 @@ internal readonly struct MethodImposterInvokeMethodMetadata
 
     internal readonly string InvocationImposterVariableName;
 
+    internal readonly string CallbackTasksVariableName;
+
     public MethodImposterInvokeMethodMetadata(
         in ReservedParameterNames reservedParameterNames,
         TypeSyntax delegateSyntax
@@ -47,5 +49,6 @@ internal readonly struct MethodImposterInvokeMethodMetadata
         InvocationBehaviorParameterName = parameterNameContext.Use("invocationBehavior");
         MethodDisplayNameParameterName = parameterNameContext.Use("methodDisplayName");
         InvocationImposterVariableName = parameterNameContext.Use("invocationImposter");
+        CallbackTasksVariableName = parameterNameContext.Use("callbackTasks");
     }
 }

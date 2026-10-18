@@ -741,10 +741,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					global::System.Threading.Tasks.Task<int> result = _resultGenerator.Invoke(data);
 					if (!_callbacks.IsEmpty)
 					{
+						global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>? callbackTasks = null;
 						foreach (var callback in _callbacks)
 						{
-							callback(data);
+							global::Imposter.Abstractions.AsyncCallbacks.Track(ref callbackTasks, callback(data));
 						}
+
+						if (callbackTasks != null)
+							result = global::Imposter.Abstractions.AsyncCallbacks.CompleteAfter(result, callbackTasks);
 					}
 
 					return result;

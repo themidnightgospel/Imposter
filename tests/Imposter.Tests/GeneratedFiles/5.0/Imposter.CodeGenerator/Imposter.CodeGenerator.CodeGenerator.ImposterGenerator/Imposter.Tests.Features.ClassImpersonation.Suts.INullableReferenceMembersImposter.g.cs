@@ -611,10 +611,14 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					global::System.Threading.Tasks.Task<string?> result = _resultGenerator.Invoke(key);
 					if (!_callbacks.IsEmpty)
 					{
+						global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>? callbackTasks = null;
 						foreach (var callback in _callbacks)
 						{
-							callback(key);
+							global::Imposter.Abstractions.AsyncCallbacks.Track(ref callbackTasks, callback(key));
 						}
+
+						if (callbackTasks != null)
+							result = global::Imposter.Abstractions.AsyncCallbacks.CompleteAfter(result, callbackTasks);
 					}
 
 					return result;

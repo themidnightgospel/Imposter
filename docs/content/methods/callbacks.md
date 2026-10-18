@@ -89,3 +89,20 @@ If a callback throws, the exception is propagated to the caller after the result
 
     // service.GetNumber() returns 1, then throws InvalidOperationException
     ```
+
+## Async methods
+
+For a method that returns `Task`, `Task<T>`, `ValueTask` or `ValueTask<T>`, a callback returns a `Task`. The callbacks still start when the method is called, in the order they were added. The task the method returns completes only after the arranged result and every callback's task have completed, and it fails with the first failure among them. Callbacks that finish synchronously leave the arranged task as it is.
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/Callbacks/AsyncCallbacksTests.cs#L27"}
+    imposter.SaveAsync(Arg<string>.Any())
+        .ReturnsAsync(1)
+        .Callback(async name =>
+        {
+            await Task.Yield();
+            saved.Add(name);
+        });
+
+    await service.SaveAsync("report"); // completes after the callback; fails if the callback fails
+    ```

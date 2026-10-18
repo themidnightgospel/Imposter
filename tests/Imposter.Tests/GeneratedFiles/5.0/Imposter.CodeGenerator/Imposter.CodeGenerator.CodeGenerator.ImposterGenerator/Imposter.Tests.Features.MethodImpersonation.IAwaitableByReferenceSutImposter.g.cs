@@ -185,10 +185,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					global::System.Threading.Tasks.Task<int> result = _resultGenerator.Invoke(out count);
 					if (!_callbacks.IsEmpty)
 					{
+						global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>? callbackTasks = null;
 						foreach (var callback in _callbacks)
 						{
-							callback(out count);
+							global::Imposter.Abstractions.AsyncCallbacks.Track(ref callbackTasks, callback(out count));
 						}
+
+						if (callbackTasks != null)
+							result = global::Imposter.Abstractions.AsyncCallbacks.CompleteAfter(result, callbackTasks);
 					}
 
 					return result;
@@ -636,10 +640,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					global::System.Threading.Tasks.Task<int> result = _resultGenerator.Invoke(ref position);
 					if (!_callbacks.IsEmpty)
 					{
+						global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>? callbackTasks = null;
 						foreach (var callback in _callbacks)
 						{
-							callback(ref position);
+							global::Imposter.Abstractions.AsyncCallbacks.Track(ref callbackTasks, callback(ref position));
 						}
+
+						if (callbackTasks != null)
+							result = global::Imposter.Abstractions.AsyncCallbacks.CompleteAfter(result, callbackTasks);
 					}
 
 					return result;
@@ -1084,10 +1092,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					global::System.Threading.Tasks.ValueTask<int> result = _resultGenerator.Invoke(in key);
 					if (!_callbacks.IsEmpty)
 					{
+						global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>? callbackTasks = null;
 						foreach (var callback in _callbacks)
 						{
-							callback(in key);
+							global::Imposter.Abstractions.AsyncCallbacks.Track(ref callbackTasks, callback(in key));
 						}
+
+						if (callbackTasks != null)
+							result = new global::System.Threading.Tasks.ValueTask<int>(global::Imposter.Abstractions.AsyncCallbacks.CompleteAfter(result.AsTask(), callbackTasks));
 					}
 
 					return result;

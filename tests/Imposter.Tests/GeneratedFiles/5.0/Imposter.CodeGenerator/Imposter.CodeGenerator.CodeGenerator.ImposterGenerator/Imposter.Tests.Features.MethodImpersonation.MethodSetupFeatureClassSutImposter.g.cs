@@ -247,10 +247,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					global::System.Threading.Tasks.ValueTask<string> result = _resultGenerator.Invoke(prefix, suffix);
 					if (!_callbacks.IsEmpty)
 					{
+						global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>? callbackTasks = null;
 						foreach (var callback in _callbacks)
 						{
-							callback(prefix, suffix);
+							global::Imposter.Abstractions.AsyncCallbacks.Track(ref callbackTasks, callback(prefix, suffix));
 						}
+
+						if (callbackTasks != null)
+							result = new global::System.Threading.Tasks.ValueTask<string>(global::Imposter.Abstractions.AsyncCallbacks.CompleteAfter(result.AsTask(), callbackTasks));
 					}
 
 					return result;
@@ -1578,10 +1582,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					global::System.Threading.Tasks.Task<int> result = _resultGenerator.Invoke(left, right);
 					if (!_callbacks.IsEmpty)
 					{
+						global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>? callbackTasks = null;
 						foreach (var callback in _callbacks)
 						{
-							callback(left, right);
+							global::Imposter.Abstractions.AsyncCallbacks.Track(ref callbackTasks, callback(left, right));
 						}
+
+						if (callbackTasks != null)
+							result = global::Imposter.Abstractions.AsyncCallbacks.CompleteAfter(result, callbackTasks);
 					}
 
 					return result;

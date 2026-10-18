@@ -1078,10 +1078,14 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 					global::System.Threading.Tasks.Task result = _resultGenerator.Invoke(s);
 					if (!_callbacks.IsEmpty)
 					{
+						global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>? callbackTasks = null;
 						foreach (var callback in _callbacks)
 						{
-							callback(s);
+							global::Imposter.Abstractions.AsyncCallbacks.Track(ref callbackTasks, callback(s));
 						}
+
+						if (callbackTasks != null)
+							result = global::Imposter.Abstractions.AsyncCallbacks.CompleteAfter(result, callbackTasks);
 					}
 
 					return result;

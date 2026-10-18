@@ -12,6 +12,8 @@ internal readonly struct ReturnTypeMetadata
 
     internal readonly bool IsAwaitable;
 
+    internal readonly bool IsValueTask;
+
     internal readonly bool IsSpan;
 
     private readonly ReturnTypeModel _returnType;
@@ -26,6 +28,7 @@ internal readonly struct ReturnTypeMetadata
     internal ReturnTypeMetadata(ReturnTypeModel returnType, TypeSyntax returnTypeSyntax)
     {
         IsAwaitable = returnType.IsAwaitable;
+        IsValueTask = returnType.IsValueTask;
 
         GenericAwaitableResultType = returnType.AwaitableResultType is { } resultType
             ? SyntaxFactoryHelper.TypeSyntaxIncludingNullable(resultType)

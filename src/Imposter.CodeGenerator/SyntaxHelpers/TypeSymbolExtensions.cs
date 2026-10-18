@@ -22,9 +22,16 @@ internal static class TypeSymbolExtensions
 
         return named.MetadataName switch
         {
-            "Task" or "ValueTask" => new TaskLikeMetadata(isAwaitable: true, null),
-            "Task`1" or "ValueTask`1" => new TaskLikeMetadata(
+            "Task" => new TaskLikeMetadata(isAwaitable: true, isValueTask: false, null),
+            "ValueTask" => new TaskLikeMetadata(isAwaitable: true, isValueTask: true, null),
+            "Task`1" => new TaskLikeMetadata(
                 isAwaitable: true,
+                isValueTask: false,
+                named.TypeArguments[0]
+            ),
+            "ValueTask`1" => new TaskLikeMetadata(
+                isAwaitable: true,
+                isValueTask: true,
                 named.TypeArguments[0]
             ),
             _ => TaskLikeMetadata.Empty,
@@ -161,13 +168,20 @@ internal readonly struct TaskLikeMetadata
 {
     internal static TaskLikeMetadata Empty => default;
 
-    internal TaskLikeMetadata(bool isAwaitable, ITypeSymbol? genericAwaitableResultType)
+    internal TaskLikeMetadata(
+        bool isAwaitable,
+        bool isValueTask,
+        ITypeSymbol? genericAwaitableResultType
+    )
     {
         IsAwaitable = isAwaitable;
+        IsValueTask = isValueTask;
         GenericAwaitableResultType = genericAwaitableResultType;
     }
 
     internal bool IsAwaitable { get; }
+
+    internal bool IsValueTask { get; }
 
     internal ITypeSymbol? GenericAwaitableResultType { get; }
 }

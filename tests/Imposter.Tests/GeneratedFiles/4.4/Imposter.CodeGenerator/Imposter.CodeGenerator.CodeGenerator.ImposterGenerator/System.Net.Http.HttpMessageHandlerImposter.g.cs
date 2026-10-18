@@ -1043,10 +1043,14 @@ namespace System.Net.Http
 					global::System.Threading.Tasks.Task<global::System.Net.Http.HttpResponseMessage> result = _resultGenerator.Invoke(request, cancellationToken);
 					if (!_callbacks.IsEmpty)
 					{
+						global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>? callbackTasks = null;
 						foreach (var callback in _callbacks)
 						{
-							callback(request, cancellationToken);
+							global::Imposter.Abstractions.AsyncCallbacks.Track(ref callbackTasks, callback(request, cancellationToken));
 						}
+
+						if (callbackTasks != null)
+							result = global::Imposter.Abstractions.AsyncCallbacks.CompleteAfter(result, callbackTasks);
 					}
 
 					return result;

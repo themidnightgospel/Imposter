@@ -74,7 +74,7 @@ A compact list of the core types and fluent members you’ll use most. This is n
   - `Instance<TInstance>(this IHaveImposterInstance<TInstance> imposter)` — the usual call site: `imposter.Instance()`
 
 !!! note
-    `TypeCaster`, `SpanElementsComparer<T>` and `SetupCollection<T>` are also public, but only because generated imposters call them. They are hidden from IntelliSense and may change with the generator in the same package.
+    `TypeCaster`, `SpanElementsComparer<T>`, `SetupCollection<T>` and `AsyncCallbacks` are also public, but only because generated imposters call them. They are hidden from IntelliSense and may change with the generator in the same package.
 
 ## Method Setups (generated)
 

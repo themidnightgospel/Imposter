@@ -543,10 +543,14 @@ namespace Imposter.Tests.Features.Docs.Methods.ImposterModes
 					global::System.Threading.Tasks.Task<int> result = _resultGenerator.Invoke();
 					if (!_callbacks.IsEmpty)
 					{
+						global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>? callbackTasks = null;
 						foreach (var callback in _callbacks)
 						{
-							callback();
+							global::Imposter.Abstractions.AsyncCallbacks.Track(ref callbackTasks, callback());
 						}
+
+						if (callbackTasks != null)
+							result = global::Imposter.Abstractions.AsyncCallbacks.CompleteAfter(result, callbackTasks);
 					}
 
 					return result;

@@ -247,15 +247,96 @@ internal static partial class InvocationImposterGroupBuilder
         ArgumentListSyntax arguments
     )
     {
-        var callback = method.MethodImposter.InvokeMethod.CallbackIterationVariableName;
+        var callback = IdentifierName(
+            method.MethodImposter.InvokeMethod.CallbackIterationVariableName
+        );
+        var callbackCall = callback.Call(arguments);
 
-        return ConcurrentQueueSyntaxHelper.UnlessEmpty(
-            ForEachStatement(
-                Var,
-                Identifier(callback),
-                CallbacksIdentifier(method),
-                Block(IdentifierName(callback).Call(arguments).ToStatementSyntax())
+        return method.ReturnType.IsAwaitable
+            ? InvokeCallbacksAwaitedByResult(method, callback, callbackCall)
+            : ConcurrentQueueSyntaxHelper.UnlessEmpty(
+                ForEachStatement(
+                    Var,
+                    callback.Identifier,
+                    CallbacksIdentifier(method),
+                    Block(callbackCall.ToStatementSyntax())
+                )
+            );
+    }
+
+    // An async method's callbacks still start with the call, because they can take ref, out and span parameters a
+    // continuation couldn't carry. The returned task then waits for those that haven't finished, so their failures
+    // reach the caller.
+    private static IfStatementSyntax InvokeCallbacksAwaitedByResult(
+        in ImposterTargetMethodMetadata method,
+        IdentifierNameSyntax callback,
+        InvocationExpressionSyntax callbackCall
+    )
+    {
+        var callbackTasks = IdentifierName(
+            method.MethodImposter.InvokeMethod.CallbackTasksVariableName
+        );
+        var result = IdentifierName(method.MethodInvocationImposter.ResultVariableName);
+        var track = WellKnownTypes
+            .Imposter.Abstractions.AsyncCallbacks.Dot(IdentifierName("Track"))
+            .Call(
+                ArgumentListSyntax([
+                    RefArgument(callbackTasks.Identifier.Text),
+                    Argument(callbackCall),
+                ])
+            );
+
+        return IfStatement(
+            Not(CallbacksIdentifier(method).Dot(ConcurrentQueueSyntaxHelper.IsEmpty)),
+            Block(
+                LocalVariableDeclarationSyntax(
+                    WellKnownTypes
+                        .System.Collections.Generic.List(WellKnownTypes.System.Threading.Tasks.Task)
+                        .ToNullableType(),
+                    callbackTasks.Identifier.Text,
+                    Null
+                ),
+                ForEachStatement(
+                    Var,
+                    callback.Identifier,
+                    CallbacksIdentifier(method),
+                    Block(track.ToStatementSyntax())
+                ),
+                IfStatement(
+                    callbackTasks.IsNotNull(),
+                    result
+                        .Assign(ResultAfterCallbacks(method, result, callbackTasks))
+                        .ToStatementSyntax()
+                )
             )
+        );
+    }
+
+    // AsyncCallbacks waits on tasks, so a ValueTask result is waited on as a task and wrapped back.
+    private static ExpressionSyntax ResultAfterCallbacks(
+        in ImposterTargetMethodMetadata method,
+        IdentifierNameSyntax result,
+        IdentifierNameSyntax callbackTasks
+    )
+    {
+        var completeAfter = WellKnownTypes.Imposter.Abstractions.AsyncCallbacks.Dot(
+            IdentifierName("CompleteAfter")
+        );
+        if (!method.ReturnType.IsValueTask)
+        {
+            return completeAfter.Call(
+                ArgumentListSyntax([Argument(result), Argument(callbackTasks)])
+            );
+        }
+
+        var resultTask = result.Dot(IdentifierName("AsTask")).Call();
+        return method.NullableAwareReturnTypeSyntax.New(
+            Argument(
+                    completeAfter.Call(
+                        ArgumentListSyntax([Argument(resultTask), Argument(callbackTasks)])
+                    )
+                )
+                .ToSingleArgumentList()
         );
     }
 

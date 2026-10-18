@@ -13,6 +13,7 @@ public class GeneratedCodeOnlyTypesTests
     [InlineData(typeof(TypeCaster))]
     [InlineData(typeof(SpanElementsComparer<>))]
     [InlineData(typeof(SetupCollection<>))]
+    [InlineData(typeof(AsyncCallbacks))]
     public void GivenGeneratedCodeOnlyType_WhenInspected_ShouldBeHiddenFromIntelliSense(Type type)
     {
         type.GetCustomAttribute<EditorBrowsableAttribute>()
