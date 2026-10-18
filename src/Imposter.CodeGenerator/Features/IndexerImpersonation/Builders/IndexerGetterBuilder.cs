@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.Features.IndexerImpersonation.Builders.IndexerImposterBuilderCommon;
@@ -70,12 +71,6 @@ internal static partial class IndexerGetterBuilder
                 SinglePrivateReadonlyVariableField(
                     getter.SetupsField,
                     getter.SetupsField.Type.New()
-                )
-            )
-            .AddMember(
-                SinglePrivateReadonlyVariableField(
-                    getter.SetupLookupField,
-                    getter.SetupLookupField.Type.New()
                 )
             )
             .AddMember(
@@ -267,55 +262,46 @@ internal static partial class IndexerGetterBuilder
     )
     {
         var getter = indexer.GetterImplementation;
+        var invocationType = getter.Invocation.TypeSyntax;
+        var criteria = IdentifierName(getter.CriteriaParameterName);
+        var criteriaSetup = criteria.Dot(
+            IdentifierName(indexer.ArgumentsCriteria.GetterSetupFieldName)
+        );
+        var setup = IdentifierName(getter.SetupVariableName);
+        var existing = Identifier("existing");
+        var winner = Identifier("winner");
 
-        return new MethodDeclarationBuilder(getter.Invocation.TypeSyntax, "GetOrCreate")
+        return new MethodDeclarationBuilder(invocationType, "GetOrCreate")
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddParameter(
-                ParameterSyntax(indexer.ArgumentsCriteria.TypeSyntax, getter.CriteriaParameterName)
+                ParameterSyntax(indexer.ArgumentsCriteria.TypeSyntax, criteria.Identifier.Text)
             )
             .WithBody(
                 Block(
-                    ReturnStatement(
-                        IdentifierName(getter.SetupLookupField.Name)
-                            .Dot(IdentifierName("GetOrAdd"))
-                            .Call(
-                                ArgumentListSyntax([
-                                    Argument(IdentifierName(getter.CriteriaParameterName)),
-                                    Argument(IdentifierName("CreateSetup")),
-                                ])
-                            )
-                    ),
-                    BuildCreateSetupFunction(indexer)
-                )
-            )
-            .Build();
-    }
-
-    // GetOrCreate's local function, which adds a getter invocation imposter for criteria not seen before.
-    private static LocalFunctionStatementSyntax BuildCreateSetupFunction(
-        in ImposterIndexerMetadata indexer
-    )
-    {
-        var getter = indexer.GetterImplementation;
-        var invocationType = getter.Invocation.TypeSyntax;
-        var setup = IdentifierName(getter.SetupVariableName);
-
-        return LocalFunctionStatement(invocationType, Identifier("CreateSetup"))
-            .AddParameterListParameters(
-                ParameterSyntax(indexer.ArgumentsCriteria.TypeSyntax, "key")
-            )
-            .WithBody(
-                Block(
+                    ReturnIfSetUp(VolatileRead(criteriaSetup), invocationType, existing),
                     LocalVariableDeclarationSyntax(
                         invocationType,
-                        getter.SetupVariableName,
+                        setup.Identifier.Text,
                         invocationType.New(
                             ArgumentListSyntax([
                                 Argument(ThisExpression()),
                                 Argument(IdentifierName(getter.DefaultBehaviourField.Name)),
-                                Argument(IdentifierName("key")),
+                                Argument(criteria),
                             ])
                         )
+                    ),
+                    ReturnIfSetUp(
+                        WellKnownTypes
+                            .System.Threading.Interlocked.Dot(IdentifierName("CompareExchange"))
+                            .Call(
+                                ArgumentListSyntax([
+                                    RefArgument(criteriaSetup),
+                                    Argument(setup),
+                                    Argument(Null),
+                                ])
+                            ),
+                        invocationType,
+                        winner
                     ),
                     IdentifierName(getter.SetupsField.Name)
                         .Dot(SetupCollectionSyntaxHelper.Push)
@@ -323,8 +309,24 @@ internal static partial class IndexerGetterBuilder
                         .ToStatementSyntax(),
                     ReturnStatement(setup)
                 )
-            );
+            )
+            .Build();
     }
+
+    // Criteria are compared by reference, so their setup is kept on them and published with a compare-and-swap: a
+    // thread that loses the race returns the winner's setup, and only the winner's is added to the setups.
+    private static IfStatementSyntax ReturnIfSetUp(
+        ExpressionSyntax criteriaSetup,
+        TypeSyntax invocationType,
+        SyntaxToken setUp
+    ) =>
+        IfStatement(
+            IsPatternExpression(
+                criteriaSetup,
+                DeclarationPattern(invocationType, SingleVariableDesignation(setUp))
+            ),
+            ReturnStatement(IdentifierName(setUp))
+        );
 
     private static MethodDeclarationSyntax BuildGetterCalledMethod(
         in ImposterIndexerMetadata indexer

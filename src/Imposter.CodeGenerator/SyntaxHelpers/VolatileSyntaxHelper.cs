@@ -7,9 +7,12 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 internal static class VolatileSyntaxHelper
 {
     internal static InvocationExpressionSyntax VolatileRead(string fieldName) =>
+        VolatileRead(IdentifierName(fieldName));
+
+    internal static InvocationExpressionSyntax VolatileRead(ExpressionSyntax field) =>
         WellKnownTypes
             .System.Threading.Volatile.Dot(IdentifierName("Read"))
-            .Call(RefArgument(fieldName));
+            .Call(RefArgument(field));
 
     internal static InvocationExpressionSyntax VolatileWrite(
         string fieldName,
