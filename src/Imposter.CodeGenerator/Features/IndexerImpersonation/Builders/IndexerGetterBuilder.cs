@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.Features.IndexerImpersonation.Builders.IndexerImposterBuilderCommon;
@@ -268,8 +267,6 @@ internal static partial class IndexerGetterBuilder
             IdentifierName(indexer.ArgumentsCriteria.GetterSetupFieldName)
         );
         var setup = IdentifierName(getter.SetupVariableName);
-        var existing = Identifier("existing");
-        var winner = Identifier("winner");
 
         return new MethodDeclarationBuilder(invocationType, "GetOrCreate")
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
@@ -278,54 +275,48 @@ internal static partial class IndexerGetterBuilder
             )
             .WithBody(
                 Block(
-                    ReturnIfSetUp(VolatileRead(criteriaSetup), invocationType, existing),
-                    LocalVariableDeclarationSyntax(
-                        invocationType,
-                        setup.Identifier.Text,
-                        invocationType.New(
-                            ArgumentListSyntax([
-                                Argument(ThisExpression()),
-                                Argument(IdentifierName(getter.DefaultBehaviourField.Name)),
-                                Argument(criteria),
-                            ])
-                        )
-                    ),
-                    ReturnIfSetUp(
-                        WellKnownTypes
-                            .System.Threading.Interlocked.Dot(IdentifierName("CompareExchange"))
-                            .Call(
-                                ArgumentListSyntax([
-                                    RefArgument(criteriaSetup),
-                                    Argument(setup),
-                                    Argument(Null),
-                                ])
+                    ReturnIfSetUp(VolatileRead(criteriaSetup), invocationType, "existing"),
+                    LockStatement(
+                        criteria,
+                        Block(
+                            ReturnIfSetUp(criteriaSetup, invocationType, "current"),
+                            LocalVariableDeclarationSyntax(
+                                invocationType,
+                                setup.Identifier.Text,
+                                invocationType.New(
+                                    ArgumentListSyntax([
+                                        Argument(ThisExpression()),
+                                        Argument(IdentifierName(getter.DefaultBehaviourField.Name)),
+                                        Argument(criteria),
+                                    ])
+                                )
                             ),
-                        invocationType,
-                        winner
-                    ),
-                    IdentifierName(getter.SetupsField.Name)
-                        .Dot(SetupCollectionSyntaxHelper.Push)
-                        .Call(Argument(setup))
-                        .ToStatementSyntax(),
-                    ReturnStatement(setup)
+                            IdentifierName(getter.SetupsField.Name)
+                                .Dot(SetupCollectionSyntaxHelper.Push)
+                                .Call(Argument(setup))
+                                .ToStatementSyntax(),
+                            VolatileWrite(criteriaSetup, setup).ToStatementSyntax(),
+                            ReturnStatement(setup)
+                        )
+                    )
                 )
             )
             .Build();
     }
 
-    // Criteria are compared by reference, so their setup is kept on them and published with a compare-and-swap: a
-    // thread that loses the race returns the winner's setup, and only the winner's is added to the setups.
+    // Criteria are compared by reference, so their setup is kept on them. It is created under a lock on the criteria
+    // and published only after it has been added to the setups, so a setup another thread reads is already matchable.
     private static IfStatementSyntax ReturnIfSetUp(
         ExpressionSyntax criteriaSetup,
         TypeSyntax invocationType,
-        SyntaxToken setUp
+        string setupName
     ) =>
         IfStatement(
             IsPatternExpression(
                 criteriaSetup,
-                DeclarationPattern(invocationType, SingleVariableDesignation(setUp))
+                DeclarationPattern(invocationType, SingleVariableDesignation(Identifier(setupName)))
             ),
-            ReturnStatement(IdentifierName(setUp))
+            ReturnStatement(IdentifierName(setupName))
         );
 
     private static MethodDeclarationSyntax BuildGetterCalledMethod(

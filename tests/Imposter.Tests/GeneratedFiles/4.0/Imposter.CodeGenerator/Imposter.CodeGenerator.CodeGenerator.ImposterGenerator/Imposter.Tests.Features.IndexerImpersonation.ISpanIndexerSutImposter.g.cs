@@ -232,11 +232,15 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 				{
 					if (global::System.Threading.Volatile.Read(ref criteria.GetterSetup) is GetterInvocationImposter existing)
 						return existing;
-					GetterInvocationImposter getterInvocationImposter = new GetterInvocationImposter(this, _defaultBehaviour, criteria);
-					if (global::System.Threading.Interlocked.CompareExchange(ref criteria.GetterSetup, getterInvocationImposter, null) is GetterInvocationImposter winner)
-						return winner;
-					_getterInvocationImposters.Push(getterInvocationImposter);
-					return getterInvocationImposter;
+					lock (criteria)
+					{
+						if (criteria.GetterSetup is GetterInvocationImposter current)
+							return current;
+						GetterInvocationImposter getterInvocationImposter = new GetterInvocationImposter(this, _defaultBehaviour, criteria);
+						_getterInvocationImposters.Push(getterInvocationImposter);
+						global::System.Threading.Volatile.Write(ref criteria.GetterSetup, getterInvocationImposter);
+						return getterInvocationImposter;
+					}
 				}
 
 				private void Called(IndexerIndexerArgumentsCriteria criteria, global::Imposter.Abstractions.Count count)
@@ -814,11 +818,15 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 				{
 					if (global::System.Threading.Volatile.Read(ref criteria.GetterSetup) is GetterInvocationImposter existing)
 						return existing;
-					GetterInvocationImposter getterInvocationImposter = new GetterInvocationImposter(this, _defaultBehaviour, criteria);
-					if (global::System.Threading.Interlocked.CompareExchange(ref criteria.GetterSetup, getterInvocationImposter, null) is GetterInvocationImposter winner)
-						return winner;
-					_getterInvocationImposters.Push(getterInvocationImposter);
-					return getterInvocationImposter;
+					lock (criteria)
+					{
+						if (criteria.GetterSetup is GetterInvocationImposter current)
+							return current;
+						GetterInvocationImposter getterInvocationImposter = new GetterInvocationImposter(this, _defaultBehaviour, criteria);
+						_getterInvocationImposters.Push(getterInvocationImposter);
+						global::System.Threading.Volatile.Write(ref criteria.GetterSetup, getterInvocationImposter);
+						return getterInvocationImposter;
+					}
 				}
 
 				private void Called(Indexer_1IndexerArgumentsCriteria criteria, global::Imposter.Abstractions.Count count)

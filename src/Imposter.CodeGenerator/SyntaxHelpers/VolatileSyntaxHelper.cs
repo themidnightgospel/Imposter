@@ -17,8 +17,13 @@ internal static class VolatileSyntaxHelper
     internal static InvocationExpressionSyntax VolatileWrite(
         string fieldName,
         ExpressionSyntax value
+    ) => VolatileWrite(IdentifierName(fieldName), value);
+
+    internal static InvocationExpressionSyntax VolatileWrite(
+        ExpressionSyntax field,
+        ExpressionSyntax value
     ) =>
         WellKnownTypes
             .System.Threading.Volatile.Dot(IdentifierName("Write"))
-            .Call(ArgumentListSyntax([RefArgument(fieldName), Argument(value)]));
+            .Call(ArgumentListSyntax([RefArgument(field), Argument(value)]));
 }

@@ -262,11 +262,15 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 				{
 					if (global::System.Threading.Volatile.Read(ref criteria.GetterSetup) is GetterInvocationImposter existing)
 						return existing;
-					GetterInvocationImposter getterInvocationImposter_1 = new GetterInvocationImposter(this, _defaultBehaviour, criteria);
-					if (global::System.Threading.Interlocked.CompareExchange(ref criteria.GetterSetup, getterInvocationImposter_1, null) is GetterInvocationImposter winner)
-						return winner;
-					_getterInvocationImposters.Push(getterInvocationImposter_1);
-					return getterInvocationImposter_1;
+					lock (criteria)
+					{
+						if (criteria.GetterSetup is GetterInvocationImposter current)
+							return current;
+						GetterInvocationImposter getterInvocationImposter_1 = new GetterInvocationImposter(this, _defaultBehaviour, criteria);
+						_getterInvocationImposters.Push(getterInvocationImposter_1);
+						global::System.Threading.Volatile.Write(ref criteria.GetterSetup, getterInvocationImposter_1);
+						return getterInvocationImposter_1;
+					}
 				}
 
 				private void Called(IndexerIndexerArgumentsCriteria criteria, global::Imposter.Abstractions.Count count)
