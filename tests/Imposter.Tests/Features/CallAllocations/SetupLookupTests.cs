@@ -1,6 +1,5 @@
-using System.Threading;
-using System.Threading.Tasks;
 using Imposter.Abstractions;
+using Imposter.Tests.Shared;
 using Shouldly;
 using Xunit;
 
@@ -37,7 +36,7 @@ namespace Imposter.Tests.Features.CallAllocations
         [Theory]
         [InlineData(ImposterMode.Implicit)]
         [InlineData(ImposterMode.Explicit)]
-        public async Task GivenConcurrentSetupAddition_WhenCalling_ShouldObserveOldOrNewResults(
+        public void GivenConcurrentSetupAddition_WhenCalling_ShouldObserveOldOrNewResults(
             ImposterMode mode
         )
         {
@@ -46,36 +45,41 @@ namespace Imposter.Tests.Features.CallAllocations
             imposter.Echo<int>(Arg<int>.Any()).Returns(0);
             imposter[Arg<int>.Any()].Getter().Returns(0);
             var instance = imposter.Instance();
-            using var start = new Barrier(2);
 
-            var writer = Task.Run(() =>
-            {
-                start.SignalAndWait();
-                for (var i = 0; i < 100; i++)
+            // Worker 0 adds setups while worker 1 calls.
+            DedicatedThreads.RunTogether(
+                2,
+                worker =>
                 {
-                    // Each predicate has a distinct closure so indexer setups also create distinct lookup entries.
-                    var iteration = i;
-                    imposter.Square(Arg<int>.Is(value => value == 1 && iteration >= 0)).Returns(1);
-                    imposter
-                        .Echo<int>(Arg<int>.Is(value => value == 1 && iteration >= 0))
-                        .Returns(1);
-                    imposter[Arg<int>.Is(value => value == 1 && iteration >= 0)]
-                        .Getter()
-                        .Returns(1);
+                    if (worker == 0)
+                    {
+                        for (var i = 0; i < 100; i++)
+                        {
+                            // Each predicate has a distinct closure so indexer setups also create distinct lookup entries.
+                            var iteration = i;
+                            imposter
+                                .Square(Arg<int>.Is(value => value == 1 && iteration >= 0))
+                                .Returns(1);
+                            imposter
+                                .Echo<int>(Arg<int>.Is(value => value == 1 && iteration >= 0))
+                                .Returns(1);
+                            imposter[Arg<int>.Is(value => value == 1 && iteration >= 0)]
+                                .Getter()
+                                .Returns(1);
+                        }
+                    }
+                    else
+                    {
+                        for (var i = 0; i < 1000; i++)
+                        {
+                            instance.Square(1).ShouldBeInRange(0, 1);
+                            instance.Echo(1).ShouldBeInRange(0, 1);
+                            instance[1].ShouldBeInRange(0, 1);
+                        }
+                    }
                 }
-            });
-            var reader = Task.Run(() =>
-            {
-                start.SignalAndWait();
-                for (var i = 0; i < 1000; i++)
-                {
-                    instance.Square(1).ShouldBeInRange(0, 1);
-                    instance.Echo(1).ShouldBeInRange(0, 1);
-                    instance[1].ShouldBeInRange(0, 1);
-                }
-            });
+            );
 
-            await Task.WhenAll(writer, reader);
             instance.Square(1).ShouldBe(1);
             instance.Echo(1).ShouldBe(1);
             instance[1].ShouldBe(1);

@@ -2,9 +2,9 @@ using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Imposter.Abstractions;
 using Imposter.Tests.Features.MethodImpersonation;
+using Imposter.Tests.Shared;
 using Shouldly;
 using Xunit;
 
@@ -121,7 +121,7 @@ namespace Imposter.Tests.Features.CallAllocations
         [Theory]
         [InlineData(ImposterMode.Implicit)]
         [InlineData(ImposterMode.Explicit)]
-        public async Task Given_SequenceBeingExtended_When_ReadersConsumeOutcomes_Should_NotLoseAnyConfiguredStep(
+        public void Given_SequenceBeingExtended_When_ReadersConsumeOutcomes_Should_NotLoseAnyConfiguredStep(
             ImposterMode mode
         )
         {
@@ -131,30 +131,28 @@ namespace Imposter.Tests.Features.CallAllocations
             var continuation = imposter.IntNoParams().Returns(1);
             var observed = new ConcurrentDictionary<int, byte>();
             observed.TryAdd(instance.IntNoParams(), 0);
-            using var start = new ManualResetEventSlim();
-            var writer = Task.Run(async () =>
-            {
-                start.Wait(TimeSpan.FromSeconds(10)).ShouldBeTrue();
-                for (var i = 2; i <= steps; i++)
+
+            // Worker 0 extends the sequence, yielding while each step is pending; the others read it.
+            DedicatedThreads.RunTogether(
+                5,
+                worker =>
                 {
-                    var pending = continuation.Then();
-                    await Task.Yield();
-                    continuation = pending.Returns(i);
-                }
-            });
-            var readers = Enumerable
-                .Range(0, 4)
-                .Select(_ =>
-                    Task.Run(() =>
+                    if (worker == 0)
                     {
-                        start.Wait(TimeSpan.FromSeconds(10)).ShouldBeTrue();
+                        for (var i = 2; i <= steps; i++)
+                        {
+                            var pending = continuation.Then();
+                            Thread.Yield();
+                            continuation = pending.Returns(i);
+                        }
+                    }
+                    else
+                    {
                         for (var i = 0; i < 1000; i++)
                             observed.TryAdd(instance.IntNoParams(), 0);
-                    })
-                )
-                .ToArray();
-            start.Set();
-            await Task.WhenAll(readers.Append(writer));
+                    }
+                }
+            );
             // Readers may finish before the writer, so consume any remaining queued outcomes.
             for (var i = 0; i < steps; i++)
                 observed.TryAdd(instance.IntNoParams(), 0);
@@ -165,7 +163,7 @@ namespace Imposter.Tests.Features.CallAllocations
         [Theory]
         [InlineData(ImposterMode.Implicit)]
         [InlineData(ImposterMode.Explicit)]
-        public async Task Given_PendingSequence_When_CallsRunOnAnotherThread_Should_PreserveAndPublishOutcomes(
+        public void Given_PendingSequence_When_CallsRunOnAnotherThread_Should_PreserveAndPublishOutcomes(
             ImposterMode mode
         )
         {
@@ -175,31 +173,41 @@ namespace Imposter.Tests.Features.CallAllocations
             var pending = sequence.Then();
             using var pendingCallsCompleted = new ManualResetEventSlim();
             using var configurationCompleted = new ManualResetEventSlim();
-            var reader = Task.Run(() =>
-            {
-                try
+
+            // Worker 0 calls while the next outcome is pending, then after worker 1 has configured it.
+            DedicatedThreads.RunTogether(
+                2,
+                worker =>
                 {
-                    for (var i = 0; i < 100; i++)
-                        imposter.Instance().IntNoParams().ShouldBe(10);
+                    if (worker == 0)
+                    {
+                        try
+                        {
+                            for (var i = 0; i < 100; i++)
+                                imposter.Instance().IntNoParams().ShouldBe(10);
+                        }
+                        finally
+                        {
+                            pendingCallsCompleted.Set();
+                        }
+                        configurationCompleted.Wait(TimeSpan.FromSeconds(10)).ShouldBeTrue();
+                        for (var i = 0; i < 100; i++)
+                            imposter.Instance().IntNoParams().ShouldBe(20);
+                    }
+                    else
+                    {
+                        try
+                        {
+                            pendingCallsCompleted.Wait(TimeSpan.FromSeconds(10)).ShouldBeTrue();
+                            pending.Returns(20);
+                        }
+                        finally
+                        {
+                            configurationCompleted.Set();
+                        }
+                    }
                 }
-                finally
-                {
-                    pendingCallsCompleted.Set();
-                }
-                configurationCompleted.Wait(TimeSpan.FromSeconds(10)).ShouldBeTrue();
-                for (var i = 0; i < 100; i++)
-                    imposter.Instance().IntNoParams().ShouldBe(20);
-            });
-            try
-            {
-                pendingCallsCompleted.Wait(TimeSpan.FromSeconds(10)).ShouldBeTrue();
-                pending.Returns(20);
-            }
-            finally
-            {
-                configurationCompleted.Set();
-            }
-            await reader;
+            );
         }
     }
 }
