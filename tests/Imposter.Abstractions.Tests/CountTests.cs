@@ -234,4 +234,34 @@ public class CountTests
         (left == something).ShouldBeFalse();
         (left != something).ShouldBeTrue();
     }
+
+    [Fact]
+    public void GivenFixedCountFactories_WhenCalled_ShouldNotAllocate()
+    {
+        BytesPerCall(Count.Never).ShouldBe(0);
+        BytesPerCall(Count.Once).ShouldBe(0);
+        BytesPerCall(Count.Twice).ShouldBe(0);
+        BytesPerCall(Count.AtLeastOnce).ShouldBe(0);
+        BytesPerCall(Count.AtMostOnce).ShouldBe(0);
+    }
+
+    [Fact]
+    public void GivenFixedCountFactories_WhenCalled_ShouldEqualTheirGeneralForms()
+    {
+        Count.Never().ShouldBe(Count.Exactly(0));
+        Count.Once().ShouldBe(Count.Exactly(1));
+        Count.Twice().ShouldBe(Count.Exactly(2));
+        Count.AtLeastOnce().ShouldBe(Count.AtLeast(1));
+        Count.AtMostOnce().ShouldBe(Count.AtMost(1));
+    }
+
+    private static long BytesPerCall(Func<Count> create)
+    {
+        const int calls = 100;
+        _ = create();
+        var before = GC.GetAllocatedBytesForCurrentThread();
+        for (var i = 0; i < calls; i++)
+            _ = create();
+        return (GC.GetAllocatedBytesForCurrentThread() - before) / calls;
+    }
 }
