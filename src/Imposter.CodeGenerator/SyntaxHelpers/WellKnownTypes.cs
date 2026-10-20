@@ -14,6 +14,8 @@ internal static class WellKnownTypes
 
     internal static readonly TypeSyntax String = PredefinedType(Token(SyntaxKind.StringKeyword));
 
+    internal static readonly TypeSyntax Object = PredefinedType(Token(SyntaxKind.ObjectKeyword));
+
     internal static class System
     {
         internal static readonly NameSyntax Namespace = AliasQualifiedName(

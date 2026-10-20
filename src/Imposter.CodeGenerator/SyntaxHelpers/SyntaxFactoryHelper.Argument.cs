@@ -12,8 +12,10 @@ internal static partial class SyntaxFactoryHelper
     internal static ArgumentListSyntax ArgumentListSyntax(IEnumerable<ArgumentSyntax> arguments) =>
         ArgumentList(SeparatedList(arguments));
 
-    internal static ArgumentSyntax RefArgument(string name) =>
-        Argument(null, Token(SyntaxKind.RefKeyword), IdentifierName(name));
+    internal static ArgumentSyntax RefArgument(string name) => RefArgument(IdentifierName(name));
+
+    internal static ArgumentSyntax RefArgument(ExpressionSyntax variable) =>
+        Argument(null, Token(SyntaxKind.RefKeyword), variable);
 
     internal static ArgumentSyntax OutDiscardArgument() =>
         Argument(null, Token(SyntaxKind.OutKeyword), IdentifierName("_"));

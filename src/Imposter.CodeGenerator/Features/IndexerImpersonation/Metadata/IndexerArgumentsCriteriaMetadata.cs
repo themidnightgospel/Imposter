@@ -9,10 +9,14 @@ internal readonly struct IndexerArgumentsCriteriaMetadata
 
     internal readonly NameSyntax TypeSyntax;
 
+    // The getter setup made for these criteria, kept on them because criteria are compared by reference.
+    internal readonly string GetterSetupFieldName;
+
     internal IndexerArgumentsCriteriaMetadata(in ImposterIndexerCoreMetadata core)
     {
         // The class keeps each parameter in a field named after it, which can't share the class's name.
         Name = core.CreateParameterNameSet().Use($"{core.UniqueName}IndexerArgumentsCriteria");
         TypeSyntax = IdentifierName(Name);
+        GetterSetupFieldName = core.CreateParameterNameSet().Use("GetterSetup");
     }
 }

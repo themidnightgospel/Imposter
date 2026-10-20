@@ -20,8 +20,6 @@ internal readonly struct IndexerGetterImposterMetadata
 
     internal readonly FieldMetadata SetupsField;
 
-    internal readonly FieldMetadata SetupLookupField;
-
     internal readonly FieldMetadata InvocationHistoryField;
 
     internal readonly FieldMetadata InvocationBehaviorField;
@@ -93,13 +91,6 @@ internal readonly struct IndexerGetterImposterMetadata
         SetupsField = new FieldMetadata(
             names.Use("_getterInvocationImposters"),
             WellKnownTypes.Imposter.Abstractions.SetupCollection(Invocation.TypeSyntax)
-        );
-        SetupLookupField = new FieldMetadata(
-            names.Use("_setupLookup"),
-            WellKnownTypes.System.Collections.Concurrent.ConcurrentDictionary(
-                indexer.ArgumentsCriteria.TypeSyntax,
-                Invocation.TypeSyntax
-            )
         );
         InvocationHistoryField = new FieldMetadata(
             names.Use("_invocationHistory"),

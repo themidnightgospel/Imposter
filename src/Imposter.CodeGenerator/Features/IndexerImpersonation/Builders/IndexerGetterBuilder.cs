@@ -74,12 +74,6 @@ internal static partial class IndexerGetterBuilder
             )
             .AddMember(
                 SinglePrivateReadonlyVariableField(
-                    getter.SetupLookupField,
-                    getter.SetupLookupField.Type.New()
-                )
-            )
-            .AddMember(
-                SinglePrivateReadonlyVariableField(
                     getter.InvocationHistoryField,
                     getter.InvocationHistoryField.Type.New()
                 )
@@ -267,64 +261,63 @@ internal static partial class IndexerGetterBuilder
     )
     {
         var getter = indexer.GetterImplementation;
+        var invocationType = getter.Invocation.TypeSyntax;
+        var criteria = IdentifierName(getter.CriteriaParameterName);
+        var criteriaSetup = criteria.Dot(
+            IdentifierName(indexer.ArgumentsCriteria.GetterSetupFieldName)
+        );
+        var setup = IdentifierName(getter.SetupVariableName);
 
-        return new MethodDeclarationBuilder(getter.Invocation.TypeSyntax, "GetOrCreate")
+        return new MethodDeclarationBuilder(invocationType, "GetOrCreate")
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddParameter(
-                ParameterSyntax(indexer.ArgumentsCriteria.TypeSyntax, getter.CriteriaParameterName)
+                ParameterSyntax(indexer.ArgumentsCriteria.TypeSyntax, criteria.Identifier.Text)
             )
             .WithBody(
                 Block(
-                    ReturnStatement(
-                        IdentifierName(getter.SetupLookupField.Name)
-                            .Dot(IdentifierName("GetOrAdd"))
-                            .Call(
-                                ArgumentListSyntax([
-                                    Argument(IdentifierName(getter.CriteriaParameterName)),
-                                    Argument(IdentifierName("CreateSetup")),
-                                ])
-                            )
-                    ),
-                    BuildCreateSetupFunction(indexer)
+                    ReturnIfSetUp(VolatileRead(criteriaSetup), invocationType, "existing"),
+                    LockStatement(
+                        criteria,
+                        Block(
+                            ReturnIfSetUp(criteriaSetup, invocationType, "current"),
+                            LocalVariableDeclarationSyntax(
+                                invocationType,
+                                setup.Identifier.Text,
+                                invocationType.New(
+                                    ArgumentListSyntax([
+                                        Argument(ThisExpression()),
+                                        Argument(IdentifierName(getter.DefaultBehaviourField.Name)),
+                                        Argument(criteria),
+                                    ])
+                                )
+                            ),
+                            IdentifierName(getter.SetupsField.Name)
+                                .Dot(SetupCollectionSyntaxHelper.Push)
+                                .Call(Argument(setup))
+                                .ToStatementSyntax(),
+                            VolatileWrite(criteriaSetup, setup).ToStatementSyntax(),
+                            ReturnStatement(setup)
+                        )
+                    )
                 )
             )
             .Build();
     }
 
-    // GetOrCreate's local function, which adds a getter invocation imposter for criteria not seen before.
-    private static LocalFunctionStatementSyntax BuildCreateSetupFunction(
-        in ImposterIndexerMetadata indexer
-    )
-    {
-        var getter = indexer.GetterImplementation;
-        var invocationType = getter.Invocation.TypeSyntax;
-        var setup = IdentifierName(getter.SetupVariableName);
-
-        return LocalFunctionStatement(invocationType, Identifier("CreateSetup"))
-            .AddParameterListParameters(
-                ParameterSyntax(indexer.ArgumentsCriteria.TypeSyntax, "key")
-            )
-            .WithBody(
-                Block(
-                    LocalVariableDeclarationSyntax(
-                        invocationType,
-                        getter.SetupVariableName,
-                        invocationType.New(
-                            ArgumentListSyntax([
-                                Argument(ThisExpression()),
-                                Argument(IdentifierName(getter.DefaultBehaviourField.Name)),
-                                Argument(IdentifierName("key")),
-                            ])
-                        )
-                    ),
-                    IdentifierName(getter.SetupsField.Name)
-                        .Dot(SetupCollectionSyntaxHelper.Push)
-                        .Call(Argument(setup))
-                        .ToStatementSyntax(),
-                    ReturnStatement(setup)
-                )
-            );
-    }
+    // Criteria are compared by reference, so their setup is kept on them. It is created under a lock on the criteria
+    // and published only after it has been added to the setups, so a setup another thread reads is already matchable.
+    private static IfStatementSyntax ReturnIfSetUp(
+        ExpressionSyntax criteriaSetup,
+        TypeSyntax invocationType,
+        string setupName
+    ) =>
+        IfStatement(
+            IsPatternExpression(
+                criteriaSetup,
+                DeclarationPattern(invocationType, SingleVariableDesignation(Identifier(setupName)))
+            ),
+            ReturnStatement(IdentifierName(setupName))
+        );
 
     private static MethodDeclarationSyntax BuildGetterCalledMethod(
         in ImposterIndexerMetadata indexer

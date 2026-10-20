@@ -26,6 +26,17 @@ internal static class IndexerArgumentsCriteriaBuilder
             );
         }
 
+        classBuilder = classBuilder.AddMember(
+            indexer.Core.HasGetter
+                ? SingleVariableField(
+                    new FieldMetadata(
+                        indexer.ArgumentsCriteria.GetterSetupFieldName,
+                        WellKnownTypes.Object.ToNullableType()
+                    ),
+                    SyntaxKind.InternalKeyword
+                )
+                : null
+        );
         classBuilder = classBuilder.AddMember(BuildConstructor(indexer));
         classBuilder = classBuilder.AddMember(BuildMatchesMethod(indexer));
 

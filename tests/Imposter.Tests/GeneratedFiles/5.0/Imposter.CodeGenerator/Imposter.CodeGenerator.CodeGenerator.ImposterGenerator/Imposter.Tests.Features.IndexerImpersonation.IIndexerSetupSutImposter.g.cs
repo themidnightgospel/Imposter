@@ -74,6 +74,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 			public global::Imposter.Abstractions.Arg<int> key1;
 			public global::Imposter.Abstractions.Arg<string> key2;
 			public global::Imposter.Abstractions.Arg<object> key3;
+			internal object? GetterSetup;
 			internal IndexerIndexerArgumentsCriteria(global::Imposter.Abstractions.Arg<int> key1, global::Imposter.Abstractions.Arg<string> key2, global::Imposter.Abstractions.Arg<object> key3)
 			{
 				this.key1 = key1;
@@ -180,7 +181,6 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 			{
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
 				private readonly global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter> _getterInvocationImposters = new global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter>();
-				private readonly global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArgumentsCriteria, GetterInvocationImposter> _setupLookup = new global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArgumentsCriteria, GetterInvocationImposter>();
 				private readonly global::System.Collections.Concurrent.ConcurrentStack<IndexerIndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IndexerIndexerArguments>();
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 				private readonly string _propertyDisplayName;
@@ -240,11 +240,15 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 				private GetterInvocationImposter GetOrCreate(IndexerIndexerArgumentsCriteria criteria)
 				{
-					return _setupLookup.GetOrAdd(criteria, CreateSetup);
-					GetterInvocationImposter CreateSetup(IndexerIndexerArgumentsCriteria key)
+					if (global::System.Threading.Volatile.Read(ref criteria.GetterSetup) is GetterInvocationImposter existing)
+						return existing;
+					lock (criteria)
 					{
-						GetterInvocationImposter getterInvocationImposter = new GetterInvocationImposter(this, _defaultBehaviour, key);
+						if (criteria.GetterSetup is GetterInvocationImposter current)
+							return current;
+						GetterInvocationImposter getterInvocationImposter = new GetterInvocationImposter(this, _defaultBehaviour, criteria);
 						_getterInvocationImposters.Push(getterInvocationImposter);
+						global::System.Threading.Volatile.Write(ref criteria.GetterSetup, getterInvocationImposter);
 						return getterInvocationImposter;
 					}
 				}
@@ -658,6 +662,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 		internal class Indexer_1IndexerArgumentsCriteria
 		{
 			public global::Imposter.Abstractions.Arg<int> key1;
+			internal object? GetterSetup;
 			internal Indexer_1IndexerArgumentsCriteria(global::Imposter.Abstractions.Arg<int> key1)
 			{
 				this.key1 = key1;
@@ -762,7 +767,6 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 			{
 				private readonly DefaultIndexer_1IndexerBehaviour _defaultBehaviour;
 				private readonly global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter> _getterInvocationImposters = new global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter>();
-				private readonly global::System.Collections.Concurrent.ConcurrentDictionary<Indexer_1IndexerArgumentsCriteria, GetterInvocationImposter> _setupLookup = new global::System.Collections.Concurrent.ConcurrentDictionary<Indexer_1IndexerArgumentsCriteria, GetterInvocationImposter>();
 				private readonly global::System.Collections.Concurrent.ConcurrentStack<Indexer_1IndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<Indexer_1IndexerArguments>();
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 				private readonly string _propertyDisplayName;
@@ -822,11 +826,15 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 				private GetterInvocationImposter GetOrCreate(Indexer_1IndexerArgumentsCriteria criteria)
 				{
-					return _setupLookup.GetOrAdd(criteria, CreateSetup);
-					GetterInvocationImposter CreateSetup(Indexer_1IndexerArgumentsCriteria key)
+					if (global::System.Threading.Volatile.Read(ref criteria.GetterSetup) is GetterInvocationImposter existing)
+						return existing;
+					lock (criteria)
 					{
-						GetterInvocationImposter getterInvocationImposter = new GetterInvocationImposter(this, _defaultBehaviour, key);
+						if (criteria.GetterSetup is GetterInvocationImposter current)
+							return current;
+						GetterInvocationImposter getterInvocationImposter = new GetterInvocationImposter(this, _defaultBehaviour, criteria);
 						_getterInvocationImposters.Push(getterInvocationImposter);
+						global::System.Threading.Volatile.Write(ref criteria.GetterSetup, getterInvocationImposter);
 						return getterInvocationImposter;
 					}
 				}
