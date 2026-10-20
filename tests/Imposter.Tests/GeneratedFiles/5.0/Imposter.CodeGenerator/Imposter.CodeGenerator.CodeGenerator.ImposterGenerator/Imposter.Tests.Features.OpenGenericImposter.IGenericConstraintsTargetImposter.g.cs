@@ -122,7 +122,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			public bool Matches<TArgTarget>(CloneStructArgumentsCriteria<TArgTarget> criteria)
 				where TArgTarget : struct
 			{
-				return ((typeof(TArgTarget) == typeof(TArg)) && (typeof(TArg) == typeof(TArgTarget))) && criteria.As<TArg>().Matches(Arguments);
+				return (typeof(TArgTarget) == typeof(TArg)) && criteria.As<TArg>().Matches(Arguments);
 			}
 
 			public override string ToString()
@@ -647,7 +647,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			public bool Matches<TArgTarget>(CompareValuesArgumentsCriteria<TArgTarget> criteria)
 				where TArgTarget : global::System.IComparable<TArgTarget>
 			{
-				return ((typeof(TArgTarget) == typeof(TArg)) && (typeof(TArgTarget) == typeof(TArg))) && criteria.As<TArg>().Matches(Arguments);
+				return (typeof(TArgTarget) == typeof(TArg)) && criteria.As<TArg>().Matches(Arguments);
 			}
 
 			public override string ToString()
@@ -1098,7 +1098,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			public bool Matches<TArgTarget>()
 				where TArgTarget : new()
 			{
-				return typeof(TArg) == typeof(TArgTarget);
+				return typeof(TArgTarget) == typeof(TArg);
 			}
 
 			public override string ToString()

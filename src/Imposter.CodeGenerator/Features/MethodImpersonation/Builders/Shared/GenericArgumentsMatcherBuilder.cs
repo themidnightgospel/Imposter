@@ -1,57 +1,27 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Shared;
 
 internal static class GenericArgumentsMatcherBuilder
 {
+    // Compares the type arguments themselves: the same ones give the same parameter and return types, and comparing
+    // those instead would miss a type parameter neither uses.
     internal static ExpressionSyntax GenerateExactMatchCriteria(
         in ImposterTargetMethodMetadata method
-    )
-    {
-        var typeParamRenamer = new TypeParameterRenamer(
-            method.Model.TypeParameters,
-            method.TargetGenericTypeArguments
+    ) =>
+        method
+            .TargetGenericTypeArguments.Zip(method.GenericTypeArguments, SameType)
+            .Aggregate((current, next) => current.And(next));
+
+    internal static ExpressionSyntax SameType(TypeSyntax targetType, TypeSyntax sourceType) =>
+        BinaryExpression(
+            SyntaxKind.EqualsExpression,
+            TypeOfExpression(targetType),
+            TypeOfExpression(sourceType)
         );
-
-        var conditions = new List<ExpressionSyntax>();
-
-        foreach (var parameter in method.Parameters.AllParameterMetadata)
-        {
-            var sourceTypeSyntax = parameter.TypeSyntax;
-            var targetTypeSyntax = (TypeSyntax)typeParamRenamer.Visit(sourceTypeSyntax);
-
-            conditions.Add(
-                BinaryExpression(
-                    SyntaxKind.EqualsExpression,
-                    RuntimeTypeOf(targetTypeSyntax, parameter.Model.Type),
-                    RuntimeTypeOf(sourceTypeSyntax, parameter.Model.Type)
-                )
-            );
-        }
-
-        if (method.HasReturnValue)
-        {
-            var sourceTypeSyntax = method.ReturnTypeSyntax;
-            var targetTypeSyntax = (TypeSyntax)typeParamRenamer.Visit(sourceTypeSyntax);
-
-            conditions.Add(
-                BinaryExpression(
-                    SyntaxKind.EqualsExpression,
-                    RuntimeTypeOf(sourceTypeSyntax, method.Model.ReturnType.Type),
-                    RuntimeTypeOf(targetTypeSyntax, method.Model.ReturnType.Type)
-                )
-            );
-        }
-
-        return conditions.Count > 0
-            ? conditions.Aggregate((current, next) => current.And(next))
-            : True;
-    }
 }

@@ -120,7 +120,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public bool Matches<TTarget>(ContainsArgumentsCriteria<TTarget> criteria)
 			{
-				return (((typeof(global::System.ReadOnlySpan<TTarget>) == typeof(global::System.ReadOnlySpan<T>)) && (typeof(TTarget) == typeof(T))) && (typeof(bool) == typeof(bool))) && criteria.As<T>().Matches(Arguments);
+				return (typeof(TTarget) == typeof(T)) && criteria.As<T>().Matches(Arguments);
 			}
 
 			public override string ToString()
@@ -1081,7 +1081,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public bool Matches<TTarget>(FillArgumentsCriteria<TTarget> criteria)
 			{
-				return ((typeof(global::System.Span<byte>) == typeof(global::System.Span<byte>)) && (typeof(TTarget) == typeof(T))) && criteria.As<T>().Matches(Arguments);
+				return (typeof(TTarget) == typeof(T)) && criteria.As<T>().Matches(Arguments);
 			}
 
 			public override string ToString()

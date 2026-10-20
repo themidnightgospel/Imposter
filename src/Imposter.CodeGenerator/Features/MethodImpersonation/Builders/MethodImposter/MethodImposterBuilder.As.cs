@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Shared;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -60,21 +61,19 @@ internal static partial class MethodImposterBuilder
                 .New(Argument(ThisExpression()).ToSingleArgumentList())
         );
 
-        // Without a type to check, the adapter always applies, and an if (true) would leave the
-        // trailing return null unreachable.
-        return conditions.Count > 0
-            ? Block(
-                IfStatement(
-                    conditions.Aggregate((current, next) => current.And(next)),
-                    Block(returnAdapter)
-                ),
-                ReturnStatement(Null)
-            )
-            : Block(returnAdapter);
+        return Block(
+            IfStatement(
+                conditions.Aggregate((current, next) => current.And(next)),
+                Block(returnAdapter)
+            ),
+            ReturnStatement(Null)
+        );
     }
 
     // The checks that the target type arguments fit each type using the method's type parameters: an input parameter
-    // takes the target type, an output or the result gives the source type, and a ref parameter needs the same type.
+    // takes the target type, an output or the result gives the source type, and a ref parameter needs the same type. A
+    // type parameter neither uses needs the same type argument. Every type parameter adds a check, so a generic method
+    // always has one.
     private static List<ExpressionSyntax> TypeCompatibilityConditions(
         in ImposterTargetMethodMetadata method,
         TypeParameterRenamer typeParamRenamer
@@ -118,6 +117,16 @@ internal static partial class MethodImposterBuilder
             );
 
             conditions.Add(sourceTypeOf.IsAssignableTo(targetTypeOf));
+        }
+
+        foreach (var ordinal in method.Model.TypeParameterOrdinalsOutsideSignature)
+        {
+            conditions.Add(
+                GenericArgumentsMatcherBuilder.SameType(
+                    method.TargetGenericTypeArguments[ordinal],
+                    method.GenericTypeArguments[ordinal]
+                )
+            );
         }
 
         return conditions;

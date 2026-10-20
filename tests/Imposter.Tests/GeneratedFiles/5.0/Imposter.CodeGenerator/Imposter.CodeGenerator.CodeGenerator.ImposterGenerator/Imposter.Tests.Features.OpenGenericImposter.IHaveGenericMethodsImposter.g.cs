@@ -546,7 +546,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public bool Matches<TResultTarget>()
 			{
-				return typeof(TResult) == typeof(TResultTarget);
+				return typeof(TResultTarget) == typeof(TResult);
 			}
 
 			public override string ToString()
@@ -1044,7 +1044,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public bool Matches<TItemTarget>(ProcessAsyncArgumentsCriteria<TItemTarget> criteria)
 			{
-				return ((typeof(global::System.Collections.Generic.IEnumerable<TItemTarget>) == typeof(global::System.Collections.Generic.IEnumerable<TItem>)) && (typeof(global::System.Threading.Tasks.Task<TItem>) == typeof(global::System.Threading.Tasks.Task<TItemTarget>))) && criteria.As<TItem>().Matches(Arguments);
+				return (typeof(TItemTarget) == typeof(TItem)) && criteria.As<TItem>().Matches(Arguments);
 			}
 
 			public override string ToString()
@@ -1589,7 +1589,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public bool Matches<TItemTarget, TResultTarget>(ProcessComplexAsyncArgumentsCriteria<TItemTarget, TResultTarget> criteria)
 			{
-				return ((typeof(global::System.Collections.Generic.IEnumerable<TItemTarget>) == typeof(global::System.Collections.Generic.IEnumerable<TItem>)) && (typeof(global::System.Threading.Tasks.Task<TResult>) == typeof(global::System.Threading.Tasks.Task<TResultTarget>))) && criteria.As<TItem, TResult>().Matches(Arguments);
+				return ((typeof(TItemTarget) == typeof(TItem)) && (typeof(TResultTarget) == typeof(TResult))) && criteria.As<TItem, TResult>().Matches(Arguments);
 			}
 
 			public override string ToString()

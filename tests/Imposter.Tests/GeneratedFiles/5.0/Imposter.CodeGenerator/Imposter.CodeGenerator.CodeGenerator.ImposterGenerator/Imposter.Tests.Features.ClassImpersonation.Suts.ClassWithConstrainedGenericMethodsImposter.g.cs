@@ -106,7 +106,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			public bool Matches<TTarget>(DescribeArgumentsCriteria<TTarget> criteria)
 				where TTarget : new()
 			{
-				return ((typeof(TTarget) == typeof(T)) && (typeof(string) == typeof(string))) && criteria.As<T>().Matches(Arguments);
+				return (typeof(TTarget) == typeof(T)) && criteria.As<T>().Matches(Arguments);
 			}
 
 			public override string ToString()
@@ -653,7 +653,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			public bool Matches<TTarget>(EchoArgumentsCriteria<TTarget> criteria)
 				where TTarget : global::System.IDisposable
 			{
-				return ((typeof(TTarget) == typeof(T)) && (typeof(T) == typeof(TTarget))) && criteria.As<T>().Matches(Arguments);
+				return (typeof(TTarget) == typeof(T)) && criteria.As<T>().Matches(Arguments);
 			}
 
 			public override string ToString()

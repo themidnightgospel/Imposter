@@ -577,7 +577,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public bool Matches<TSourceTarget, TResultTarget>(MapArgumentsCriteria<TSourceTarget, TResultTarget> criteria)
 			{
-				return ((typeof(TSourceTarget) == typeof(TSource)) && (typeof(TResult) == typeof(TResultTarget))) && criteria.As<TSource, TResult>().Matches(Arguments);
+				return ((typeof(TSourceTarget) == typeof(TSource)) && (typeof(TResultTarget) == typeof(TResult))) && criteria.As<TSource, TResult>().Matches(Arguments);
 			}
 
 			public override string ToString()
@@ -1084,7 +1084,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public bool Matches<TArgTarget>(TransformArgumentsCriteria<TArgTarget> criteria)
 			{
-				return ((typeof(T) == typeof(T)) && (typeof(TArg) == typeof(TArgTarget))) && criteria.As<TArg>().Matches(Arguments);
+				return (typeof(TArgTarget) == typeof(TArg)) && criteria.As<TArg>().Matches(Arguments);
 			}
 
 			public override string ToString()

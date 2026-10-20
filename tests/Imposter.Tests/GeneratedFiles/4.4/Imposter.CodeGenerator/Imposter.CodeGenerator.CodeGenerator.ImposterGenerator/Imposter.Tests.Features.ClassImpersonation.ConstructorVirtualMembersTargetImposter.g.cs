@@ -893,7 +893,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			public bool Matches<TTarget>(TransformArgumentsCriteria<TTarget> criteria)
 			{
-				return ((((typeof(int) == typeof(int)) && (typeof(TTarget) == typeof(T))) && (typeof(TTarget) == typeof(T))) && (typeof(string) == typeof(string))) && criteria.As<T>().Matches(Arguments);
+				return (typeof(TTarget) == typeof(T)) && criteria.As<T>().Matches(Arguments);
 			}
 
 			public override string ToString()

@@ -102,7 +102,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			public bool Matches<TInputTarget, TResultTarget>(ConvertArgumentsCriteria<TInputTarget, TResultTarget> criteria)
 			{
-				return ((typeof(TInputTarget) == typeof(TInput)) && (typeof(string) == typeof(string))) && criteria.As<TInput, TResult>().Matches(Arguments);
+				return ((typeof(TInputTarget) == typeof(TInput)) && (typeof(TResultTarget) == typeof(TResult))) && criteria.As<TInput, TResult>().Matches(Arguments);
 			}
 
 			public override string ToString()
@@ -384,7 +384,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			IConvertMethodImposter<TInputTarget, TResultTarget>? IConvertMethodImposter.As<TInputTarget, TResultTarget>()
 			{
-				if (typeof(TInput).IsAssignableFrom(typeof(TInputTarget)))
+				if (typeof(TInput).IsAssignableFrom(typeof(TInputTarget)) && (typeof(TResultTarget) == typeof(TResult)))
 				{
 					return new Adapter<TInputTarget, TResultTarget>(this);
 				}
@@ -595,7 +595,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			public bool Matches<TTarget>()
 			{
-				return typeof(string) == typeof(string);
+				return typeof(TTarget) == typeof(T);
 			}
 
 			public override string ToString()
@@ -874,7 +874,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			IDescribeMethodImposter<TTarget>? IDescribeMethodImposter.As<TTarget>()
 			{
-				return new Adapter<TTarget>(this);
+				if (typeof(TTarget) == typeof(T))
+				{
+					return new Adapter<TTarget>(this);
+				}
+
+				return null;
 			}
 
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1072,7 +1077,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			public bool Matches<TTarget>()
 			{
-				return true;
+				return typeof(TTarget) == typeof(T);
 			}
 
 			public override string ToString()
@@ -1337,7 +1342,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			IExecuteMethodImposter<TTarget>? IExecuteMethodImposter.As<TTarget>()
 			{
-				return new Adapter<TTarget>(this);
+				if (typeof(TTarget) == typeof(T))
+				{
+					return new Adapter<TTarget>(this);
+				}
+
+				return null;
 			}
 
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

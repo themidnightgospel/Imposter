@@ -1058,7 +1058,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public bool Matches<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget>(GenericAllRefKindArgumentsCriteria<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget> criteria)
 			{
-				return (((((typeof(TOutTarget) == typeof(TOut)) && (typeof(TRefTarget) == typeof(TRef))) && (typeof(TInTarget) == typeof(TIn))) && (typeof(TParamsTarget[]) == typeof(TParams[]))) && (typeof(TResult) == typeof(TResultTarget))) && criteria.As<TOut, TRef, TIn, TParams, TResult>().Matches(Arguments);
+				return (((((typeof(TOutTarget) == typeof(TOut)) && (typeof(TRefTarget) == typeof(TRef))) && (typeof(TInTarget) == typeof(TIn))) && (typeof(TParamsTarget) == typeof(TParams))) && (typeof(TResultTarget) == typeof(TResult))) && criteria.As<TOut, TRef, TIn, TParams, TResult>().Matches(Arguments);
 			}
 
 			public override string ToString()
@@ -1538,7 +1538,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public bool Matches<TValueTarget, TResultTarget>()
 			{
-				return (typeof(global::System.Collections.Generic.List<TValueTarget>) == typeof(global::System.Collections.Generic.List<TValue>)) && (typeof(global::System.Collections.Generic.Stack<TResult>) == typeof(global::System.Collections.Generic.Stack<TResultTarget>));
+				return (typeof(TValueTarget) == typeof(TValue)) && (typeof(TResultTarget) == typeof(TResult));
 			}
 
 			public override string ToString()
@@ -2045,7 +2045,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public bool Matches<TValueTarget, TResultTarget>(GenericInnerParamsParamArgumentsCriteria<TValueTarget, TResultTarget> criteria)
 			{
-				return ((typeof(global::System.Collections.Generic.List<TValueTarget>[]) == typeof(global::System.Collections.Generic.List<TValue>[])) && (typeof(global::System.Collections.Generic.Stack<TResult>) == typeof(global::System.Collections.Generic.Stack<TResultTarget>))) && criteria.As<TValue, TResult>().Matches(Arguments);
+				return ((typeof(TValueTarget) == typeof(TValue)) && (typeof(TResultTarget) == typeof(TResult))) && criteria.As<TValue, TResult>().Matches(Arguments);
 			}
 
 			public override string ToString()
@@ -2552,7 +2552,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public bool Matches<TValueTarget, TResultTarget>(GenericInnerRefParamArgumentsCriteria<TValueTarget, TResultTarget> criteria)
 			{
-				return ((typeof(global::System.Collections.Generic.List<TValueTarget>) == typeof(global::System.Collections.Generic.List<TValue>)) && (typeof(global::System.Collections.Generic.Stack<TResult>) == typeof(global::System.Collections.Generic.Stack<TResultTarget>))) && criteria.As<TValue, TResult>().Matches(Arguments);
+				return ((typeof(TValueTarget) == typeof(TValue)) && (typeof(TResultTarget) == typeof(TResult))) && criteria.As<TValue, TResult>().Matches(Arguments);
 			}
 
 			public override string ToString()
@@ -3059,7 +3059,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public bool Matches<TValueTarget>(GenericInnerSingleParamArgumentsCriteria<TValueTarget> criteria)
 			{
-				return (typeof(global::System.Collections.Generic.List<TValueTarget>) == typeof(global::System.Collections.Generic.List<TValue>)) && criteria.As<TValue>().Matches(Arguments);
+				return (typeof(TValueTarget) == typeof(TValue)) && criteria.As<TValue>().Matches(Arguments);
 			}
 
 			public override string ToString()
@@ -3498,7 +3498,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public bool Matches<TValueTarget, TResultTarget>()
 			{
-				return (typeof(TValueTarget) == typeof(TValue)) && (typeof(TResult) == typeof(TResultTarget));
+				return (typeof(TValueTarget) == typeof(TValue)) && (typeof(TResultTarget) == typeof(TResult));
 			}
 
 			public override string ToString()
@@ -4005,7 +4005,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public bool Matches<TValueTarget, TResultTarget>(GenericParamsParamArgumentsCriteria<TValueTarget, TResultTarget> criteria)
 			{
-				return ((typeof(TValueTarget[]) == typeof(TValue[])) && (typeof(TResult) == typeof(TResultTarget))) && criteria.As<TValue, TResult>().Matches(Arguments);
+				return ((typeof(TValueTarget) == typeof(TValue)) && (typeof(TResultTarget) == typeof(TResult))) && criteria.As<TValue, TResult>().Matches(Arguments);
 			}
 
 			public override string ToString()
@@ -4512,7 +4512,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public bool Matches<TValueTarget, TResultTarget>(GenericRefParamArgumentsCriteria<TValueTarget, TResultTarget> criteria)
 			{
-				return ((typeof(TValueTarget) == typeof(TValue)) && (typeof(TResult) == typeof(TResultTarget))) && criteria.As<TValue, TResult>().Matches(Arguments);
+				return ((typeof(TValueTarget) == typeof(TValue)) && (typeof(TResultTarget) == typeof(TResult))) && criteria.As<TValue, TResult>().Matches(Arguments);
 			}
 
 			public override string ToString()
@@ -4983,7 +4983,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public bool Matches<TValueTarget>()
 			{
-				return typeof(TValue) == typeof(TValueTarget);
+				return typeof(TValueTarget) == typeof(TValue);
 			}
 
 			public override string ToString()

@@ -12,6 +12,8 @@ namespace Imposter.CodeGenerator.Models;
 /// can't tell apart: passing a parameter by value or by in, ref or ref readonly, and the ref structs they leave out.
 /// <see cref="HasAdapter"/> is true for a generic method whose imposter serves calls with other type arguments through
 /// an adapter, which converts the values between them (see <see cref="NeedsAdapter"/>).
+/// <see cref="TypeParameterOrdinalsOutsideSignature"/> are the positions of the type parameters that neither a parameter
+/// nor the return type uses, whose type arguments an adapter can't relate, so they have to be the same.
 /// </summary>
 internal sealed record MethodModel(
     string Name,
@@ -25,6 +27,7 @@ internal sealed record MethodModel(
     bool IsAsync,
     Accessibility OverrideAccessibility,
     EquatableArray<TypeParameterModel> TypeParameters,
+    EquatableArray<int> TypeParameterOrdinalsOutsideSignature,
     EquatableArray<ParameterModel> Parameters,
     ReturnTypeModel ReturnType,
     bool HasOverloadWithTheSameSetup,
@@ -53,6 +56,10 @@ internal sealed record MethodModel(
             method.IsMethodAsync(),
             memberAccess.GetOverrideAccessibility(method),
             method.TypeParameters.Select(TypeParameterModel.From).ToEquatableArray(),
+            method
+                .TypeParameters.Where(it => it.IsOutsideSignatureOf(method))
+                .Select(it => it.Ordinal)
+                .ToEquatableArray(),
             method.Parameters.Select(ParameterModel.From).ToEquatableArray(),
             ReturnTypeModel.From(method),
             hasOverloadWithTheSameSetup,

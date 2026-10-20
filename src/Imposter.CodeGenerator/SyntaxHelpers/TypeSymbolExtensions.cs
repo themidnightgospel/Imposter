@@ -66,6 +66,15 @@ internal static class TypeSymbolExtensions
     internal static bool ReferencesTypeParameterOf(this ITypeSymbol type, IMethodSymbol method) =>
         method.TypeParameters.Any(typeParameter => type.Contains(typeParameter));
 
+    // Neither a parameter nor the return type uses it, even when a constraint does, so nothing in a call relates one of
+    // its type arguments to another.
+    internal static bool IsOutsideSignatureOf(
+        this ITypeParameterSymbol typeParameter,
+        IMethodSymbol method
+    ) =>
+        !method.ReturnType.Contains(typeParameter)
+        && !method.Parameters.Any(parameter => parameter.Type.Contains(typeParameter));
+
     private static bool Contains(this ITypeSymbol type, ITypeParameterSymbol typeParameter) =>
         SymbolEqualityComparer.Default.Equals(type, typeParameter)
         || type switch

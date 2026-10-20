@@ -119,7 +119,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			public bool Matches<TTarget>(EchoArgumentsCriteria<TTarget> criteria)
 				where TTarget : class
 			{
-				return ((typeof(TTarget) == typeof(T)) && (typeof(T) == typeof(TTarget))) && criteria.As<T>().Matches(Arguments);
+				return (typeof(TTarget) == typeof(T)) && criteria.As<T>().Matches(Arguments);
 			}
 
 			public override string ToString()
@@ -1517,7 +1517,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			public bool Matches<TFirstTarget, TSecondTarget>(SelectFirstArgumentsCriteria<TFirstTarget, TSecondTarget> criteria)
 			{
-				return (((typeof(TFirstTarget) == typeof(TFirst)) && (typeof(TSecondTarget) == typeof(TSecond))) && (typeof(TFirst) == typeof(TFirstTarget))) && criteria.As<TFirst, TSecond>().Matches(Arguments);
+				return ((typeof(TFirstTarget) == typeof(TFirst)) && (typeof(TSecondTarget) == typeof(TSecond))) && criteria.As<TFirst, TSecond>().Matches(Arguments);
 			}
 
 			public override string ToString()

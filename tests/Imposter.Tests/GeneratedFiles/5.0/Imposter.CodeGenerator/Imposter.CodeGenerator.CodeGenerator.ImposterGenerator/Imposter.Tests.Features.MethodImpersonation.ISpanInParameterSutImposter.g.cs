@@ -497,7 +497,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public bool Matches<TTarget>(SumArgumentsCriteria<TTarget> criteria)
 			{
-				return ((typeof(global::System.ReadOnlySpan<TTarget>) == typeof(global::System.ReadOnlySpan<T>)) && (typeof(int) == typeof(int))) && criteria.As<T>().Matches(Arguments);
+				return (typeof(TTarget) == typeof(T)) && criteria.As<T>().Matches(Arguments);
 			}
 
 			public override string ToString()

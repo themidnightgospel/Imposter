@@ -133,7 +133,7 @@ namespace Imposter.Tests.Features.InterfaceSetup
 			public bool Matches<TTarget>(EchoArgumentsCriteria<TTarget> criteria)
 				where TTarget : class
 			{
-				return ((typeof(TTarget) == typeof(T)) && (typeof(T) == typeof(TTarget))) && criteria.As<T>().Matches(Arguments);
+				return (typeof(TTarget) == typeof(T)) && criteria.As<T>().Matches(Arguments);
 			}
 
 			public override string ToString()

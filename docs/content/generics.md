@@ -245,6 +245,19 @@ Generic interfaces like `IOpenGenericMethodTarget<T>` get a distinct imposter pe
     }
     ```
 
+- For a **type parameter that no parameter or return type uses**, such as `T` in `string Name<T>()` or `void Register<T>()`, setups and verification match only the same type argument. Nothing in the call relates two type arguments, so a setup for `Name<object>()` doesn't serve `Name<string>()`, even though the matching above applies to the method's other type parameters.
+
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/MethodImpersonation/TypeParameterOutsideSignatureTests.cs#L14"}
+    public void GivenReturnsSetup_WhenCalledWithAnotherTypeArgument_ShouldReturnDefault()
+    {
+        _sut.Name<string>().Returns("string setup");
+
+        _sut.Instance().Name<int>().ShouldBeNull();
+        _sut.Instance().Name<string>().ShouldBe("string setup");
+    }
+    ```
+
 ## Type parameters that allow ref structs
 
 A method's type parameter can allow ref structs (`where T : allows ref struct`, C# 13). A value of it may be a `ref struct`, which an imposter can't keep or match, so the imposter passes it through like a [ref struct parameter](arguments-matching.md#ref-struct-parameters), whatever the type argument:

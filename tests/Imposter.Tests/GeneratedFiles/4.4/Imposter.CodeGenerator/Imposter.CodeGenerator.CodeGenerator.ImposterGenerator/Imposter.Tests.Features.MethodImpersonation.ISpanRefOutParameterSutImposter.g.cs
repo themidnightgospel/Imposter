@@ -844,7 +844,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public bool Matches<TTarget>()
 			{
-				return (typeof(global::System.ReadOnlySpan<TTarget>) == typeof(global::System.ReadOnlySpan<T>)) && (typeof(bool) == typeof(bool));
+				return typeof(TTarget) == typeof(T);
 			}
 
 			public override string ToString()

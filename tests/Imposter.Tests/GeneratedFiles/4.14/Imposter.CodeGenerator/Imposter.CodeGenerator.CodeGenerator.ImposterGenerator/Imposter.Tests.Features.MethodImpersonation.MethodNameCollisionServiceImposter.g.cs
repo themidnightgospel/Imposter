@@ -111,7 +111,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public bool Matches<TTarget>(AdaptOutArgumentsCriteria<TTarget> criteria)
 			{
-				return (((typeof(int) == typeof(int)) && (typeof(int) == typeof(int))) && (typeof(T) == typeof(TTarget))) && criteria.As<T>().Matches(Arguments);
+				return (typeof(TTarget) == typeof(T)) && criteria.As<T>().Matches(Arguments);
 			}
 
 			public override string ToString()
@@ -631,7 +631,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public bool Matches<TTarget>(AdaptRefArgumentsCriteria<TTarget> criteria)
 			{
-				return (((typeof(int) == typeof(int)) && (typeof(int) == typeof(int))) && (typeof(T) == typeof(TTarget))) && criteria.As<T>().Matches(Arguments);
+				return (typeof(TTarget) == typeof(T)) && criteria.As<T>().Matches(Arguments);
 			}
 
 			public override string ToString()
@@ -1574,7 +1574,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public bool Matches<CalledTarget>(VerifyArgumentsCriteria<CalledTarget> criteria)
 			{
-				return ((typeof(CalledTarget) == typeof(Called)) && (typeof(Called) == typeof(CalledTarget))) && criteria.As<Called>().Matches(Arguments);
+				return (typeof(CalledTarget) == typeof(Called)) && criteria.As<Called>().Matches(Arguments);
 			}
 
 			public override string ToString()

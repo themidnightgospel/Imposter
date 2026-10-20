@@ -508,7 +508,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public bool Matches<TTarget>(RepeatArgumentsCriteria<TTarget> criteria)
 			{
-				return (((typeof(TTarget) == typeof(T)) && (typeof(int) == typeof(int))) && (typeof(global::System.ReadOnlySpan<T>) == typeof(global::System.ReadOnlySpan<TTarget>))) && criteria.As<T>().Matches(Arguments);
+				return (typeof(TTarget) == typeof(T)) && criteria.As<T>().Matches(Arguments);
 			}
 
 			public override string ToString()
