@@ -12,14 +12,19 @@ namespace Imposter.CodeGenerator.CodeGenerator;
 internal static class ImposterTargetValidator
 {
     // IMP002, IMP004 and IMP008 to IMP013 stop the target's generation; IMP006 only warns. Collisions between targets
-    // (IMP007) are found once all targets are known. The generated target is what's validated.
+    // (IMP007) are found once all targets are known. The generated target is what's validated, with its members.
     internal static (EquatableArray<DiagnosticModel> Diagnostics, bool CanGenerate) Validate(
         INamedTypeSymbol registeredTarget,
+        TargetMembers generatedTargetMembers,
         MemberAccess memberAccess
     )
     {
         var generatedTarget = GeneratedTarget(registeredTarget);
-        var (diagnostics, canGenerate) = ValidateTarget(generatedTarget, memberAccess);
+        var (diagnostics, canGenerate) = ValidateTarget(
+            generatedTarget,
+            generatedTargetMembers,
+            memberAccess
+        );
 
         return
             canGenerate && !SymbolEqualityComparer.Default.Equals(registeredTarget, generatedTarget)
@@ -37,6 +42,7 @@ internal static class ImposterTargetValidator
 
     private static (EquatableArray<DiagnosticModel> Diagnostics, bool CanGenerate) ValidateTarget(
         INamedTypeSymbol target,
+        TargetMembers members,
         MemberAccess memberAccess
     )
     {
@@ -109,7 +115,7 @@ internal static class ImposterTargetValidator
             );
         }
 
-        if (FindRefLikeMember(target, memberAccess) is { } refLikeMember)
+        if (FindRefLikeMember(members) is { } refLikeMember)
         {
             return (
                 Single(
@@ -123,7 +129,7 @@ internal static class ImposterTargetValidator
             );
         }
 
-        if (FindRefReturningMember(target, memberAccess) is { } refReturningMember)
+        if (FindRefReturningMember(members) is { } refReturningMember)
         {
             return (
                 Single(
@@ -136,7 +142,7 @@ internal static class ImposterTargetValidator
             );
         }
 
-        if (FindPointerMember(target, memberAccess) is { } pointerMember)
+        if (FindPointerMember(target, members, memberAccess) is { } pointerMember)
         {
             return (
                 Single(
@@ -232,13 +238,9 @@ internal static class ImposterTargetValidator
     // another ref struct type isn't kept at all, only passed through, and neither is a method's value of its type
     // parameter that allows ref structs (see IsPassedThrough, ReturnsPassedThrough, CanPassValueThrough, UncopiedTypes
     // and UncopiedEventTypes).
-    private static (ISymbol Member, ITypeSymbol Type)? FindRefLikeMember(
-        INamedTypeSymbol target,
-        MemberAccess memberAccess
-    ) =>
+    private static (ISymbol Member, ITypeSymbol Type)? FindRefLikeMember(TargetMembers members) =>
         FindMemberType(
-            target,
-            memberAccess,
+            members,
             member =>
                 member switch
                 {
@@ -253,19 +255,11 @@ internal static class ImposterTargetValidator
     // The first member the imposter would impersonate, among its methods, then its properties, then its events, in
     // whose signature findType finds a type, with that type.
     private static (ISymbol Member, ITypeSymbol Type)? FindMemberType(
-        INamedTypeSymbol target,
-        MemberAccess memberAccess,
+        TargetMembers members,
         Func<ISymbol, ITypeSymbol?> findType
     )
     {
-        IEnumerable<ISymbol> members =
-        [
-            .. ImposterTargetModel.GetMethods(target, memberAccess),
-            .. ImposterTargetModel.GetProperties(target, memberAccess),
-            .. ImposterTargetModel.GetEvents(target, memberAccess),
-        ];
-
-        foreach (var member in members)
+        foreach (var member in members.All)
         {
             if (findType(member) is { } type)
             {
@@ -384,13 +378,9 @@ internal static class ImposterTargetValidator
 
     // An imposter returns the results it is set up with by value, so it can't implement or override a member that
     // returns by ref or ref readonly.
-    private static ISymbol? FindRefReturningMember(
-        INamedTypeSymbol target,
-        MemberAccess memberAccess
-    ) =>
+    private static ISymbol? FindRefReturningMember(TargetMembers members) =>
         FindMemberType(
-            target,
-            memberAccess,
+            members,
             member =>
                 member switch
                 {
@@ -405,11 +395,11 @@ internal static class ImposterTargetValidator
     // constructor that takes one, so a class whose accessible constructors all do has none it can call.
     private static (ISymbol Member, ITypeSymbol Type)? FindPointerMember(
         INamedTypeSymbol target,
+        TargetMembers members,
         MemberAccess memberAccess
     ) =>
         FindMemberType(
-            target,
-            memberAccess,
+            members,
             member => SignatureTypes(member).FirstOrDefault(type => type.ContainsPointer())
         ) ?? FindPointerOnlyConstructor(target, memberAccess);
 

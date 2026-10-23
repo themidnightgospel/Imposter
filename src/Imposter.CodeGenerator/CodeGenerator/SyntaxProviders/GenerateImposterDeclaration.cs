@@ -33,6 +33,11 @@ internal sealed record GenerateImposterDeclaration(
     /// </summary>
     internal bool HintNameIncludesHash { get; init; }
 
+    // Equality still compares the whole target model. The hash reads only what tells registrations apart, so removing
+    // repeated registrations and finding colliding ones doesn't hash every model in depth.
+    public override int GetHashCode() =>
+        (PutInTheSameNamespace, TargetDisplayName, ImposterTypeName).GetHashCode();
+
     // A closed generic registration (IMP006) generates its open type's imposter, in the open type's namespace (see
     // ImposterTargetValidator.GeneratedTarget).
     internal static GenerateImposterDeclaration From(
@@ -41,11 +46,13 @@ internal sealed record GenerateImposterDeclaration(
         MemberAccess memberAccess
     )
     {
+        var target = ImposterTargetValidator.GeneratedTarget(registeredTarget);
+        var members = TargetMembers.Of(target, memberAccess);
         var (diagnostics, canGenerate) = ImposterTargetValidator.Validate(
             registeredTarget,
+            members,
             memberAccess
         );
-        var target = ImposterTargetValidator.GeneratedTarget(registeredTarget);
         var imposterNamespaceName = ImposterGenerationContext.GetImposterNamespaceName(
             putInTheSameNamespace,
             target.ToImposterIdentityString(),
@@ -62,20 +69,24 @@ internal sealed record GenerateImposterDeclaration(
             Target: null
         );
 
-        return canGenerate ? WithTargetModel(declaration, target, memberAccess) : declaration;
+        return canGenerate
+            ? WithTargetModel(
+                declaration,
+                () => ImposterTargetModel.From(target, members, memberAccess)
+            )
+            : declaration;
     }
 
     // Cancellation must propagate: reporting it as a crash would leave the driver with a cached result that has no
     // source and an error.
     private static GenerateImposterDeclaration WithTargetModel(
         GenerateImposterDeclaration declaration,
-        INamedTypeSymbol target,
-        MemberAccess memberAccess
+        Func<ImposterTargetModel> createTarget
     )
     {
         try
         {
-            return declaration with { Target = ImposterTargetModel.From(target, memberAccess) };
+            return declaration with { Target = createTarget() };
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {

@@ -37,10 +37,14 @@ internal sealed record ImposterTargetModel(
     InterfaceSetupTargetModel? InterfaceSetup
 )
 {
-    internal static ImposterTargetModel From(INamedTypeSymbol target, MemberAccess memberAccess)
+    internal static ImposterTargetModel From(
+        INamedTypeSymbol target,
+        TargetMembers members,
+        MemberAccess memberAccess
+    )
     {
         var isInterface = target.TypeKind is TypeKind.Interface;
-        var methods = GetMethods(target, memberAccess);
+        var methods = members.Methods;
         // A class's imposter sets all its methods up side by side. An interface's setup view lists only the methods
         // its interface declares, and DetectCollisions already names them apart on the imposter, so there they
         // collide only within one interface.
@@ -49,11 +53,11 @@ internal sealed record ImposterTargetModel(
                 ? methods.GroupBy(method => method.ContainingType, SymbolEqualityComparer.Default)
                 : [methods]
         );
-        var properties = GetProperties(target, memberAccess);
+        var properties = members.Properties;
         var indexers = properties.Where(property => property.IsIndexer).ToArray();
         var indexersWithTheSameSetup = FindIndexersWithTheSameSetup(indexers);
         var nonIndexers = properties.Where(property => !property.IsIndexer).ToArray();
-        var events = GetEvents(target, memberAccess);
+        var events = members.Events;
         // Two interfaces can declare a method, a property and an event of one name, which the imposter can't, so
         // those collide like members of one kind.
         var namesOfSeveralKinds = NamesOfSeveralKinds(methods, nonIndexers, events);
@@ -82,7 +86,7 @@ internal sealed record ImposterTargetModel(
                         memberAccess,
                         overloadsWithTheSameSetup.Contains(method)
                     ),
-                isInterface
+                isInterface ? InterfaceSetupMemberModel.From : null
             ),
             ToTargetMembers(
                 InEmitOrder(nonIndexers),
@@ -90,7 +94,7 @@ internal sealed record ImposterTargetModel(
                     ? DetectCollisions(nonIndexers, property => property.Name, namesOfSeveralKinds)
                     : null,
                 property => PropertyModel.From(property, memberAccess, false),
-                isInterface
+                isInterface ? InterfaceSetupMemberModel.From : null
             ),
             ToTargetMembers(
                 InEmitOrder(indexers),
@@ -101,7 +105,7 @@ internal sealed record ImposterTargetModel(
                         memberAccess,
                         indexersWithTheSameSetup.Contains(indexer)
                     ),
-                isInterface
+                isInterface ? InterfaceSetupMemberModel.From : null
             ),
             ToTargetMembers(
                 InEmitOrder(events),
@@ -109,77 +113,33 @@ internal sealed record ImposterTargetModel(
                     ? DetectCollisions(events, @event => @event.Name, namesOfSeveralKinds)
                     : null,
                 @event => EventModel.From(@event, memberAccess),
-                isInterface
+                isInterface ? InterfaceSetupMemberModel.From : null
             ),
             GetAccessibleConstructors(target, memberAccess),
             isInterface ? InterfaceSetupTargetModel.From(target) : null
         );
     }
 
+    // Only an interface's members get setup views, which describe them with their models' types.
     private static EquatableArray<TargetMemberModel<TModel>> ToTargetMembers<TSymbol, TModel>(
         IEnumerable<TSymbol> members,
         HashSet<TSymbol>? collidingMembers,
         Func<TSymbol, TModel> createModel,
-        bool isInterface
+        Func<TSymbol, TModel, InterfaceSetupMemberModel>? createSetup
     )
         where TSymbol : class, ISymbol
         where TModel : IEquatable<TModel> =>
         members
-            .Select(member => new TargetMemberModel<TModel>(
-                createModel(member),
-                collidingMembers?.Contains(member) == true,
-                isInterface ? InterfaceSetupMemberModel.From(member) : null
-            ))
+            .Select(member =>
+            {
+                var model = createModel(member);
+                return new TargetMemberModel<TModel>(
+                    model,
+                    collidingMembers?.Contains(member) == true,
+                    createSetup?.Invoke(member, model)
+                );
+            })
             .ToEquatableArray();
-
-    internal static IReadOnlyCollection<IMethodSymbol> GetMethods(
-        INamedTypeSymbol target,
-        MemberAccess memberAccess
-    ) =>
-        target.TypeKind switch
-        {
-            TypeKind.Interface => target.GetAllInterfaceMethods(),
-            TypeKind.Class => target
-                .GetAllOverridableMethods()
-                .Where(memberAccess.IsAccessible)
-                .ToArray(),
-            _ => [],
-        };
-
-    internal static IReadOnlyCollection<IPropertySymbol> GetProperties(
-        INamedTypeSymbol target,
-        MemberAccess memberAccess
-    ) =>
-        target.TypeKind switch
-        {
-            TypeKind.Interface => target.GetAllInterfaceProperties(),
-            TypeKind.Class => target
-                .GetAllOverridableProperties()
-                .Where(memberAccess.IsAccessible)
-                .ToArray(),
-            _ => [],
-        };
-
-    // Unlike methods and properties, events need a known delegate signature to generate their raising API.
-    // Leave events without one out, even when another generator might supply the delegate later. Keep other
-    // members with unresolved types: qualified references can bind once all generators' output is compiled.
-    internal static IReadOnlyCollection<IEventSymbol> GetEvents(
-        INamedTypeSymbol target,
-        MemberAccess memberAccess
-    ) =>
-        target.TypeKind switch
-        {
-            TypeKind.Interface => target.GetAllInterfaceEvents().Where(HasDelegateType).ToArray(),
-            TypeKind.Class => target
-                .GetAllOverridableEvents()
-                .Where(memberAccess.IsAccessible)
-                .Where(HasDelegateType)
-                .ToArray(),
-            _ => [],
-        };
-
-    private static bool HasDelegateType(IEventSymbol @event) =>
-        @event.Type is INamedTypeSymbol { DelegateInvokeMethod: not null };
 
     private static IEnumerable<TSymbol> InEmitOrder<TSymbol>(IEnumerable<TSymbol> members)
         where TSymbol : ISymbol =>
@@ -199,13 +159,21 @@ internal sealed record ImposterTargetModel(
     )
         where TSymbol : class, ISymbol =>
         new(
-            members
-                .GroupBy(key)
-                .Where(group => group.Count() > 1)
-                .SelectMany(group => group)
-                .Concat(members.Where(member => namesOfSeveralKinds.Contains(member.Name))),
+            WithTheSameKey(members, key).Concat(NamedLikeAnotherKind(members, namesOfSeveralKinds)),
             SymbolEqualityComparer.Default
         );
+
+    private static IEnumerable<TSymbol> WithTheSameKey<TSymbol>(
+        IEnumerable<TSymbol> members,
+        Func<TSymbol, string> key
+    ) => members.GroupBy(key).Where(group => group.Count() > 1).SelectMany(group => group);
+
+    private static IEnumerable<TSymbol> NamedLikeAnotherKind<TSymbol>(
+        IEnumerable<TSymbol> members,
+        HashSet<string> namesOfSeveralKinds
+    )
+        where TSymbol : ISymbol =>
+        members.Where(member => namesOfSeveralKinds.Contains(member.Name));
 
     private static HashSet<string> NamesOfSeveralKinds(params IEnumerable<ISymbol>[] kinds) =>
         [
@@ -232,8 +200,10 @@ internal sealed record ImposterTargetModel(
             SymbolEqualityComparer.Default
         );
 
+    // A method has the same setup and signature as itself, so only another one is compared.
     private static bool HaveTheSameSetupButDiffer(IMethodSymbol method, IMethodSymbol other) =>
-        MethodModel.HaveTheSameSetup(method, other)
+        !SymbolEqualityComparer.Default.Equals(method, other)
+        && MethodModel.HaveTheSameSetup(method, other)
         && !HaveTheSameSignature(method.Parameters, other.Parameters);
 
     // Indexers whose setups match the same keys, leaving out the ref structs they only pass through, would share a
@@ -246,7 +216,8 @@ internal sealed record ImposterTargetModel(
         new(
             indexers.Where(indexer =>
                 indexers.Any(other =>
-                    ParameterModel.HaveTheSameMatchers(
+                    !SymbolEqualityComparer.Default.Equals(indexer, other)
+                    && ParameterModel.HaveTheSameMatchers(
                         ParameterModel.MatchedParameters(indexer.Parameters),
                         ParameterModel.MatchedParameters(other.Parameters)
                     )
@@ -272,17 +243,21 @@ internal sealed record ImposterTargetModel(
 
     // Setup and implementation signatures can collide independently: allows ref struct removes a parameter from
     // the setup but not the implementation. Preserve numbered setups for setup collisions, and implement methods
-    // explicitly when their full signatures collide even if their setups take different matchers.
+    // explicitly when their full signatures collide even if their setups take different matchers. Both keys start with
+    // the method's name, so only methods that share one get keys built.
     private static HashSet<IMethodSymbol> DetectMethodCollisions(
         IReadOnlyCollection<IMethodSymbol> methods,
         HashSet<string> namesOfSeveralKinds
     )
     {
-        var collisions = DetectCollisions(methods, MethodSetupKey, namesOfSeveralKinds);
-        collisions.UnionWith(
-            DetectCollisions(methods, MethodImplementationKey, namesOfSeveralKinds)
+        var namesakes = WithTheSameKey(methods, method => method.Name).ToArray();
+
+        return new(
+            WithTheSameKey(namesakes, MethodSetupKey)
+                .Concat(WithTheSameKey(namesakes, MethodImplementationKey))
+                .Concat(NamedLikeAnotherKind(methods, namesOfSeveralKinds)),
+            SymbolEqualityComparer.Default
         );
-        return collisions;
     }
 
     private static string MethodSetupKey(IMethodSymbol method) =>

@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -37,7 +38,7 @@ public class InterfaceSetupModelTests
     [Fact]
     public void GivenMethodWithInheritedSignature_WhenMemberModelIsCreated_ShouldHideInheritedMember()
     {
-        var model = InterfaceSetupMemberModel.From(GetMethod("int"));
+        var model = GetMethodSetup("int");
 
         model.HidesInheritedMember.ShouldBeTrue();
     }
@@ -45,16 +46,37 @@ public class InterfaceSetupModelTests
     [Fact]
     public void GivenOverloadWithOtherArgumentType_WhenMemberModelIsCreated_ShouldNotHideInheritedMember()
     {
-        var model = InterfaceSetupMemberModel.From(GetMethod("string"));
+        var model = GetMethodSetup("string");
 
         model.HidesInheritedMember.ShouldBeFalse();
     }
 
-    private static IMethodSymbol GetMethod(string keyType) =>
-        GetType(Source, "IService")
+    // A view finds the events its interface declares among the target's by equality.
+    [Fact]
+    public void GivenEvent_WhenModelledFromItsEventModelAndFromItsInterface_ShouldBeEqual()
+    {
+        var @event = GetType(Source, "IBase").GetMembers("Changed").OfType<IEventSymbol>().Single();
+        var eventModel = EventModel.From(@event, new MemberAccess(@event.ContainingAssembly));
+
+        InterfaceSetupMemberModel
+            .From(@event, eventModel)
+            .ShouldBe(InterfaceSetupMemberModel.From(@event));
+    }
+
+    private static InterfaceSetupMemberModel GetMethodSetup(string keyType)
+    {
+        var method = GetType(Source, "IService")
             .GetMembers("Get")
             .OfType<IMethodSymbol>()
-            .Single(method => method.Parameters[0].Type.ToDisplayString() == keyType);
+            .Single(it => it.Parameters[0].Type.ToDisplayString() == keyType);
+        var methodModel = MethodModel.From(
+            method,
+            new MemberAccess(method.ContainingAssembly),
+            hasOverloadWithTheSameSetup: false
+        );
+
+        return InterfaceSetupMemberModel.From(method, methodModel);
+    }
 
     private static INamedTypeSymbol GetType(string source, string name) =>
         CSharpCompilation

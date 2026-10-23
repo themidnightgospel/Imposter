@@ -43,6 +43,10 @@ internal sealed record ParameterModel(
         ImmutableArray<IParameterSymbol> parameters
     ) => parameters.Where(parameter => !PassesThrough(parameter)).ToImmutableArray();
 
+    internal static EquatableArray<ParameterModel> MatchedParameters(
+        EquatableArray<ParameterModel> parameters
+    ) => parameters.Where(parameter => !parameter.IsPassedThrough).ToEquatableArray();
+
     internal static bool PassesThrough(IParameterSymbol parameter) =>
         IsCustomRefStruct(parameter) || parameter.Type.IsMethodTypeParameterAllowingRefStructs();
 
