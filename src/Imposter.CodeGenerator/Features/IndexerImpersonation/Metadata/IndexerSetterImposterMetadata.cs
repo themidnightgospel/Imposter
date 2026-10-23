@@ -62,9 +62,7 @@ internal readonly struct IndexerSetterImposterMetadata
         EnsureSetterConfiguredMethodName = names.Use("EnsureSetterConfigured");
         CallbacksField = new FieldMetadata(
             names.Use("_callbacks"),
-            WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
-                BuildRegistrationTuple(indexer)
-            )
+            WellKnownTypes.Imposter.Abstractions.CallbackCollection(BuildRegistrationTuple(indexer))
         );
         // A value passed through can't be kept, so the history keeps the keys alone.
         TypeSyntax invocationHistoryEntryType = !indexer.Core.IsValuePassedThrough
@@ -106,7 +104,7 @@ internal readonly struct IndexerSetterImposterMetadata
         BaseImplementationCriteriaField = indexer.Core.SetterSupportsBaseImplementation
             ? new FieldMetadata(
                 names.Use("_baseCriteria"),
-                WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
+                WellKnownTypes.Imposter.Abstractions.CallbackCollection(
                     indexer.ArgumentsCriteria.TypeSyntax
                 )
             )

@@ -48,11 +48,32 @@ public static class Arg
 /// </remarks>
 public class Arg<T>
 {
-    private readonly Func<T, bool> _matches;
-
-    private Arg(Func<T, bool> matches)
+    private enum MatcherKind : byte
     {
-        _matches = matches;
+        Any,
+        Equality,
+        Predicate,
+    }
+
+    private readonly MatcherKind _kind;
+    private readonly T? _value;
+    private readonly IEqualityComparer<T>? _comparer;
+    private readonly Func<T, bool>? _predicate;
+    private readonly bool _negated;
+
+    private Arg(
+        MatcherKind kind,
+        T? value = default,
+        IEqualityComparer<T>? comparer = null,
+        Func<T, bool>? predicate = null,
+        bool negated = false
+    )
+    {
+        _kind = kind;
+        _value = value;
+        _comparer = comparer;
+        _predicate = predicate;
+        _negated = negated;
     }
 
     /// <summary>
@@ -60,7 +81,20 @@ public class Arg<T>
     /// </summary>
     /// <param name="value">The value to test.</param>
     /// <returns><see langword="true"/> if the value matches; otherwise <see langword="false"/>.</returns>
-    public bool Matches(T value) => _matches(value);
+    public bool Matches(T value) =>
+        (
+            _kind switch
+            {
+                MatcherKind.Any => true,
+                // Keep Default at the call site so the JIT can specialize value-type equality.
+                // Custom comparers receive the actual argument first, as before.
+                MatcherKind.Equality => _comparer is null
+                    ? EqualityComparer<T>.Default.Equals(value, _value!)
+                    : _comparer.Equals(value, _value!),
+                MatcherKind.Predicate => _predicate!(value),
+                _ => throw new InvalidOperationException("Unknown argument matcher kind."),
+            }
+        ) != _negated;
 
     /// <summary>
     /// Matches an argument based on a custom predicate.
@@ -72,7 +106,7 @@ public class Arg<T>
     {
         if (predicate is null)
             throw new ArgumentNullException(nameof(predicate));
-        return new(predicate);
+        return new(MatcherKind.Predicate, predicate: predicate);
     }
 
     /// <summary>
@@ -80,7 +114,7 @@ public class Arg<T>
     /// </summary>
     /// <param name="value">The value to compare against.</param>
     /// <returns>An <see cref="Arg{T}"/> that matches equal values.</returns>
-    public static Arg<T> Is(T? value) => Is(value, EqualityComparer<T>.Default);
+    public static Arg<T> Is(T? value) => new(MatcherKind.Equality, value);
 
     /// <summary>
     /// Matches an argument that is equal to the provided value, using a custom comparer.
@@ -93,7 +127,7 @@ public class Arg<T>
     {
         if (comparer is null)
             throw new ArgumentNullException(nameof(comparer));
-        return new(it => comparer.Equals(it, value!));
+        return new(MatcherKind.Equality, value, comparer);
     }
 
     /// <summary>
@@ -106,7 +140,7 @@ public class Arg<T>
     {
         if (predicate is null)
             throw new ArgumentNullException(nameof(predicate));
-        return new(it => !predicate(it));
+        return new(MatcherKind.Predicate, predicate: predicate, negated: true);
     }
 
     /// <summary>
@@ -114,7 +148,7 @@ public class Arg<T>
     /// </summary>
     /// <param name="value">The value to compare against.</param>
     /// <returns>An <see cref="Arg{T}"/> that matches non-equal values.</returns>
-    public static Arg<T> IsNot(T? value) => IsNot(value, EqualityComparer<T>.Default);
+    public static Arg<T> IsNot(T? value) => new(MatcherKind.Equality, value, negated: true);
 
     /// <summary>
     /// Matches an argument that is not equal to the provided value, using a custom comparer.
@@ -127,7 +161,7 @@ public class Arg<T>
     {
         if (comparer is null)
             throw new ArgumentNullException(nameof(comparer));
-        return new(it => !comparer.Equals(it, value!));
+        return new(MatcherKind.Equality, value, comparer, negated: true);
     }
 
     /// <summary>
@@ -152,7 +186,7 @@ public class Arg<T>
             throw new ArgumentNullException(nameof(comparer));
 
         var lookup = new HashSet<T>(values, comparer);
-        return new(lookup.Contains);
+        return new(MatcherKind.Predicate, predicate: lookup.Contains);
     }
 
     /// <summary>
@@ -178,7 +212,7 @@ public class Arg<T>
             throw new ArgumentNullException(nameof(comparer));
 
         var lookup = new HashSet<T>(values, comparer);
-        return new(it => !lookup.Contains(it));
+        return new(MatcherKind.Predicate, predicate: lookup.Contains, negated: true);
     }
 
     /// <summary>
@@ -190,9 +224,9 @@ public class Arg<T>
     /// <summary>
     /// Matches any value of type <typeparamref name="T"/>.
     /// </summary>
-    public static Arg<T> Any() => _anyInstance;
+    public static Arg<T> Any() => AnyInstance;
 
-    private static readonly Arg<T> _anyInstance = new(_ => true);
+    private static readonly Arg<T> AnyInstance = new(MatcherKind.Any);
 
     /// <summary>
     /// Implicitly converts a value of type <typeparamref name="T"/> to an <see cref="Arg{T}"/>

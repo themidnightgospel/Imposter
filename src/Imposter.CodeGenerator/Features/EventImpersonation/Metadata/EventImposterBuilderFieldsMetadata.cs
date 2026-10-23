@@ -6,7 +6,7 @@ namespace Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 
 internal readonly struct EventImposterBuilderFieldsMetadata
 {
-    // The subscribed handlers as one combined delegate, in subscription order, like a field-like event's backing field.
+    // The subscribed handlers, with snapshots rebuilt only when subscriptions change.
     internal readonly FieldMetadata ActiveHandlers;
 
     internal readonly FieldMetadata Callbacks;
@@ -35,16 +35,22 @@ internal readonly struct EventImposterBuilderFieldsMetadata
     {
         HistoryEntry = new EventHistoryEntryMetadata(core.MatchedParameters);
         HandlerInvocationEntry = new EventHandlerInvocationEntryMetadata(core);
-        var handlerQueueType = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
+        var callbackType = WellKnownTypes.Imposter.Abstractions.CallbackCollection(
             core.HandlerTypeSyntax
         );
-        var historyQueueType = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
+        var handlerHistoryType = WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(
+            core.HandlerTypeSyntax
+        );
+        var activeHandlersType = WellKnownTypes.Imposter.Abstractions.EventHandlerCollection(
+            core.HandlerTypeSyntax
+        );
+        var historyType = WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(
             HistoryEntry.Type
         );
-        var handlerInvocationType = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
+        var handlerInvocationType = WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(
             HandlerInvocationEntry.Type
         );
-        var interceptorQueueType = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
+        var interceptorType = WellKnownTypes.Imposter.Abstractions.CallbackCollection(
             WellKnownTypes.System.ActionOfT(core.HandlerTypeSyntax)
         );
 
@@ -54,51 +60,28 @@ internal readonly struct EventImposterBuilderFieldsMetadata
         );
         var fieldNames = core.CreateParameterNameSet();
 
-        ActiveHandlers = FieldMetadata.PrivateField(
-            fieldNames.Use("_activeHandlers"),
-            core.HandlerTypeSyntax.ToNullableType()
-        );
-        Callbacks = new FieldMetadata(
-            fieldNames.Use("_callbacks"),
-            handlerQueueType,
-            privateReadonlyModifiers,
-            handlerQueueType.New()
-        );
-        History = new FieldMetadata(
-            fieldNames.Use("_history"),
-            historyQueueType,
-            privateReadonlyModifiers,
-            historyQueueType.New()
-        );
+        ActiveHandlers = new FieldMetadata(fieldNames.Use("_activeHandlers"), activeHandlersType);
+        Callbacks = new FieldMetadata(fieldNames.Use("_callbacks"), callbackType);
+        History = new FieldMetadata(fieldNames.Use("_history"), historyType);
         SubscribeHistory = new FieldMetadata(
             fieldNames.Use("_subscribeHistory"),
-            handlerQueueType,
-            privateReadonlyModifiers,
-            handlerQueueType.New()
+            handlerHistoryType
         );
         UnsubscribeHistory = new FieldMetadata(
             fieldNames.Use("_unsubscribeHistory"),
-            handlerQueueType,
-            privateReadonlyModifiers,
-            handlerQueueType.New()
+            handlerHistoryType
         );
         SubscribeInterceptors = new FieldMetadata(
             fieldNames.Use("_subscribeInterceptors"),
-            interceptorQueueType,
-            privateReadonlyModifiers,
-            interceptorQueueType.New()
+            interceptorType
         );
         UnsubscribeInterceptors = new FieldMetadata(
             fieldNames.Use("_unsubscribeInterceptors"),
-            interceptorQueueType,
-            privateReadonlyModifiers,
-            interceptorQueueType.New()
+            interceptorType
         );
         HandlerInvocations = new FieldMetadata(
             fieldNames.Use("_handlerInvocations"),
-            handlerInvocationType,
-            privateReadonlyModifiers,
-            handlerInvocationType.New()
+            handlerInvocationType
         );
 
         UseBaseImplementation = new FieldMetadata(

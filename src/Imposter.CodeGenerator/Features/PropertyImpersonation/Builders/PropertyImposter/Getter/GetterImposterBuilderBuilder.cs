@@ -1,4 +1,4 @@
-﻿using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
+using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.GetterImposterBuilder;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.GetterImposterBuilderInterface;
 using Imposter.CodeGenerator.Features.Shared.BuilderInterface;
@@ -150,19 +150,19 @@ internal static class GetterImposterBuilderBuilder
     private static FieldDeclarationSyntax BuildGetterReturnValuesField(
         in PropertyGetterImposterBuilderMetadata getterImposterBuilder
     ) =>
-        SinglePrivateReadonlyVariableField(
-            getterImposterBuilder.ReturnValuesField.TypeSyntax,
+        SingleVariableField(
+            getterImposterBuilder.ReturnValuesField.TypeSyntax.ToNullableType(),
             getterImposterBuilder.ReturnValuesField.Name,
-            getterImposterBuilder.ReturnValuesField.TypeSyntax.New()
+            SyntaxKind.PrivateKeyword
         );
 
     private static FieldDeclarationSyntax BuildGetterCallbacksField(
         in PropertyGetterImposterBuilderMetadata getterImposterBuilder
     ) =>
-        SinglePrivateReadonlyVariableField(
-            getterImposterBuilder.CallbacksField.TypeSyntax,
+        SingleVariableField(
+            getterImposterBuilder.CallbacksField.TypeSyntax.ToNullableType(),
             getterImposterBuilder.CallbacksField.Name,
-            getterImposterBuilder.CallbacksField.TypeSyntax.New()
+            SyntaxKind.PrivateKeyword
         );
 
     // A value passed through can't be kept like the default behaviour keeps one, so until a setup says otherwise the
@@ -233,8 +233,9 @@ internal static class GetterImposterBuilderBuilder
                 new BlockBuilder()
                     .AddExpression(turnDefaultBehaviourOff)
                     .AddExpression(
-                        IdentifierName(getterImposterBuilder.ReturnValuesField.Name)
-                            .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
+                        LazyCollectionSyntaxHelper
+                            .EnsureInitialized(getterImposterBuilder.ReturnValuesField.Name)
+                            .Dot(IdentifierName("Add"))
                             .Call(
                                 Argument(
                                     IdentifierName(
@@ -375,8 +376,9 @@ internal static class GetterImposterBuilderBuilder
             .AddParameter(ParameterSyntax(builderInterface.CallbackMethod.CallbackParameter))
             .WithBody(
                 Block(
-                    IdentifierName(builder.CallbacksField.Name)
-                        .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
+                    LazyCollectionSyntaxHelper
+                        .EnsureInitialized(builder.CallbacksField.Name)
+                        .Dot(IdentifierName("Add"))
                         .Call(
                             Argument(
                                 IdentifierName(
@@ -604,7 +606,7 @@ internal static class GetterImposterBuilderBuilder
         static StatementSyntax InvokeGetterCallbacks(
             in PropertyGetterImposterBuilderMetadata builder
         ) =>
-            ConcurrentQueueSyntaxHelper.UnlessEmpty(
+            LazyCollectionSyntaxHelper.UnlessNull(
                 ForEachStatement(
                     type: Var,
                     identifier: Identifier("getterCallback"),
@@ -627,10 +629,21 @@ internal static class GetterImposterBuilderBuilder
         )
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .WithBody(
-                NextOutcomeSyntaxHelper.TakeNextOutcomeBody(
-                    IdentifierName(builder.ReturnValuesField.Name),
-                    IdentifierName(builder.LastReturnValueField.Name),
-                    IdentifierName("returnValue")
+                Block(
+                    LocalVariableDeclarationSyntax(
+                        Var,
+                        "returnValues",
+                        VolatileSyntaxHelper.VolatileRead(builder.ReturnValuesField.Name)
+                    ),
+                    ReturnStatement(
+                        ConditionalExpression(
+                            IdentifierName("returnValues").IsNotNull(),
+                            IdentifierName("returnValues")
+                                .Dot(IdentifierName("Next"))
+                                .Call(Argument(IdentifierName(builder.LastReturnValueField.Name))),
+                            IdentifierName(builder.LastReturnValueField.Name)
+                        )
+                    )
                 )
             )
             .Build();

@@ -1,4 +1,4 @@
-﻿using Imposter.CodeGenerator.SyntaxHelpers;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.SetterImposter;
@@ -17,7 +17,7 @@ internal readonly struct CallbacksFieldMetadata
         TupleTypeSyntax = property.AsArgType is { } argType
             ? WellKnownTypes.System.Tuple(argType, property.SetterCallbackType)
             : null;
-        Type = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
+        Type = WellKnownTypes.Imposter.Abstractions.CallbackCollection(
             TupleTypeSyntax ?? property.SetterCallbackType
         );
     }

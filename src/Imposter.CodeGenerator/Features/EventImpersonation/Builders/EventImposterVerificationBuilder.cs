@@ -95,7 +95,6 @@ internal static class EventImposterVerificationBuilder
     {
         var blockBuilder = new BlockBuilder();
         var countParameterName = @event.Builder.Methods.CountParameter.Name;
-        var ensureCountMatchesName = @event.Builder.Methods.EnsureCountMatches.Name;
         foreach (var criteria in @event.Builder.Methods.RaisedCriteriaParameters)
         {
             blockBuilder.AddStatement(ThrowIfNull(criteria.Name));
@@ -108,11 +107,9 @@ internal static class EventImposterVerificationBuilder
         AddEnsureCountMatchesStatements(
             blockBuilder,
             countParameterName,
-            ensureCountMatchesName,
-            FieldIdentifier(@event.Builder.Fields.History)
-                .Dot(LinqSyntaxHelper.Count)
-                .Call([Argument(predicate)]),
-            BuildRaisedPerformedInvocationsFactory(@event, GetPredicateBody(predicate))
+            FieldIdentifier(@event.Builder.Fields.History),
+            predicate,
+            BuildRaisedFailureBody(@event, predicate, countParameterName)
         );
 
         blockBuilder.AddStatement(ReturnThis);
@@ -120,9 +117,7 @@ internal static class EventImposterVerificationBuilder
         return blockBuilder.Build();
     }
 
-    private static SimpleLambdaExpressionSyntax BuildRaisedPredicate(
-        in ImposterEventMetadata @event
-    )
+    private static ExpressionSyntax BuildRaisedPredicate(in ImposterEventMetadata @event)
     {
         var historyEntry = @event.Builder.Fields.HistoryEntry;
         var criteria = @event.Builder.Methods.RaisedCriteriaParameters;
@@ -137,7 +132,7 @@ internal static class EventImposterVerificationBuilder
             .DefaultIfEmpty(True)
             .Aggregate((current, next) => current.And(next));
 
-        return SimpleLambdaExpression(Parameter(Entry.Identifier), predicateBody);
+        return predicateBody;
     }
 
     internal static MethodDeclarationSyntax BuildHandlerInvokedVerificationMethod(
@@ -187,29 +182,19 @@ internal static class EventImposterVerificationBuilder
     )
     {
         var countParameterName = @event.Builder.Methods.CountParameter.Name;
-        var ensureCountMatchesName = @event.Builder.Methods.EnsureCountMatches.Name;
 
         var blockBuilder = new BlockBuilder()
             .AddStatement(ThrowIfNull(criteriaParameterName))
             .AddStatement(ThrowIfNull(countParameterName));
 
-        var predicateLambda = SimpleLambdaExpression(
-            Parameter(Entry.Identifier),
-            predicateFactory(Entry)
-        );
+        var predicate = predicateFactory(Entry);
 
         AddEnsureCountMatchesStatements(
             blockBuilder,
             countParameterName,
-            ensureCountMatchesName,
-            FieldIdentifier(historyField)
-                .Dot(LinqSyntaxHelper.Count)
-                .Call([Argument(predicateLambda)]),
-            BuildHistoryPerformedInvocationsFactory(
-                historyField,
-                descriptionFactory,
-                GetPredicateBody(predicateLambda)
-            )
+            FieldIdentifier(historyField),
+            predicate,
+            BuildHistoryFailureBody(historyField, descriptionFactory, predicate, countParameterName)
         );
 
         blockBuilder.AddStatement(ReturnThis);
@@ -217,94 +202,63 @@ internal static class EventImposterVerificationBuilder
         return blockBuilder.Build();
     }
 
-    internal static MethodDeclarationSyntax BuildEnsureCountMatchesMethod(
-        in EventImposterBuilderMethodsMetadata methods
+    private static void AddEnsureCountMatchesStatements(
+        BlockBuilder blockBuilder,
+        string countParameterName,
+        ExpressionSyntax history,
+        ExpressionSyntax predicate,
+        BlockSyntax failureBody
     )
     {
         var actual = IdentifierName("actual");
-        var expected = IdentifierName("expected");
-        var performedInvocationsFactory = IdentifierName("performedInvocationsFactory");
-
-        return new MethodDeclarationBuilder(
-            methods.EnsureCountMatches.ReturnType,
-            methods.EnsureCountMatches.Name
-        )
-            .AddModifier(Token(SyntaxKind.PrivateKeyword))
-            .AddModifier(Token(SyntaxKind.StaticKeyword))
-            .AddParameter(ParameterSyntax(WellKnownTypes.Int, actual.Identifier.Text))
-            .AddParameter(
-                ParameterSyntax(
-                    WellKnownTypes.Imposter.Abstractions.Count,
-                    expected.Identifier.Text
-                )
+        var expected = IdentifierName(countParameterName);
+        blockBuilder.AddStatement(
+            LocalVariableDeclarationSyntax(
+                WellKnownTypes.Int,
+                actual.Identifier.Text,
+                LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))
             )
-            .AddParameter(
-                ParameterSyntax(
-                    WellKnownTypes.System.Func(WellKnownTypes.String),
-                    performedInvocationsFactory.Identifier.Text
-                )
-            )
-            .WithBody(
-                Block(
-                    IfStatement(
-                        CountDoesNotMatch(expected, actual),
-                        Block(
-                            ThrowVerificationFailed(
-                                expected,
-                                actual,
-                                performedInvocationsFactory.Call()
+        );
+        blockBuilder.AddStatement(
+            LazyCollectionSyntaxHelper.UnlessNull(
+                ForEachStatement(
+                    Var,
+                    Entry.Identifier,
+                    history,
+                    Block(
+                        IfStatement(
+                            predicate,
+                            Block(
+                                PostfixUnaryExpression(SyntaxKind.PostIncrementExpression, actual)
+                                    .ToStatementSyntax()
                             )
                         )
                     )
                 )
             )
-            .Build();
-    }
-
-    private static void AddEnsureCountMatchesStatements(
-        BlockBuilder blockBuilder,
-        string countParameterName,
-        string ensureCountMatchesName,
-        ExpressionSyntax actualValueExpression,
-        ExpressionSyntax performedInvocationsFactoryExpression
-    )
-    {
-        var actual = IdentifierName("actual");
-
-        blockBuilder.AddStatement(
-            LocalVariableDeclarationSyntax(
-                WellKnownTypes.Int,
-                actual.Identifier.Text,
-                actualValueExpression
-            )
         );
 
-        blockBuilder.AddExpression(
-            IdentifierName(ensureCountMatchesName)
-                .Call([
-                    Argument(actual),
-                    Argument(IdentifierName(countParameterName)),
-                    Argument(performedInvocationsFactoryExpression),
-                ])
-        );
+        // Build descriptions only on failure; successful verification needs no predicate or closure allocation.
+        blockBuilder.AddStatement(IfStatement(CountDoesNotMatch(expected, actual), failureBody));
     }
 
-    private static ParenthesizedLambdaExpressionSyntax BuildHistoryPerformedInvocationsFactory(
+    private static BlockSyntax BuildHistoryFailureBody(
         in FieldMetadata historyField,
         Func<ExpressionSyntax, ExpressionSyntax> descriptionFactory,
-        ExpressionSyntax predicateBody
+        ExpressionSyntax predicateBody,
+        string countParameterName
     )
     {
         var stringListType = WellKnownTypes.System.Collections.Generic.List(WellKnownTypes.String);
         var performedInvocations = IdentifierName("performedInvocations");
 
-        return EmptyParametersGoesTo(
-            Block(
-                LocalVariableDeclarationSyntax(
-                    Var,
-                    performedInvocations.Identifier.Text,
-                    stringListType.New()
-                ),
+        return Block(
+            LocalVariableDeclarationSyntax(
+                Var,
+                performedInvocations.Identifier.Text,
+                stringListType.New()
+            ),
+            LazyCollectionSyntaxHelper.UnlessNull(
                 ForEachStatement(
                     Var,
                     Entry.Identifier,
@@ -320,25 +274,32 @@ internal static class EventImposterVerificationBuilder
                             )
                         )
                     )
-                ),
-                ReturnStatement(JoinWithNewLines(performedInvocations))
+                )
+            ),
+            performedInvocations.Dot(IdentifierName("Reverse")).Call().ToStatementSyntax(),
+            ThrowVerificationFailed(
+                IdentifierName(countParameterName),
+                IdentifierName("actual"),
+                JoinWithNewLines(performedInvocations)
             )
         );
     }
 
-    private static ParenthesizedLambdaExpressionSyntax BuildRaisedPerformedInvocationsFactory(
+    private static BlockSyntax BuildRaisedFailureBody(
         in ImposterEventMetadata @event,
-        ExpressionSyntax predicateBody
+        ExpressionSyntax predicateBody,
+        string countParameterName
     )
     {
         var eventName = @event.Core.Name;
         var parameters = @event.Core.MatchedParameters;
         var historyEntry = @event.Builder.Fields.HistoryEntry;
 
-        return BuildHistoryPerformedInvocationsFactory(
+        return BuildHistoryFailureBody(
             @event.Builder.Fields.History,
             entry => BuildRaisedDescription(eventName, parameters, historyEntry, entry),
-            predicateBody
+            predicateBody,
+            countParameterName
         );
     }
 
@@ -405,8 +366,4 @@ internal static class EventImposterVerificationBuilder
         string label,
         ExpressionSyntax valueExpression
     ) => description.Add($" {label}: ".StringLiteral().Add(Invocation(valueExpression)));
-
-    private static ExpressionSyntax GetPredicateBody(SimpleLambdaExpressionSyntax predicate) =>
-        predicate.Body as ExpressionSyntax
-        ?? throw new InvalidOperationException("Predicate body must be an expression.");
 }

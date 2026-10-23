@@ -18,11 +18,11 @@ internal static class EventImposterSubscriptionsBuilder
 
         return
         [
-            SingleVariableField(fields.ActiveHandlers),
-            SingleVariableField(fields.SubscribeHistory),
-            SingleVariableField(fields.UnsubscribeHistory),
-            SingleVariableField(fields.SubscribeInterceptors),
-            SingleVariableField(fields.UnsubscribeInterceptors),
+            LazyCollectionSyntaxHelper.Field(fields.ActiveHandlers),
+            LazyCollectionSyntaxHelper.Field(fields.SubscribeHistory),
+            LazyCollectionSyntaxHelper.Field(fields.UnsubscribeHistory),
+            LazyCollectionSyntaxHelper.Field(fields.SubscribeInterceptors),
+            LazyCollectionSyntaxHelper.Field(fields.UnsubscribeInterceptors),
         ];
     }
 
@@ -70,8 +70,9 @@ internal static class EventImposterSubscriptionsBuilder
                 UpdateActiveHandlers(@event, handlerIdentifier, method.DelegateOperation)
             )
             .AddExpression(
-                FieldIdentifier(history)
-                    .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
+                LazyCollectionSyntaxHelper
+                    .EnsureInitialized(history.Name)
+                    .Dot(ConcurrentStackSyntaxHelper.Push)
                     .Call(Argument(handlerIdentifier))
             )
             .AddStatement(ForEachInterceptor(interceptors, method.HandlerParameter.Name));
@@ -101,8 +102,9 @@ internal static class EventImposterSubscriptionsBuilder
                 new BlockBuilder()
                     .AddStatement(ThrowIfNull(method.CallbackParameter.Name))
                     .AddExpression(
-                        FieldIdentifier(@event.Builder.Fields.Callbacks)
-                            .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
+                        LazyCollectionSyntaxHelper
+                            .EnsureInitialized(@event.Builder.Fields.Callbacks.Name)
+                            .Dot(IdentifierName("Add"))
                             .Call(Argument(callbackIdentifier))
                     )
                     .AddStatement(ReturnThis)
@@ -129,76 +131,33 @@ internal static class EventImposterSubscriptionsBuilder
             @event.Builder.Fields.UnsubscribeInterceptors
         );
 
-    // Updates the active handlers the way a field-like event's accessors do: Delegate.Combine appends a subscription,
-    // Delegate.Remove drops the handler's last one, and the compare-exchange loop retries when another caller changed
-    // the field in between. References are compared because delegate == compares delegates by value.
     private static StatementSyntax[] UpdateActiveHandlers(
         in ImposterEventMetadata @event,
         IdentifierNameSyntax handler,
         string delegateOperation
-    )
-    {
-        var activeHandlers = @event.Builder.Fields.ActiveHandlers;
-        var activeHandlersIdentifier = FieldIdentifier(activeHandlers);
-        var handlers = IdentifierName("handlers");
-        var updated = IdentifierName("updated");
-        var observed = IdentifierName("observed");
-
-        return
+    ) =>
         [
-            LocalVariableDeclarationSyntax(Var, handlers.Identifier.Text, activeHandlersIdentifier),
-            WhileStatement(
-                True,
-                Block(
-                    LocalVariableDeclarationSyntax(
-                        Var,
-                        updated.Identifier.Text,
-                        CastExpression(
-                            activeHandlers.Type,
-                            WellKnownTypes
-                                .System.Delegate.Dot(IdentifierName(delegateOperation))
-                                .Call([Argument(handlers), Argument(handler)])
-                        )
-                    ),
-                    LocalVariableDeclarationSyntax(
-                        Var,
-                        observed.Identifier.Text,
-                        WellKnownTypes
-                            .System.Threading.Interlocked.Dot(IdentifierName("CompareExchange"))
-                            .Call([
-                                Argument(
-                                    null,
-                                    Token(SyntaxKind.RefKeyword),
-                                    activeHandlersIdentifier
-                                ),
-                                Argument(updated),
-                                Argument(handlers),
-                            ])
-                    ),
-                    IfStatement(
-                        PredefinedType(Token(SyntaxKind.ObjectKeyword))
-                            .Dot(IdentifierName("ReferenceEquals"))
-                            .Call([Argument(observed), Argument(handlers)]),
-                        Block(BreakStatement())
-                    ),
-                    handlers.Assign(observed).ToStatementSyntax()
-                )
-            ),
+            LazyCollectionSyntaxHelper
+                .EnsureInitialized(@event.Builder.Fields.ActiveHandlers.Name)
+                .Dot(IdentifierName(delegateOperation))
+                .Call(Argument(handler))
+                .ToStatementSyntax(),
         ];
-    }
 
-    private static ForEachStatementSyntax ForEachInterceptor(
+    private static StatementSyntax ForEachInterceptor(
         in FieldMetadata interceptorsField,
         string handlerIdentifier
     ) =>
-        ForEachStatement(
-            Var,
-            Identifier("interceptor"),
-            FieldIdentifier(interceptorsField),
-            Block(
-                IdentifierName("interceptor")
-                    .Call(Argument(IdentifierName(handlerIdentifier)))
-                    .ToStatementSyntax()
+        LazyCollectionSyntaxHelper.UnlessNull(
+            ForEachStatement(
+                Var,
+                Identifier("interceptor"),
+                FieldIdentifier(interceptorsField),
+                Block(
+                    IdentifierName("interceptor")
+                        .Call(Argument(IdentifierName(handlerIdentifier)))
+                        .ToStatementSyntax()
+                )
             )
         );
 
@@ -220,8 +179,9 @@ internal static class EventImposterSubscriptionsBuilder
                 new BlockBuilder()
                     .AddStatement(ThrowIfNull(method.InterceptorParameter.Name))
                     .AddExpression(
-                        FieldIdentifier(interceptorsField)
-                            .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
+                        LazyCollectionSyntaxHelper
+                            .EnsureInitialized(interceptorsField.Name)
+                            .Dot(IdentifierName("Add"))
                             .Call(Argument(interceptorIdentifier))
                     )
                     .AddStatement(ReturnThis)

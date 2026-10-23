@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Imposter.Abstractions;
 using Shouldly;
 using Xunit;
@@ -235,6 +236,147 @@ public class ArgTests
         // The value of an 'out' variable is not defined before entering the method,
         // so this just confirms the matcher always returns true.
         arg.Matches("some value").ShouldBeTrue();
+    }
+
+    [Fact]
+    public void GivenAny_WhenRequestedOrImplicitlyConverted_ShouldReturnTheSingleton()
+    {
+        Arg<int> converted = Arg.Any;
+        Arg<int>.Any().ShouldBeSameAs(Arg<int>.Any());
+        converted.ShouldBeSameAs(Arg<int>.Any());
+        Arg<string>.Any().ShouldBeSameAs(Arg<string>.Any());
+    }
+
+    [Fact]
+    public void GivenImplicitConversion_WhenMatched_ShouldPreserveValueAndNullEquality()
+    {
+        Arg<int> number = 5;
+        number.Matches(5).ShouldBeTrue();
+        number.Matches(6).ShouldBeFalse();
+        Arg<string?> text = (string?)null;
+        text.Matches(null).ShouldBeTrue();
+        text.Matches("value").ShouldBeFalse();
+    }
+
+    [Fact]
+    public void GivenNullableValue_WhenMatched_ShouldDistinguishNullFromZero()
+    {
+        var empty = Arg<int?>.IsDefault();
+        empty.Matches(null).ShouldBeTrue();
+        empty.Matches(0).ShouldBeFalse();
+        var nonempty = Arg<int?>.IsNot((int?)null);
+        nonempty.Matches(null).ShouldBeFalse();
+        nonempty.Matches(0).ShouldBeTrue();
+    }
+
+    [Theory]
+    [InlineData(false, "candidate", "target")]
+    [InlineData(true, "candidate", "target")]
+    [InlineData(false, null, "target")]
+    [InlineData(true, null, "target")]
+    [InlineData(false, "candidate", null)]
+    [InlineData(true, "candidate", null)]
+    public void GivenCustomComparer_WhenMatched_ShouldPassActualBeforeExpected(
+        bool negated,
+        string? actual,
+        string? expected
+    )
+    {
+        var comparer = new OrderedComparer();
+        var arg = negated
+            ? Arg<string?>.IsNot(expected, comparer)
+            : Arg<string?>.Is(expected, comparer);
+
+        arg.Matches(actual).ShouldBe((actual == "candidate" && expected == "target") != negated);
+        comparer.Actual.ShouldBe(actual);
+        comparer.Expected.ShouldBe(expected);
+        comparer.Calls.ShouldBe(1);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void GivenPredicate_WhenMatched_ShouldEvaluateOncePerCallAndPropagateExceptions(
+        bool negated
+    )
+    {
+        var calls = 0;
+        var result = true;
+        Func<int, bool> predicate = _ =>
+        {
+            calls++;
+            return result;
+        };
+        var arg = negated ? Arg<int>.IsNot(predicate) : Arg<int>.Is(predicate);
+        calls.ShouldBe(0);
+        arg.Matches(5).ShouldBe(!negated);
+        result = false;
+        arg.Matches(5).ShouldBe(negated);
+        calls.ShouldBe(2);
+
+        var exception = new InvalidOperationException("predicate failure");
+        Func<int, bool> throwing = _ => throw exception;
+        var failing = negated ? Arg<int>.IsNot(throwing) : Arg<int>.Is(throwing);
+        Should.Throw<InvalidOperationException>(() => failing.Matches(5)).ShouldBeSameAs(exception);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void GivenSetMatcher_WhenOriginalCollectionChanges_ShouldKeepItsSnapshot(bool negated)
+    {
+        var values = new List<int> { 1, 2, 3 };
+        var arg = negated ? Arg<int>.IsNotIn(values) : Arg<int>.IsIn(values);
+        values.Clear();
+        values.Add(9);
+        arg.Matches(1).ShouldBe(!negated);
+        arg.Matches(9).ShouldBe(negated);
+    }
+
+    [Fact]
+    public void GivenNullPredicateOrComparerOrSet_WhenConfigured_ShouldKeepArgumentValidation()
+    {
+        Should
+            .Throw<ArgumentNullException>(() => Arg<int>.Is((Func<int, bool>)null!))
+            .ParamName.ShouldBe("predicate");
+        Should
+            .Throw<ArgumentNullException>(() => Arg<int>.IsNot((Func<int, bool>)null!))
+            .ParamName.ShouldBe("predicate");
+        Should
+            .Throw<ArgumentNullException>(() => Arg<int>.Is(5, null!))
+            .ParamName.ShouldBe("comparer");
+        Should
+            .Throw<ArgumentNullException>(() => Arg<int>.IsNot(5, null!))
+            .ParamName.ShouldBe("comparer");
+        Should
+            .Throw<ArgumentNullException>(() => Arg<int>.IsIn(null!, null!))
+            .ParamName.ShouldBe("values");
+        Should
+            .Throw<ArgumentNullException>(() => Arg<int>.IsNotIn(null!, null!))
+            .ParamName.ShouldBe("values");
+        Should
+            .Throw<ArgumentNullException>(() => Arg<int>.IsIn(new[] { 5 }, null!))
+            .ParamName.ShouldBe("comparer");
+        Should
+            .Throw<ArgumentNullException>(() => Arg<int>.IsNotIn(new[] { 5 }, null!))
+            .ParamName.ShouldBe("comparer");
+    }
+
+    private sealed class OrderedComparer : IEqualityComparer<string?>
+    {
+        public string? Actual { get; private set; }
+        public string? Expected { get; private set; }
+        public int Calls { get; private set; }
+
+        public bool Equals(string? actual, string? expected)
+        {
+            Actual = actual;
+            Expected = expected;
+            Calls++;
+            return actual == "candidate" && expected == "target";
+        }
+
+        public int GetHashCode(string? value) => throw new NotSupportedException();
     }
 
     private struct TestStruct

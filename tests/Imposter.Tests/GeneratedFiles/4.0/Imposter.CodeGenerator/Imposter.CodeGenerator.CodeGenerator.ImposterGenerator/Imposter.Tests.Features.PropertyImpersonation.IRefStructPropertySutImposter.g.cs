@@ -115,8 +115,8 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			internal class GetterImposterBuilder : ICurrentPropertyGetterBuilder, ICurrentPropertyGetterFluentBuilder
 			{
-				private readonly global::System.Collections.Concurrent.ConcurrentQueue<CurrentPropertyReturnHandler> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<CurrentPropertyReturnHandler>();
-				private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action>();
+				private global::Imposter.Abstractions.ReturnValueSequence<CurrentPropertyReturnHandler>? _returnValues;
+				private global::Imposter.Abstractions.CallbackCollection<global::System.Action>? _callbacks;
 				private volatile CurrentPropertyReturnHandler _lastReturnValue = _ => default !;
 				private int _invocationCount;
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
@@ -130,7 +130,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 				private void AddReturnValue(CurrentPropertyReturnHandler valueGenerator)
 				{
-					_returnValues.Enqueue(valueGenerator);
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _returnValues).Add(valueGenerator);
 					_hasConfiguredReturn = true;
 				}
 
@@ -154,7 +154,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 				ICurrentPropertyGetterContinuationBuilder ICurrentPropertyGetterCallbackBuilder.Callback(global::System.Action callback)
 				{
-					_callbacks.Enqueue(callback);
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 					return this;
 				}
 
@@ -173,7 +173,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 				{
 					EnsureGetterConfigured();
 					global::System.Threading.Interlocked.Increment(ref _invocationCount);
-					if (!_callbacks.IsEmpty)
+					if (_callbacks != null)
 					{
 						foreach (var getterCallback in _callbacks)
 						{
@@ -187,22 +187,8 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 				private CurrentPropertyReturnHandler NextReturnValue()
 				{
-					if (_returnValues.IsEmpty)
-					{
-						return _lastReturnValue;
-					}
-
-					lock (_returnValues)
-					{
-						if (!_returnValues.TryPeek(out var returnValue))
-						{
-							return _lastReturnValue;
-						}
-
-						_lastReturnValue = returnValue;
-						_returnValues.TryDequeue(out _);
-						return returnValue;
-					}
+					var returnValues = global::System.Threading.Volatile.Read(ref _returnValues);
+					return returnValues != null ? returnValues.Next(_lastReturnValue) : _lastReturnValue;
 				}
 
 				private void EnsureGetterConfigured()
@@ -215,7 +201,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			internal class SetterImposter
 			{
-				private readonly global::System.Collections.Concurrent.ConcurrentQueue<CurrentPropertySetterCallback> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<CurrentPropertySetterCallback>();
+				private global::Imposter.Abstractions.CallbackCollection<CurrentPropertySetterCallback>? _callbacks;
 				private int _invocationCount;
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 				private readonly string _propertyDisplayName;
@@ -228,7 +214,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 				internal void Callback(CurrentPropertySetterCallback callback)
 				{
-					_callbacks.Enqueue(callback);
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
 				void Called(global::Imposter.Abstractions.Count count)
@@ -241,7 +227,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 				{
 					EnsureSetterConfigured();
 					global::System.Threading.Interlocked.Increment(ref _invocationCount);
-					if (!_callbacks.IsEmpty)
+					if (_callbacks != null)
 					{
 						foreach (var setterCallback in _callbacks)
 						{

@@ -13,7 +13,8 @@ internal static class VerificationFailedBuilder
     internal readonly record struct PerformedInvocations(
         ExpressionSyntax History,
         IdentifierNameSyntax Entry,
-        ExpressionSyntax Description
+        ExpressionSyntax Description,
+        bool IsHistoryNullable = false
     );
 
     internal static IfStatementSyntax ThrowIfCountDoesNotMatch(
@@ -25,6 +26,18 @@ internal static class VerificationFailedBuilder
         var performedInvocationsList = IdentifierName("performedInvocations");
         var stringListType = WellKnownTypes.System.Collections.Generic.List(WellKnownTypes.String);
 
+        var historyLoop = ForEachStatement(
+            Var,
+            performedInvocations.Entry.Identifier,
+            performedInvocations.History,
+            Block(
+                performedInvocationsList
+                    .Dot(IdentifierName("Add"))
+                    .Call(Argument(performedInvocations.Description))
+                    .ToStatementSyntax()
+            )
+        );
+
         return IfStatement(
             CountDoesNotMatch(count, invocationCount),
             Block(
@@ -33,17 +46,9 @@ internal static class VerificationFailedBuilder
                     performedInvocationsList.Identifier.Text,
                     stringListType.New()
                 ),
-                ForEachStatement(
-                    Var,
-                    performedInvocations.Entry.Identifier,
-                    performedInvocations.History,
-                    Block(
-                        performedInvocationsList
-                            .Dot(IdentifierName("Add"))
-                            .Call(Argument(performedInvocations.Description))
-                            .ToStatementSyntax()
-                    )
-                ),
+                performedInvocations.IsHistoryNullable
+                    ? LazyCollectionSyntaxHelper.UnlessNull(historyLoop)
+                    : historyLoop,
                 ThrowVerificationFailed(
                     count,
                     invocationCount,

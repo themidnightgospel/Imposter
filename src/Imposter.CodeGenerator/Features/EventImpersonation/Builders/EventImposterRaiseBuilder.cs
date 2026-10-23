@@ -19,9 +19,9 @@ internal static class EventImposterRaiseBuilder
 
         return
         [
-            SingleVariableField(fields.Callbacks),
-            SingleVariableField(fields.History),
-            SingleVariableField(fields.HandlerInvocations),
+            LazyCollectionSyntaxHelper.Field(fields.Callbacks),
+            LazyCollectionSyntaxHelper.Field(fields.History),
+            LazyCollectionSyntaxHelper.Field(fields.HandlerInvocations),
         ];
     }
 
@@ -94,12 +94,12 @@ internal static class EventImposterRaiseBuilder
 
         return new BlockBuilder()
             .AddStatements(AssignOutParametersDefault(@event))
-            .AddExpression(EnqueueHistoryEntry(@event))
+            .AddExpression(RecordRaise(@event))
             .AddStatement(ForEachCallback(@event, InvokeStatement(callback, @event)))
             .AddStatement(
                 ForEachActiveHandler(
                     @event,
-                    EnqueueHandlerInvocation(@event, handler),
+                    RecordHandlerInvocation(@event, handler),
                     InvokeStatement(handler, @event)
                 )
             )
@@ -147,7 +147,7 @@ internal static class EventImposterRaiseBuilder
         var handler = IdentifierName(localNames.Handler);
 
         return new BlockBuilder()
-            .AddExpression(EnqueueHistoryEntry(@event))
+            .AddExpression(RecordRaise(@event))
             .AddStatement(
                 LocalVariableDeclarationSyntax(
                     taskListType,
@@ -167,7 +167,7 @@ internal static class EventImposterRaiseBuilder
                 ForEachActiveHandler(
                     @event,
                     [
-                        EnqueueHandlerInvocation(@event, handler),
+                        RecordHandlerInvocation(@event, handler),
                         .. InvokeAndCollectTaskStatements(handler, @event, usesValueTask),
                     ]
                 )
@@ -181,68 +181,19 @@ internal static class EventImposterRaiseBuilder
         bool usesValueTask
     ) => usesValueTask ? taskExpression.Dot(IdentifierName("AsTask")).Call() : taskExpression;
 
-    internal static MethodDeclarationSyntax BuildEnumerateHandlersMethod(
-        in ImposterEventMetadata @event
-    )
-    {
-        var enumerableType = WellKnownTypes.System.Collections.Generic.IEnumerable(
-            @event.Core.HandlerTypeSyntax
-        );
-
-        return new MethodDeclarationBuilder(
-            enumerableType,
-            @event.Builder.Methods.EnumerateHandlers.Name
-        )
-            .AddModifier(Token(SyntaxKind.PrivateKeyword))
-            .WithBody(BuildEnumerateHandlersBody(@event))
-            .Build();
-    }
-
-    private static BlockSyntax BuildEnumerateHandlersBody(in ImposterEventMetadata @event)
-    {
-        var handlers = IdentifierName("handlers");
-
-        return Block(
-            LocalVariableDeclarationSyntax(
-                Var,
-                handlers.Identifier.Text,
-                FieldIdentifier(@event.Builder.Fields.ActiveHandlers)
-            ),
-            IfStatement(
-                handlers.IsNotNull(),
-                Block(
-                    ForEachStatement(
-                        Var,
-                        Identifier("handler"),
-                        handlers.Dot(IdentifierName("GetInvocationList")).Call(),
-                        Block(
-                            YieldStatement(
-                                SyntaxKind.YieldReturnStatement,
-                                CastExpression(
-                                    @event.Core.HandlerTypeSyntax,
-                                    IdentifierName("handler")
-                                )
-                            )
-                        )
-                    )
-                )
-            )
-        );
-    }
-
-    private static InvocationExpressionSyntax EnqueueHistoryEntry(
-        in ImposterEventMetadata @event
-    ) =>
-        FieldIdentifier(@event.Builder.Fields.History)
-            .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
+    private static InvocationExpressionSyntax RecordRaise(in ImposterEventMetadata @event) =>
+        LazyCollectionSyntaxHelper
+            .EnsureInitialized(@event.Builder.Fields.History.Name)
+            .Dot(ConcurrentStackSyntaxHelper.Push)
             .Call(Argument(@event.Builder.Fields.HistoryEntry.Entry));
 
-    private static ExpressionStatementSyntax EnqueueHandlerInvocation(
+    private static ExpressionStatementSyntax RecordHandlerInvocation(
         in ImposterEventMetadata @event,
         IdentifierNameSyntax handler
     ) =>
-        FieldIdentifier(@event.Builder.Fields.HandlerInvocations)
-            .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
+        LazyCollectionSyntaxHelper
+            .EnsureInitialized(@event.Builder.Fields.HandlerInvocations.Name)
+            .Dot(ConcurrentStackSyntaxHelper.Push)
             .Call(Argument(@event.Builder.Fields.HandlerInvocationEntry.Entry(handler)))
             .ToStatementSyntax();
 
@@ -255,27 +206,31 @@ internal static class EventImposterRaiseBuilder
             .ToStatementSyntax();
 
     // Runs the body for each callback, which it reads as RaiseLocalNames.Callback.
-    private static ForEachStatementSyntax ForEachCallback(
+    private static StatementSyntax ForEachCallback(
         in ImposterEventMetadata @event,
         params StatementSyntax[] body
     ) =>
-        ForEachStatement(
-            Var,
-            Identifier(@event.Builder.Methods.RaiseLocalNames.Callback),
-            FieldIdentifier(@event.Builder.Fields.Callbacks),
-            Block(body)
+        LazyCollectionSyntaxHelper.UnlessNull(
+            ForEachStatement(
+                Var,
+                Identifier(@event.Builder.Methods.RaiseLocalNames.Callback),
+                FieldIdentifier(@event.Builder.Fields.Callbacks),
+                Block(body)
+            )
         );
 
     // Runs the body for each subscribed handler, which it reads as RaiseLocalNames.Handler.
-    private static ForEachStatementSyntax ForEachActiveHandler(
+    private static StatementSyntax ForEachActiveHandler(
         in ImposterEventMetadata @event,
         params StatementSyntax[] body
     ) =>
-        ForEachStatement(
-            Var,
-            Identifier(@event.Builder.Methods.RaiseLocalNames.Handler),
-            IdentifierName(@event.Builder.Methods.EnumerateHandlers.Name).Call(),
-            Block(body)
+        LazyCollectionSyntaxHelper.UnlessNull(
+            ForEachStatement(
+                Var,
+                Identifier(@event.Builder.Methods.RaiseLocalNames.Handler),
+                FieldIdentifier(@event.Builder.Fields.ActiveHandlers),
+                Block(body)
+            )
         );
 
     private static StatementSyntax[] InvokeAndCollectTaskStatements(

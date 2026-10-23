@@ -92,8 +92,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			internal class GetterImposterBuilder : ICountPropertyGetterBuilder, ICountPropertyGetterFluentBuilder
 			{
-				private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<global::System.Func<int>?, int>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<global::System.Func<int>?, int>>();
-				private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action>();
+				private global::Imposter.Abstractions.ReturnValueSequence<global::System.Func<global::System.Func<int>?, int>>? _returnValues;
+				private global::Imposter.Abstractions.CallbackCollection<global::System.Action>? _callbacks;
 				private volatile global::System.Func<global::System.Func<int>?, int> _lastReturnValue = _ => default !;
 				private int _invocationCount;
 				private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
@@ -110,7 +110,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				private void AddReturnValue(global::System.Func<global::System.Func<int>?, int> valueGenerator)
 				{
 					_defaultPropertyBehaviour.IsOn = false;
-					_returnValues.Enqueue(valueGenerator);
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _returnValues).Add(valueGenerator);
 					_hasConfiguredReturn = true;
 				}
 
@@ -140,7 +140,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				ICountPropertyGetterContinuationBuilder ICountPropertyGetterCallbackBuilder.Callback(global::System.Action callback)
 				{
-					_callbacks.Enqueue(callback);
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 					return this;
 				}
 
@@ -159,7 +159,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				{
 					EnsureGetterConfigured();
 					global::System.Threading.Interlocked.Increment(ref _invocationCount);
-					if (!_callbacks.IsEmpty)
+					if (_callbacks != null)
 					{
 						foreach (var getterCallback in _callbacks)
 						{
@@ -183,22 +183,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				private global::System.Func<global::System.Func<int>?, int> NextReturnValue()
 				{
-					if (_returnValues.IsEmpty)
-					{
-						return _lastReturnValue;
-					}
-
-					lock (_returnValues)
-					{
-						if (!_returnValues.TryPeek(out var returnValue))
-						{
-							return _lastReturnValue;
-						}
-
-						_lastReturnValue = returnValue;
-						_returnValues.TryDequeue(out _);
-						return returnValue;
-					}
+					var returnValues = global::System.Threading.Volatile.Read(ref _returnValues);
+					return returnValues != null ? returnValues.Next(_lastReturnValue) : _lastReturnValue;
 				}
 
 				private void EnsureGetterConfigured()
@@ -285,8 +271,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			internal class GetterImposterBuilder : IItemsPropertyGetterBuilder, IItemsPropertyGetterFluentBuilder
 			{
-				private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<global::System.Func<global::System.Collections.Generic.IEnumerable<T>>?, global::System.Collections.Generic.IEnumerable<T>>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<global::System.Func<global::System.Collections.Generic.IEnumerable<T>>?, global::System.Collections.Generic.IEnumerable<T>>>();
-				private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action>();
+				private global::Imposter.Abstractions.ReturnValueSequence<global::System.Func<global::System.Func<global::System.Collections.Generic.IEnumerable<T>>?, global::System.Collections.Generic.IEnumerable<T>>>? _returnValues;
+				private global::Imposter.Abstractions.CallbackCollection<global::System.Action>? _callbacks;
 				private volatile global::System.Func<global::System.Func<global::System.Collections.Generic.IEnumerable<T>>?, global::System.Collections.Generic.IEnumerable<T>> _lastReturnValue = _ => default !;
 				private int _invocationCount;
 				private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
@@ -303,7 +289,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				private void AddReturnValue(global::System.Func<global::System.Func<global::System.Collections.Generic.IEnumerable<T>>?, global::System.Collections.Generic.IEnumerable<T>> valueGenerator)
 				{
 					_defaultPropertyBehaviour.IsOn = false;
-					_returnValues.Enqueue(valueGenerator);
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _returnValues).Add(valueGenerator);
 					_hasConfiguredReturn = true;
 				}
 
@@ -333,7 +319,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				IItemsPropertyGetterContinuationBuilder IItemsPropertyGetterCallbackBuilder.Callback(global::System.Action callback)
 				{
-					_callbacks.Enqueue(callback);
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 					return this;
 				}
 
@@ -352,7 +338,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				{
 					EnsureGetterConfigured();
 					global::System.Threading.Interlocked.Increment(ref _invocationCount);
-					if (!_callbacks.IsEmpty)
+					if (_callbacks != null)
 					{
 						foreach (var getterCallback in _callbacks)
 						{
@@ -376,22 +362,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				private global::System.Func<global::System.Func<global::System.Collections.Generic.IEnumerable<T>>?, global::System.Collections.Generic.IEnumerable<T>> NextReturnValue()
 				{
-					if (_returnValues.IsEmpty)
-					{
-						return _lastReturnValue;
-					}
-
-					lock (_returnValues)
-					{
-						if (!_returnValues.TryPeek(out var returnValue))
-						{
-							return _lastReturnValue;
-						}
-
-						_lastReturnValue = returnValue;
-						_returnValues.TryDequeue(out _);
-						return returnValue;
-					}
+					var returnValues = global::System.Threading.Volatile.Read(ref _returnValues);
+					return returnValues != null ? returnValues.Next(_lastReturnValue) : _lastReturnValue;
 				}
 
 				private void EnsureGetterConfigured()
@@ -478,8 +450,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			internal class GetterImposterBuilder : IReadOnlyValuePropertyGetterBuilder, IReadOnlyValuePropertyGetterFluentBuilder
 			{
-				private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<global::System.Func<T>?, T>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<global::System.Func<T>?, T>>();
-				private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action>();
+				private global::Imposter.Abstractions.ReturnValueSequence<global::System.Func<global::System.Func<T>?, T>>? _returnValues;
+				private global::Imposter.Abstractions.CallbackCollection<global::System.Action>? _callbacks;
 				private volatile global::System.Func<global::System.Func<T>?, T> _lastReturnValue = _ => default !;
 				private int _invocationCount;
 				private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
@@ -496,7 +468,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				private void AddReturnValue(global::System.Func<global::System.Func<T>?, T> valueGenerator)
 				{
 					_defaultPropertyBehaviour.IsOn = false;
-					_returnValues.Enqueue(valueGenerator);
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _returnValues).Add(valueGenerator);
 					_hasConfiguredReturn = true;
 				}
 
@@ -526,7 +498,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				IReadOnlyValuePropertyGetterContinuationBuilder IReadOnlyValuePropertyGetterCallbackBuilder.Callback(global::System.Action callback)
 				{
-					_callbacks.Enqueue(callback);
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 					return this;
 				}
 
@@ -545,7 +517,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				{
 					EnsureGetterConfigured();
 					global::System.Threading.Interlocked.Increment(ref _invocationCount);
-					if (!_callbacks.IsEmpty)
+					if (_callbacks != null)
 					{
 						foreach (var getterCallback in _callbacks)
 						{
@@ -569,22 +541,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				private global::System.Func<global::System.Func<T>?, T> NextReturnValue()
 				{
-					if (_returnValues.IsEmpty)
-					{
-						return _lastReturnValue;
-					}
-
-					lock (_returnValues)
-					{
-						if (!_returnValues.TryPeek(out var returnValue))
-						{
-							return _lastReturnValue;
-						}
-
-						_lastReturnValue = returnValue;
-						_returnValues.TryDequeue(out _);
-						return returnValue;
-					}
+					var returnValues = global::System.Threading.Volatile.Read(ref _returnValues);
+					return returnValues != null ? returnValues.Next(_lastReturnValue) : _lastReturnValue;
 				}
 
 				private void EnsureGetterConfigured()
@@ -702,8 +660,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			internal class GetterImposterBuilder : IValuePropertyGetterBuilder, IValuePropertyGetterFluentBuilder
 			{
-				private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<global::System.Func<T>?, T>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<global::System.Func<T>?, T>>();
-				private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action>();
+				private global::Imposter.Abstractions.ReturnValueSequence<global::System.Func<global::System.Func<T>?, T>>? _returnValues;
+				private global::Imposter.Abstractions.CallbackCollection<global::System.Action>? _callbacks;
 				private volatile global::System.Func<global::System.Func<T>?, T> _lastReturnValue = _ => default !;
 				private int _invocationCount;
 				private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
@@ -720,7 +678,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				private void AddReturnValue(global::System.Func<global::System.Func<T>?, T> valueGenerator)
 				{
 					_defaultPropertyBehaviour.IsOn = false;
-					_returnValues.Enqueue(valueGenerator);
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _returnValues).Add(valueGenerator);
 					_hasConfiguredReturn = true;
 				}
 
@@ -750,7 +708,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				IValuePropertyGetterContinuationBuilder IValuePropertyGetterCallbackBuilder.Callback(global::System.Action callback)
 				{
-					_callbacks.Enqueue(callback);
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 					return this;
 				}
 
@@ -769,7 +727,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				{
 					EnsureGetterConfigured();
 					global::System.Threading.Interlocked.Increment(ref _invocationCount);
-					if (!_callbacks.IsEmpty)
+					if (_callbacks != null)
 					{
 						foreach (var getterCallback in _callbacks)
 						{
@@ -793,22 +751,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				private global::System.Func<global::System.Func<T>?, T> NextReturnValue()
 				{
-					if (_returnValues.IsEmpty)
-					{
-						return _lastReturnValue;
-					}
-
-					lock (_returnValues)
-					{
-						if (!_returnValues.TryPeek(out var returnValue))
-						{
-							return _lastReturnValue;
-						}
-
-						_lastReturnValue = returnValue;
-						_returnValues.TryDequeue(out _);
-						return returnValue;
-					}
+					var returnValues = global::System.Threading.Volatile.Read(ref _returnValues);
+					return returnValues != null ? returnValues.Next(_lastReturnValue) : _lastReturnValue;
 				}
 
 				private void EnsureGetterConfigured()
@@ -821,8 +765,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			internal class SetterImposter
 			{
-				private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Tuple<global::Imposter.Abstractions.Arg<T>, global::System.Action<T>>> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Tuple<global::Imposter.Abstractions.Arg<T>, global::System.Action<T>>>();
-				private readonly global::System.Collections.Concurrent.ConcurrentStack<T> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<T>();
+				private global::Imposter.Abstractions.CallbackCollection<global::System.Tuple<global::Imposter.Abstractions.Arg<T>, global::System.Action<T>>>? _callbacks;
+				private global::System.Collections.Concurrent.ConcurrentStack<T>? _invocationHistory;
 				private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 				private readonly string _propertyDisplayName;
@@ -836,18 +780,21 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				internal void Callback(global::Imposter.Abstractions.Arg<T> criteria, global::System.Action<T> callback)
 				{
-					_callbacks.Enqueue(new global::System.Tuple<global::Imposter.Abstractions.Arg<T>, global::System.Action<T>>(criteria, callback));
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(new global::System.Tuple<global::Imposter.Abstractions.Arg<T>, global::System.Action<T>>(criteria, callback));
 				}
 
 				void Called(global::Imposter.Abstractions.Arg<T> criteria, global::Imposter.Abstractions.Count count)
 				{
-					var invocationCount = _invocationHistory.Count(criteria.Matches);
+					var invocationCount = _invocationHistory != null ? _invocationHistory.Count(criteria.Matches) : 0;
 					if (!count.Matches(invocationCount))
 					{
 						var performedInvocations = new global::System.Collections.Generic.List<string>();
-						foreach (var value in _invocationHistory)
+						if (_invocationHistory != null)
 						{
-							performedInvocations.Add("set " + _propertyDisplayName + " = " + FormatValue(value));
+							foreach (var value in _invocationHistory)
+							{
+								performedInvocations.Add("set " + _propertyDisplayName + " = " + FormatValue(value));
+							}
 						}
 
 						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations));
@@ -857,8 +804,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				internal void Set(T value, global::System.Action<T>? baseImplementation = null)
 				{
 					EnsureSetterConfigured();
-					_invocationHistory.Push(value);
-					if (!_callbacks.IsEmpty)
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _invocationHistory).Push(value);
+					if (_callbacks != null)
 					{
 						foreach (var(criteria, setterCallback)in _callbacks)
 						{

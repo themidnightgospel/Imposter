@@ -31,12 +31,7 @@ internal static partial class IndexerGetterBuilder
                     invocation.ReturnValuesField.Type.New()
                 )
             )
-            .AddMember(
-                SinglePrivateReadonlyVariableField(
-                    invocation.CallbacksField,
-                    invocation.CallbacksField.Type.New()
-                )
-            )
+            .AddMember(LazyCollectionSyntaxHelper.Field(invocation.CallbacksField))
             .AddMember(
                 SingleVariableField(
                     invocation.LastReturnValueField.Type,
@@ -199,8 +194,11 @@ internal static partial class IndexerGetterBuilder
             .AddParameter(ParameterSyntax(callback))
             .WithBody(
                 Block(
-                    IdentifierName(indexer.GetterImplementation.Invocation.CallbacksField.Name)
-                        .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
+                    LazyCollectionSyntaxHelper
+                        .EnsureInitialized(
+                            indexer.GetterImplementation.Invocation.CallbacksField.Name
+                        )
+                        .Dot(IdentifierName("Add"))
                         .Call(Argument(IdentifierName(callback.Name)))
                         .ToStatementSyntax()
                 )
@@ -215,7 +213,7 @@ internal static partial class IndexerGetterBuilder
         var getter = indexer.GetterImplementation;
         var arguments = IdentifierName(getter.ArgumentsVariableName);
 
-        var invokeCallbacks = ConcurrentQueueSyntaxHelper.UnlessEmpty(
+        var invokeCallbacks = LazyCollectionSyntaxHelper.UnlessNull(
             ForEachStatement(
                 Var,
                 Identifier(IndexerGetterImposterMetadata.CallbackVariableName),

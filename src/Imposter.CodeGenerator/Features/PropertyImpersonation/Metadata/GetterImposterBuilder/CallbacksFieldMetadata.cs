@@ -1,4 +1,4 @@
-﻿using Imposter.CodeGenerator.SyntaxHelpers;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.GetterImposterBuilder;
@@ -11,7 +11,7 @@ internal readonly struct CallbacksFieldMetadata
 
     public CallbacksFieldMetadata()
     {
-        TypeSyntax = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
+        TypeSyntax = WellKnownTypes.Imposter.Abstractions.CallbackCollection(
             WellKnownTypes.System.Action
         );
     }

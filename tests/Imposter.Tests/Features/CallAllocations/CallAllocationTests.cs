@@ -14,6 +14,112 @@ namespace Imposter.Tests.Features.CallAllocations
         private readonly ICallAllocationSutImposter _sut = new ICallAllocationSutImposter();
 
         [Fact]
+        public void GivenProperty_WhenConstructed_ShouldNotAllocateUnusedCollections()
+        {
+            AllocatedBytesPerCall(() => GC.KeepAlive(new IPropertyAllocationSutImposter()))
+                .ShouldBeLessThanOrEqualTo(280);
+        }
+
+        [Fact]
+        public void GivenEvent_WhenConstructed_ShouldNotAllocateUnusedCollections()
+        {
+            AllocatedBytesPerCall(() => GC.KeepAlive(new IEventAllocationSutImposter()))
+                .ShouldBeLessThanOrEqualTo(280);
+        }
+
+        [Fact]
+        public void GivenIndexer_WhenConstructed_ShouldNotAllocateUnusedCollections()
+        {
+            AllocatedBytesPerCall(() => GC.KeepAlive(new IIndexerAllocationSutImposter()))
+                .ShouldBeLessThanOrEqualTo(312);
+        }
+
+        [Fact]
+        public void GivenPropertyGetterWithCallback_WhenCalled_ShouldNotAllocate()
+        {
+            _sut.Value.Getter().Returns(3).Callback(() => { });
+            var instance = _sut.Instance();
+
+            AllocatedBytesPerCall(() => _ = instance.Value).ShouldBe(0);
+        }
+
+        [Fact]
+        public void GivenPropertySetterWithCallback_WhenCalled_ShouldOnlyAllocateItsHistory()
+        {
+            _sut.Value.Setter(Arg<int>.Any()).Callback(_ => { });
+            var instance = _sut.Instance();
+
+            AllocatedBytesPerCall(() => instance.Value = 1).ShouldBeLessThanOrEqualTo(32);
+        }
+
+        [Fact]
+        public void GivenIndexerGetterWithCallback_WhenCalled_ShouldOnlyAllocateItsArgumentsAndHistory()
+        {
+            _sut[Arg<int>.Any()].Getter().Returns(5).Callback(_ => { });
+            var instance = _sut.Instance();
+
+            AllocatedBytesPerCall(() => _ = instance[1]).ShouldBeLessThanOrEqualTo(56);
+        }
+
+        [Fact]
+        public void GivenIndexerSetterWithCallback_WhenCalled_ShouldOnlyAllocateItsArgumentsAndHistory()
+        {
+            _sut[Arg<int>.Any()].Setter().Callback((_, __) => { });
+            var instance = _sut.Instance();
+
+            AllocatedBytesPerCall(() => instance[1] = 2).ShouldBeLessThanOrEqualTo(64);
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void GivenEvent_WhenRaisedAndVerified_ShouldOnlyAllocateItsHistory(bool withCallback)
+        {
+            var sut = new IEventAllocationSutImposter();
+            if (withCallback)
+            {
+                sut.Changed.Callback((_, __) => { });
+            }
+
+            var sender = Arg<object?>.Any();
+            var args = Arg<EventArgs>.Any();
+            var count = Count.AtLeast(1);
+            AllocatedBytesPerCall(() =>
+                {
+                    sut.Changed.Raise(null, EventArgs.Empty);
+                    sut.Changed.Raised(sender, args, count);
+                })
+                .ShouldBeLessThanOrEqualTo(128);
+        }
+
+        [Fact]
+        public void GivenSubscribedEvent_WhenRaised_ShouldReuseItsHandlerSnapshot()
+        {
+            var sut = new IEventAllocationSutImposter();
+            sut.Instance().Changed += (_, __) => { };
+
+            AllocatedBytesPerCall(() => sut.Changed.Raise(null, EventArgs.Empty))
+                .ShouldBeLessThanOrEqualTo(128);
+        }
+
+        [Fact]
+        public void GivenProperty_WhenConfiguringFirstReturns_ShouldUseLightweightSequenceStorage()
+        {
+            var sut = new IPropertyAllocationSutImposter();
+            // Warm the delegate caches and sequence code separately from the measured imposter.
+            new IPropertyAllocationSutImposter()
+                .Value.Getter()
+                .Returns(1)
+                .Then()
+                .Returns(2);
+            var before = GC.GetAllocatedBytesForCurrentThread();
+            sut.Value.Getter().Returns(1).Then().Returns(2);
+            var allocated = GC.GetAllocatedBytesForCurrentThread() - before;
+
+            allocated.ShouldBeLessThanOrEqualTo(400);
+        }
+
+        [Fact]
         public void GivenPropertyGetterWithoutCallbacks_WhenCalled_ShouldNotAllocate()
         {
             _sut.Value.Getter().Returns(3);

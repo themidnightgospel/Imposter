@@ -31,10 +31,6 @@ internal readonly struct EventImposterBuilderMethodsMetadata
 
     internal readonly EventRaiseLocalNames RaiseLocalNames;
 
-    internal readonly MethodMetadata EnumerateHandlers;
-
-    internal readonly MethodMetadata EnsureCountMatches;
-
     internal readonly MethodMetadata RaisedVerification;
 
     internal EventImposterBuilderMethodsMetadata(in ImposterEventCoreMetadata core)
@@ -74,11 +70,6 @@ internal readonly struct EventImposterBuilderMethodsMetadata
             WellKnownTypes.System.Threading.Tasks.Task
         );
         RaiseLocalNames = new EventRaiseLocalNames(core);
-        EnumerateHandlers = new MethodMetadata(
-            raiseMethodNames.Use("EnumerateActiveHandlers"),
-            WellKnownTypes.Void
-        );
-        EnsureCountMatches = new MethodMetadata("EnsureCountMatches", WellKnownTypes.Void);
         RaisedVerification = new MethodMetadata("Raised", WellKnownTypes.Void);
     }
 }

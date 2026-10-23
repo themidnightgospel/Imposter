@@ -1,4 +1,4 @@
-﻿using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -159,6 +159,11 @@ internal static class WellKnownTypes
                 IdentifierName("Interlocked")
             );
 
+            internal static readonly TypeSyntax LazyInitializer = QualifiedName(
+                Namespace,
+                IdentifierName("LazyInitializer")
+            );
+
             internal static readonly TypeSyntax Volatile = QualifiedName(
                 Namespace,
                 IdentifierName("Volatile")
@@ -228,6 +233,15 @@ internal static class WellKnownTypes
 
             internal static NameSyntax IHaveImposterInstance(TypeSyntax instanceType) =>
                 GenericType(Namespace, nameof(IHaveImposterInstance), instanceType);
+
+            internal static NameSyntax CallbackCollection(TypeSyntax itemType) =>
+                GenericType(Namespace, nameof(CallbackCollection), itemType);
+
+            internal static NameSyntax ReturnValueSequence(TypeSyntax itemType) =>
+                GenericType(Namespace, nameof(ReturnValueSequence), itemType);
+
+            internal static NameSyntax EventHandlerCollection(TypeSyntax itemType) =>
+                GenericType(Namespace, nameof(EventHandlerCollection), itemType);
 
             internal static NameSyntax SetupCollection(TypeSyntax itemType) =>
                 GenericType(Namespace, nameof(SetupCollection), itemType);

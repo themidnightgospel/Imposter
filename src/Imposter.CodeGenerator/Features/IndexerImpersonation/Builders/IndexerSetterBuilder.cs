@@ -67,25 +67,12 @@ internal static class IndexerSetterBuilder
         return new ClassDeclarationBuilder(setter.Name)
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddModifier(Token(SyntaxKind.SealedKeyword))
-            .AddMember(
-                SinglePrivateReadonlyVariableField(
-                    setter.CallbacksField,
-                    setter.CallbacksField.Type.New()
-                )
-            )
-            .AddMember(
-                SinglePrivateReadonlyVariableField(
-                    setter.InvocationHistoryField,
-                    setter.InvocationHistoryField.Type.New()
-                )
-            )
+            .AddMember(LazyCollectionSyntaxHelper.Field(setter.CallbacksField))
+            .AddMember(LazyCollectionSyntaxHelper.Field(setter.InvocationHistoryField))
             .AddMember(
                 indexer.Core.SetterSupportsBaseImplementation
                 && setter.BaseImplementationCriteriaField.HasValue
-                    ? SinglePrivateReadonlyVariableField(
-                        setter.BaseImplementationCriteriaField.Value,
-                        setter.BaseImplementationCriteriaField.Value.Type.New()
-                    )
+                    ? LazyCollectionSyntaxHelper.Field(setter.BaseImplementationCriteriaField.Value)
                     : null
             )
             .AddMember(
@@ -159,8 +146,9 @@ internal static class IndexerSetterBuilder
             .AddParameter(callbackParameter)
             .WithBody(
                 Block(
-                    IdentifierName(setter.CallbacksField.Name)
-                        .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
+                    LazyCollectionSyntaxHelper
+                        .EnsureInitialized(setter.CallbacksField.Name)
+                        .Dot(IdentifierName("Add"))
                         .Call(Argument(tupleExpression))
                         .ToStatementSyntax()
                 )
@@ -189,18 +177,21 @@ internal static class IndexerSetterBuilder
         var invocationCountDeclaration = LocalVariableDeclarationSyntax(
             WellKnownTypes.Int,
             invocationCount.Identifier.Text,
-            invocationHistoryIdentifier
-                .Dot(IdentifierName("Count"))
-                .Call(
-                    Argument(
-                        SimpleLambdaExpression(
-                            Parameter(entryIdentifier.Identifier),
-                            IdentifierName(setter.CriteriaParameterName)
-                                .Dot(IdentifierName("Matches"))
-                                .Call(Argument(entryArguments))
+            LazyCollectionSyntaxHelper.CountOrZero(
+                invocationHistoryIdentifier,
+                invocationHistoryIdentifier
+                    .Dot(IdentifierName("Count"))
+                    .Call(
+                        Argument(
+                            SimpleLambdaExpression(
+                                Parameter(entryIdentifier.Identifier),
+                                IdentifierName(setter.CriteriaParameterName)
+                                    .Dot(IdentifierName("Matches"))
+                                    .Call(Argument(entryArguments))
+                            )
                         )
                     )
-                )
+            )
         );
 
         var setDescription = "set "
@@ -234,7 +225,8 @@ internal static class IndexerSetterBuilder
                         new PerformedInvocations(
                             invocationHistoryIdentifier,
                             entryIdentifier,
-                            descriptionExpression
+                            descriptionExpression,
+                            IsHistoryNullable: true
                         )
                     )
                 )
@@ -255,8 +247,9 @@ internal static class IndexerSetterBuilder
             )
             .WithBody(
                 Block(
-                    IdentifierName(setter.BaseImplementationCriteriaField!.Value.Name)
-                        .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
+                    LazyCollectionSyntaxHelper
+                        .EnsureInitialized(setter.BaseImplementationCriteriaField!.Value.Name)
+                        .Dot(IdentifierName("Add"))
                         .Call(Argument(IdentifierName(setter.CriteriaParameterName)))
                         .ToStatementSyntax(),
                     IdentifierName(setter.MarkConfiguredMethod.Name).Call().ToStatementSyntax()
@@ -344,7 +337,7 @@ internal static class IndexerSetterBuilder
                         : EmptyArgumentListSyntax
                 );
 
-            baseCriteriaLoop = ConcurrentQueueSyntaxHelper.UnlessEmpty(
+            baseCriteriaLoop = LazyCollectionSyntaxHelper.UnlessNull(
                 ForEachStatement(
                     Var,
                     Identifier(setter.CriteriaParameterName),
@@ -383,7 +376,8 @@ internal static class IndexerSetterBuilder
             )
             .AddStatement(CreateArgumentsDeclaration(indexer, setter.ArgumentsVariableName))
             .AddStatement(
-                IdentifierName(setter.InvocationHistoryField.Name)
+                LazyCollectionSyntaxHelper
+                    .EnsureInitialized(setter.InvocationHistoryField.Name)
                     .Dot(ConcurrentStackSyntaxHelper.Push)
                     .Call(Argument(HistoryEntry(indexer, argumentsVariable, value)))
                     .ToStatementSyntax()
@@ -397,7 +391,7 @@ internal static class IndexerSetterBuilder
                         False
                     )
             )
-            .AddStatement(ConcurrentQueueSyntaxHelper.UnlessEmpty(foreachStatement));
+            .AddStatement(LazyCollectionSyntaxHelper.UnlessNull(foreachStatement));
 
         if (invokedBaseIdentifier is not null)
         {

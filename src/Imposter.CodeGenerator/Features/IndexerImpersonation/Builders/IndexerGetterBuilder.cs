@@ -72,12 +72,7 @@ internal static partial class IndexerGetterBuilder
                     getter.SetupsField.Type.New()
                 )
             )
-            .AddMember(
-                SinglePrivateReadonlyVariableField(
-                    getter.InvocationHistoryField,
-                    getter.InvocationHistoryField.Type.New()
-                )
-            )
+            .AddMember(LazyCollectionSyntaxHelper.Field(getter.InvocationHistoryField))
             .AddMember(SinglePrivateReadonlyVariableField(getter.InvocationBehaviorField))
             .AddMember(SinglePrivateReadonlyVariableField(getter.PropertyDisplayNameField))
             .AddMember(
@@ -128,7 +123,8 @@ internal static partial class IndexerGetterBuilder
         );
         var recordInvocation = FinallyClause(
             Block(
-                IdentifierName(getter.InvocationHistoryField.Name)
+                LazyCollectionSyntaxHelper
+                    .EnsureInitialized(getter.InvocationHistoryField.Name)
                     .Dot(ConcurrentStackSyntaxHelper.Push)
                     .Call(Argument(arguments))
                     .ToStatementSyntax()
@@ -331,13 +327,17 @@ internal static partial class IndexerGetterBuilder
         var invocationCountDeclaration = LocalVariableDeclarationSyntax(
             WellKnownTypes.Int,
             invocationCount.Identifier.Text,
-            invocationHistory
-                .Dot(IdentifierName("Count"))
-                .Call(
-                    Argument(
-                        IdentifierName(getter.CriteriaParameterName).Dot(IdentifierName("Matches"))
+            LazyCollectionSyntaxHelper.CountOrZero(
+                invocationHistory,
+                invocationHistory
+                    .Dot(IdentifierName("Count"))
+                    .Call(
+                        Argument(
+                            IdentifierName(getter.CriteriaParameterName)
+                                .Dot(IdentifierName("Matches"))
+                        )
                     )
-                )
+            )
         );
 
         var entry = IdentifierName("entry");
@@ -363,7 +363,12 @@ internal static partial class IndexerGetterBuilder
                     ThrowIfCountDoesNotMatch(
                         count,
                         invocationCount,
-                        new PerformedInvocations(invocationHistory, entry, entryDescription)
+                        new PerformedInvocations(
+                            invocationHistory,
+                            entry,
+                            entryDescription,
+                            IsHistoryNullable: true
+                        )
                     )
                 )
             )

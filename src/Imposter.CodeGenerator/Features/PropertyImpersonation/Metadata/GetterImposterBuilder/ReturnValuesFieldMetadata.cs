@@ -1,4 +1,4 @@
-﻿using Imposter.CodeGenerator.SyntaxHelpers;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.GetterImposterBuilder;
@@ -11,6 +11,6 @@ internal readonly struct ReturnValuesFieldMetadata
 
     internal ReturnValuesFieldMetadata(TypeSyntax handlerType)
     {
-        TypeSyntax = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(handlerType);
+        TypeSyntax = WellKnownTypes.Imposter.Abstractions.ReturnValueSequence(handlerType);
     }
 }

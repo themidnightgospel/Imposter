@@ -50,7 +50,7 @@ Public API for consumers and the generator. Lives in `src/Imposter.Abstractions`
 
 - `TypeCaster` (`src/Imposter.Abstractions/TypeCaster.cs`)
   - `TryCast<TIn,TOut>(in,out)`; `Cast<TIn,TOut>(in)` for safe conversions.
-  - Generated-code only, like `SpanElementsComparer<T>`, `SetupCollection<T>` and `AsyncCallbacks`: all four carry `[EditorBrowsable(EditorBrowsableState.Never)]` so they stay out of IntelliSense.
+  - Generated-code only, like `SpanElementsComparer<T>`, `SetupCollection<T>`, `CallbackCollection<T>`, `EventHandlerCollection<T>`, `ReturnValueSequence<T>` and `AsyncCallbacks`: all carry `[EditorBrowsable(EditorBrowsableState.Never)]` so they stay out of IntelliSense. They are public for generated code only and may change with the generator in the same package.
 
 ## How It’s Used
 

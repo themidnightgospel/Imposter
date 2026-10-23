@@ -50,14 +50,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal sealed class BufferFilledEventImposterBuilder : IBufferFilledEventImposterBuilder, IBufferFilledEventImposterSetupBuilder, IBufferFilledEventImposterVerificationBuilder
 		{
-			private global::Imposter.Tests.Features.EventImpersonation.BufferFilledAsyncHandler? _activeHandlers;
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.BufferFilledAsyncHandler> _subscribeHistory = new global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.BufferFilledAsyncHandler>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.BufferFilledAsyncHandler> _unsubscribeHistory = new global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.BufferFilledAsyncHandler>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.BufferFilledAsyncHandler>> _subscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.BufferFilledAsyncHandler>>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.BufferFilledAsyncHandler>> _unsubscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.BufferFilledAsyncHandler>>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.BufferFilledAsyncHandler> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.BufferFilledAsyncHandler>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<byte[]> _history = new global::System.Collections.Concurrent.ConcurrentQueue<byte[]>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::Imposter.Tests.Features.EventImpersonation.BufferFilledAsyncHandler Handler, byte[] buffer)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::Imposter.Tests.Features.EventImpersonation.BufferFilledAsyncHandler Handler, byte[] buffer)>();
+			private global::Imposter.Abstractions.EventHandlerCollection<global::Imposter.Tests.Features.EventImpersonation.BufferFilledAsyncHandler>? _activeHandlers;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.BufferFilledAsyncHandler>? _subscribeHistory;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.BufferFilledAsyncHandler>? _unsubscribeHistory;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.BufferFilledAsyncHandler>>? _subscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.BufferFilledAsyncHandler>>? _unsubscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.BufferFilledAsyncHandler>? _callbacks;
+			private global::System.Collections.Concurrent.ConcurrentStack<byte[]>? _history;
+			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.BufferFilledAsyncHandler Handler, byte[] buffer)>? _handlerInvocations;
 			internal BufferFilledEventImposterBuilder()
 			{
 			}
@@ -69,23 +69,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(handler));
 				}
 
-				var handlers = _activeHandlers;
-				while (true)
+				global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Combine(handler);
+				global::System.Threading.LazyInitializer.EnsureInitialized(ref _subscribeHistory).Push(handler);
+				if (_subscribeInterceptors != null)
 				{
-					var updated = (global::Imposter.Tests.Features.EventImpersonation.BufferFilledAsyncHandler?)global::System.Delegate.Combine(handlers, handler);
-					var observed = global::System.Threading.Interlocked.CompareExchange(ref _activeHandlers, updated, handlers);
-					if (object.ReferenceEquals(observed, handlers))
+					foreach (var interceptor in _subscribeInterceptors)
 					{
-						break;
+						interceptor(handler);
 					}
-
-					handlers = observed;
-				}
-
-				_subscribeHistory.Enqueue(handler);
-				foreach (var interceptor in _subscribeInterceptors)
-				{
-					interceptor(handler);
 				}
 			}
 
@@ -96,23 +87,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(handler));
 				}
 
-				var handlers = _activeHandlers;
-				while (true)
+				global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Remove(handler);
+				global::System.Threading.LazyInitializer.EnsureInitialized(ref _unsubscribeHistory).Push(handler);
+				if (_unsubscribeInterceptors != null)
 				{
-					var updated = (global::Imposter.Tests.Features.EventImpersonation.BufferFilledAsyncHandler?)global::System.Delegate.Remove(handlers, handler);
-					var observed = global::System.Threading.Interlocked.CompareExchange(ref _activeHandlers, updated, handlers);
-					if (object.ReferenceEquals(observed, handlers))
+					foreach (var interceptor in _unsubscribeInterceptors)
 					{
-						break;
+						interceptor(handler);
 					}
-
-					handlers = observed;
-				}
-
-				_unsubscribeHistory.Enqueue(handler);
-				foreach (var interceptor in _unsubscribeInterceptors)
-				{
-					interceptor(handler);
 				}
 			}
 
@@ -123,7 +105,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(callback));
 				}
 
-				_callbacks.Enqueue(callback);
+				global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				return this;
 			}
 
@@ -145,20 +127,36 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = _subscribeHistory.Count(entry => criteria.Matches(entry));
-				EnsureCountMatches(actual, count, () =>
+				int actual = 0;
+				if (_subscribeHistory != null)
 				{
-					var performedInvocations = new global::System.Collections.Generic.List<string>();
 					foreach (var entry in _subscribeHistory)
 					{
 						if (criteria.Matches(entry))
 						{
-							performedInvocations.Add("BufferFilled subscribed" + " handler: " + FormatValue(entry));
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_subscribeHistory != null)
+					{
+						foreach (var entry in _subscribeHistory)
+						{
+							if (criteria.Matches(entry))
+							{
+								performedInvocations.Add("BufferFilled subscribed" + " handler: " + FormatValue(entry));
+							}
 						}
 					}
 
-					return string.Join(global::System.Environment.NewLine, performedInvocations);
-				});
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+				}
+
 				return this;
 			}
 
@@ -174,20 +172,36 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = _unsubscribeHistory.Count(entry => criteria.Matches(entry));
-				EnsureCountMatches(actual, count, () =>
+				int actual = 0;
+				if (_unsubscribeHistory != null)
 				{
-					var performedInvocations = new global::System.Collections.Generic.List<string>();
 					foreach (var entry in _unsubscribeHistory)
 					{
 						if (criteria.Matches(entry))
 						{
-							performedInvocations.Add("BufferFilled unsubscribed" + " handler: " + FormatValue(entry));
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_unsubscribeHistory != null)
+					{
+						foreach (var entry in _unsubscribeHistory)
+						{
+							if (criteria.Matches(entry))
+							{
+								performedInvocations.Add("BufferFilled unsubscribed" + " handler: " + FormatValue(entry));
+							}
 						}
 					}
 
-					return string.Join(global::System.Environment.NewLine, performedInvocations);
-				});
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+				}
+
 				return this;
 			}
 
@@ -198,7 +212,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(interceptor));
 				}
 
-				_subscribeInterceptors.Enqueue(interceptor);
+				global::System.Threading.LazyInitializer.EnsureInitialized(ref _subscribeInterceptors).Add(interceptor);
 				return this;
 			}
 
@@ -209,7 +223,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(interceptor));
 				}
 
-				_unsubscribeInterceptors.Enqueue(interceptor);
+				global::System.Threading.LazyInitializer.EnsureInitialized(ref _unsubscribeInterceptors).Add(interceptor);
 				return this;
 			}
 
@@ -225,20 +239,36 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = _history.Count(entry => bufferCriteria.Matches(entry));
-				EnsureCountMatches(actual, count, () =>
+				int actual = 0;
+				if (_history != null)
 				{
-					var performedInvocations = new global::System.Collections.Generic.List<string>();
 					foreach (var entry in _history)
 					{
 						if (bufferCriteria.Matches(entry))
 						{
-							performedInvocations.Add("BufferFilled raised" + " buffer: " + FormatValue(entry));
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_history != null)
+					{
+						foreach (var entry in _history)
+						{
+							if (bufferCriteria.Matches(entry))
+							{
+								performedInvocations.Add("BufferFilled raised" + " buffer: " + FormatValue(entry));
+							}
 						}
 					}
 
-					return string.Join(global::System.Environment.NewLine, performedInvocations);
-				});
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+				}
+
 				return this;
 			}
 
@@ -254,33 +284,52 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = _handlerInvocations.Count(entry => handlerCriteria.Matches(entry.Handler));
-				EnsureCountMatches(actual, count, () =>
+				int actual = 0;
+				if (_handlerInvocations != null)
 				{
-					var performedInvocations = new global::System.Collections.Generic.List<string>();
 					foreach (var entry in _handlerInvocations)
 					{
 						if (handlerCriteria.Matches(entry.Handler))
 						{
-							performedInvocations.Add("BufferFilled handler invoked" + " handler: " + FormatValue(entry.Handler) + " buffer: " + FormatValue(entry.buffer));
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_handlerInvocations != null)
+					{
+						foreach (var entry in _handlerInvocations)
+						{
+							if (handlerCriteria.Matches(entry.Handler))
+							{
+								performedInvocations.Add("BufferFilled handler invoked" + " handler: " + FormatValue(entry.Handler) + " buffer: " + FormatValue(entry.buffer));
+							}
 						}
 					}
 
-					return string.Join(global::System.Environment.NewLine, performedInvocations);
-				});
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+				}
+
 				return this;
 			}
 
 			private async global::System.Threading.Tasks.Task RaiseCoreAsync(byte[] buffer)
 			{
-				_history.Enqueue(buffer.ToArray());
+				global::System.Threading.LazyInitializer.EnsureInitialized(ref _history).Push(buffer.ToArray());
 				global::System.Collections.Generic.List<global::System.Threading.Tasks.Task> pendingTasks = new global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>();
-				foreach (var callback in _callbacks)
+				if (_callbacks != null)
 				{
-					var task = callback(buffer);
-					if (task != default)
+					foreach (var callback in _callbacks)
 					{
-						pendingTasks.Add(task.AsTask());
+						var task = callback(buffer);
+						if (task != default)
+						{
+							pendingTasks.Add(task.AsTask());
+						}
 					}
 				}
 
@@ -290,39 +339,22 @@ namespace Imposter.Tests.Features.EventImpersonation
 				}
 
 				pendingTasks.Clear();
-				foreach (var handler in EnumerateActiveHandlers())
+				if (_activeHandlers != null)
 				{
-					_handlerInvocations.Enqueue((handler, buffer.ToArray()));
-					var task = handler(buffer);
-					if (task != default)
+					foreach (var handler in _activeHandlers)
 					{
-						pendingTasks.Add(task.AsTask());
+						global::System.Threading.LazyInitializer.EnsureInitialized(ref _handlerInvocations).Push((handler, buffer.ToArray()));
+						var task = handler(buffer);
+						if (task != default)
+						{
+							pendingTasks.Add(task.AsTask());
+						}
 					}
 				}
 
 				if (pendingTasks.Count > 0)
 				{
 					await global::System.Threading.Tasks.Task.WhenAll(pendingTasks).ConfigureAwait(false);
-				}
-			}
-
-			private global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.EventImpersonation.BufferFilledAsyncHandler> EnumerateActiveHandlers()
-			{
-				var handlers = _activeHandlers;
-				if (handlers != null)
-				{
-					foreach (var handler in handlers.GetInvocationList())
-					{
-						yield return (global::Imposter.Tests.Features.EventImpersonation.BufferFilledAsyncHandler)handler;
-					}
-				}
-			}
-
-			private static void EnsureCountMatches(int actual, global::Imposter.Abstractions.Count expected, global::System.Func<string> performedInvocationsFactory)
-			{
-				if (!expected.Matches(actual))
-				{
-					throw new global::Imposter.Abstractions.VerificationFailedException(expected, actual, performedInvocationsFactory());
 				}
 			}
 
@@ -361,14 +393,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal sealed class InTextReceivedEventImposterBuilder : IInTextReceivedEventImposterBuilder, IInTextReceivedEventImposterSetupBuilder, IInTextReceivedEventImposterVerificationBuilder
 		{
-			private global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler? _activeHandlers;
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler> _subscribeHistory = new global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler> _unsubscribeHistory = new global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler>> _subscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler>>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler>> _unsubscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler>>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<char[]> _history = new global::System.Collections.Concurrent.ConcurrentQueue<char[]>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler Handler, char[] text)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler Handler, char[] text)>();
+			private global::Imposter.Abstractions.EventHandlerCollection<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler>? _activeHandlers;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler>? _subscribeHistory;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler>? _unsubscribeHistory;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler>>? _subscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler>>? _unsubscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler>? _callbacks;
+			private global::System.Collections.Concurrent.ConcurrentStack<char[]>? _history;
+			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler Handler, char[] text)>? _handlerInvocations;
 			internal InTextReceivedEventImposterBuilder()
 			{
 			}
@@ -380,23 +412,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(handler));
 				}
 
-				var handlers = _activeHandlers;
-				while (true)
+				global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Combine(handler);
+				global::System.Threading.LazyInitializer.EnsureInitialized(ref _subscribeHistory).Push(handler);
+				if (_subscribeInterceptors != null)
 				{
-					var updated = (global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler?)global::System.Delegate.Combine(handlers, handler);
-					var observed = global::System.Threading.Interlocked.CompareExchange(ref _activeHandlers, updated, handlers);
-					if (object.ReferenceEquals(observed, handlers))
+					foreach (var interceptor in _subscribeInterceptors)
 					{
-						break;
+						interceptor(handler);
 					}
-
-					handlers = observed;
-				}
-
-				_subscribeHistory.Enqueue(handler);
-				foreach (var interceptor in _subscribeInterceptors)
-				{
-					interceptor(handler);
 				}
 			}
 
@@ -407,23 +430,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(handler));
 				}
 
-				var handlers = _activeHandlers;
-				while (true)
+				global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Remove(handler);
+				global::System.Threading.LazyInitializer.EnsureInitialized(ref _unsubscribeHistory).Push(handler);
+				if (_unsubscribeInterceptors != null)
 				{
-					var updated = (global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler?)global::System.Delegate.Remove(handlers, handler);
-					var observed = global::System.Threading.Interlocked.CompareExchange(ref _activeHandlers, updated, handlers);
-					if (object.ReferenceEquals(observed, handlers))
+					foreach (var interceptor in _unsubscribeInterceptors)
 					{
-						break;
+						interceptor(handler);
 					}
-
-					handlers = observed;
-				}
-
-				_unsubscribeHistory.Enqueue(handler);
-				foreach (var interceptor in _unsubscribeInterceptors)
-				{
-					interceptor(handler);
 				}
 			}
 
@@ -434,7 +448,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(callback));
 				}
 
-				_callbacks.Enqueue(callback);
+				global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				return this;
 			}
 
@@ -456,20 +470,36 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = _subscribeHistory.Count(entry => criteria.Matches(entry));
-				EnsureCountMatches(actual, count, () =>
+				int actual = 0;
+				if (_subscribeHistory != null)
 				{
-					var performedInvocations = new global::System.Collections.Generic.List<string>();
 					foreach (var entry in _subscribeHistory)
 					{
 						if (criteria.Matches(entry))
 						{
-							performedInvocations.Add("InTextReceived subscribed" + " handler: " + FormatValue(entry));
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_subscribeHistory != null)
+					{
+						foreach (var entry in _subscribeHistory)
+						{
+							if (criteria.Matches(entry))
+							{
+								performedInvocations.Add("InTextReceived subscribed" + " handler: " + FormatValue(entry));
+							}
 						}
 					}
 
-					return string.Join(global::System.Environment.NewLine, performedInvocations);
-				});
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+				}
+
 				return this;
 			}
 
@@ -485,20 +515,36 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = _unsubscribeHistory.Count(entry => criteria.Matches(entry));
-				EnsureCountMatches(actual, count, () =>
+				int actual = 0;
+				if (_unsubscribeHistory != null)
 				{
-					var performedInvocations = new global::System.Collections.Generic.List<string>();
 					foreach (var entry in _unsubscribeHistory)
 					{
 						if (criteria.Matches(entry))
 						{
-							performedInvocations.Add("InTextReceived unsubscribed" + " handler: " + FormatValue(entry));
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_unsubscribeHistory != null)
+					{
+						foreach (var entry in _unsubscribeHistory)
+						{
+							if (criteria.Matches(entry))
+							{
+								performedInvocations.Add("InTextReceived unsubscribed" + " handler: " + FormatValue(entry));
+							}
 						}
 					}
 
-					return string.Join(global::System.Environment.NewLine, performedInvocations);
-				});
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+				}
+
 				return this;
 			}
 
@@ -509,7 +555,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(interceptor));
 				}
 
-				_subscribeInterceptors.Enqueue(interceptor);
+				global::System.Threading.LazyInitializer.EnsureInitialized(ref _subscribeInterceptors).Add(interceptor);
 				return this;
 			}
 
@@ -520,7 +566,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(interceptor));
 				}
 
-				_unsubscribeInterceptors.Enqueue(interceptor);
+				global::System.Threading.LazyInitializer.EnsureInitialized(ref _unsubscribeInterceptors).Add(interceptor);
 				return this;
 			}
 
@@ -536,20 +582,36 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = _history.Count(entry => textCriteria.Matches(entry));
-				EnsureCountMatches(actual, count, () =>
+				int actual = 0;
+				if (_history != null)
 				{
-					var performedInvocations = new global::System.Collections.Generic.List<string>();
 					foreach (var entry in _history)
 					{
 						if (textCriteria.Matches(entry))
 						{
-							performedInvocations.Add("InTextReceived raised" + " text: " + FormatValue(entry));
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_history != null)
+					{
+						foreach (var entry in _history)
+						{
+							if (textCriteria.Matches(entry))
+							{
+								performedInvocations.Add("InTextReceived raised" + " text: " + FormatValue(entry));
+							}
 						}
 					}
 
-					return string.Join(global::System.Environment.NewLine, performedInvocations);
-				});
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+				}
+
 				return this;
 			}
 
@@ -565,33 +627,52 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = _handlerInvocations.Count(entry => handlerCriteria.Matches(entry.Handler));
-				EnsureCountMatches(actual, count, () =>
+				int actual = 0;
+				if (_handlerInvocations != null)
 				{
-					var performedInvocations = new global::System.Collections.Generic.List<string>();
 					foreach (var entry in _handlerInvocations)
 					{
 						if (handlerCriteria.Matches(entry.Handler))
 						{
-							performedInvocations.Add("InTextReceived handler invoked" + " handler: " + FormatValue(entry.Handler) + " text: " + FormatValue(entry.text));
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_handlerInvocations != null)
+					{
+						foreach (var entry in _handlerInvocations)
+						{
+							if (handlerCriteria.Matches(entry.Handler))
+							{
+								performedInvocations.Add("InTextReceived handler invoked" + " handler: " + FormatValue(entry.Handler) + " text: " + FormatValue(entry.text));
+							}
 						}
 					}
 
-					return string.Join(global::System.Environment.NewLine, performedInvocations);
-				});
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+				}
+
 				return this;
 			}
 
 			private async global::System.Threading.Tasks.Task RaiseCoreAsync(char[] text)
 			{
-				_history.Enqueue(text.ToArray());
+				global::System.Threading.LazyInitializer.EnsureInitialized(ref _history).Push(text.ToArray());
 				global::System.Collections.Generic.List<global::System.Threading.Tasks.Task> pendingTasks = new global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>();
-				foreach (var callback in _callbacks)
+				if (_callbacks != null)
 				{
-					var task = callback(text);
-					if (task != default)
+					foreach (var callback in _callbacks)
 					{
-						pendingTasks.Add(task);
+						var task = callback(text);
+						if (task != default)
+						{
+							pendingTasks.Add(task);
+						}
 					}
 				}
 
@@ -601,39 +682,22 @@ namespace Imposter.Tests.Features.EventImpersonation
 				}
 
 				pendingTasks.Clear();
-				foreach (var handler in EnumerateActiveHandlers())
+				if (_activeHandlers != null)
 				{
-					_handlerInvocations.Enqueue((handler, text.ToArray()));
-					var task = handler(text);
-					if (task != default)
+					foreach (var handler in _activeHandlers)
 					{
-						pendingTasks.Add(task);
+						global::System.Threading.LazyInitializer.EnsureInitialized(ref _handlerInvocations).Push((handler, text.ToArray()));
+						var task = handler(text);
+						if (task != default)
+						{
+							pendingTasks.Add(task);
+						}
 					}
 				}
 
 				if (pendingTasks.Count > 0)
 				{
 					await global::System.Threading.Tasks.Task.WhenAll(pendingTasks).ConfigureAwait(false);
-				}
-			}
-
-			private global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler> EnumerateActiveHandlers()
-			{
-				var handlers = _activeHandlers;
-				if (handlers != null)
-				{
-					foreach (var handler in handlers.GetInvocationList())
-					{
-						yield return (global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler)handler;
-					}
-				}
-			}
-
-			private static void EnsureCountMatches(int actual, global::Imposter.Abstractions.Count expected, global::System.Func<string> performedInvocationsFactory)
-			{
-				if (!expected.Matches(actual))
-				{
-					throw new global::Imposter.Abstractions.VerificationFailedException(expected, actual, performedInvocationsFactory());
 				}
 			}
 
@@ -672,14 +736,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal sealed class TextReceivedEventImposterBuilder : ITextReceivedEventImposterBuilder, ITextReceivedEventImposterSetupBuilder, ITextReceivedEventImposterVerificationBuilder
 		{
-			private global::Imposter.Tests.Features.EventImpersonation.TextReceivedAsyncHandler? _activeHandlers;
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.TextReceivedAsyncHandler> _subscribeHistory = new global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.TextReceivedAsyncHandler>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.TextReceivedAsyncHandler> _unsubscribeHistory = new global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.TextReceivedAsyncHandler>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.TextReceivedAsyncHandler>> _subscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.TextReceivedAsyncHandler>>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.TextReceivedAsyncHandler>> _unsubscribeInterceptors = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.TextReceivedAsyncHandler>>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.TextReceivedAsyncHandler> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<global::Imposter.Tests.Features.EventImpersonation.TextReceivedAsyncHandler>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(object? sender, char[] text)> _history = new global::System.Collections.Concurrent.ConcurrentQueue<(object? sender, char[] text)>();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<(global::Imposter.Tests.Features.EventImpersonation.TextReceivedAsyncHandler Handler, object? sender, char[] text)> _handlerInvocations = new global::System.Collections.Concurrent.ConcurrentQueue<(global::Imposter.Tests.Features.EventImpersonation.TextReceivedAsyncHandler Handler, object? sender, char[] text)>();
+			private global::Imposter.Abstractions.EventHandlerCollection<global::Imposter.Tests.Features.EventImpersonation.TextReceivedAsyncHandler>? _activeHandlers;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.TextReceivedAsyncHandler>? _subscribeHistory;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.TextReceivedAsyncHandler>? _unsubscribeHistory;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.TextReceivedAsyncHandler>>? _subscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.TextReceivedAsyncHandler>>? _unsubscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.TextReceivedAsyncHandler>? _callbacks;
+			private global::System.Collections.Concurrent.ConcurrentStack<(object? sender, char[] text)>? _history;
+			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.TextReceivedAsyncHandler Handler, object? sender, char[] text)>? _handlerInvocations;
 			internal TextReceivedEventImposterBuilder()
 			{
 			}
@@ -691,23 +755,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(handler));
 				}
 
-				var handlers = _activeHandlers;
-				while (true)
+				global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Combine(handler);
+				global::System.Threading.LazyInitializer.EnsureInitialized(ref _subscribeHistory).Push(handler);
+				if (_subscribeInterceptors != null)
 				{
-					var updated = (global::Imposter.Tests.Features.EventImpersonation.TextReceivedAsyncHandler?)global::System.Delegate.Combine(handlers, handler);
-					var observed = global::System.Threading.Interlocked.CompareExchange(ref _activeHandlers, updated, handlers);
-					if (object.ReferenceEquals(observed, handlers))
+					foreach (var interceptor in _subscribeInterceptors)
 					{
-						break;
+						interceptor(handler);
 					}
-
-					handlers = observed;
-				}
-
-				_subscribeHistory.Enqueue(handler);
-				foreach (var interceptor in _subscribeInterceptors)
-				{
-					interceptor(handler);
 				}
 			}
 
@@ -718,23 +773,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(handler));
 				}
 
-				var handlers = _activeHandlers;
-				while (true)
+				global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Remove(handler);
+				global::System.Threading.LazyInitializer.EnsureInitialized(ref _unsubscribeHistory).Push(handler);
+				if (_unsubscribeInterceptors != null)
 				{
-					var updated = (global::Imposter.Tests.Features.EventImpersonation.TextReceivedAsyncHandler?)global::System.Delegate.Remove(handlers, handler);
-					var observed = global::System.Threading.Interlocked.CompareExchange(ref _activeHandlers, updated, handlers);
-					if (object.ReferenceEquals(observed, handlers))
+					foreach (var interceptor in _unsubscribeInterceptors)
 					{
-						break;
+						interceptor(handler);
 					}
-
-					handlers = observed;
-				}
-
-				_unsubscribeHistory.Enqueue(handler);
-				foreach (var interceptor in _unsubscribeInterceptors)
-				{
-					interceptor(handler);
 				}
 			}
 
@@ -745,7 +791,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(callback));
 				}
 
-				_callbacks.Enqueue(callback);
+				global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				return this;
 			}
 
@@ -767,20 +813,36 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = _subscribeHistory.Count(entry => criteria.Matches(entry));
-				EnsureCountMatches(actual, count, () =>
+				int actual = 0;
+				if (_subscribeHistory != null)
 				{
-					var performedInvocations = new global::System.Collections.Generic.List<string>();
 					foreach (var entry in _subscribeHistory)
 					{
 						if (criteria.Matches(entry))
 						{
-							performedInvocations.Add("TextReceived subscribed" + " handler: " + FormatValue(entry));
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_subscribeHistory != null)
+					{
+						foreach (var entry in _subscribeHistory)
+						{
+							if (criteria.Matches(entry))
+							{
+								performedInvocations.Add("TextReceived subscribed" + " handler: " + FormatValue(entry));
+							}
 						}
 					}
 
-					return string.Join(global::System.Environment.NewLine, performedInvocations);
-				});
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+				}
+
 				return this;
 			}
 
@@ -796,20 +858,36 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = _unsubscribeHistory.Count(entry => criteria.Matches(entry));
-				EnsureCountMatches(actual, count, () =>
+				int actual = 0;
+				if (_unsubscribeHistory != null)
 				{
-					var performedInvocations = new global::System.Collections.Generic.List<string>();
 					foreach (var entry in _unsubscribeHistory)
 					{
 						if (criteria.Matches(entry))
 						{
-							performedInvocations.Add("TextReceived unsubscribed" + " handler: " + FormatValue(entry));
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_unsubscribeHistory != null)
+					{
+						foreach (var entry in _unsubscribeHistory)
+						{
+							if (criteria.Matches(entry))
+							{
+								performedInvocations.Add("TextReceived unsubscribed" + " handler: " + FormatValue(entry));
+							}
 						}
 					}
 
-					return string.Join(global::System.Environment.NewLine, performedInvocations);
-				});
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+				}
+
 				return this;
 			}
 
@@ -820,7 +898,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(interceptor));
 				}
 
-				_subscribeInterceptors.Enqueue(interceptor);
+				global::System.Threading.LazyInitializer.EnsureInitialized(ref _subscribeInterceptors).Add(interceptor);
 				return this;
 			}
 
@@ -831,7 +909,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(interceptor));
 				}
 
-				_unsubscribeInterceptors.Enqueue(interceptor);
+				global::System.Threading.LazyInitializer.EnsureInitialized(ref _unsubscribeInterceptors).Add(interceptor);
 				return this;
 			}
 
@@ -852,20 +930,36 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = _history.Count(entry => senderCriteria.Matches(entry.sender) && textCriteria.Matches(entry.text));
-				EnsureCountMatches(actual, count, () =>
+				int actual = 0;
+				if (_history != null)
 				{
-					var performedInvocations = new global::System.Collections.Generic.List<string>();
 					foreach (var entry in _history)
 					{
 						if (senderCriteria.Matches(entry.sender) && textCriteria.Matches(entry.text))
 						{
-							performedInvocations.Add("TextReceived raised" + " sender: " + FormatValue(entry.sender) + " text: " + FormatValue(entry.text));
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_history != null)
+					{
+						foreach (var entry in _history)
+						{
+							if (senderCriteria.Matches(entry.sender) && textCriteria.Matches(entry.text))
+							{
+								performedInvocations.Add("TextReceived raised" + " sender: " + FormatValue(entry.sender) + " text: " + FormatValue(entry.text));
+							}
 						}
 					}
 
-					return string.Join(global::System.Environment.NewLine, performedInvocations);
-				});
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+				}
+
 				return this;
 			}
 
@@ -881,33 +975,52 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = _handlerInvocations.Count(entry => handlerCriteria.Matches(entry.Handler));
-				EnsureCountMatches(actual, count, () =>
+				int actual = 0;
+				if (_handlerInvocations != null)
 				{
-					var performedInvocations = new global::System.Collections.Generic.List<string>();
 					foreach (var entry in _handlerInvocations)
 					{
 						if (handlerCriteria.Matches(entry.Handler))
 						{
-							performedInvocations.Add("TextReceived handler invoked" + " handler: " + FormatValue(entry.Handler) + " sender: " + FormatValue(entry.sender) + " text: " + FormatValue(entry.text));
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_handlerInvocations != null)
+					{
+						foreach (var entry in _handlerInvocations)
+						{
+							if (handlerCriteria.Matches(entry.Handler))
+							{
+								performedInvocations.Add("TextReceived handler invoked" + " handler: " + FormatValue(entry.Handler) + " sender: " + FormatValue(entry.sender) + " text: " + FormatValue(entry.text));
+							}
 						}
 					}
 
-					return string.Join(global::System.Environment.NewLine, performedInvocations);
-				});
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+				}
+
 				return this;
 			}
 
 			private async global::System.Threading.Tasks.Task RaiseCoreAsync(object? sender, char[] text)
 			{
-				_history.Enqueue((sender, text.ToArray()));
+				global::System.Threading.LazyInitializer.EnsureInitialized(ref _history).Push((sender, text.ToArray()));
 				global::System.Collections.Generic.List<global::System.Threading.Tasks.Task> pendingTasks = new global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>();
-				foreach (var callback in _callbacks)
+				if (_callbacks != null)
 				{
-					var task = callback(sender, text);
-					if (task != default)
+					foreach (var callback in _callbacks)
 					{
-						pendingTasks.Add(task);
+						var task = callback(sender, text);
+						if (task != default)
+						{
+							pendingTasks.Add(task);
+						}
 					}
 				}
 
@@ -917,39 +1030,22 @@ namespace Imposter.Tests.Features.EventImpersonation
 				}
 
 				pendingTasks.Clear();
-				foreach (var handler in EnumerateActiveHandlers())
+				if (_activeHandlers != null)
 				{
-					_handlerInvocations.Enqueue((handler, sender, text.ToArray()));
-					var task = handler(sender, text);
-					if (task != default)
+					foreach (var handler in _activeHandlers)
 					{
-						pendingTasks.Add(task);
+						global::System.Threading.LazyInitializer.EnsureInitialized(ref _handlerInvocations).Push((handler, sender, text.ToArray()));
+						var task = handler(sender, text);
+						if (task != default)
+						{
+							pendingTasks.Add(task);
+						}
 					}
 				}
 
 				if (pendingTasks.Count > 0)
 				{
 					await global::System.Threading.Tasks.Task.WhenAll(pendingTasks).ConfigureAwait(false);
-				}
-			}
-
-			private global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.EventImpersonation.TextReceivedAsyncHandler> EnumerateActiveHandlers()
-			{
-				var handlers = _activeHandlers;
-				if (handlers != null)
-				{
-					foreach (var handler in handlers.GetInvocationList())
-					{
-						yield return (global::Imposter.Tests.Features.EventImpersonation.TextReceivedAsyncHandler)handler;
-					}
-				}
-			}
-
-			private static void EnsureCountMatches(int actual, global::Imposter.Abstractions.Count expected, global::System.Func<string> performedInvocationsFactory)
-			{
-				if (!expected.Matches(actual))
-				{
-					throw new global::Imposter.Abstractions.VerificationFailedException(expected, actual, performedInvocationsFactory());
 				}
 			}
 

@@ -185,7 +185,7 @@ internal readonly struct IndexerGetterImposterMetadata
             );
             CallbacksField = new FieldMetadata(
                 "_callbacks",
-                WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
+                WellKnownTypes.Imposter.Abstractions.CallbackCollection(
                     indexer.Delegates.GetterCallbackDelegateType
                 )
             );

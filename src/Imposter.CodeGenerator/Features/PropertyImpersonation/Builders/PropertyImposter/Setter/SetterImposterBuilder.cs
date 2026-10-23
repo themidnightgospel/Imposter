@@ -28,10 +28,10 @@ internal static class SetterImposterBuilder
         return new ClassDeclarationBuilder(property.SetterImposter.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddMember(
-                SinglePrivateReadonlyVariableField(
-                    property.SetterImposter.CallbacksField.Type,
+                SingleVariableField(
+                    property.SetterImposter.CallbacksField.Type.ToNullableType(),
                     CallbacksFieldMetadata.Name,
-                    property.SetterImposter.CallbacksField.Type.New()
+                    SyntaxKind.PrivateKeyword
                 )
             )
             .AddMember(BuildInvocationsField(property.SetterImposter))
@@ -112,7 +112,7 @@ internal static class SetterImposterBuilder
         in PropertySetterImposterMetadata setterImposter
     ) =>
         setterImposter.InvocationHistoryField is { } invocationHistory
-            ? SinglePrivateReadonlyVariableField(invocationHistory, invocationHistory.Type.New())
+            ? LazyCollectionSyntaxHelper.Field(invocationHistory)
             : SingleVariableField(setterImposter.InvocationCountField, SyntaxKind.PrivateKeyword);
 
     private static MethodDeclarationSyntax BuildUseBaseImplementationMethod(
@@ -251,7 +251,7 @@ internal static class SetterImposterBuilder
                 .Call(Argument(value))
                 .ToStatementSyntax();
 
-            return ConcurrentQueueSyntaxHelper.UnlessEmpty(
+            return LazyCollectionSyntaxHelper.UnlessNull(
                 setterImposter.CallbacksField.TupleTypeSyntax is null
                     ? ForEachStatement(
                         type: Var,
@@ -301,7 +301,8 @@ internal static class SetterImposterBuilder
         ) =>
             (
                 setterImposter.InvocationHistoryField is { } invocationHistory
-                    ? IdentifierName(invocationHistory.Name)
+                    ? LazyCollectionSyntaxHelper
+                        .EnsureInitialized(invocationHistory.Name)
                         .Dot(ConcurrentStackSyntaxHelper.Push)
                         .Call(
                             Argument(IdentifierName(setterImposter.SetMethod.ValueParameter.Name))
@@ -356,18 +357,26 @@ internal static class SetterImposterBuilder
                     LocalVariableDeclarationSyntax(
                         Var,
                         invocationCount.Identifier.Text,
-                        invocationHistory
-                            .Dot(IdentifierName("Count"))
-                            .Call(
-                                Argument(
-                                    IdentifierName(criteria.Name).Dot(IdentifierName("Matches"))
+                        LazyCollectionSyntaxHelper.CountOrZero(
+                            invocationHistory,
+                            invocationHistory
+                                .Dot(IdentifierName("Count"))
+                                .Call(
+                                    Argument(
+                                        IdentifierName(criteria.Name).Dot(IdentifierName("Matches"))
+                                    )
                                 )
-                            )
+                        )
                     ),
                     ThrowIfCountDoesNotMatch(
                         count,
                         invocationCount,
-                        new PerformedInvocations(invocationHistory, value, valueDescription)
+                        new PerformedInvocations(
+                            invocationHistory,
+                            value,
+                            valueDescription,
+                            IsHistoryNullable: true
+                        )
                     )
                 )
             )
@@ -402,8 +411,9 @@ internal static class SetterImposterBuilder
             .AddParameter(ParameterSyntax(callbackMethod.CallbackParameter))
             .WithBody(
                 Block(
-                    IdentifierName(CallbacksFieldMetadata.Name)
-                        .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
+                    LazyCollectionSyntaxHelper
+                        .EnsureInitialized(CallbacksFieldMetadata.Name)
+                        .Dot(IdentifierName("Add"))
                         .Call(Argument(queuedCallback))
                         .ToStatementSyntax()
                 )

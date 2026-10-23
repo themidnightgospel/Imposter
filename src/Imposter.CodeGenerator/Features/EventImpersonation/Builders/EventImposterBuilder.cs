@@ -43,12 +43,6 @@ internal static class EventImposterBuilder
                     ? EventImposterRaiseBuilder.BuildRaiseCoreAsyncMethod(@event)
                     : null
             )
-            .AddMember(EventImposterRaiseBuilder.BuildEnumerateHandlersMethod(@event))
-            .AddMember(
-                EventImposterVerificationBuilder.BuildEnsureCountMatchesMethod(
-                    @event.Builder.Methods
-                )
-            )
             .AddMember(FormatValueMethodBuilder.Build())
             .AddMember(BuildUseBaseImplementationMethod(@event))
             .Build();
