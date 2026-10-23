@@ -129,5 +129,29 @@ namespace Imposter.Tests.Features.MethodImpersonation
             Should.NotThrow(() => sut.Instance().VoidNoParams());
             callbackInvoked.ShouldBeTrue();
         }
+
+        [Fact]
+        public void GivenExplicitMode_WhenGenericVoidMethodVerifiedForAnotherTypeArgument_ShouldStillThrowMissingImposterException()
+        {
+            var sut = new IMethodSetupFeatureSutImposter(ImposterMode.Explicit);
+
+            sut.GenericSingleParam<object>(Arg<object>.Any()).Called(Count.Never());
+
+            Should.Throw<MissingImposterException>(() =>
+                sut.Instance().GenericSingleParam("value")
+            );
+        }
+
+        [Fact]
+        public void GivenImplicitMode_WhenGenericVoidMethodVerifiedForAnotherTypeArgument_ShouldRecordCallsUnderTheirOwnTypeArgument()
+        {
+            var sut = new IMethodSetupFeatureSutImposter(ImposterMode.Implicit);
+
+            sut.GenericSingleParam<object>(Arg<object>.Any()).Called(Count.Never());
+            sut.Instance().GenericSingleParam("value");
+
+            sut.GenericSingleParam<string>(Arg<string>.Any()).Called(Count.Once());
+            sut.GenericSingleParam<object>(Arg<object>.Any()).Called(Count.Never());
+        }
     }
 }

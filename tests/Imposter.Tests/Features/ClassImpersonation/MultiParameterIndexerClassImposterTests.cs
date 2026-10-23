@@ -220,5 +220,15 @@ namespace Imposter.Tests.Features.ClassImpersonation
             instance.ReadValue(10, "second").ShouldBe(202);
             instance.ReadValue(-5, "mixed").ShouldBe(305);
         }
+
+        [Fact]
+        public void GivenExplicitMode_WhenSetterUsesBaseImplementation_ShouldAllowSettingValues()
+        {
+            var imposter = new ClassWithMultiParameterIndexerImposter(ImposterMode.Explicit);
+
+            imposter[Arg<int>.Any(), Arg<string>.Any()].Setter().UseBaseImplementation();
+
+            Should.NotThrow(() => imposter.Instance().WriteValue(1, "base", 2));
+        }
     }
 }

@@ -42,7 +42,7 @@ Methods without setups are implicitly stubbed and return `default(T)`.
 
 ### Explicit mode (methods)
 
-Missing setups throw an exception so unintended calls are caught. A setup counts only once it has an outcome: `Returns`, `ReturnsAsync`, `Throws`, `ThrowsAsync`, `Callback` or `UseBaseImplementation`. Selecting a method without one, for example to verify it with `Called`, doesn't allow its calls. For a void method, allow calls with an empty `Callback`.
+Missing setups throw an exception so unintended calls are caught. A setup counts only once it has an outcome: `Returns`, `ReturnsAsync`, `Throws`, `ThrowsAsync` or `UseBaseImplementation`, or `Callback` for a void method. Selecting a method without one, for example to verify it with `Called`, doesn't allow its calls. For a void method, allow calls with an empty `Callback`.
 
 !!! example
     ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/Docs/Methods/ImposterModes/ImposterModesTests.cs#L42"}

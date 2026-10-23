@@ -313,6 +313,16 @@ namespace Imposter.Tests.Features.PropertyImpersonation
             instance.VirtualProperty = "after-throw";
             instance.VirtualProperty.ShouldBe("after-throw");
         }
+
+        [Fact]
+        public void GivenExplicitMode_WhenSetterUsesBaseImplementation_ShouldAllowSettingValues()
+        {
+            var imposter = new ClassWithVirtualPropertyImposter(ImposterMode.Explicit);
+
+            imposter.VirtualProperty.Setter(Arg<string>.Any()).UseBaseImplementation();
+
+            Should.NotThrow(() => imposter.Instance().VirtualProperty = "value");
+        }
     }
 
     public class ClassWithVirtualProperty

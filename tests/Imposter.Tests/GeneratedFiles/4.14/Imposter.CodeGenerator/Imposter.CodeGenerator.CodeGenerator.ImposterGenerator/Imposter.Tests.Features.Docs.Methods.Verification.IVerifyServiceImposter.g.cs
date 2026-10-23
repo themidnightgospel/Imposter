@@ -566,7 +566,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Verification
 
 					if (!invocationImposter.IsConfigured)
 					{
-						return _latestInvocationImposter ?? MethodInvocationImposter.Default;
+						return _latestInvocationImposter;
 					}
 
 					_latestInvocationImposter = invocationImposter;
