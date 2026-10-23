@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="604" viewBox="0 0 640 604" role="img" aria-label="Benchmark results">
+<style>
+.card { fill: #ffffff; stroke: #d0d7de; }
+.head { fill: #f6f8fa; }
+.highlight { fill: #ddf4ff; }
+.rule { stroke: #d0d7de; }
+text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; font-size: 13px;
+  fill: #1f2328; }
+.number { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }
+.title { font-size: 15px; font-weight: 600; }
+.bold { font-weight: 600; }
+.muted { fill: #59636e; font-size: 11px; }
+.accent { fill: #0969da; }
+@media (prefers-color-scheme: dark) {
+  .card { fill: #0d1117; stroke: #30363d; }
+  .head { fill: #161b22; }
+  .highlight { fill: #12233d; }
+  .rule { stroke: #30363d; }
+  text { fill: #e6edf3; }
+  .muted { fill: #9198a1; }
+  .accent { fill: #4493f8; }
+}
+</style>
+<rect class="card" x="0.5" y="0.5" width="639" height="603" rx="6"/>
+<text class="title" x="24" y="30">Set up Square(int) and call it N times (lower is better)</text>
+<rect class="head" x="1" y="48" width="638" height="24"/>
+<text class="bold" x="24" y="64">Library</text>
+<text class="bold" x="300" y="64" text-anchor="end">N</text>
+<text class="bold" x="470" y="64" text-anchor="end">Mean time</text>
+<text class="bold" x="616" y="64" text-anchor="end">Allocated</text>
+<text class="" x="24" y="88">Moq</text>
+<text class="number " x="300" y="88" text-anchor="end">1</text>
+<text class="number " x="470" y="88" text-anchor="end">184.04 μs</text>
+<text class="number " x="616" y="88" text-anchor="end">12.84 KB</text>
+<text class="" x="24" y="112">NSubstitute</text>
+<text class="number " x="300" y="112" text-anchor="end">1</text>
+<text class="number " x="470" y="112" text-anchor="end">3.65 μs</text>
+<text class="number " x="616" y="112" text-anchor="end">7.48 KB</text>
+<text class="" x="24" y="136">FakeItEasy</text>
+<text class="number " x="300" y="136" text-anchor="end">1</text>
+<text class="number " x="470" y="136" text-anchor="end">3.38 μs</text>
+<text class="number " x="616" y="136" text-anchor="end">5.50 KB</text>
+<text class="" x="24" y="160">Rocks</text>
+<text class="number " x="300" y="160" text-anchor="end">1</text>
+<text class="number " x="470" y="160" text-anchor="end">87.34 ns</text>
+<text class="number " x="616" y="160" text-anchor="end">304 B</text>
+<rect class="highlight" x="1" y="168" width="638" height="24"/>
+<text class="bold accent" x="24" y="184">Imposter</text>
+<text class="number bold accent" x="300" y="184" text-anchor="end">1</text>
+<text class="number bold accent" x="470" y="184" text-anchor="end">442.53 ns</text>
+<text class="number bold accent" x="616" y="184" text-anchor="end">2.20 KB</text>
+<line class="rule" x1="1" y1="192" x2="639" y2="192"/>
+<text class="" x="24" y="208">Moq</text>
+<text class="number " x="300" y="208" text-anchor="end">10</text>
+<text class="number " x="470" y="208" text-anchor="end">1.77 ms</text>
+<text class="number " x="616" y="208" text-anchor="end">114.98 KB</text>
+<text class="" x="24" y="232">NSubstitute</text>
+<text class="number " x="300" y="232" text-anchor="end">10</text>
+<text class="number " x="470" y="232" text-anchor="end">17.48 μs</text>
+<text class="number " x="616" y="232" text-anchor="end">26.20 KB</text>
+<text class="" x="24" y="256">FakeItEasy</text>
+<text class="number " x="300" y="256" text-anchor="end">10</text>
+<text class="number " x="470" y="256" text-anchor="end">17.98 μs</text>
+<text class="number " x="616" y="256" text-anchor="end">34.88 KB</text>
+<text class="" x="24" y="280">Rocks</text>
+<text class="number " x="300" y="280" text-anchor="end">10</text>
+<text class="number " x="470" y="280" text-anchor="end">939.14 ns</text>
+<text class="number " x="616" y="280" text-anchor="end">1.84 KB</text>
+<rect class="highlight" x="1" y="288" width="638" height="24"/>
+<text class="bold accent" x="24" y="304">Imposter</text>
+<text class="number bold accent" x="300" y="304" text-anchor="end">10</text>
+<text class="number bold accent" x="470" y="304" text-anchor="end">4.22 μs</text>
+<text class="number bold accent" x="616" y="304" text-anchor="end">20.48 KB</text>
+<line class="rule" x1="1" y1="312" x2="639" y2="312"/>
+<text class="" x="24" y="328">Moq</text>
+<text class="number " x="300" y="328" text-anchor="end">100</text>
+<text class="number " x="470" y="328" text-anchor="end">17.81 ms</text>
+<text class="number " x="616" y="328" text-anchor="end">1.38 MB</text>
+<text class="" x="24" y="352">NSubstitute</text>
+<text class="number " x="300" y="352" text-anchor="end">100</text>
+<text class="number " x="470" y="352" text-anchor="end">369.55 μs</text>
+<text class="number " x="616" y="352" text-anchor="end">217.45 KB</text>
+<text class="" x="24" y="376">FakeItEasy</text>
+<text class="number " x="300" y="376" text-anchor="end">100</text>
+<text class="number " x="470" y="376" text-anchor="end">342.93 μs</text>
+<text class="number " x="616" y="376" text-anchor="end">715.15 KB</text>
+<text class="" x="24" y="400">Rocks</text>
+<text class="number " x="300" y="400" text-anchor="end">100</text>
+<text class="number " x="470" y="400" text-anchor="end">67.88 μs</text>
+<text class="number " x="616" y="400" text-anchor="end">17.31 KB</text>
+<rect class="highlight" x="1" y="408" width="638" height="24"/>
+<text class="bold accent" x="24" y="424">Imposter</text>
+<text class="number bold accent" x="300" y="424" text-anchor="end">100</text>
+<text class="number bold accent" x="470" y="424" text-anchor="end">58.07 μs</text>
+<text class="number bold accent" x="616" y="424" text-anchor="end">203.30 KB</text>
+<line class="rule" x1="1" y1="432" x2="639" y2="432"/>
+<text class="" x="24" y="448">Moq</text>
+<text class="number " x="300" y="448" text-anchor="end">1,000</text>
+<text class="number " x="470" y="448" text-anchor="end">256.39 ms</text>
+<text class="number " x="616" y="448" text-anchor="end">41.21 MB</text>
+<text class="" x="24" y="472">NSubstitute</text>
+<text class="number " x="300" y="472" text-anchor="end">1,000</text>
+<text class="number " x="470" y="472" text-anchor="end">26.29 ms</text>
+<text class="number " x="616" y="472" text-anchor="end">2.07 MB</text>
+<text class="" x="24" y="496">FakeItEasy</text>
+<text class="number " x="300" y="496" text-anchor="end">1,000</text>
+<text class="number " x="470" y="496" text-anchor="end">27.74 ms</text>
+<text class="number " x="616" y="496" text-anchor="end">44.72 MB</text>
+<text class="" x="24" y="520">Rocks</text>
+<text class="number " x="300" y="520" text-anchor="end">1,000</text>
+<text class="number " x="470" y="520" text-anchor="end">3.75 ms</text>
+<text class="number " x="616" y="520" text-anchor="end">172.00 KB</text>
+<rect class="highlight" x="1" y="528" width="638" height="24"/>
+<text class="bold accent" x="24" y="544">Imposter</text>
+<text class="number bold accent" x="300" y="544" text-anchor="end">1,000</text>
+<text class="number bold accent" x="470" y="544" text-anchor="end">2.89 ms</text>
+<text class="number bold accent" x="616" y="544" text-anchor="end">1.98 MB</text>
+<text class="muted" x="24" y="574">Intel Xeon Platinum 8370C CPU 2.80GHz, 4 logical cores · Linux Ubuntu 24.04.5 LTS (Noble Numbat)</text>
+<text class="muted" x="24" y="590">.NET 10.0.13 · BenchmarkDotNet 0.15.6 · commit f829eff0 · 2026-10-23</text>
+</svg>
