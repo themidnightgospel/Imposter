@@ -475,6 +475,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public UseArgumentsCriteria<TTarget> As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (UseArgumentsCriteria<TTarget>)(object)this;
 				return new UseArgumentsCriteria<TTarget>(global::Imposter.Abstractions.Arg<TTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TTarget, T>(it, out T firstTarget) && first.Matches(firstTarget)), global::Imposter.Abstractions.Arg<object>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<object, object>(it, out object secondTarget) && second.Matches(secondTarget)));
 			}
 		}
@@ -552,6 +554,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private readonly global::Imposter.Abstractions.SetupCollection<IUseMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IUseMethodImposter>();
 			internal UseMethodImposter<T> AddNew<T>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is UseMethodImposter<T> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new UseMethodImposter<T>(_useMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -752,6 +756,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IUseMethodImposter<TTarget>? IUseMethodImposter.As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (IUseMethodImposter<TTarget>)(object)this;
 				if (typeof(T).IsAssignableFrom(typeof(TTarget)))
 				{
 					return new Adapter<TTarget>(this);

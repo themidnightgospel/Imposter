@@ -1,5 +1,7 @@
+using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
@@ -12,9 +14,16 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.MethodImp
 
 internal static partial class MethodImposterCollectionBuilder
 {
+    // A setup joins the newest imposter when that one has the same type arguments, so repeated setups of one
+    // instantiation share an imposter. Only the newest is reused, which keeps every setup in newest-first order.
     private static MethodDeclarationSyntax BuildAddNewMethod(in ImposterTargetMethodMetadata method)
     {
-        var imposter = IdentifierName("imposter");
+        var localNames = new NameSet(
+            method.Model.TypeParameters.Select(typeParameter => typeParameter.Name)
+        );
+        var imposter = IdentifierName(localNames.Use("imposter"));
+        var newest = IdentifierName(localNames.Use("newest"));
+        var sameTypeImposter = Identifier(localNames.Use("sameTypeImposter"));
         var methodBuilder = new MethodDeclarationBuilder(
             method.MethodImposter.Syntax,
             MethodImposterCollectionMetadata.AddNewMethodName
@@ -24,6 +33,21 @@ internal static partial class MethodImposterCollectionBuilder
             .AddConstraintClauses(method.GenericTypeConstraintClauses)
             .WithBody(
                 Block(
+                    IfStatement(
+                        IdentifierName(MethodImposterCollectionMetadata.ImpostersFieldName)
+                            .Dot(SetupCollectionSyntaxHelper.TryPeek)
+                            .Call(OutVarArgument(newest.Identifier.Text))
+                            .And(
+                                IsPatternExpression(
+                                    newest,
+                                    DeclarationPattern(
+                                        method.MethodImposter.Syntax,
+                                        SingleVariableDesignation(sameTypeImposter)
+                                    )
+                                )
+                            ),
+                        ReturnStatement(IdentifierName(sameTypeImposter))
+                    ),
                     LocalVariableDeclarationSyntax(
                         Var,
                         imposter.Identifier.Text,

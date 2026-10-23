@@ -896,6 +896,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private readonly global::Imposter.Abstractions.SetupCollection<ITryGetMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<ITryGetMethodImposter>();
 			internal TryGetMethodImposter<T> AddNew<T>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is TryGetMethodImposter<T> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new TryGetMethodImposter<T>(_tryGetMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -1112,6 +1114,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			ITryGetMethodImposter<TTarget>? ITryGetMethodImposter.As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (ITryGetMethodImposter<TTarget>)(object)this;
 				if (typeof(global::System.ReadOnlySpan<TTarget>).IsAssignableFrom(typeof(global::System.ReadOnlySpan<T>)))
 				{
 					return new Adapter<TTarget>(this);

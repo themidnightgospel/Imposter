@@ -106,6 +106,8 @@ namespace Imposter.Tests.Features.InterfaceSetup
 			public EchoArgumentsCriteria<TTarget> As<TTarget>()
 				where TTarget : class
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (EchoArgumentsCriteria<TTarget>)(object)this;
 				return new EchoArgumentsCriteria<TTarget>(global::Imposter.Abstractions.Arg<TTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TTarget, T>(it, out T valueTarget) && value.Matches(valueTarget)));
 			}
 		}
@@ -189,6 +191,8 @@ namespace Imposter.Tests.Features.InterfaceSetup
 			internal EchoMethodImposter<T> AddNew<T>()
 				where T : class
 			{
+				if (_imposters.TryPeek(out var newest) && newest is EchoMethodImposter<T> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new EchoMethodImposter<T>(_echoMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -406,6 +410,8 @@ namespace Imposter.Tests.Features.InterfaceSetup
 
 			IEchoMethodImposter<TTarget>? IEchoMethodImposter.As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (IEchoMethodImposter<TTarget>)(object)this;
 				if (typeof(T).IsAssignableFrom(typeof(TTarget)) && typeof(TTarget).IsAssignableFrom(typeof(T)))
 				{
 					return new Adapter<TTarget>(this);

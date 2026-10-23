@@ -40,6 +40,25 @@ public class GeneratedMemberNamedTypeParameterTests
         );
     }
 
+    // A local can't share its name with a method type parameter (CS0412), so the locals of the generic method imposter
+    // collection's AddNew and GetImposterWithMatchingInvocationImposterGroup avoid the type parameters' names.
+    [Theory]
+    [InlineData("imposter")]
+    [InlineData("newest")]
+    [InlineData("sameTypeImposter")]
+    [InlineData("storedImposter")]
+    [InlineData("typedImposter")]
+    public async Task GivenMethodTypeParameterNamedLikeAnImposterCollectionLocal_WhenSetUpTwice_ShouldCompile(
+        string name
+    )
+    {
+        await AssertInterfaceCompiles(
+            $"public interface IService {{ {name} Get<{name}>({name} value); }}",
+            "imposter.Get<string>(Arg<string>.Any()).Returns(\"first\"); imposter.Get<string>(Arg<string>.Any()).Returns(\"second\"); _ = imposter.Instance().Get(\"value\");",
+            $"{nameof(GivenMethodTypeParameterNamedLikeAnImposterCollectionLocal_WhenSetUpTwice_ShouldCompile)}_{name}"
+        );
+    }
+
     [Theory]
     [InlineData("ReturnsAsync")]
     [InlineData("ThrowsAsync")]

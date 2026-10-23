@@ -133,6 +133,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private readonly global::Imposter.Abstractions.SetupCollection<INameMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<INameMethodImposter>();
 			internal NameMethodImposter<T> AddNew<T>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is NameMethodImposter<T> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new NameMethodImposter<T>(_nameMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -343,6 +345,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			INameMethodImposter<TTarget>? INameMethodImposter.As<TTarget>()
 			{
 				if (typeof(TTarget) == typeof(T))
+					return (INameMethodImposter<TTarget>)(object)this;
+				if (typeof(TTarget) == typeof(T))
 				{
 					return new Adapter<TTarget>(this);
 				}
@@ -546,6 +550,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public PutArgumentsCriteria<TTarget, TKeyTarget> As<TTarget, TKeyTarget>()
 			{
+				if ((typeof(TTarget) == typeof(T)) && (typeof(TKeyTarget) == typeof(TKey)))
+					return (PutArgumentsCriteria<TTarget, TKeyTarget>)(object)this;
 				return new PutArgumentsCriteria<TTarget, TKeyTarget>(global::Imposter.Abstractions.Arg<TTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TTarget, T>(it, out T valueTarget) && value.Matches(valueTarget)));
 			}
 		}
@@ -623,6 +629,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private readonly global::Imposter.Abstractions.SetupCollection<IPutMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IPutMethodImposter>();
 			internal PutMethodImposter<T, TKey> AddNew<T, TKey>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is PutMethodImposter<T, TKey> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new PutMethodImposter<T, TKey>(_putMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -823,6 +831,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IPutMethodImposter<TTarget, TKeyTarget>? IPutMethodImposter.As<TTarget, TKeyTarget>()
 			{
+				if ((typeof(TTarget) == typeof(T)) && (typeof(TKeyTarget) == typeof(TKey)))
+					return (IPutMethodImposter<TTarget, TKeyTarget>)(object)this;
 				if (typeof(T).IsAssignableFrom(typeof(TTarget)) && (typeof(TKeyTarget) == typeof(TKey)))
 				{
 					return new Adapter<TTarget, TKeyTarget>(this);
@@ -1051,6 +1061,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private readonly global::Imposter.Abstractions.SetupCollection<IRegisterMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IRegisterMethodImposter>();
 			internal RegisterMethodImposter<T> AddNew<T>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is RegisterMethodImposter<T> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new RegisterMethodImposter<T>(_registerMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -1249,6 +1261,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			IRegisterMethodImposter<TTarget>? IRegisterMethodImposter.As<TTarget>()
 			{
 				if (typeof(TTarget) == typeof(T))
+					return (IRegisterMethodImposter<TTarget>)(object)this;
+				if (typeof(TTarget) == typeof(T))
 				{
 					return new Adapter<TTarget>(this);
 				}
@@ -1441,6 +1455,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			public RelateArgumentsCriteria<TTarget, TDerivedTarget> As<TTarget, TDerivedTarget>()
 				where TDerivedTarget : TTarget
 			{
+				if ((typeof(TTarget) == typeof(T)) && (typeof(TDerivedTarget) == typeof(TDerived)))
+					return (RelateArgumentsCriteria<TTarget, TDerivedTarget>)(object)this;
 				return new RelateArgumentsCriteria<TTarget, TDerivedTarget>(global::Imposter.Abstractions.Arg<TDerivedTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TDerivedTarget, TDerived>(it, out TDerived valueTarget) && value.Matches(valueTarget)));
 			}
 		}
@@ -1522,6 +1538,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal RelateMethodImposter<T, TDerived> AddNew<T, TDerived>()
 				where TDerived : T
 			{
+				if (_imposters.TryPeek(out var newest) && newest is RelateMethodImposter<T, TDerived> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new RelateMethodImposter<T, TDerived>(_relateMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -1727,6 +1745,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IRelateMethodImposter<TTarget, TDerivedTarget>? IRelateMethodImposter.As<TTarget, TDerivedTarget>()
 			{
+				if ((typeof(TTarget) == typeof(T)) && (typeof(TDerivedTarget) == typeof(TDerived)))
+					return (IRelateMethodImposter<TTarget, TDerivedTarget>)(object)this;
 				if (typeof(TDerived).IsAssignableFrom(typeof(TDerivedTarget)) && (typeof(TTarget) == typeof(T)))
 				{
 					return new Adapter<TTarget, TDerivedTarget>(this);
@@ -1916,6 +1936,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public TagArgumentsCriteria<TTarget> As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (TagArgumentsCriteria<TTarget>)(object)this;
 				return new TagArgumentsCriteria<TTarget>(global::Imposter.Abstractions.Arg<int>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<int, int>(it, out int valueTarget) && value.Matches(valueTarget)));
 			}
 		}
@@ -1993,6 +2015,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private readonly global::Imposter.Abstractions.SetupCollection<ITagMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<ITagMethodImposter>();
 			internal TagMethodImposter<T> AddNew<T>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is TagMethodImposter<T> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new TagMethodImposter<T>(_tagMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -2193,6 +2217,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			ITagMethodImposter<TTarget>? ITagMethodImposter.As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (ITagMethodImposter<TTarget>)(object)this;
 				if (typeof(TTarget) == typeof(T))
 				{
 					return new Adapter<TTarget>(this);

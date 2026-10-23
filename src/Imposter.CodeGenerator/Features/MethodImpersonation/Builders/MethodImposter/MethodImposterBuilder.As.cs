@@ -53,6 +53,11 @@ internal static partial class MethodImposterBuilder
             new TypeParameterRenamer(method.Model.TypeParameters, method.TargetGenericTypeArguments)
         );
 
+        var returnThisWhenSameTypeArguments =
+            GenericArgumentsMatcherBuilder.ReturnThisWhenSameTypeArguments(
+                method,
+                method.MethodImposter.GenericInterface.SyntaxWithTargetGenericArguments
+            );
         var returnAdapter = ReturnStatement(
             GenericName(
                     Identifier(method.MethodImposter.AdapterName),
@@ -62,6 +67,7 @@ internal static partial class MethodImposterBuilder
         );
 
         return Block(
+            returnThisWhenSameTypeArguments,
             IfStatement(
                 conditions.Aggregate((current, next) => current.And(next)),
                 Block(returnAdapter)

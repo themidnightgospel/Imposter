@@ -70,6 +70,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public AcceptsArgumentsCriteria<TTarget> As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (AcceptsArgumentsCriteria<TTarget>)(object)this;
 				return new AcceptsArgumentsCriteria<TTarget>(global::Imposter.Abstractions.Arg<TTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TTarget, T>(it, out T valueTarget) && value.Matches(valueTarget)));
 			}
 		}
@@ -149,6 +151,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private readonly global::Imposter.Abstractions.SetupCollection<IAcceptsMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IAcceptsMethodImposter>();
 			internal AcceptsMethodImposter<T> AddNew<T>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is AcceptsMethodImposter<T> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new AcceptsMethodImposter<T>(_acceptsMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -361,6 +365,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IAcceptsMethodImposter<TTarget>? IAcceptsMethodImposter.As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (IAcceptsMethodImposter<TTarget>)(object)this;
 				if (typeof(T).IsAssignableFrom(typeof(TTarget)))
 				{
 					return new Adapter<TTarget>(this);

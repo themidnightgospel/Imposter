@@ -95,6 +95,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public ContainsArgumentsCriteria<TTarget> As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (ContainsArgumentsCriteria<TTarget>)(object)this;
 				return new ContainsArgumentsCriteria<TTarget>(global::Imposter.Abstractions.ReadOnlySpanArg<TTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TTarget[], T[]>(it, out T[] itemsTarget) && items.Matches(itemsTarget)), global::Imposter.Abstractions.Arg<TTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TTarget, T>(it, out T itemTarget) && item.Matches(itemTarget)));
 			}
 		}
@@ -174,6 +176,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private readonly global::Imposter.Abstractions.SetupCollection<IContainsMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IContainsMethodImposter>();
 			internal ContainsMethodImposter<T> AddNew<T>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is ContainsMethodImposter<T> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new ContainsMethodImposter<T>(_containsMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -386,6 +390,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IContainsMethodImposter<TTarget>? IContainsMethodImposter.As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (IContainsMethodImposter<TTarget>)(object)this;
 				if (typeof(global::System.ReadOnlySpan<T>).IsAssignableFrom(typeof(global::System.ReadOnlySpan<TTarget>)) && typeof(T).IsAssignableFrom(typeof(TTarget)))
 				{
 					return new Adapter<TTarget>(this);
@@ -1046,6 +1052,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public FillArgumentsCriteria<TTarget> As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (FillArgumentsCriteria<TTarget>)(object)this;
 				return new FillArgumentsCriteria<TTarget>(global::Imposter.Abstractions.SpanArg<byte>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<byte[], byte[]>(it, out byte[] bufferTarget) && buffer.Matches(bufferTarget)), global::Imposter.Abstractions.Arg<TTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TTarget, T>(it, out T valueTarget) && value.Matches(valueTarget)));
 			}
 		}
@@ -1123,6 +1131,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private readonly global::Imposter.Abstractions.SetupCollection<IFillMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IFillMethodImposter>();
 			internal FillMethodImposter<T> AddNew<T>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is FillMethodImposter<T> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new FillMethodImposter<T>(_fillMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -1323,6 +1333,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IFillMethodImposter<TTarget>? IFillMethodImposter.As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (IFillMethodImposter<TTarget>)(object)this;
 				if (typeof(T).IsAssignableFrom(typeof(TTarget)))
 				{
 					return new Adapter<TTarget>(this);

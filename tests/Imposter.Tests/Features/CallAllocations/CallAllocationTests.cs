@@ -158,17 +158,17 @@ namespace Imposter.Tests.Features.CallAllocations
             AllocatedBytesPerCall(() => instance.Log("value")).ShouldBeLessThanOrEqualTo(88);
         }
 
-        // The arguments and history (96 bytes), an argument conversion for invocation (24), and an adapter plus
-        // converted matching arguments per candidate (48 each, with two candidates here).
+        // The arguments used to find the setup (24 bytes), the arguments the imposter keeps (24), the history entry (40)
+        // and its stack node (32). Setups with the call's own type arguments need no adapter or converted arguments.
         // Checking candidate setups must not allocate enumerators, even when the newest setup does not match.
         [Fact]
-        public void GivenGenericMethodWithoutCallbacks_WhenCalled_ShouldOnlyAllocateItsArgumentsHistoryAndAdapters()
+        public void GivenGenericMethodWithoutCallbacks_WhenCalled_ShouldOnlyAllocateItsArgumentsAndHistory()
         {
             _sut.Echo<string>("match").Returns("result");
             _sut.Echo<string>("miss").Returns("other");
             var instance = _sut.Instance();
 
-            AllocatedBytesPerCall(() => instance.Echo("match")).ShouldBeLessThanOrEqualTo(216);
+            AllocatedBytesPerCall(() => instance.Echo("match")).ShouldBeLessThanOrEqualTo(120);
         }
 
         // The arguments (24 bytes) and their history stack node (32).
@@ -262,6 +262,25 @@ namespace Imposter.Tests.Features.CallAllocations
                     _ = sut.AsyncSomethingHappened.RaiseAsync(null, EventArgs.Empty)
                 )
                 .ShouldBeLessThanOrEqualTo(budget);
+        }
+
+        // Verifying a generic method matches each recorded call with the criteria as they are when the type arguments
+        // are the same, so the cost doesn't grow with the history.
+        [Fact]
+        public void GivenGenericMethodHistory_WhenVerifying_ShouldNotAllocatePerRecordedCall()
+        {
+            var verification = _sut.Echo<int>(Arg<int>.Any());
+            var instance = _sut.Instance();
+
+            instance.Echo(1);
+            var withOneCall = AllocatedBytesPerCall(() => verification.Called(Count.AtLeastOnce()));
+            for (var i = 0; i < 1000; i++)
+            {
+                instance.Echo(i);
+            }
+
+            AllocatedBytesPerCall(() => verification.Called(Count.AtLeastOnce()))
+                .ShouldBe(withOneCall);
         }
 
         // The call is warmed up first, so static initialization doesn't count.

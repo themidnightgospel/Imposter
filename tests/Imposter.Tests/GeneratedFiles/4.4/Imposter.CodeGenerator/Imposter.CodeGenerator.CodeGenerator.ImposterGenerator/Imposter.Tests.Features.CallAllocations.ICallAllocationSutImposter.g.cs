@@ -77,6 +77,8 @@ namespace Imposter.Tests.Features.CallAllocations
 
 			public EchoArgumentsCriteria<TTarget> As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (EchoArgumentsCriteria<TTarget>)(object)this;
 				return new EchoArgumentsCriteria<TTarget>(global::Imposter.Abstractions.Arg<TTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TTarget, T>(it, out T valueTarget) && value.Matches(valueTarget)));
 			}
 		}
@@ -156,6 +158,8 @@ namespace Imposter.Tests.Features.CallAllocations
 			private readonly global::Imposter.Abstractions.SetupCollection<IEchoMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IEchoMethodImposter>();
 			internal EchoMethodImposter<T> AddNew<T>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is EchoMethodImposter<T> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new EchoMethodImposter<T>(_echoMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -368,6 +372,8 @@ namespace Imposter.Tests.Features.CallAllocations
 
 			IEchoMethodImposter<TTarget>? IEchoMethodImposter.As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (IEchoMethodImposter<TTarget>)(object)this;
 				if (typeof(T).IsAssignableFrom(typeof(TTarget)) && typeof(TTarget).IsAssignableFrom(typeof(T)))
 				{
 					return new Adapter<TTarget>(this);

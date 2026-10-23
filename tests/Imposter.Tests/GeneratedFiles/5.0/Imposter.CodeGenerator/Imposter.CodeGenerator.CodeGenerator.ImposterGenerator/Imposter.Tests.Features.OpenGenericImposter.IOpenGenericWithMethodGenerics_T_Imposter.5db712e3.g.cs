@@ -77,6 +77,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public DoSomethingArgumentsCriteria<TArgTarget> As<TArgTarget>()
 			{
+				if (typeof(TArgTarget) == typeof(TArg))
+					return (DoSomethingArgumentsCriteria<TArgTarget>)(object)this;
 				return new DoSomethingArgumentsCriteria<TArgTarget>(global::Imposter.Abstractions.Arg<TArgTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TArgTarget, TArg>(it, out TArg argTarget) && arg.Matches(argTarget)));
 			}
 		}
@@ -154,6 +156,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			private readonly global::Imposter.Abstractions.SetupCollection<IDoSomethingMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IDoSomethingMethodImposter>();
 			internal DoSomethingMethodImposter<TArg> AddNew<TArg>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is DoSomethingMethodImposter<TArg> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new DoSomethingMethodImposter<TArg>(_doSomethingMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -354,6 +358,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			IDoSomethingMethodImposter<TArgTarget>? IDoSomethingMethodImposter.As<TArgTarget>()
 			{
+				if (typeof(TArgTarget) == typeof(TArg))
+					return (IDoSomethingMethodImposter<TArgTarget>)(object)this;
 				if (typeof(TArg).IsAssignableFrom(typeof(TArgTarget)))
 				{
 					return new Adapter<TArgTarget>(this);
@@ -543,6 +549,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public MapArgumentsCriteria<TSourceTarget, TResultTarget> As<TSourceTarget, TResultTarget>()
 			{
+				if ((typeof(TSourceTarget) == typeof(TSource)) && (typeof(TResultTarget) == typeof(TResult)))
+					return (MapArgumentsCriteria<TSourceTarget, TResultTarget>)(object)this;
 				return new MapArgumentsCriteria<TSourceTarget, TResultTarget>(global::Imposter.Abstractions.Arg<TSourceTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TSourceTarget, TSource>(it, out TSource sourceTarget) && source.Matches(sourceTarget)));
 			}
 		}
@@ -622,6 +630,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			private readonly global::Imposter.Abstractions.SetupCollection<IMapMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IMapMethodImposter>();
 			internal MapMethodImposter<TSource, TResult> AddNew<TSource, TResult>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is MapMethodImposter<TSource, TResult> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new MapMethodImposter<TSource, TResult>(_mapMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -834,6 +844,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			IMapMethodImposter<TSourceTarget, TResultTarget>? IMapMethodImposter.As<TSourceTarget, TResultTarget>()
 			{
+				if ((typeof(TSourceTarget) == typeof(TSource)) && (typeof(TResultTarget) == typeof(TResult)))
+					return (IMapMethodImposter<TSourceTarget, TResultTarget>)(object)this;
 				if (typeof(TSource).IsAssignableFrom(typeof(TSourceTarget)) && typeof(TResultTarget).IsAssignableFrom(typeof(TResult)))
 				{
 					return new Adapter<TSourceTarget, TResultTarget>(this);
@@ -1041,6 +1053,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public TransformArgumentsCriteria<TArgTarget> As<TArgTarget>()
 			{
+				if (typeof(TArgTarget) == typeof(TArg))
+					return (TransformArgumentsCriteria<TArgTarget>)(object)this;
 				return new TransformArgumentsCriteria<TArgTarget>(global::Imposter.Abstractions.Arg<T>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<T, T>(it, out T inputTarget) && input.Matches(inputTarget)));
 			}
 		}
@@ -1120,6 +1134,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			private readonly global::Imposter.Abstractions.SetupCollection<ITransformMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<ITransformMethodImposter>();
 			internal TransformMethodImposter<TArg> AddNew<TArg>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is TransformMethodImposter<TArg> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new TransformMethodImposter<TArg>(_transformMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -1332,6 +1348,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			ITransformMethodImposter<TArgTarget>? ITransformMethodImposter.As<TArgTarget>()
 			{
+				if (typeof(TArgTarget) == typeof(TArg))
+					return (ITransformMethodImposter<TArgTarget>)(object)this;
 				if (typeof(TArgTarget).IsAssignableFrom(typeof(TArg)))
 				{
 					return new Adapter<TArgTarget>(this);

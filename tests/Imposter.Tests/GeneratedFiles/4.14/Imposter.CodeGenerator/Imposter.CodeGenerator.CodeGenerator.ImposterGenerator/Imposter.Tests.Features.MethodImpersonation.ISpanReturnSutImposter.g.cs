@@ -482,6 +482,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public RepeatArgumentsCriteria<TTarget> As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (RepeatArgumentsCriteria<TTarget>)(object)this;
 				return new RepeatArgumentsCriteria<TTarget>(global::Imposter.Abstractions.Arg<TTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TTarget, T>(it, out T itemTarget) && item.Matches(itemTarget)), global::Imposter.Abstractions.Arg<int>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<int, int>(it, out int countTarget) && count.Matches(countTarget)));
 			}
 		}
@@ -561,6 +563,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private readonly global::Imposter.Abstractions.SetupCollection<IRepeatMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IRepeatMethodImposter>();
 			internal RepeatMethodImposter<T> AddNew<T>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is RepeatMethodImposter<T> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new RepeatMethodImposter<T>(_repeatMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -773,6 +777,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IRepeatMethodImposter<TTarget>? IRepeatMethodImposter.As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (IRepeatMethodImposter<TTarget>)(object)this;
 				if (typeof(T).IsAssignableFrom(typeof(TTarget)) && typeof(global::System.ReadOnlySpan<TTarget>).IsAssignableFrom(typeof(global::System.ReadOnlySpan<T>)))
 				{
 					return new Adapter<TTarget>(this);

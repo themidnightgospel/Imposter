@@ -878,6 +878,8 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			public TransformArgumentsCriteria<TTarget> As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (TransformArgumentsCriteria<TTarget>)(object)this;
 				return new TransformArgumentsCriteria<TTarget>(global::Imposter.Abstractions.Arg<int>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<int, int>(it, out int inputTarget) && input.Matches(inputTarget)), global::Imposter.Abstractions.OutArg<TTarget>.Any(), global::Imposter.Abstractions.Arg<TTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TTarget, T>(it, out T expectedTarget) && expected.Matches(expectedTarget)));
 			}
 		}
@@ -957,6 +959,8 @@ namespace Imposter.Tests.Features.ClassImpersonation
 			private readonly global::Imposter.Abstractions.SetupCollection<ITransformMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<ITransformMethodImposter>();
 			internal TransformMethodImposter<T> AddNew<T>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is TransformMethodImposter<T> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new TransformMethodImposter<T>(_transformMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -1192,6 +1196,8 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			ITransformMethodImposter<TTarget>? ITransformMethodImposter.As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (ITransformMethodImposter<TTarget>)(object)this;
 				if (typeof(TTarget).IsAssignableFrom(typeof(T)) && typeof(T).IsAssignableFrom(typeof(TTarget)))
 				{
 					return new Adapter<TTarget>(this);

@@ -471,6 +471,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public SumArgumentsCriteria<TTarget> As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (SumArgumentsCriteria<TTarget>)(object)this;
 				return new SumArgumentsCriteria<TTarget>(global::Imposter.Abstractions.ReadOnlySpanArg<TTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TTarget[], T[]>(it, out T[] itemsTarget) && items.Matches(itemsTarget)));
 			}
 		}
@@ -550,6 +552,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private readonly global::Imposter.Abstractions.SetupCollection<ISumMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<ISumMethodImposter>();
 			internal SumMethodImposter<T> AddNew<T>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is SumMethodImposter<T> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new SumMethodImposter<T>(_sumMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -762,6 +766,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			ISumMethodImposter<TTarget>? ISumMethodImposter.As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (ISumMethodImposter<TTarget>)(object)this;
 				if (typeof(global::System.ReadOnlySpan<T>).IsAssignableFrom(typeof(global::System.ReadOnlySpan<TTarget>)))
 				{
 					return new Adapter<TTarget>(this);

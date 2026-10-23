@@ -92,6 +92,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			public EchoArgumentsCriteria<TTarget> As<TTarget>()
 				where TTarget : class
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (EchoArgumentsCriteria<TTarget>)(object)this;
 				return new EchoArgumentsCriteria<TTarget>(global::Imposter.Abstractions.Arg<TTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TTarget, T>(it, out T itemTarget) && item.Matches(itemTarget)));
 			}
 		}
@@ -175,6 +177,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			internal EchoMethodImposter<T> AddNew<T>()
 				where T : class
 			{
+				if (_imposters.TryPeek(out var newest) && newest is EchoMethodImposter<T> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new EchoMethodImposter<T>(_echoMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -408,6 +412,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			IEchoMethodImposter<TTarget>? IEchoMethodImposter.As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (IEchoMethodImposter<TTarget>)(object)this;
 				if (typeof(T).IsAssignableFrom(typeof(TTarget)) && typeof(TTarget).IsAssignableFrom(typeof(T)))
 				{
 					return new Adapter<TTarget>(this);
@@ -1481,6 +1487,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			public SelectFirstArgumentsCriteria<TFirstTarget, TSecondTarget> As<TFirstTarget, TSecondTarget>()
 			{
+				if ((typeof(TFirstTarget) == typeof(TFirst)) && (typeof(TSecondTarget) == typeof(TSecond)))
+					return (SelectFirstArgumentsCriteria<TFirstTarget, TSecondTarget>)(object)this;
 				return new SelectFirstArgumentsCriteria<TFirstTarget, TSecondTarget>(global::Imposter.Abstractions.Arg<TFirstTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TFirstTarget, TFirst>(it, out TFirst firstTarget) && first.Matches(firstTarget)), global::Imposter.Abstractions.Arg<TSecondTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TSecondTarget, TSecond>(it, out TSecond secondTarget) && second.Matches(secondTarget)));
 			}
 		}
@@ -1560,6 +1568,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			private readonly global::Imposter.Abstractions.SetupCollection<ISelectFirstMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<ISelectFirstMethodImposter>();
 			internal SelectFirstMethodImposter<TFirst, TSecond> AddNew<TFirst, TSecond>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is SelectFirstMethodImposter<TFirst, TSecond> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new SelectFirstMethodImposter<TFirst, TSecond>(_selectFirstMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -1788,6 +1798,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			ISelectFirstMethodImposter<TFirstTarget, TSecondTarget>? ISelectFirstMethodImposter.As<TFirstTarget, TSecondTarget>()
 			{
+				if ((typeof(TFirstTarget) == typeof(TFirst)) && (typeof(TSecondTarget) == typeof(TSecond)))
+					return (ISelectFirstMethodImposter<TFirstTarget, TSecondTarget>)(object)this;
 				if ((typeof(TFirst).IsAssignableFrom(typeof(TFirstTarget)) && typeof(TSecond).IsAssignableFrom(typeof(TSecondTarget))) && typeof(TFirstTarget).IsAssignableFrom(typeof(TFirst)))
 				{
 					return new Adapter<TFirstTarget, TSecondTarget>(this);

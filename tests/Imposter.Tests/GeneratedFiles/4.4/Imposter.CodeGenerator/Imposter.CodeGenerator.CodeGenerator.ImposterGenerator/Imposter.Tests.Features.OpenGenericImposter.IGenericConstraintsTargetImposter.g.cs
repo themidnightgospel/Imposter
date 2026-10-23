@@ -95,6 +95,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			public CloneStructArgumentsCriteria<TArgTarget> As<TArgTarget>()
 				where TArgTarget : struct
 			{
+				if (typeof(TArgTarget) == typeof(TArg))
+					return (CloneStructArgumentsCriteria<TArgTarget>)(object)this;
 				return new CloneStructArgumentsCriteria<TArgTarget>(global::Imposter.Abstractions.Arg<TArgTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TArgTarget, TArg>(it, out TArg valueTarget) && value.Matches(valueTarget)));
 			}
 		}
@@ -178,6 +180,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal CloneStructMethodImposter<TArg> AddNew<TArg>()
 				where TArg : struct
 			{
+				if (_imposters.TryPeek(out var newest) && newest is CloneStructMethodImposter<TArg> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new CloneStructMethodImposter<TArg>(_cloneStructMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -395,6 +399,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			ICloneStructMethodImposter<TArgTarget>? ICloneStructMethodImposter.As<TArgTarget>()
 			{
+				if (typeof(TArgTarget) == typeof(TArg))
+					return (ICloneStructMethodImposter<TArgTarget>)(object)this;
 				if (typeof(TArg).IsAssignableFrom(typeof(TArgTarget)) && typeof(TArgTarget).IsAssignableFrom(typeof(TArg)))
 				{
 					return new Adapter<TArgTarget>(this);
@@ -613,6 +619,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			public CompareValuesArgumentsCriteria<TArgTarget> As<TArgTarget>()
 				where TArgTarget : global::System.IComparable<TArgTarget>
 			{
+				if (typeof(TArgTarget) == typeof(TArg))
+					return (CompareValuesArgumentsCriteria<TArgTarget>)(object)this;
 				return new CompareValuesArgumentsCriteria<TArgTarget>(global::Imposter.Abstractions.Arg<TArgTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TArgTarget, TArg>(it, out TArg leftTarget) && left.Matches(leftTarget)), global::Imposter.Abstractions.Arg<TArgTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TArgTarget, TArg>(it, out TArg rightTarget) && right.Matches(rightTarget)));
 			}
 		}
@@ -694,6 +702,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal CompareValuesMethodImposter<TArg> AddNew<TArg>()
 				where TArg : global::System.IComparable<TArg>
 			{
+				if (_imposters.TryPeek(out var newest) && newest is CompareValuesMethodImposter<TArg> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new CompareValuesMethodImposter<TArg>(_compareValuesMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -899,6 +909,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			ICompareValuesMethodImposter<TArgTarget>? ICompareValuesMethodImposter.As<TArgTarget>()
 			{
+				if (typeof(TArgTarget) == typeof(TArg))
+					return (ICompareValuesMethodImposter<TArgTarget>)(object)this;
 				if (typeof(TArg).IsAssignableFrom(typeof(TArgTarget)) && typeof(TArg).IsAssignableFrom(typeof(TArgTarget)))
 				{
 					return new Adapter<TArgTarget>(this);
@@ -1136,6 +1148,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal CreateInstanceMethodImposter<TArg> AddNew<TArg>()
 				where TArg : new()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is CreateInstanceMethodImposter<TArg> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new CreateInstanceMethodImposter<TArg>(_createInstanceMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -1350,6 +1364,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			ICreateInstanceMethodImposter<TArgTarget>? ICreateInstanceMethodImposter.As<TArgTarget>()
 			{
+				if (typeof(TArgTarget) == typeof(TArg))
+					return (ICreateInstanceMethodImposter<TArgTarget>)(object)this;
 				if (typeof(TArgTarget).IsAssignableFrom(typeof(TArg)))
 				{
 					return new Adapter<TArgTarget>(this);
@@ -1561,6 +1577,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			public HandleReferenceArgumentsCriteria<TArgTarget> As<TArgTarget>()
 				where TArgTarget : class, new()
 			{
+				if (typeof(TArgTarget) == typeof(TArg))
+					return (HandleReferenceArgumentsCriteria<TArgTarget>)(object)this;
 				return new HandleReferenceArgumentsCriteria<TArgTarget>(global::Imposter.Abstractions.Arg<TArgTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TArgTarget, TArg>(it, out TArg valueTarget) && value.Matches(valueTarget)));
 			}
 		}
@@ -1642,6 +1660,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal HandleReferenceMethodImposter<TArg> AddNew<TArg>()
 				where TArg : class, new()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is HandleReferenceMethodImposter<TArg> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new HandleReferenceMethodImposter<TArg>(_handleReferenceMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -1847,6 +1867,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			IHandleReferenceMethodImposter<TArgTarget>? IHandleReferenceMethodImposter.As<TArgTarget>()
 			{
+				if (typeof(TArgTarget) == typeof(TArg))
+					return (IHandleReferenceMethodImposter<TArgTarget>)(object)this;
 				if (typeof(TArg).IsAssignableFrom(typeof(TArgTarget)))
 				{
 					return new Adapter<TArgTarget>(this);
