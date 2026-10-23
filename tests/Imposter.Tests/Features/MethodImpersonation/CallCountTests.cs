@@ -52,6 +52,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
             var imposter = new IMethodSetupFeatureSutImposter(ImposterMode.Explicit);
 
             var verifier = imposter.VoidNoParams();
+            verifier.Callback(() => { });
             verifier.CallCount().ShouldBe(0);
 
             imposter.Instance().VoidNoParams();

@@ -322,19 +322,13 @@ namespace Imposter.Tests.Features.Docs.Methods.ProtectedMethods
 
 			private InvokeProtectedMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(InvokeProtectedArguments arguments)
 			{
-				InvokeProtectedMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(int value, InvokeProtectedDelegate? baseImplementation = null)
@@ -753,19 +747,13 @@ namespace Imposter.Tests.Features.Docs.Methods.ProtectedMethods
 
 			private ProtectedAddMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(ProtectedAddArguments arguments)
 			{
-				ProtectedAddMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(int value, ProtectedAddDelegate? baseImplementation = null)

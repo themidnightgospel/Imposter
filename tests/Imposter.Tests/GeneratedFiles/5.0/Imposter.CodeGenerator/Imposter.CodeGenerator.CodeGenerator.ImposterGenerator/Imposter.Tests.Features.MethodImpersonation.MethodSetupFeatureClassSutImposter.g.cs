@@ -384,19 +384,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private BuildLabelAsyncMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(BuildLabelAsyncArguments arguments)
 			{
-				BuildLabelAsyncMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public global::System.Threading.Tasks.ValueTask<string> Invoke(string prefix, string suffix, BuildLabelAsyncDelegate? baseImplementation = null)
@@ -831,19 +825,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private IntSingleParamMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(IntSingleParamArguments arguments)
 			{
-				IntSingleParamMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(int age, IntSingleParamDelegate? baseImplementation = null)
@@ -1275,19 +1263,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private RefOutWithParamsMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(RefOutWithParamsArguments arguments)
 			{
-				RefOutWithParamsMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(ref int seed, out int doubled, int[] adjustments, RefOutWithParamsDelegate? baseImplementation = null)
@@ -1740,19 +1722,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private SumAsyncMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(SumAsyncArguments arguments)
 			{
-				SumAsyncMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public global::System.Threading.Tasks.Task<int> Invoke(int left, int right, SumAsyncDelegate? baseImplementation = null)
@@ -2187,19 +2163,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private ThrowingCalculationMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(ThrowingCalculationArguments arguments)
 			{
-				ThrowingCalculationMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(int value, ThrowingCalculationDelegate? baseImplementation = null)
@@ -2602,19 +2572,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private VoidWithSideEffectMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(VoidWithSideEffectArguments arguments)
 			{
-				VoidWithSideEffectMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public void Invoke(int delta, VoidWithSideEffectDelegate? baseImplementation = null)

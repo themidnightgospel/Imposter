@@ -324,19 +324,13 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			private AddMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(AddArguments arguments)
 			{
-				AddMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public void Invoke(T item, int index)
@@ -714,19 +708,13 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			private CountForMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(CountForArguments arguments)
 			{
-				CountForMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(T item)
@@ -1090,16 +1078,13 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			private GetNextMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
 			{
-				GetNextMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.HasConfiguredOutcome)
 						return invocationImposterGroup;
-					if (bareMatch == null)
-						bareMatch = invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public T Invoke()
@@ -1485,19 +1470,13 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			private PublishMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(PublishArguments arguments)
 			{
-				PublishMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public void Invoke(T payload, string category, int priority)
@@ -1844,16 +1823,13 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			private ResilientFetchMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
 			{
-				ResilientFetchMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.HasConfiguredOutcome)
 						return invocationImposterGroup;
-					if (bareMatch == null)
-						bareMatch = invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public T Invoke()
@@ -2245,19 +2221,13 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			private TryAddMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(TryAddArguments arguments)
 			{
-				TryAddMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public bool Invoke(T value)

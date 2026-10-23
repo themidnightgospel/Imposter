@@ -284,16 +284,13 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			private CountMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
 			{
-				CountMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.HasConfiguredOutcome)
 						return invocationImposterGroup;
-					if (bareMatch == null)
-						bareMatch = invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(CountDelegate? baseImplementation = null)
@@ -689,6 +686,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 				internal void Callback(global::Imposter.Abstractions.Arg<string> criteria, global::System.Action<string> callback)
 				{
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(new global::System.Tuple<global::Imposter.Abstractions.Arg<string>, global::System.Action<string>>(criteria, callback));
+					_hasConfiguredSetter = true;
 				}
 
 				void Called(global::Imposter.Abstractions.Arg<string> criteria, global::Imposter.Abstractions.Count count)
@@ -752,11 +750,6 @@ namespace Imposter.Tests.Features.ClassImpersonation
 						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
 				}
 
-				internal void MarkConfigured()
-				{
-					_hasConfiguredSetter = true;
-				}
-
 				private static string FormatValue(object? value)
 				{
 					return "<" + (value?.ToString() ?? "null") + ">";
@@ -804,7 +797,6 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			ILabelPropertySetterBuilder ILabelPropertyBuilder.Setter(global::Imposter.Abstractions.Arg<string> criteria)
 			{
-				_setterImposter.MarkConfigured();
 				return new SetterImposter.Builder(_setterImposter, criteria);
 			}
 

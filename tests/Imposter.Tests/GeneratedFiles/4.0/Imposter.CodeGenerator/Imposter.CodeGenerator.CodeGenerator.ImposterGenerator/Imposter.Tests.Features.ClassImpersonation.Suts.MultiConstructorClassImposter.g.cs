@@ -315,19 +315,13 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			private CalculateMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(CalculateArguments arguments)
 			{
-				CalculateMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(int input, CalculateDelegate? baseImplementation = null)

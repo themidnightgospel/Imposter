@@ -153,29 +153,6 @@ internal static class IndexerImposterBuilder
     {
         var builder = indexer.Builder;
         var setter = indexer.SetterImplementation;
-        var bodyBuilder = new BlockBuilder();
-
-        if (indexer.Core.HasSetter)
-        {
-            bodyBuilder.AddStatement(
-                IdentifierName(builder.SetterImposterField.Name)
-                    .Dot(IdentifierName(setter.MarkConfiguredMethod.Name))
-                    .Call()
-                    .ToStatementSyntax()
-            );
-        }
-
-        bodyBuilder.AddStatement(
-            ReturnStatement(
-                QualifiedName(setter.TypeSyntax, IdentifierName(setter.Builder.Name))
-                    .New(
-                        ArgumentListSyntax([
-                            Argument(IdentifierName(builder.SetterImposterField.Name)),
-                            Argument(IdentifierName(builder.CriteriaParameter.Name)),
-                        ])
-                    )
-            )
-        );
 
         return new MethodDeclarationBuilder(
             builder.CreateSetterMethod.ReturnType,
@@ -183,7 +160,19 @@ internal static class IndexerImposterBuilder
         )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(ParameterSyntax(builder.CriteriaParameter))
-            .WithBody(bodyBuilder.Build())
+            .WithBody(
+                Block(
+                    ReturnStatement(
+                        QualifiedName(setter.TypeSyntax, IdentifierName(setter.Builder.Name))
+                            .New(
+                                ArgumentListSyntax([
+                                    Argument(IdentifierName(builder.SetterImposterField.Name)),
+                                    Argument(IdentifierName(builder.CriteriaParameter.Name)),
+                                ])
+                            )
+                    )
+                )
+            )
             .Build();
     }
 

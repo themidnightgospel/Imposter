@@ -307,19 +307,13 @@ namespace Imposter.Tests.Shared
 
 			private IndexerMethodMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(IndexerMethodArguments arguments)
 			{
-				IndexerMethodMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public string Invoke(int name, string lastname, in global::System.Text.RegularExpressions.Regex dog)

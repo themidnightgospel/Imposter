@@ -324,19 +324,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private CopyMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(CopyArguments arguments)
 			{
-				CopyMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(ref global::System.Span<byte> target, scoped global::System.ReadOnlySpan<byte> source)
@@ -731,19 +725,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private FirstMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(FirstArguments arguments)
 			{
-				FirstMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public global::System.ReadOnlySpan<int> Invoke(scoped global::System.ReadOnlySpan<int> values)
@@ -1138,19 +1126,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private NameMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(NameArguments arguments)
 			{
-				NameMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public global::System.ReadOnlySpan<char> Invoke(scoped global::System.ReadOnlySpan<char> text)
@@ -1545,19 +1527,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private SliceMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(SliceArguments arguments)
 			{
-				SliceMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public global::System.Span<int> Invoke(scoped ref int start)

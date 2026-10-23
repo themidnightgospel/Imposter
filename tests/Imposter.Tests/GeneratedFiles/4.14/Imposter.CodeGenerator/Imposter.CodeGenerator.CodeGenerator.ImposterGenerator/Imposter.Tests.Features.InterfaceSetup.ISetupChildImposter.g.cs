@@ -197,20 +197,14 @@ namespace Imposter.Tests.Features.InterfaceSetup
 			internal IEchoMethodImposter<T> GetImposterWithMatchingInvocationImposterGroup<T>(EchoArguments<T> arguments)
 				where T : class
 			{
-				IEchoMethodImposter<T>? bareMatch = null;
 				foreach (var storedImposter in _imposters)
 				{
 					var typedImposter = storedImposter.As<T>();
-					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments, out var hasConfiguredOutcome))
-					{
-						if (hasConfiguredOutcome)
-							return typedImposter;
-						if (bareMatch == null)
-							bareMatch = typedImposter;
-					}
+					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments))
+						return typedImposter;
 				}
 
-				return bareMatch ?? new EchoMethodImposter<T>(_echoMethodInvocationHistoryCollection, _invocationBehavior);
+				return new EchoMethodImposter<T>(_echoMethodInvocationHistoryCollection, _invocationBehavior);
 			}
 		}
 
@@ -382,7 +376,7 @@ namespace Imposter.Tests.Features.InterfaceSetup
 		internal interface IEchoMethodImposter<T> : IEchoMethodImposter where T : class
 		{
 			T Invoke(T value);
-			bool HasMatchingInvocationImposterGroup(EchoArguments<T> arguments, out bool hasConfiguredOutcome);
+			bool HasMatchingInvocationImposterGroup(EchoArguments<T> arguments);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -435,9 +429,9 @@ namespace Imposter.Tests.Features.InterfaceSetup
 					return global::Imposter.Abstractions.TypeCaster.Cast<T, TTarget>(result);
 				}
 
-				public bool HasMatchingInvocationImposterGroup(EchoArguments<TTarget> arguments, out bool hasConfiguredOutcome)
+				public bool HasMatchingInvocationImposterGroup(EchoArguments<TTarget> arguments)
 				{
-					return _target.HasMatchingInvocationImposterGroup(arguments.As<T>(), out hasConfiguredOutcome);
+					return _target.HasMatchingInvocationImposterGroup(arguments.As<T>());
 				}
 
 				IEchoMethodImposter<TTarget1>? IEchoMethodImposter.As<TTarget1>()
@@ -446,28 +440,20 @@ namespace Imposter.Tests.Features.InterfaceSetup
 				}
 			}
 
-			public bool HasMatchingInvocationImposterGroup(EchoArguments<T> arguments, out bool hasConfiguredOutcome)
+			public bool HasMatchingInvocationImposterGroup(EchoArguments<T> arguments)
 			{
-				var invocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
-				hasConfiguredOutcome = (invocationImposterGroup != null) && invocationImposterGroup.HasConfiguredOutcome;
-				return invocationImposterGroup != null;
+				return FindMatchingInvocationImposterGroup(arguments) != null;
 			}
 
 			private EchoMethodInvocationImposterGroup<T>? FindMatchingInvocationImposterGroup(EchoArguments<T> arguments)
 			{
-				EchoMethodInvocationImposterGroup<T>? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public T Invoke(T value)
@@ -863,19 +849,13 @@ namespace Imposter.Tests.Features.InterfaceSetup
 
 			private ExecuteMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(ExecuteArguments arguments)
 			{
-				ExecuteMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(int value)
@@ -1270,19 +1250,13 @@ namespace Imposter.Tests.Features.InterfaceSetup
 
 			private Execute_1MethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(Execute_1Arguments arguments)
 			{
-				Execute_1MethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(int value)
@@ -1632,16 +1606,13 @@ namespace Imposter.Tests.Features.InterfaceSetup
 
 			private NoOpMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
 			{
-				NoOpMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.HasConfiguredOutcome)
 						return invocationImposterGroup;
-					if (bareMatch == null)
-						bareMatch = invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public void Invoke()
@@ -2002,19 +1973,13 @@ namespace Imposter.Tests.Features.InterfaceSetup
 
 			private NotifyMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(NotifyArguments arguments)
 			{
-				NotifyMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public void Invoke(string value)
@@ -2378,19 +2343,13 @@ namespace Imposter.Tests.Features.InterfaceSetup
 
 			private Notify_1MethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(Notify_1Arguments arguments)
 			{
-				Notify_1MethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public void Invoke(int value)
@@ -2720,6 +2679,7 @@ namespace Imposter.Tests.Features.InterfaceSetup
 				internal void Callback(global::Imposter.Abstractions.Arg<int> criteria, global::System.Action<int> callback)
 				{
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(new global::System.Tuple<global::Imposter.Abstractions.Arg<int>, global::System.Action<int>>(criteria, callback));
+					_hasConfiguredSetter = true;
 				}
 
 				void Called(global::Imposter.Abstractions.Arg<int> criteria, global::Imposter.Abstractions.Count count)
@@ -2766,11 +2726,6 @@ namespace Imposter.Tests.Features.InterfaceSetup
 						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
 				}
 
-				internal void MarkConfigured()
-				{
-					_hasConfiguredSetter = true;
-				}
-
 				private static string FormatValue(object? value)
 				{
 					return "<" + (value?.ToString() ?? "null") + ">";
@@ -2812,7 +2767,6 @@ namespace Imposter.Tests.Features.InterfaceSetup
 
 			IValuePropertySetterBuilder IValuePropertyBuilder.Setter(global::Imposter.Abstractions.Arg<int> criteria)
 			{
-				_setterImposter.MarkConfigured();
 				return new SetterImposter.Builder(_setterImposter, criteria);
 			}
 		}
@@ -3040,6 +2994,7 @@ namespace Imposter.Tests.Features.InterfaceSetup
 				internal void Callback(global::Imposter.Abstractions.Arg<int> criteria, global::System.Action<int> callback)
 				{
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(new global::System.Tuple<global::Imposter.Abstractions.Arg<int>, global::System.Action<int>>(criteria, callback));
+					_hasConfiguredSetter = true;
 				}
 
 				void Called(global::Imposter.Abstractions.Arg<int> criteria, global::Imposter.Abstractions.Count count)
@@ -3086,11 +3041,6 @@ namespace Imposter.Tests.Features.InterfaceSetup
 						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
 				}
 
-				internal void MarkConfigured()
-				{
-					_hasConfiguredSetter = true;
-				}
-
 				private static string FormatValue(object? value)
 				{
 					return "<" + (value?.ToString() ?? "null") + ">";
@@ -3132,7 +3082,6 @@ namespace Imposter.Tests.Features.InterfaceSetup
 
 			IValue_1PropertySetterBuilder IValue_1PropertyBuilder.Setter(global::Imposter.Abstractions.Arg<int> criteria)
 			{
-				_setterImposter.MarkConfigured();
 				return new SetterImposter.Builder(_setterImposter, criteria);
 			}
 		}
@@ -4210,7 +4159,6 @@ namespace Imposter.Tests.Features.InterfaceSetup
 
 			internal IIndexerIndexerSetterBuilder CreateSetter(IndexerIndexerArgumentsCriteria criteria)
 			{
-				_setterImposter.MarkConfigured();
 				return new SetterImposter.Builder(_setterImposter, criteria);
 			}
 
@@ -4526,6 +4474,7 @@ namespace Imposter.Tests.Features.InterfaceSetup
 				public void Callback(IndexerIndexerArgumentsCriteria criteria, IndexerIndexerSetterCallback callback)
 				{
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add((criteria, callback));
+					MarkConfigured();
 				}
 
 				public void Called(IndexerIndexerArgumentsCriteria criteria, global::Imposter.Abstractions.Count count)
@@ -4802,7 +4751,6 @@ namespace Imposter.Tests.Features.InterfaceSetup
 
 			internal IIndexer_1IndexerSetterBuilder CreateSetter(Indexer_1IndexerArgumentsCriteria criteria)
 			{
-				_setterImposter.MarkConfigured();
 				return new SetterImposter.Builder(_setterImposter, criteria);
 			}
 
@@ -5118,6 +5066,7 @@ namespace Imposter.Tests.Features.InterfaceSetup
 				public void Callback(Indexer_1IndexerArgumentsCriteria criteria, Indexer_1IndexerSetterCallback callback)
 				{
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add((criteria, callback));
+					MarkConfigured();
 				}
 
 				public void Called(Indexer_1IndexerArgumentsCriteria criteria, global::Imposter.Abstractions.Count count)

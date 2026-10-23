@@ -275,16 +275,13 @@ namespace Imposter.Tests.Features.InterfaceSetup
 
 			private ReadMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
 			{
-				ReadMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.HasConfiguredOutcome)
 						return invocationImposterGroup;
-					if (bareMatch == null)
-						bareMatch = invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke()
@@ -645,16 +642,13 @@ namespace Imposter.Tests.Features.InterfaceSetup
 
 			private Read_1MethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
 			{
-				Read_1MethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.HasConfiguredOutcome)
 						return invocationImposterGroup;
-					if (bareMatch == null)
-						bareMatch = invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public string Invoke()

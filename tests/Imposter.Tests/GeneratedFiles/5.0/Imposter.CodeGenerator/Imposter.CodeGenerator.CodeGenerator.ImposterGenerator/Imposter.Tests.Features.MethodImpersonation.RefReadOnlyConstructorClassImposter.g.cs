@@ -284,16 +284,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private ReadMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
 			{
-				ReadMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.HasConfiguredOutcome)
 						return invocationImposterGroup;
-					if (bareMatch == null)
-						bareMatch = invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(ReadDelegate? baseImplementation = null)

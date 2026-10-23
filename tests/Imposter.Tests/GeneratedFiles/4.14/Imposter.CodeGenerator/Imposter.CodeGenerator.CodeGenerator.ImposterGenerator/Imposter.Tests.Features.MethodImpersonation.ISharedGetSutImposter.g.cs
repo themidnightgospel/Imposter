@@ -282,16 +282,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private GetMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
 			{
-				GetMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.HasConfiguredOutcome)
 						return invocationImposterGroup;
-					if (bareMatch == null)
-						bareMatch = invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke()
@@ -683,19 +680,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private Get_2MethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(Get_2Arguments arguments)
 			{
-				Get_2MethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(int key)
@@ -1059,16 +1050,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private Get_1MethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
 			{
-				Get_1MethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.HasConfiguredOutcome)
 						return invocationImposterGroup;
-					if (bareMatch == null)
-						bareMatch = invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke()

@@ -43,7 +43,7 @@ Verification respects the same argument matching rules used for arrangements:
 
 Use `imposter.Method(...).CallCount()` to read the number of recorded calls matching its arguments and generic type arguments. `CallCount()` is part of the existing method verification interface alongside `Called(Count.*)` and returns zero if no calls match.
 
-Retain the method builder when configuring behavior and use it for subsequent count checks. Selecting a method on the imposter creates a setup, just as it does for `Called`; selecting it again can replace previously configured behavior. Calling `CallCount()` on the retained builder does not register another setup or clear history. Each count check scans the current recorded calls.
+Retain the method builder when configuring behavior and use it for subsequent count checks. Selecting a method on the imposter creates a setup, just as it does for `Called`; configuring the new setup replaces previously configured behavior. Until it is configured, the setup doesn't answer calls, so in `Explicit` mode they still throw `MissingImposterException`. Calling `CallCount()` on the retained builder does not register another setup or clear history. Each count check scans the current recorded calls.
 
 Save the count before the next action, then compare it with the new count:
 

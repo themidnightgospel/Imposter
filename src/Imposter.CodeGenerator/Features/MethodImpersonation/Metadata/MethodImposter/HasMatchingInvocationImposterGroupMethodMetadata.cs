@@ -13,8 +13,6 @@ internal readonly struct HasMatchingInvocationImposterGroupMethodMetadata
 
     internal readonly string ArgumentsParameterName;
 
-    internal readonly string HasConfiguredOutcomeParameterName;
-
     public HasMatchingInvocationImposterGroupMethodMetadata(
         in ReservedParameterNames reservedParameterNames
     )
@@ -23,6 +21,5 @@ internal readonly struct HasMatchingInvocationImposterGroupMethodMetadata
         Name = BaseName;
         var nameContext = reservedParameterNames.CreateNameSet();
         ArgumentsParameterName = nameContext.Use("arguments");
-        HasConfiguredOutcomeParameterName = nameContext.Use("hasConfiguredOutcome");
     }
 }

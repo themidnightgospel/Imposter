@@ -34,13 +34,35 @@ namespace Imposter.Tests.Features.PropertyImpersonation
         }
 
         [Fact]
-        public void GivenExplicitMode_WhenSetterConfigured_ShouldAllowSettingValues()
+        public void GivenExplicitMode_WhenSetterHasNoCallback_ShouldThrowMissingImposterException()
         {
             var sut = new IPropertySetupSutImposter(ImposterMode.Explicit);
 
             sut.LastName.Setter(Arg<int>.Any());
 
+            Should.Throw<MissingImposterException>(() => sut.Instance().LastName = 5);
+        }
+
+        [Fact]
+        public void GivenExplicitMode_WhenSetterVerified_ShouldStillThrowMissingImposterException()
+        {
+            var sut = new IPropertySetupSutImposter(ImposterMode.Explicit);
+
+            sut.LastName.Setter(Arg<int>.Any()).Called(Count.Never());
+
+            Should.Throw<MissingImposterException>(() => sut.Instance().LastName = 5);
+        }
+
+        [Fact]
+        public void GivenExplicitMode_WhenSetterCallbackConfigured_ShouldAllowSettingValues()
+        {
+            var sut = new IPropertySetupSutImposter(ImposterMode.Explicit);
+            var setValue = 0;
+
+            sut.LastName.Setter(Arg<int>.Any()).Callback(value => setValue = value);
+
             Should.NotThrow(() => sut.Instance().LastName = 5);
+            setValue.ShouldBe(5);
         }
     }
 }

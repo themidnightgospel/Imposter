@@ -326,19 +326,13 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			private DescribePairMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(DescribePairArguments arguments)
 			{
-				DescribePairMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public string Invoke(TKey key, TValue value, DescribePairDelegate? baseImplementation = null)
@@ -761,19 +755,13 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			private ResolveMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(ResolveArguments arguments)
 			{
-				ResolveMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public TValue Invoke(TKey key, TValue defaultValue, ResolveDelegate? baseImplementation = null)
@@ -1172,6 +1160,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				internal void Callback(global::Imposter.Abstractions.Arg<global::System.Collections.Generic.KeyValuePair<TKey, TValue>> criteria, global::System.Action<global::System.Collections.Generic.KeyValuePair<TKey, TValue>> callback)
 				{
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(new global::System.Tuple<global::Imposter.Abstractions.Arg<global::System.Collections.Generic.KeyValuePair<TKey, TValue>>, global::System.Action<global::System.Collections.Generic.KeyValuePair<TKey, TValue>>>(criteria, callback));
+					_hasConfiguredSetter = true;
 				}
 
 				void Called(global::Imposter.Abstractions.Arg<global::System.Collections.Generic.KeyValuePair<TKey, TValue>> criteria, global::Imposter.Abstractions.Count count)
@@ -1235,11 +1224,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
 				}
 
-				internal void MarkConfigured()
-				{
-					_hasConfiguredSetter = true;
-				}
-
 				private static string FormatValue(object? value)
 				{
 					return "<" + (value?.ToString() ?? "null") + ">";
@@ -1287,7 +1271,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			ICurrentPairPropertySetterBuilder ICurrentPairPropertyBuilder.Setter(global::Imposter.Abstractions.Arg<global::System.Collections.Generic.KeyValuePair<TKey, TValue>> criteria)
 			{
-				_setterImposter.MarkConfigured();
 				return new SetterImposter.Builder(_setterImposter, criteria);
 			}
 
@@ -1408,7 +1391,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			internal IIndexerIndexerSetterBuilder CreateSetter(IndexerIndexerArgumentsCriteria criteria)
 			{
-				_setterImposter.MarkConfigured();
 				return new SetterImposter.Builder(_setterImposter, criteria);
 			}
 
@@ -1747,6 +1729,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				public void Callback(IndexerIndexerArgumentsCriteria criteria, IndexerIndexerSetterCallback callback)
 				{
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add((criteria, callback));
+					MarkConfigured();
 				}
 
 				public void Called(IndexerIndexerArgumentsCriteria criteria, global::Imposter.Abstractions.Count count)

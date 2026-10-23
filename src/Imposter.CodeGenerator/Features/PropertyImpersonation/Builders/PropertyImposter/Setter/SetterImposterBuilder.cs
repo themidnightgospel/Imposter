@@ -72,7 +72,6 @@ internal static class SetterImposterBuilder
             )
             .AddMember(BuildSetMethod(property))
             .AddMember(BuildEnsureSetterConfiguredMethod(property.SetterImposter))
-            .AddMember(BuildMarkConfiguredMethod(property.SetterImposter))
             .AddMember(
                 property.SetterImposter.InvocationHistoryField is null
                     ? null
@@ -415,6 +414,9 @@ internal static class SetterImposterBuilder
                         .EnsureInitialized(CallbacksFieldMetadata.Name)
                         .Dot(IdentifierName("Add"))
                         .Call(Argument(queuedCallback))
+                        .ToStatementSyntax(),
+                    IdentifierName(setterImposter.HasConfiguredSetterField.Name)
+                        .Assign(True)
                         .ToStatementSyntax()
                 )
             )
@@ -430,21 +432,4 @@ internal static class SetterImposterBuilder
             IdentifierName(setterImposter.HasConfiguredSetterField.Name),
             ThrowMissingImposter(setterImposter.PropertyDisplayNameField.Name, " (setter)")
         );
-
-    private static MethodDeclarationSyntax BuildMarkConfiguredMethod(
-        in PropertySetterImposterMetadata setterImposter
-    ) =>
-        new MethodDeclarationBuilder(
-            setterImposter.MarkConfiguredMethod.ReturnType,
-            setterImposter.MarkConfiguredMethod.Name
-        )
-            .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .WithBody(
-                Block(
-                    IdentifierName(setterImposter.HasConfiguredSetterField.Name)
-                        .Assign(True)
-                        .ToStatementSyntax()
-                )
-            )
-            .Build();
 }

@@ -311,45 +311,25 @@ internal static class MethodImposterAdapterBuilder
                 method.Parameters.HasInputParameters,
                 () => ParameterSyntax(argumentsTypeWithTarget, argumentsParameterName)
             )
-            .AddParameter(
-                ParameterSyntax(
-                        WellKnownTypes.Bool,
-                        hasMatchingMethod.HasConfiguredOutcomeParameterName
-                    )
-                    .WithModifiers(TokenList(Token(SyntaxKind.OutKeyword)))
-            )
             .WithBody(
                 Block(
                     ReturnStatement(
                         IdentifierName(adapterNames.TargetFieldName)
                             .Dot(IdentifierName(hasMatchingMethod.Name))
                             .Call(
-                                (
-                                    method.Parameters.HasInputParameters
-                                        ? Argument(
-                                                IdentifierName(argumentsParameterName)
-                                                    .Dot(
-                                                        GenericName(
-                                                            Identifier(
-                                                                method.ArgumentsAsMethodName
-                                                            ),
-                                                            TypeArguments(
-                                                                method.GenericTypeArguments
-                                                            )
-                                                        )
+                                method.Parameters.HasInputParameters
+                                    ? Argument(
+                                            IdentifierName(argumentsParameterName)
+                                                .Dot(
+                                                    GenericName(
+                                                        Identifier(method.ArgumentsAsMethodName),
+                                                        TypeArguments(method.GenericTypeArguments)
                                                     )
-                                                    .Call()
-                                            )
-                                            .ToSingleArgumentList()
-                                        : ArgumentList()
-                                ).AddArguments(
-                                    Argument(
-                                            IdentifierName(
-                                                hasMatchingMethod.HasConfiguredOutcomeParameterName
-                                            )
+                                                )
+                                                .Call()
                                         )
-                                        .WithRefKindKeyword(Token(SyntaxKind.OutKeyword))
-                                )
+                                        .ToSingleArgumentList()
+                                    : ArgumentList()
                             )
                     )
                 )

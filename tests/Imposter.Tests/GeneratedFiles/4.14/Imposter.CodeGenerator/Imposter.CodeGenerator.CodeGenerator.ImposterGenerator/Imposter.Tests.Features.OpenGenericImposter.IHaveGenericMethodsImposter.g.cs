@@ -168,20 +168,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			internal IAddItemMethodImposter<TItem> GetImposterWithMatchingInvocationImposterGroup<TItem>(AddItemArguments<TItem> arguments)
 			{
-				IAddItemMethodImposter<TItem>? bareMatch = null;
 				foreach (var storedImposter in _imposters)
 				{
 					var typedImposter = storedImposter.As<TItem>();
-					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments, out var hasConfiguredOutcome))
-					{
-						if (hasConfiguredOutcome)
-							return typedImposter;
-						if (bareMatch == null)
-							bareMatch = typedImposter;
-					}
+					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments))
+						return typedImposter;
 				}
 
-				return bareMatch ?? new AddItemMethodImposter<TItem>(_addItemMethodInvocationHistoryCollection, _invocationBehavior);
+				return new AddItemMethodImposter<TItem>(_addItemMethodInvocationHistoryCollection, _invocationBehavior);
 			}
 		}
 
@@ -338,7 +332,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		internal interface IAddItemMethodImposter<TItem> : IAddItemMethodImposter
 		{
 			void Invoke(TItem item);
-			bool HasMatchingInvocationImposterGroup(AddItemArguments<TItem> arguments, out bool hasConfiguredOutcome);
+			bool HasMatchingInvocationImposterGroup(AddItemArguments<TItem> arguments);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -389,9 +383,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					_target.Invoke(global::Imposter.Abstractions.TypeCaster.Cast<TItemTarget, TItem>(item));
 				}
 
-				public bool HasMatchingInvocationImposterGroup(AddItemArguments<TItemTarget> arguments, out bool hasConfiguredOutcome)
+				public bool HasMatchingInvocationImposterGroup(AddItemArguments<TItemTarget> arguments)
 				{
-					return _target.HasMatchingInvocationImposterGroup(arguments.As<TItem>(), out hasConfiguredOutcome);
+					return _target.HasMatchingInvocationImposterGroup(arguments.As<TItem>());
 				}
 
 				IAddItemMethodImposter<TItemTarget1>? IAddItemMethodImposter.As<TItemTarget1>()
@@ -400,28 +394,20 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				}
 			}
 
-			public bool HasMatchingInvocationImposterGroup(AddItemArguments<TItem> arguments, out bool hasConfiguredOutcome)
+			public bool HasMatchingInvocationImposterGroup(AddItemArguments<TItem> arguments)
 			{
-				var invocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
-				hasConfiguredOutcome = (invocationImposterGroup != null) && invocationImposterGroup.HasConfiguredOutcome;
-				return invocationImposterGroup != null;
+				return FindMatchingInvocationImposterGroup(arguments) != null;
 			}
 
 			private AddItemMethodInvocationImposterGroup<TItem>? FindMatchingInvocationImposterGroup(AddItemArguments<TItem> arguments)
 			{
-				AddItemMethodInvocationImposterGroup<TItem>? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public void Invoke(TItem item)
@@ -612,20 +598,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			internal IGetValueMethodImposter<TResult> GetImposterWithMatchingInvocationImposterGroup<TResult>()
 			{
-				IGetValueMethodImposter<TResult>? bareMatch = null;
 				foreach (var storedImposter in _imposters)
 				{
 					var typedImposter = storedImposter.As<TResult>();
-					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(out var hasConfiguredOutcome))
-					{
-						if (hasConfiguredOutcome)
-							return typedImposter;
-						if (bareMatch == null)
-							bareMatch = typedImposter;
-					}
+					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup())
+						return typedImposter;
 				}
 
-				return bareMatch ?? new GetValueMethodImposter<TResult>(_getValueMethodInvocationHistoryCollection, _invocationBehavior);
+				return new GetValueMethodImposter<TResult>(_getValueMethodInvocationHistoryCollection, _invocationBehavior);
 			}
 		}
 
@@ -791,7 +771,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		internal interface IGetValueMethodImposter<TResult> : IGetValueMethodImposter
 		{
 			TResult Invoke();
-			bool HasMatchingInvocationImposterGroup(out bool hasConfiguredOutcome);
+			bool HasMatchingInvocationImposterGroup();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -843,9 +823,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					return global::Imposter.Abstractions.TypeCaster.Cast<TResult, TResultTarget>(result);
 				}
 
-				public bool HasMatchingInvocationImposterGroup(out bool hasConfiguredOutcome)
+				public bool HasMatchingInvocationImposterGroup()
 				{
-					return _target.HasMatchingInvocationImposterGroup(out hasConfiguredOutcome);
+					return _target.HasMatchingInvocationImposterGroup();
 				}
 
 				IGetValueMethodImposter<TResultTarget1>? IGetValueMethodImposter.As<TResultTarget1>()
@@ -854,25 +834,20 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				}
 			}
 
-			public bool HasMatchingInvocationImposterGroup(out bool hasConfiguredOutcome)
+			public bool HasMatchingInvocationImposterGroup()
 			{
-				var invocationImposterGroup = FindMatchingInvocationImposterGroup();
-				hasConfiguredOutcome = (invocationImposterGroup != null) && invocationImposterGroup.HasConfiguredOutcome;
-				return invocationImposterGroup != null;
+				return FindMatchingInvocationImposterGroup() != null;
 			}
 
 			private GetValueMethodInvocationImposterGroup<TResult>? FindMatchingInvocationImposterGroup()
 			{
-				GetValueMethodInvocationImposterGroup<TResult>? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.HasConfiguredOutcome)
 						return invocationImposterGroup;
-					if (bareMatch == null)
-						bareMatch = invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public TResult Invoke()
@@ -1115,20 +1090,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			internal IProcessAsyncMethodImposter<TItem> GetImposterWithMatchingInvocationImposterGroup<TItem>(ProcessAsyncArguments<TItem> arguments)
 			{
-				IProcessAsyncMethodImposter<TItem>? bareMatch = null;
 				foreach (var storedImposter in _imposters)
 				{
 					var typedImposter = storedImposter.As<TItem>();
-					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments, out var hasConfiguredOutcome))
-					{
-						if (hasConfiguredOutcome)
-							return typedImposter;
-						if (bareMatch == null)
-							bareMatch = typedImposter;
-					}
+					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments))
+						return typedImposter;
 				}
 
-				return bareMatch ?? new ProcessAsyncMethodImposter<TItem>(_processAsyncMethodInvocationHistoryCollection, _invocationBehavior);
+				return new ProcessAsyncMethodImposter<TItem>(_processAsyncMethodInvocationHistoryCollection, _invocationBehavior);
 			}
 		}
 
@@ -1325,7 +1294,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		internal interface IProcessAsyncMethodImposter<TItem> : IProcessAsyncMethodImposter
 		{
 			global::System.Threading.Tasks.Task<TItem> Invoke(global::System.Collections.Generic.IEnumerable<TItem> items);
-			bool HasMatchingInvocationImposterGroup(ProcessAsyncArguments<TItem> arguments, out bool hasConfiguredOutcome);
+			bool HasMatchingInvocationImposterGroup(ProcessAsyncArguments<TItem> arguments);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1377,9 +1346,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					return global::Imposter.Abstractions.TypeCaster.Cast<global::System.Threading.Tasks.Task<TItem>, global::System.Threading.Tasks.Task<TItemTarget>>(result);
 				}
 
-				public bool HasMatchingInvocationImposterGroup(ProcessAsyncArguments<TItemTarget> arguments, out bool hasConfiguredOutcome)
+				public bool HasMatchingInvocationImposterGroup(ProcessAsyncArguments<TItemTarget> arguments)
 				{
-					return _target.HasMatchingInvocationImposterGroup(arguments.As<TItem>(), out hasConfiguredOutcome);
+					return _target.HasMatchingInvocationImposterGroup(arguments.As<TItem>());
 				}
 
 				IProcessAsyncMethodImposter<TItemTarget1>? IProcessAsyncMethodImposter.As<TItemTarget1>()
@@ -1388,28 +1357,20 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				}
 			}
 
-			public bool HasMatchingInvocationImposterGroup(ProcessAsyncArguments<TItem> arguments, out bool hasConfiguredOutcome)
+			public bool HasMatchingInvocationImposterGroup(ProcessAsyncArguments<TItem> arguments)
 			{
-				var invocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
-				hasConfiguredOutcome = (invocationImposterGroup != null) && invocationImposterGroup.HasConfiguredOutcome;
-				return invocationImposterGroup != null;
+				return FindMatchingInvocationImposterGroup(arguments) != null;
 			}
 
 			private ProcessAsyncMethodInvocationImposterGroup<TItem>? FindMatchingInvocationImposterGroup(ProcessAsyncArguments<TItem> arguments)
 			{
-				ProcessAsyncMethodInvocationImposterGroup<TItem>? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public global::System.Threading.Tasks.Task<TItem> Invoke(global::System.Collections.Generic.IEnumerable<TItem> items)
@@ -1671,20 +1632,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			internal IProcessComplexAsyncMethodImposter<TItem, TResult> GetImposterWithMatchingInvocationImposterGroup<TItem, TResult>(ProcessComplexAsyncArguments<TItem, TResult> arguments)
 			{
-				IProcessComplexAsyncMethodImposter<TItem, TResult>? bareMatch = null;
 				foreach (var storedImposter in _imposters)
 				{
 					var typedImposter = storedImposter.As<TItem, TResult>();
-					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments, out var hasConfiguredOutcome))
-					{
-						if (hasConfiguredOutcome)
-							return typedImposter;
-						if (bareMatch == null)
-							bareMatch = typedImposter;
-					}
+					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments))
+						return typedImposter;
 				}
 
-				return bareMatch ?? new ProcessComplexAsyncMethodImposter<TItem, TResult>(_processComplexAsyncMethodInvocationHistoryCollection, _invocationBehavior);
+				return new ProcessComplexAsyncMethodImposter<TItem, TResult>(_processComplexAsyncMethodInvocationHistoryCollection, _invocationBehavior);
 			}
 		}
 
@@ -1881,7 +1836,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		internal interface IProcessComplexAsyncMethodImposter<TItem, TResult> : IProcessComplexAsyncMethodImposter
 		{
 			global::System.Threading.Tasks.Task<TResult> Invoke(global::System.Collections.Generic.IEnumerable<TItem> items);
-			bool HasMatchingInvocationImposterGroup(ProcessComplexAsyncArguments<TItem, TResult> arguments, out bool hasConfiguredOutcome);
+			bool HasMatchingInvocationImposterGroup(ProcessComplexAsyncArguments<TItem, TResult> arguments);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1933,9 +1888,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					return global::Imposter.Abstractions.TypeCaster.Cast<global::System.Threading.Tasks.Task<TResult>, global::System.Threading.Tasks.Task<TResultTarget>>(result);
 				}
 
-				public bool HasMatchingInvocationImposterGroup(ProcessComplexAsyncArguments<TItemTarget, TResultTarget> arguments, out bool hasConfiguredOutcome)
+				public bool HasMatchingInvocationImposterGroup(ProcessComplexAsyncArguments<TItemTarget, TResultTarget> arguments)
 				{
-					return _target.HasMatchingInvocationImposterGroup(arguments.As<TItem, TResult>(), out hasConfiguredOutcome);
+					return _target.HasMatchingInvocationImposterGroup(arguments.As<TItem, TResult>());
 				}
 
 				IProcessComplexAsyncMethodImposter<TItemTarget1, TResultTarget1>? IProcessComplexAsyncMethodImposter.As<TItemTarget1, TResultTarget1>()
@@ -1944,28 +1899,20 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				}
 			}
 
-			public bool HasMatchingInvocationImposterGroup(ProcessComplexAsyncArguments<TItem, TResult> arguments, out bool hasConfiguredOutcome)
+			public bool HasMatchingInvocationImposterGroup(ProcessComplexAsyncArguments<TItem, TResult> arguments)
 			{
-				var invocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
-				hasConfiguredOutcome = (invocationImposterGroup != null) && invocationImposterGroup.HasConfiguredOutcome;
-				return invocationImposterGroup != null;
+				return FindMatchingInvocationImposterGroup(arguments) != null;
 			}
 
 			private ProcessComplexAsyncMethodInvocationImposterGroup<TItem, TResult>? FindMatchingInvocationImposterGroup(ProcessComplexAsyncArguments<TItem, TResult> arguments)
 			{
-				ProcessComplexAsyncMethodInvocationImposterGroup<TItem, TResult>? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public global::System.Threading.Tasks.Task<TResult> Invoke(global::System.Collections.Generic.IEnumerable<TItem> items)

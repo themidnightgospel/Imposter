@@ -303,19 +303,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private RentMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(RentArguments arguments)
 			{
-				RentMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public global::Imposter.Tests.Features.MethodImpersonation.Slot Invoke(int size, RentDelegate? baseImplementation = null)

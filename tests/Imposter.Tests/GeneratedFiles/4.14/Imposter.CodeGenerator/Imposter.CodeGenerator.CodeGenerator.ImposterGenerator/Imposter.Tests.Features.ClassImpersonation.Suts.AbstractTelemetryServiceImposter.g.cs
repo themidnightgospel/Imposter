@@ -306,19 +306,13 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			private ComputeMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(ComputeArguments arguments)
 			{
-				ComputeMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(int value)
@@ -713,19 +707,13 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			private ComputeNullableMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(ComputeNullableArguments arguments)
 			{
-				ComputeNullableMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int? Invoke(int value)
@@ -1116,6 +1104,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				internal void Callback(global::Imposter.Abstractions.Arg<string> criteria, global::System.Action<string> callback)
 				{
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(new global::System.Tuple<global::Imposter.Abstractions.Arg<string>, global::System.Action<string>>(criteria, callback));
+					_hasConfiguredSetter = true;
 				}
 
 				void Called(global::Imposter.Abstractions.Arg<string> criteria, global::Imposter.Abstractions.Count count)
@@ -1179,11 +1168,6 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
 				}
 
-				internal void MarkConfigured()
-				{
-					_hasConfiguredSetter = true;
-				}
-
 				private static string FormatValue(object? value)
 				{
 					return "<" + (value?.ToString() ?? "null") + ">";
@@ -1231,7 +1215,6 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			INamePropertySetterBuilder INamePropertyBuilder.Setter(global::Imposter.Abstractions.Arg<string> criteria)
 			{
-				_setterImposter.MarkConfigured();
 				return new SetterImposter.Builder(_setterImposter, criteria);
 			}
 
@@ -1510,6 +1493,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				internal void Callback(global::Imposter.Abstractions.Arg<string?> criteria, global::System.Action<string?> callback)
 				{
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(new global::System.Tuple<global::Imposter.Abstractions.Arg<string?>, global::System.Action<string?>>(criteria, callback));
+					_hasConfiguredSetter = true;
 				}
 
 				void Called(global::Imposter.Abstractions.Arg<string?> criteria, global::Imposter.Abstractions.Count count)
@@ -1573,11 +1557,6 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
 				}
 
-				internal void MarkConfigured()
-				{
-					_hasConfiguredSetter = true;
-				}
-
 				private static string FormatValue(object? value)
 				{
 					return "<" + (value?.ToString() ?? "null") + ">";
@@ -1625,7 +1604,6 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			INameNullablePropertySetterBuilder INameNullablePropertyBuilder.Setter(global::Imposter.Abstractions.Arg<string?> criteria)
 			{
-				_setterImposter.MarkConfigured();
 				return new SetterImposter.Builder(_setterImposter, criteria);
 			}
 
@@ -2074,7 +2052,6 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			internal IIndexerIndexerSetterBuilder CreateSetter(IndexerIndexerArgumentsCriteria criteria)
 			{
-				_setterImposter.MarkConfigured();
 				return new SetterImposter.Builder(_setterImposter, criteria);
 			}
 
@@ -2390,6 +2367,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				public void Callback(IndexerIndexerArgumentsCriteria criteria, IndexerIndexerSetterCallback callback)
 				{
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add((criteria, callback));
+					MarkConfigured();
 				}
 
 				public void Called(IndexerIndexerArgumentsCriteria criteria, global::Imposter.Abstractions.Count count)
@@ -2671,7 +2649,6 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			internal IIndexer_1IndexerSetterBuilder CreateSetter(Indexer_1IndexerArgumentsCriteria criteria)
 			{
-				_setterImposter.MarkConfigured();
 				return new SetterImposter.Builder(_setterImposter, criteria);
 			}
 
@@ -2987,6 +2964,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				public void Callback(Indexer_1IndexerArgumentsCriteria criteria, Indexer_1IndexerSetterCallback callback)
 				{
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add((criteria, callback));
+					MarkConfigured();
 				}
 
 				public void Called(Indexer_1IndexerArgumentsCriteria criteria, global::Imposter.Abstractions.Count count)

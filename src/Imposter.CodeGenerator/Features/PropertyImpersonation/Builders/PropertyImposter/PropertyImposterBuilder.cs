@@ -84,10 +84,6 @@ internal static class PropertyImposterBuilder
             .AddParameter(criteria is null ? null : ParameterSyntax(criteria.Value))
             .WithBody(
                 Block(
-                    IdentifierName(property.ImposterBuilder.SetterImposterField.Name)
-                        .Dot(IdentifierName(property.SetterImposter.MarkConfiguredMethod.Name))
-                        .Call()
-                        .ToStatementSyntax(),
                     ReturnStatement(
                         property.SetterImposter.Builder.TypeSyntax.New(
                             ArgumentListSyntax(builderArguments)

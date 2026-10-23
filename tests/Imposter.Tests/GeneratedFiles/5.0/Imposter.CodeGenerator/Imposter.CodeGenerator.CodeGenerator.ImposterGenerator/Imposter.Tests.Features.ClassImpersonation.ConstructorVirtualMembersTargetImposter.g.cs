@@ -328,16 +328,13 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			private ReadAsyncMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
 			{
-				ReadAsyncMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.HasConfiguredOutcome)
 						return invocationImposterGroup;
-					if (bareMatch == null)
-						bareMatch = invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public global::System.Threading.Tasks.Task<int> Invoke(ReadAsyncDelegate? baseImplementation = null)
@@ -722,16 +719,13 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			private TouchMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
 			{
-				TouchMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.HasConfiguredOutcome)
 						return invocationImposterGroup;
-					if (bareMatch == null)
-						bareMatch = invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public void Invoke(TouchDelegate? baseImplementation = null)
@@ -970,20 +964,14 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			internal ITransformMethodImposter<T> GetImposterWithMatchingInvocationImposterGroup<T>(TransformArguments<T> arguments)
 			{
-				ITransformMethodImposter<T>? bareMatch = null;
 				foreach (var storedImposter in _imposters)
 				{
 					var typedImposter = storedImposter.As<T>();
-					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments, out var hasConfiguredOutcome))
-					{
-						if (hasConfiguredOutcome)
-							return typedImposter;
-						if (bareMatch == null)
-							bareMatch = typedImposter;
-					}
+					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments))
+						return typedImposter;
 				}
 
-				return bareMatch ?? new TransformMethodImposter<T>(_transformMethodInvocationHistoryCollection, _invocationBehavior);
+				return new TransformMethodImposter<T>(_transformMethodInvocationHistoryCollection, _invocationBehavior);
 			}
 		}
 
@@ -1175,7 +1163,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 		internal interface ITransformMethodImposter<T> : ITransformMethodImposter
 		{
 			string Invoke(ref int input, out T output, T expected, TransformDelegate<T>? baseImplementation = null);
-			bool HasMatchingInvocationImposterGroup(TransformArguments<T> arguments, out bool hasConfiguredOutcome);
+			bool HasMatchingInvocationImposterGroup(TransformArguments<T> arguments);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1231,9 +1219,9 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					return global::Imposter.Abstractions.TypeCaster.Cast<string, string>(result);
 				}
 
-				public bool HasMatchingInvocationImposterGroup(TransformArguments<TTarget> arguments, out bool hasConfiguredOutcome)
+				public bool HasMatchingInvocationImposterGroup(TransformArguments<TTarget> arguments)
 				{
-					return _target.HasMatchingInvocationImposterGroup(arguments.As<T>(), out hasConfiguredOutcome);
+					return _target.HasMatchingInvocationImposterGroup(arguments.As<T>());
 				}
 
 				ITransformMethodImposter<TTarget1>? ITransformMethodImposter.As<TTarget1>()
@@ -1242,28 +1230,20 @@ namespace Imposter.Tests.Features.ClassImpersonation
 				}
 			}
 
-			public bool HasMatchingInvocationImposterGroup(TransformArguments<T> arguments, out bool hasConfiguredOutcome)
+			public bool HasMatchingInvocationImposterGroup(TransformArguments<T> arguments)
 			{
-				var invocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
-				hasConfiguredOutcome = (invocationImposterGroup != null) && invocationImposterGroup.HasConfiguredOutcome;
-				return invocationImposterGroup != null;
+				return FindMatchingInvocationImposterGroup(arguments) != null;
 			}
 
 			private TransformMethodInvocationImposterGroup<T>? FindMatchingInvocationImposterGroup(TransformArguments<T> arguments)
 			{
-				TransformMethodInvocationImposterGroup<T>? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public string Invoke(ref int input, out T output, T expected, TransformDelegate<T>? baseImplementation = null)
@@ -1663,6 +1643,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 				internal void Callback(global::Imposter.Abstractions.Arg<int> criteria, global::System.Action<int> callback)
 				{
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(new global::System.Tuple<global::Imposter.Abstractions.Arg<int>, global::System.Action<int>>(criteria, callback));
+					_hasConfiguredSetter = true;
 				}
 
 				void Called(global::Imposter.Abstractions.Arg<int> criteria, global::Imposter.Abstractions.Count count)
@@ -1726,11 +1707,6 @@ namespace Imposter.Tests.Features.ClassImpersonation
 						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
 				}
 
-				internal void MarkConfigured()
-				{
-					_hasConfiguredSetter = true;
-				}
-
 				private static string FormatValue(object? value)
 				{
 					return "<" + (value?.ToString() ?? "null") + ">";
@@ -1778,7 +1754,6 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			IValuePropertySetterBuilder IValuePropertyBuilder.Setter(global::Imposter.Abstractions.Arg<int> criteria)
 			{
-				_setterImposter.MarkConfigured();
 				return new SetterImposter.Builder(_setterImposter, criteria);
 			}
 
@@ -2246,7 +2221,6 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			internal IIndexerIndexerSetterBuilder CreateSetter(IndexerIndexerArgumentsCriteria criteria)
 			{
-				_setterImposter.MarkConfigured();
 				return new SetterImposter.Builder(_setterImposter, criteria);
 			}
 
@@ -2585,6 +2559,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 				public void Callback(IndexerIndexerArgumentsCriteria criteria, IndexerIndexerSetterCallback callback)
 				{
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add((criteria, callback));
+					MarkConfigured();
 				}
 
 				public void Called(IndexerIndexerArgumentsCriteria criteria, global::Imposter.Abstractions.Count count)

@@ -102,7 +102,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
         public void GivenExplicitModeWithSetterSetUp_WhenSet_ShouldCountIt()
         {
             var imposter = new IRefStructPropertySutImposter(ImposterMode.Explicit);
-            imposter.Current.Setter();
+            imposter.Current.Setter().Callback(_ => { });
 
             imposter.Instance().Current = new Bookmark(1);
 

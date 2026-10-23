@@ -183,20 +183,14 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			internal IEchoMethodImposter<T> GetImposterWithMatchingInvocationImposterGroup<T>(EchoArguments<T> arguments)
 				where T : class
 			{
-				IEchoMethodImposter<T>? bareMatch = null;
 				foreach (var storedImposter in _imposters)
 				{
 					var typedImposter = storedImposter.As<T>();
-					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments, out var hasConfiguredOutcome))
-					{
-						if (hasConfiguredOutcome)
-							return typedImposter;
-						if (bareMatch == null)
-							bareMatch = typedImposter;
-					}
+					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments))
+						return typedImposter;
 				}
 
-				return bareMatch ?? new EchoMethodImposter<T>(_echoMethodInvocationHistoryCollection, _invocationBehavior);
+				return new EchoMethodImposter<T>(_echoMethodInvocationHistoryCollection, _invocationBehavior);
 			}
 		}
 
@@ -384,7 +378,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		internal interface IEchoMethodImposter<T> : IEchoMethodImposter where T : class
 		{
 			T Invoke(T item, EchoDelegate<T>? baseImplementation = null);
-			bool HasMatchingInvocationImposterGroup(EchoArguments<T> arguments, out bool hasConfiguredOutcome);
+			bool HasMatchingInvocationImposterGroup(EchoArguments<T> arguments);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -437,9 +431,9 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					return global::Imposter.Abstractions.TypeCaster.Cast<T, TTarget>(result);
 				}
 
-				public bool HasMatchingInvocationImposterGroup(EchoArguments<TTarget> arguments, out bool hasConfiguredOutcome)
+				public bool HasMatchingInvocationImposterGroup(EchoArguments<TTarget> arguments)
 				{
-					return _target.HasMatchingInvocationImposterGroup(arguments.As<T>(), out hasConfiguredOutcome);
+					return _target.HasMatchingInvocationImposterGroup(arguments.As<T>());
 				}
 
 				IEchoMethodImposter<TTarget1>? IEchoMethodImposter.As<TTarget1>()
@@ -448,28 +442,20 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				}
 			}
 
-			public bool HasMatchingInvocationImposterGroup(EchoArguments<T> arguments, out bool hasConfiguredOutcome)
+			public bool HasMatchingInvocationImposterGroup(EchoArguments<T> arguments)
 			{
-				var invocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
-				hasConfiguredOutcome = (invocationImposterGroup != null) && invocationImposterGroup.HasConfiguredOutcome;
-				return invocationImposterGroup != null;
+				return FindMatchingInvocationImposterGroup(arguments) != null;
 			}
 
 			private EchoMethodInvocationImposterGroup<T>? FindMatchingInvocationImposterGroup(EchoArguments<T> arguments)
 			{
-				EchoMethodInvocationImposterGroup<T>? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public T Invoke(T item, EchoDelegate<T>? baseImplementation = null)
@@ -889,19 +875,13 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			private FormatMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(FormatArguments arguments)
 			{
-				FormatMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public string Invoke(int value, FormatDelegate? baseImplementation = null)
@@ -1324,19 +1304,13 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			private Format_1MethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(Format_1Arguments arguments)
 			{
-				Format_1MethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public string Invoke(string value, int padding, Format_1Delegate? baseImplementation = null)
@@ -1593,20 +1567,14 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			internal ISelectFirstMethodImposter<TFirst, TSecond> GetImposterWithMatchingInvocationImposterGroup<TFirst, TSecond>(SelectFirstArguments<TFirst, TSecond> arguments)
 			{
-				ISelectFirstMethodImposter<TFirst, TSecond>? bareMatch = null;
 				foreach (var storedImposter in _imposters)
 				{
 					var typedImposter = storedImposter.As<TFirst, TSecond>();
-					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments, out var hasConfiguredOutcome))
-					{
-						if (hasConfiguredOutcome)
-							return typedImposter;
-						if (bareMatch == null)
-							bareMatch = typedImposter;
-					}
+					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments))
+						return typedImposter;
 				}
 
-				return bareMatch ?? new SelectFirstMethodImposter<TFirst, TSecond>(_selectFirstMethodInvocationHistoryCollection, _invocationBehavior);
+				return new SelectFirstMethodImposter<TFirst, TSecond>(_selectFirstMethodInvocationHistoryCollection, _invocationBehavior);
 			}
 		}
 
@@ -1791,7 +1759,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		internal interface ISelectFirstMethodImposter<TFirst, TSecond> : ISelectFirstMethodImposter
 		{
 			TFirst Invoke(TFirst first, TSecond second, SelectFirstDelegate<TFirst, TSecond>? baseImplementation = null);
-			bool HasMatchingInvocationImposterGroup(SelectFirstArguments<TFirst, TSecond> arguments, out bool hasConfiguredOutcome);
+			bool HasMatchingInvocationImposterGroup(SelectFirstArguments<TFirst, TSecond> arguments);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1843,9 +1811,9 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					return global::Imposter.Abstractions.TypeCaster.Cast<TFirst, TFirstTarget>(result);
 				}
 
-				public bool HasMatchingInvocationImposterGroup(SelectFirstArguments<TFirstTarget, TSecondTarget> arguments, out bool hasConfiguredOutcome)
+				public bool HasMatchingInvocationImposterGroup(SelectFirstArguments<TFirstTarget, TSecondTarget> arguments)
 				{
-					return _target.HasMatchingInvocationImposterGroup(arguments.As<TFirst, TSecond>(), out hasConfiguredOutcome);
+					return _target.HasMatchingInvocationImposterGroup(arguments.As<TFirst, TSecond>());
 				}
 
 				ISelectFirstMethodImposter<TFirstTarget1, TSecondTarget1>? ISelectFirstMethodImposter.As<TFirstTarget1, TSecondTarget1>()
@@ -1854,28 +1822,20 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				}
 			}
 
-			public bool HasMatchingInvocationImposterGroup(SelectFirstArguments<TFirst, TSecond> arguments, out bool hasConfiguredOutcome)
+			public bool HasMatchingInvocationImposterGroup(SelectFirstArguments<TFirst, TSecond> arguments)
 			{
-				var invocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
-				hasConfiguredOutcome = (invocationImposterGroup != null) && invocationImposterGroup.HasConfiguredOutcome;
-				return invocationImposterGroup != null;
+				return FindMatchingInvocationImposterGroup(arguments) != null;
 			}
 
 			private SelectFirstMethodInvocationImposterGroup<TFirst, TSecond>? FindMatchingInvocationImposterGroup(SelectFirstArguments<TFirst, TSecond> arguments)
 			{
-				SelectFirstMethodInvocationImposterGroup<TFirst, TSecond>? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public TFirst Invoke(TFirst first, TSecond second, SelectFirstDelegate<TFirst, TSecond>? baseImplementation = null)
