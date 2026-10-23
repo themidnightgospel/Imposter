@@ -136,41 +136,6 @@ internal static class TypeSymbolExtensions
         && middle.ContainingNamespace is { } outer
         && outer.Name == outerNamespace
         && outer.ContainingNamespace is { IsGlobalNamespace: true };
-
-    internal static bool IsMethodAsync(this IMethodSymbol methodSymbol)
-    {
-        if (
-            !methodSymbol.ReturnsVoid
-            && methodSymbol.ReturnType.ImplementsAsyncStateMachineInterface()
-        )
-        {
-            return true;
-        }
-
-        return methodSymbol.ReturnType.IsAwaitable();
-    }
-
-    internal static bool ImplementsAsyncStateMachineInterface(this ITypeSymbol? symbol)
-    {
-        if (symbol is null)
-        {
-            return false;
-        }
-
-        foreach (var interfaceSymbol in symbol.AllInterfaces)
-        {
-            if (interfaceSymbol.IsAsyncStateMachineInterface())
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    internal static bool IsAsyncStateMachineInterface(this ITypeSymbol? symbol) =>
-        symbol is { MetadataName: "IAsyncStateMachine" }
-        && symbol.IsInNamespace("System", "Runtime", "CompilerServices");
 }
 
 internal readonly struct TaskLikeMetadata

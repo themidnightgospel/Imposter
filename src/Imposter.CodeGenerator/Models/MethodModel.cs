@@ -24,7 +24,6 @@ internal sealed record MethodModel(
     EquatableArray<string> ContainingTypeTypeParameterNames,
     bool IsClassMember,
     bool IsAbstract,
-    bool IsAsync,
     Accessibility OverrideAccessibility,
     EquatableArray<TypeParameterModel> TypeParameters,
     EquatableArray<int> TypeParameterOrdinalsOutsideSignature,
@@ -35,6 +34,8 @@ internal sealed record MethodModel(
 )
 {
     internal bool IsGenericMethod => TypeParameters.Count > 0;
+
+    internal bool IsAsync => ReturnType.IsAwaitable;
 
     internal static MethodModel From(
         IMethodSymbol method,
@@ -53,7 +54,6 @@ internal sealed record MethodModel(
                 .ToEquatableArray(),
             method.ContainingType.TypeKind == TypeKind.Class,
             method.IsAbstract,
-            method.IsMethodAsync(),
             memberAccess.GetOverrideAccessibility(method),
             method.TypeParameters.Select(TypeParameterModel.From).ToEquatableArray(),
             method
