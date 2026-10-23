@@ -108,6 +108,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IWrite_1MethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(Write_1ArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -335,9 +341,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_write_1MethodInvocationHistoryCollection.Add(new Write_1MethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_write_1MethodInvocationHistoryCollection.RecordFailure(new Write_1MethodInvocationHistory(arguments, default !, ex)))
 				{
-					_write_1MethodInvocationHistoryCollection.Add(new Write_1MethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -508,6 +513,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IWriteMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IWriteMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(WriteArgumentsCriteria argumentsCriteria)
@@ -737,9 +748,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_writeMethodInvocationHistoryCollection.Add(new WriteMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_writeMethodInvocationHistoryCollection.RecordFailure(new WriteMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_writeMethodInvocationHistoryCollection.Add(new WriteMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}

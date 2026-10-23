@@ -112,6 +112,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IDescribePairMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(DescribePairArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -355,9 +361,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					_describePairMethodInvocationHistoryCollection.Add(new DescribePairMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_describePairMethodInvocationHistoryCollection.RecordFailure(new DescribePairMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_describePairMethodInvocationHistoryCollection.Add(new DescribePairMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -540,6 +545,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal void Add(IResolveMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IResolveMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(ResolveArgumentsCriteria argumentsCriteria)
@@ -785,9 +796,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					_resolveMethodInvocationHistoryCollection.Add(new ResolveMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_resolveMethodInvocationHistoryCollection.RecordFailure(new ResolveMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_resolveMethodInvocationHistoryCollection.Add(new ResolveMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -1659,17 +1669,17 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 							}
 						}
 
+						if (_defaultBehaviour.IsOn)
+						{
+							return _defaultBehaviour.Get(arguments, baseImplementation);
+						}
+
 						global::System.Func<IndexerIndexerArguments, global::System.Func<TValue>?, TValue> generator = ResolveNextGenerator(arguments);
 						return generator(arguments, baseImplementation);
 					}
 
 					private global::System.Func<IndexerIndexerArguments, global::System.Func<TValue>?, TValue> ResolveNextGenerator(IndexerIndexerArguments arguments)
 					{
-						if (_defaultBehaviour.IsOn)
-						{
-							return (arguments, baseImplementation) => _defaultBehaviour.Get(arguments, baseImplementation);
-						}
-
 						var nextReturnValue = NextReturnValue();
 						if (nextReturnValue == null)
 						{

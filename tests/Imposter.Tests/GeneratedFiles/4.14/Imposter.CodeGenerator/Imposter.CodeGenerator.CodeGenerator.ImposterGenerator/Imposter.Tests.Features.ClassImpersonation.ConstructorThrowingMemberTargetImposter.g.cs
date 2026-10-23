@@ -71,6 +71,12 @@ namespace Imposter.Tests.Features.ClassImpersonation
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IRunMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count()
 			{
 				return _invocationHistory.Count(it => it.Matches());
@@ -292,9 +298,8 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual void ConstructorThrowingMemberTarget.Run()", baseImplementation);
 					_runMethodInvocationHistoryCollection.Add(new RunMethodInvocationHistory(default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_runMethodInvocationHistoryCollection.RecordFailure(new RunMethodInvocationHistory(ex)))
 				{
-					_runMethodInvocationHistoryCollection.Add(new RunMethodInvocationHistory(ex));
 					throw;
 				}
 			}

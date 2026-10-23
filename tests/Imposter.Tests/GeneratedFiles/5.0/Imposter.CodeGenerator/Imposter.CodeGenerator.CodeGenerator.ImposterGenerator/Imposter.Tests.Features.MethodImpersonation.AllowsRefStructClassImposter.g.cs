@@ -85,6 +85,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IEchoMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count<T>()
 				where T : allows ref struct
 			{
@@ -381,9 +387,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_echoMethodInvocationHistoryCollection.Add(new EchoMethodInvocationHistory<T>(default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_echoMethodInvocationHistoryCollection.RecordFailure(new EchoMethodInvocationHistory<T>(ex)))
 				{
-					_echoMethodInvocationHistoryCollection.Add(new EchoMethodInvocationHistory<T>(ex));
 					throw;
 				}
 			}
@@ -566,6 +571,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IMeasureMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IMeasureMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<T>(MeasureArgumentsCriteria<T> argumentsCriteria)
@@ -881,9 +892,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_measureMethodInvocationHistoryCollection.Add(new MeasureMethodInvocationHistory<T>(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_measureMethodInvocationHistoryCollection.RecordFailure(new MeasureMethodInvocationHistory<T>(arguments, default !, ex)))
 				{
-					_measureMethodInvocationHistoryCollection.Add(new MeasureMethodInvocationHistory<T>(arguments, default !, ex));
 					throw;
 				}
 			}

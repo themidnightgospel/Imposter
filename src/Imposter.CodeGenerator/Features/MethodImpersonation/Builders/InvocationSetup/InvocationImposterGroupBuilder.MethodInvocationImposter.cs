@@ -448,34 +448,72 @@ internal static partial class InvocationImposterGroupBuilder
         in ImposterTargetMethodMetadata method
     )
     {
-        var returnsAsync = method.MethodInvocationImposterGroup.ReturnsAsyncMethod!.Value;
-
-        return ResultGeneratorSetter(
-            method,
-            returnsAsync.Name,
-            returnsAsync.ValueParameter,
-            AsyncResultGenerator(
-                method,
-                Block(ReturnStatement(IdentifierName(returnsAsync.ValueParameter.Name)))
-            )
+        var returns = method.MethodInvocationImposterGroup.ReturnsAsyncMethod!.Value;
+        var value = method.ReturnType.AwaitableResultValue(
+            IdentifierName(returns.ValueParameter.Name)
         );
+        ExpressionSyntax awaitable = method.ReturnType.IsValueTask
+            ? method.NullableAwareReturnTypeSyntax.New(Argument(value).ToSingleArgumentList())
+            : WellKnownTypes
+                .System.Threading.Tasks.Task.Dot(
+                    GenericName(
+                        Identifier("FromResult"),
+                        TypeArgumentList(
+                            SingletonSeparatedList(method.ReturnType.GenericAwaitableResultType!)
+                        )
+                    )
+                )
+                .Call(Argument(value));
+
+        return CachedAsyncResultSetter(method, returns.Name, returns.ValueParameter, awaitable);
     }
 
     private static MethodDeclarationSyntax ThrowsAsyncMethod(in ImposterTargetMethodMetadata method)
     {
-        var throwsAsync = method.MethodInvocationImposterGroup.ThrowsAsyncMethod!.Value;
+        var throws = method.MethodInvocationImposterGroup.ThrowsAsyncMethod!.Value;
+        var functionName = method.MethodInvocationImposter.AsyncResultFunctionName;
 
+        // Run the async factory once at setup. Unlike Task.FromException, this also preserves
+        // cancellation and the original exception instance for OperationCanceledException.
+        return CachedAsyncResultSetter(
+            method,
+            throws.Name,
+            throws.ExceptionParameter,
+            IdentifierName(functionName).Call(),
+            LocalFunctionStatement(method.NullableAwareReturnTypeSyntax, Identifier(functionName))
+                .AddModifiers(Token(SyntaxKind.AsyncKeyword))
+                .WithBody(Block(ThrowStatement(IdentifierName(throws.ExceptionParameter.Name))))
+        );
+    }
+
+    private static MethodDeclarationSyntax CachedAsyncResultSetter(
+        in ImposterTargetMethodMetadata method,
+        string name,
+        in ParameterMetadata parameter,
+        ExpressionSyntax awaitable,
+        LocalFunctionStatementSyntax? factory = null
+    )
+    {
+        var cachedResult = IdentifierName(
+            method.MethodInvocationImposter.CachedAsyncResultVariableName
+        );
         return ResultGeneratorSetter(
             method,
-            throwsAsync.Name,
-            throwsAsync.ExceptionParameter,
-            AsyncResultGenerator(
-                method,
-                Block(
-                    ThrowExpression(IdentifierName(throwsAsync.ExceptionParameter.Name))
-                        .ToStatementSyntax()
-                )
-            )
+            name,
+            parameter,
+            Lambda(
+                method.Parameters.ParameterListSyntaxIncludingNullable,
+                new BlockBuilder()
+                    .AddStatement(InitializeOutParametersMethodBuilder.Invoke(method))
+                    .AddStatement(ReturnStatement(cachedResult))
+                    .Build()
+            ),
+            LocalVariableDeclarationSyntax(
+                method.NullableAwareReturnTypeSyntax,
+                cachedResult.Identifier.Text,
+                awaitable
+            ),
+            factory
         );
     }
 
@@ -485,13 +523,16 @@ internal static partial class InvocationImposterGroupBuilder
         in ImposterTargetMethodMetadata method,
         string name,
         in ParameterMetadata parameter,
-        ExpressionSyntax resultGenerator
+        ExpressionSyntax resultGenerator,
+        StatementSyntax? initializeResult = null,
+        LocalFunctionStatementSyntax? factory = null
     ) =>
         new MethodDeclarationBuilder(WellKnownTypes.Void, name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(ParameterSyntax(parameter))
             .WithBody(
                 new BlockBuilder()
+                    .AddStatement(initializeResult)
                     .AddStatement(
                         method.SupportsBaseImplementation
                             ? DisableBaseImplementationStatement(method)
@@ -502,45 +543,10 @@ internal static partial class InvocationImposterGroupBuilder
                             .Assign(resultGenerator)
                             .ToStatementSyntax()
                     )
+                    .AddStatement(factory)
                     .Build()
             )
             .Build();
-
-    // A method whose parameters an async lambda can't declare gets a plain lambda that returns the result of an async
-    // local function.
-    private static ParenthesizedLambdaExpressionSyntax AsyncResultGenerator(
-        in ImposterTargetMethodMetadata method,
-        BlockSyntax asyncBody
-    ) =>
-        method.Parameters.HasAsyncIncompatibleParameters
-            ? Lambda(
-                method.Parameters.ParameterListSyntaxIncludingNullable,
-                AsyncResultFunctionCall(method, asyncBody)
-            )
-            : AsyncLambda(method.Parameters.ParameterListSyntaxIncludingNullable, asyncBody);
-
-    // Assigns the out parameters, which the local function can't (CS1628), and returns the result of a parameterless
-    // async local function that runs asyncBody.
-    private static BlockSyntax AsyncResultFunctionCall(
-        in ImposterTargetMethodMetadata method,
-        BlockSyntax asyncBody
-    )
-    {
-        var functionName = method.MethodInvocationImposter.AsyncResultFunctionName;
-
-        return new BlockBuilder()
-            .AddStatement(InitializeOutParametersMethodBuilder.Invoke(method))
-            .AddStatement(ReturnStatement(IdentifierName(functionName).Call()))
-            .AddStatement(
-                LocalFunctionStatement(
-                        method.NullableAwareReturnTypeSyntax,
-                        Identifier(functionName)
-                    )
-                    .AddModifiers(Token(SyntaxKind.AsyncKeyword))
-                    .WithBody(asyncBody)
-            )
-            .Build();
-    }
 
     private static ExpressionStatementSyntax DisableBaseImplementationStatement(
         in ImposterTargetMethodMetadata method

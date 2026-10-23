@@ -101,6 +101,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IDescribeMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(DescribeArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -344,9 +350,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					_describeMethodInvocationHistoryCollection.Add(new DescribeMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_describeMethodInvocationHistoryCollection.RecordFailure(new DescribeMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_describeMethodInvocationHistoryCollection.Add(new DescribeMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -1218,17 +1223,17 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 							}
 						}
 
+						if (_defaultBehaviour.IsOn)
+						{
+							return _defaultBehaviour.Get(arguments, baseImplementation);
+						}
+
 						global::System.Func<IndexerIndexerArguments, global::System.Func<string?>?, string?> generator = ResolveNextGenerator(arguments);
 						return generator(arguments, baseImplementation);
 					}
 
 					private global::System.Func<IndexerIndexerArguments, global::System.Func<string?>?, string?> ResolveNextGenerator(IndexerIndexerArguments arguments)
 					{
-						if (_defaultBehaviour.IsOn)
-						{
-							return (arguments, baseImplementation) => _defaultBehaviour.Get(arguments, baseImplementation);
-						}
-
 						var nextReturnValue = NextReturnValue();
 						if (nextReturnValue == null)
 						{

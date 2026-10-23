@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Shared;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationHistory;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -43,16 +44,13 @@ internal partial class MethodImposterBuilder
                                             method.MethodImposter.InvokeMethod.ExceptionVariableName
                                         )
                                     ),
-                                    null,
-                                    new BlockBuilder()
-                                        .AddStatement(
-                                            AddToInvocationHistoryCollection(
-                                                method,
-                                                threwException: true
-                                            )
-                                        )
-                                        .AddStatement(ThrowStatement())
-                                        .Build()
+                                    CatchFilterClause(
+                                        AddToInvocationHistoryCollection(
+                                            method,
+                                            threwException: true
+                                        ).Expression
+                                    ),
+                                    Block(ThrowStatement())
                                 )
                             ),
                             default!
@@ -90,7 +88,13 @@ internal partial class MethodImposterBuilder
     )
     {
         return IdentifierName(method.InvocationHistory.Collection.AsField.Name)
-            .Dot(IdentifierName("Add"))
+            .Dot(
+                IdentifierName(
+                    threwException
+                        ? InvocationHistoryCollectionMetadata.RecordFailureMethodName
+                        : "Add"
+                )
+            )
             .Call(
                 Argument(
                     method.InvocationHistory.Syntax.New(

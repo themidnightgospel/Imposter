@@ -206,6 +206,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IBoolDefaultMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(BoolDefaultArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -433,9 +439,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_boolDefaultMethodInvocationHistoryCollection.Add(new BoolDefaultMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_boolDefaultMethodInvocationHistoryCollection.RecordFailure(new BoolDefaultMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_boolDefaultMethodInvocationHistoryCollection.Add(new BoolDefaultMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -606,6 +611,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(ICharDefaultMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(ICharDefaultMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(CharDefaultArgumentsCriteria argumentsCriteria)
@@ -835,9 +846,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_charDefaultMethodInvocationHistoryCollection.Add(new CharDefaultMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_charDefaultMethodInvocationHistoryCollection.RecordFailure(new CharDefaultMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_charDefaultMethodInvocationHistoryCollection.Add(new CharDefaultMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -1008,6 +1018,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IDecimalDefaultMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IDecimalDefaultMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(DecimalDefaultArgumentsCriteria argumentsCriteria)
@@ -1237,9 +1253,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_decimalDefaultMethodInvocationHistoryCollection.Add(new DecimalDefaultMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_decimalDefaultMethodInvocationHistoryCollection.RecordFailure(new DecimalDefaultMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_decimalDefaultMethodInvocationHistoryCollection.Add(new DecimalDefaultMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -1410,6 +1425,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IDoubleDefaultMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IDoubleDefaultMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(DoubleDefaultArgumentsCriteria argumentsCriteria)
@@ -1639,9 +1660,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_doubleDefaultMethodInvocationHistoryCollection.Add(new DoubleDefaultMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_doubleDefaultMethodInvocationHistoryCollection.RecordFailure(new DoubleDefaultMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_doubleDefaultMethodInvocationHistoryCollection.Add(new DoubleDefaultMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -1812,6 +1832,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IEnumDefaultMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IEnumDefaultMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(EnumDefaultArgumentsCriteria argumentsCriteria)
@@ -2041,9 +2067,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_enumDefaultMethodInvocationHistoryCollection.Add(new EnumDefaultMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_enumDefaultMethodInvocationHistoryCollection.RecordFailure(new EnumDefaultMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_enumDefaultMethodInvocationHistoryCollection.Add(new EnumDefaultMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -2214,6 +2239,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IFloatDefaultMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IFloatDefaultMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(FloatDefaultArgumentsCriteria argumentsCriteria)
@@ -2443,9 +2474,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_floatDefaultMethodInvocationHistoryCollection.Add(new FloatDefaultMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_floatDefaultMethodInvocationHistoryCollection.RecordFailure(new FloatDefaultMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_floatDefaultMethodInvocationHistoryCollection.Add(new FloatDefaultMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -2616,6 +2646,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IIntDefaultMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IIntDefaultMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(IntDefaultArgumentsCriteria argumentsCriteria)
@@ -2845,9 +2881,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_intDefaultMethodInvocationHistoryCollection.Add(new IntDefaultMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_intDefaultMethodInvocationHistoryCollection.RecordFailure(new IntDefaultMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_intDefaultMethodInvocationHistoryCollection.Add(new IntDefaultMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -3026,6 +3061,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IMultipleOptionalsMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IMultipleOptionalsMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(MultipleOptionalsArgumentsCriteria argumentsCriteria)
@@ -3255,9 +3296,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_multipleOptionalsMethodInvocationHistoryCollection.Add(new MultipleOptionalsMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_multipleOptionalsMethodInvocationHistoryCollection.RecordFailure(new MultipleOptionalsMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_multipleOptionalsMethodInvocationHistoryCollection.Add(new MultipleOptionalsMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -3428,6 +3468,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(INameDefaultMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(INameDefaultMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(NameDefaultArgumentsCriteria argumentsCriteria)
@@ -3657,9 +3703,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_nameDefaultMethodInvocationHistoryCollection.Add(new NameDefaultMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_nameDefaultMethodInvocationHistoryCollection.RecordFailure(new NameDefaultMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_nameDefaultMethodInvocationHistoryCollection.Add(new NameDefaultMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -3830,6 +3875,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(INullableDefaultMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(INullableDefaultMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(NullableDefaultArgumentsCriteria argumentsCriteria)
@@ -4059,9 +4110,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_nullableDefaultMethodInvocationHistoryCollection.Add(new NullableDefaultMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_nullableDefaultMethodInvocationHistoryCollection.RecordFailure(new NullableDefaultMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_nullableDefaultMethodInvocationHistoryCollection.Add(new NullableDefaultMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -4232,6 +4282,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(INullableInMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(INullableInMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(NullableInArgumentsCriteria argumentsCriteria)
@@ -4461,9 +4517,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_nullableInMethodInvocationHistoryCollection.Add(new NullableInMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_nullableInMethodInvocationHistoryCollection.RecordFailure(new NullableInMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_nullableInMethodInvocationHistoryCollection.Add(new NullableInMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -4606,6 +4661,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(INullableOutMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(INullableOutMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count()
@@ -4835,9 +4896,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_nullableOutMethodInvocationHistoryCollection.Add(new NullableOutMethodInvocationHistory(result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_nullableOutMethodInvocationHistoryCollection.RecordFailure(new NullableOutMethodInvocationHistory(default !, ex)))
 				{
-					_nullableOutMethodInvocationHistoryCollection.Add(new NullableOutMethodInvocationHistory(default !, ex));
 					throw;
 				}
 			}
@@ -5006,6 +5066,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(INullableParamsMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(INullableParamsMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(NullableParamsArgumentsCriteria argumentsCriteria)
@@ -5235,9 +5301,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_nullableParamsMethodInvocationHistoryCollection.Add(new NullableParamsMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_nullableParamsMethodInvocationHistoryCollection.RecordFailure(new NullableParamsMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_nullableParamsMethodInvocationHistoryCollection.Add(new NullableParamsMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -5408,6 +5473,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(INullableRefMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(INullableRefMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(NullableRefArgumentsCriteria argumentsCriteria)
@@ -5637,9 +5708,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_nullableRefMethodInvocationHistoryCollection.Add(new NullableRefMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_nullableRefMethodInvocationHistoryCollection.RecordFailure(new NullableRefMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_nullableRefMethodInvocationHistoryCollection.Add(new NullableRefMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -5818,6 +5888,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IOptionalThenParamsMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IOptionalThenParamsMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(OptionalThenParamsArgumentsCriteria argumentsCriteria)
@@ -6047,9 +6123,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_optionalThenParamsMethodInvocationHistoryCollection.Add(new OptionalThenParamsMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_optionalThenParamsMethodInvocationHistoryCollection.RecordFailure(new OptionalThenParamsMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_optionalThenParamsMethodInvocationHistoryCollection.Add(new OptionalThenParamsMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -6224,6 +6299,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IRequiredThenOptionalMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IRequiredThenOptionalMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(RequiredThenOptionalArgumentsCriteria argumentsCriteria)
@@ -6453,9 +6534,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_requiredThenOptionalMethodInvocationHistoryCollection.Add(new RequiredThenOptionalMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_requiredThenOptionalMethodInvocationHistoryCollection.RecordFailure(new RequiredThenOptionalMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_requiredThenOptionalMethodInvocationHistoryCollection.Add(new RequiredThenOptionalMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}

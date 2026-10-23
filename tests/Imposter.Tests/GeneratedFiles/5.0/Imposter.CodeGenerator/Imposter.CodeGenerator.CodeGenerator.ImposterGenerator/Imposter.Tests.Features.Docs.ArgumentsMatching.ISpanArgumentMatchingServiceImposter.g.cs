@@ -101,6 +101,12 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IParseMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(ParseArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -328,9 +334,8 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					_parseMethodInvocationHistoryCollection.Add(new ParseMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_parseMethodInvocationHistoryCollection.RecordFailure(new ParseMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_parseMethodInvocationHistoryCollection.Add(new ParseMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}

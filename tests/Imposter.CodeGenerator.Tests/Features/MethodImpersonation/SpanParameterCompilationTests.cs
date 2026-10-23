@@ -103,6 +103,26 @@ public class SpanParameterCompilationTests
     }
 
     [Fact]
+    public async Task GivenAwaitableSpanMethodWithParameterNamedLikeCachedResult_WhenImposterIsUsed_ShouldCompile()
+    {
+        await AssertInterfaceCompiles(
+            "public interface IService { System.Threading.Tasks.Task<int> CountAsync(System.ReadOnlySpan<byte> data, int asyncResult); }",
+            "imposter.CountAsync(ReadOnlySpanArg<byte>.Any(), Arg<int>.Any()).ReturnsAsync(1); imposter.CountAsync(ReadOnlySpanArg<byte>.Any(), Arg<int>.Any()).ThrowsAsync(new System.Exception()); imposter.Instance().CountAsync(new byte[1], 0);",
+            nameof(SpanParameterCompilationTests)
+        );
+    }
+
+    [Fact]
+    public async Task GivenAwaitableSpanMethodWithTypeParameterNamedLikeCachedResult_WhenImposterIsUsed_ShouldCompile()
+    {
+        await AssertInterfaceCompiles(
+            "public interface IService { System.Threading.Tasks.ValueTask<asyncResult> GetAsync<asyncResult>(System.ReadOnlySpan<byte> data); }",
+            "imposter.GetAsync<int>(ReadOnlySpanArg<byte>.Any()).ReturnsAsync(1); imposter.GetAsync<int>(ReadOnlySpanArg<byte>.Any()).ThrowsAsync(new System.Exception()); imposter.Instance().GetAsync<int>(new byte[1]);",
+            nameof(SpanParameterCompilationTests)
+        );
+    }
+
+    [Fact]
     public async Task GivenAbstractAndProtectedClassMethodsWithSpanParameters_WhenImposterIsUsed_ShouldCompile()
     {
         await AssertCompiles(

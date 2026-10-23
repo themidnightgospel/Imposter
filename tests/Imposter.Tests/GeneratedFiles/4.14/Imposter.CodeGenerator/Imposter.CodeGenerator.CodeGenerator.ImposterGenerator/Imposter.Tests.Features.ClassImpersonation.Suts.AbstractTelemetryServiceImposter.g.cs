@@ -108,6 +108,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IComputeMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(ComputeArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -335,9 +341,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					_computeMethodInvocationHistoryCollection.Add(new ComputeMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_computeMethodInvocationHistoryCollection.RecordFailure(new ComputeMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_computeMethodInvocationHistoryCollection.Add(new ComputeMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -508,6 +513,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			internal void Add(IComputeNullableMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IComputeNullableMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(ComputeNullableArgumentsCriteria argumentsCriteria)
@@ -737,9 +748,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					_computeNullableMethodInvocationHistoryCollection.Add(new ComputeNullableMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_computeNullableMethodInvocationHistoryCollection.RecordFailure(new ComputeNullableMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_computeNullableMethodInvocationHistoryCollection.Add(new ComputeNullableMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -2319,17 +2329,17 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 							}
 						}
 
+						if (_defaultBehaviour.IsOn)
+						{
+							return _defaultBehaviour.Get(arguments, baseImplementation);
+						}
+
 						global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int> generator = ResolveNextGenerator(arguments);
 						return generator(arguments, baseImplementation);
 					}
 
 					private global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int> ResolveNextGenerator(IndexerIndexerArguments arguments)
 					{
-						if (_defaultBehaviour.IsOn)
-						{
-							return (arguments, baseImplementation) => _defaultBehaviour.Get(arguments, baseImplementation);
-						}
-
 						var nextReturnValue = NextReturnValue();
 						if (nextReturnValue == null)
 						{
@@ -2916,17 +2926,17 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 							}
 						}
 
+						if (_defaultBehaviour.IsOn)
+						{
+							return _defaultBehaviour.Get(arguments, baseImplementation);
+						}
+
 						global::System.Func<Indexer_1IndexerArguments, global::System.Func<int?>?, int?> generator = ResolveNextGenerator(arguments);
 						return generator(arguments, baseImplementation);
 					}
 
 					private global::System.Func<Indexer_1IndexerArguments, global::System.Func<int?>?, int?> ResolveNextGenerator(Indexer_1IndexerArguments arguments)
 					{
-						if (_defaultBehaviour.IsOn)
-						{
-							return (arguments, baseImplementation) => _defaultBehaviour.Get(arguments, baseImplementation);
-						}
-
 						var nextReturnValue = NextReturnValue();
 						if (nextReturnValue == null)
 						{

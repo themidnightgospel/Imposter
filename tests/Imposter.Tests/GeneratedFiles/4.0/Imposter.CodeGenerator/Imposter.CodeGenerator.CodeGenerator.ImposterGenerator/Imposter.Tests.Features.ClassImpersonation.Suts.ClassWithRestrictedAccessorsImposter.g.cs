@@ -1375,17 +1375,17 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 							}
 						}
 
+						if (_defaultBehaviour.IsOn)
+						{
+							return _defaultBehaviour.Get(arguments, baseImplementation);
+						}
+
 						global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int> generator = ResolveNextGenerator(arguments);
 						return generator(arguments, baseImplementation);
 					}
 
 					private global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int> ResolveNextGenerator(IndexerIndexerArguments arguments)
 					{
-						if (_defaultBehaviour.IsOn)
-						{
-							return (arguments, baseImplementation) => _defaultBehaviour.Get(arguments, baseImplementation);
-						}
-
 						var nextReturnValue = NextReturnValue();
 						if (nextReturnValue == null)
 						{

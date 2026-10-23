@@ -123,6 +123,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IDoSomethingMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count<TArg>(DoSomethingArgumentsCriteria<TArg> argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches<TArg>(argumentsCriteria));
@@ -430,9 +436,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void IOpenGenericWithMethodGenerics<T>.DoSomething<TArg>(TArg arg)", arg);
 					_doSomethingMethodInvocationHistoryCollection.Add(new DoSomethingMethodInvocationHistory<TArg>(arguments, default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_doSomethingMethodInvocationHistoryCollection.RecordFailure(new DoSomethingMethodInvocationHistory<TArg>(arguments, ex)))
 				{
-					_doSomethingMethodInvocationHistoryCollection.Add(new DoSomethingMethodInvocationHistory<TArg>(arguments, ex));
 					throw;
 				}
 			}
@@ -598,6 +603,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal void Add(IMapMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IMapMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<TSource, TResult>(MapArgumentsCriteria<TSource, TResult> argumentsCriteria)
@@ -921,9 +932,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					_mapMethodInvocationHistoryCollection.Add(new MapMethodInvocationHistory<TSource, TResult>(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_mapMethodInvocationHistoryCollection.RecordFailure(new MapMethodInvocationHistory<TSource, TResult>(arguments, default !, ex)))
 				{
-					_mapMethodInvocationHistoryCollection.Add(new MapMethodInvocationHistory<TSource, TResult>(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -1105,6 +1115,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal void Add(ITransformMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(ITransformMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<TArg>(TransformArgumentsCriteria<TArg> argumentsCriteria)
@@ -1428,9 +1444,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					_transformMethodInvocationHistoryCollection.Add(new TransformMethodInvocationHistory<TArg>(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_transformMethodInvocationHistoryCollection.RecordFailure(new TransformMethodInvocationHistory<TArg>(arguments, default !, ex)))
 				{
-					_transformMethodInvocationHistoryCollection.Add(new TransformMethodInvocationHistory<TArg>(arguments, default !, ex));
 					throw;
 				}
 			}

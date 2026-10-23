@@ -101,6 +101,12 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(ISquareMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(SquareArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -328,9 +334,8 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 					_squareMethodInvocationHistoryCollection.Add(new SquareMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_squareMethodInvocationHistoryCollection.RecordFailure(new SquareMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_squareMethodInvocationHistoryCollection.Add(new SquareMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}

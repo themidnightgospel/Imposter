@@ -80,6 +80,12 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IGetNumberMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count()
 			{
 				return _invocationHistory.Count(it => it.Matches());
@@ -300,9 +306,8 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
 					_getNumberMethodInvocationHistoryCollection.Add(new GetNumberMethodInvocationHistory(result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_getNumberMethodInvocationHistoryCollection.RecordFailure(new GetNumberMethodInvocationHistory(default !, ex)))
 				{
-					_getNumberMethodInvocationHistoryCollection.Add(new GetNumberMethodInvocationHistory(default !, ex));
 					throw;
 				}
 			}
@@ -471,6 +476,12 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
 			internal void Add(IIncrementMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IIncrementMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(IncrementArgumentsCriteria argumentsCriteria)
@@ -700,9 +711,8 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
 					_incrementMethodInvocationHistoryCollection.Add(new IncrementMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_incrementMethodInvocationHistoryCollection.RecordFailure(new IncrementMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_incrementMethodInvocationHistoryCollection.Add(new IncrementMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -1494,17 +1504,17 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
 							}
 						}
 
+						if (_defaultBehaviour.IsOn)
+						{
+							return _defaultBehaviour.Get(arguments, baseImplementation);
+						}
+
 						global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int> generator = ResolveNextGenerator(arguments);
 						return generator(arguments, baseImplementation);
 					}
 
 					private global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int> ResolveNextGenerator(IndexerIndexerArguments arguments)
 					{
-						if (_defaultBehaviour.IsOn)
-						{
-							return (arguments, baseImplementation) => _defaultBehaviour.Get(arguments, baseImplementation);
-						}
-
 						var nextReturnValue = NextReturnValue();
 						if (nextReturnValue == null)
 						{

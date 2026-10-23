@@ -1,4 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -11,19 +11,6 @@ internal static partial class SyntaxFactoryHelper
         ParameterListSyntax parameterList,
         BlockSyntax body
     ) => ParenthesizedLambdaExpression(parameterList, body);
-
-    public static ParenthesizedLambdaExpressionSyntax AsyncLambda(
-        ParameterListSyntax parameterList,
-        BlockSyntax body
-    )
-    {
-        return ParenthesizedLambdaExpression(
-            asyncKeyword: Token(SyntaxKind.AsyncKeyword),
-            parameterList: parameterList,
-            arrowToken: Token(SyntaxKind.EqualsGreaterThanToken),
-            body: body
-        );
-    }
 
     public static ParenthesizedLambdaExpressionSyntax EmptyParametersGoesTo(
         CSharpSyntaxNode body

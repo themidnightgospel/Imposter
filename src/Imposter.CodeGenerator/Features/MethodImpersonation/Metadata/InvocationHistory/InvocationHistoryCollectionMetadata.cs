@@ -6,6 +6,8 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.Invocatio
 
 internal readonly record struct InvocationHistoryCollectionMetadata
 {
+    internal const string RecordFailureMethodName = "RecordFailure";
+
     internal const string InvocationHistoryCollectionFieldName = "_invocationHistory";
 
     internal readonly string Name;

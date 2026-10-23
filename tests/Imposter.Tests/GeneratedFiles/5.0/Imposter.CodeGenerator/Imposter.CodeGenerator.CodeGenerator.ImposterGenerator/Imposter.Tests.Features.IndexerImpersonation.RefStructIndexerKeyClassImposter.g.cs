@@ -395,17 +395,17 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 							}
 						}
 
+						if (_defaultBehaviour.IsOn)
+						{
+							return _defaultBehaviour.Get(arguments, locator, baseImplementation);
+						}
+
 						IndexerIndexerReturnHandler generator = ResolveNextGenerator(arguments);
 						return generator(arguments, locator, baseImplementation);
 					}
 
 					private IndexerIndexerReturnHandler ResolveNextGenerator(IndexerIndexerArguments arguments)
 					{
-						if (_defaultBehaviour.IsOn)
-						{
-							return (arguments, locator, baseImplementation) => _defaultBehaviour.Get(arguments, locator, baseImplementation);
-						}
-
 						var nextReturnValue = NextReturnValue();
 						if (nextReturnValue == null)
 						{

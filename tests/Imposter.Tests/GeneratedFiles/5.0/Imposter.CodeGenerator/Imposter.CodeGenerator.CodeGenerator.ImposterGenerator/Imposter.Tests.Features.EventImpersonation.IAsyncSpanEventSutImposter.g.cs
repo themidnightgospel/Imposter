@@ -320,7 +320,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 			private async global::System.Threading.Tasks.Task RaiseCoreAsync(byte[] buffer)
 			{
 				global::System.Threading.LazyInitializer.EnsureInitialized(ref _history).Push(buffer.ToArray());
-				global::System.Collections.Generic.List<global::System.Threading.Tasks.Task> pendingTasks = new global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>();
+				global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>? pendingTasks = null;
 				if (_callbacks != null)
 				{
 					foreach (var callback in _callbacks)
@@ -328,17 +328,21 @@ namespace Imposter.Tests.Features.EventImpersonation
 						var task = callback(buffer);
 						if (task != default)
 						{
-							pendingTasks.Add(task.AsTask());
+							(pendingTasks ??= new global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>()).Add(task.AsTask());
 						}
 					}
 				}
 
-				if (pendingTasks.Count > 0)
+				if ((pendingTasks != null) && (pendingTasks.Count > 0))
 				{
 					await global::System.Threading.Tasks.Task.WhenAll(pendingTasks).ConfigureAwait(false);
 				}
 
-				pendingTasks.Clear();
+				if (pendingTasks != null)
+				{
+					pendingTasks.Clear();
+				}
+
 				if (_activeHandlers != null)
 				{
 					foreach (var handler in _activeHandlers)
@@ -347,12 +351,12 @@ namespace Imposter.Tests.Features.EventImpersonation
 						var task = handler(buffer);
 						if (task != default)
 						{
-							pendingTasks.Add(task.AsTask());
+							(pendingTasks ??= new global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>()).Add(task.AsTask());
 						}
 					}
 				}
 
-				if (pendingTasks.Count > 0)
+				if ((pendingTasks != null) && (pendingTasks.Count > 0))
 				{
 					await global::System.Threading.Tasks.Task.WhenAll(pendingTasks).ConfigureAwait(false);
 				}
@@ -663,7 +667,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 			private async global::System.Threading.Tasks.Task RaiseCoreAsync(char[] text)
 			{
 				global::System.Threading.LazyInitializer.EnsureInitialized(ref _history).Push(text.ToArray());
-				global::System.Collections.Generic.List<global::System.Threading.Tasks.Task> pendingTasks = new global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>();
+				global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>? pendingTasks = null;
 				if (_callbacks != null)
 				{
 					foreach (var callback in _callbacks)
@@ -671,17 +675,21 @@ namespace Imposter.Tests.Features.EventImpersonation
 						var task = callback(text);
 						if (task != default)
 						{
-							pendingTasks.Add(task);
+							(pendingTasks ??= new global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>()).Add(task);
 						}
 					}
 				}
 
-				if (pendingTasks.Count > 0)
+				if ((pendingTasks != null) && (pendingTasks.Count > 0))
 				{
 					await global::System.Threading.Tasks.Task.WhenAll(pendingTasks).ConfigureAwait(false);
 				}
 
-				pendingTasks.Clear();
+				if (pendingTasks != null)
+				{
+					pendingTasks.Clear();
+				}
+
 				if (_activeHandlers != null)
 				{
 					foreach (var handler in _activeHandlers)
@@ -690,12 +698,12 @@ namespace Imposter.Tests.Features.EventImpersonation
 						var task = handler(text);
 						if (task != default)
 						{
-							pendingTasks.Add(task);
+							(pendingTasks ??= new global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>()).Add(task);
 						}
 					}
 				}
 
-				if (pendingTasks.Count > 0)
+				if ((pendingTasks != null) && (pendingTasks.Count > 0))
 				{
 					await global::System.Threading.Tasks.Task.WhenAll(pendingTasks).ConfigureAwait(false);
 				}
@@ -1011,7 +1019,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 			private async global::System.Threading.Tasks.Task RaiseCoreAsync(object? sender, char[] text)
 			{
 				global::System.Threading.LazyInitializer.EnsureInitialized(ref _history).Push((sender, text.ToArray()));
-				global::System.Collections.Generic.List<global::System.Threading.Tasks.Task> pendingTasks = new global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>();
+				global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>? pendingTasks = null;
 				if (_callbacks != null)
 				{
 					foreach (var callback in _callbacks)
@@ -1019,17 +1027,21 @@ namespace Imposter.Tests.Features.EventImpersonation
 						var task = callback(sender, text);
 						if (task != default)
 						{
-							pendingTasks.Add(task);
+							(pendingTasks ??= new global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>()).Add(task);
 						}
 					}
 				}
 
-				if (pendingTasks.Count > 0)
+				if ((pendingTasks != null) && (pendingTasks.Count > 0))
 				{
 					await global::System.Threading.Tasks.Task.WhenAll(pendingTasks).ConfigureAwait(false);
 				}
 
-				pendingTasks.Clear();
+				if (pendingTasks != null)
+				{
+					pendingTasks.Clear();
+				}
+
 				if (_activeHandlers != null)
 				{
 					foreach (var handler in _activeHandlers)
@@ -1038,12 +1050,12 @@ namespace Imposter.Tests.Features.EventImpersonation
 						var task = handler(sender, text);
 						if (task != default)
 						{
-							pendingTasks.Add(task);
+							(pendingTasks ??= new global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>()).Add(task);
 						}
 					}
 				}
 
-				if (pendingTasks.Count > 0)
+				if ((pendingTasks != null) && (pendingTasks.Count > 0))
 				{
 					await global::System.Threading.Tasks.Task.WhenAll(pendingTasks).ConfigureAwait(false);
 				}

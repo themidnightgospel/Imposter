@@ -125,6 +125,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IConvertMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count<TInput, TResult>(ConvertArgumentsCriteria<TInput, TResult> argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches<TInput, TResult>(argumentsCriteria));
@@ -462,9 +468,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					_convertMethodInvocationHistoryCollection.Add(new ConvertMethodInvocationHistory<TInput, TResult>(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_convertMethodInvocationHistoryCollection.RecordFailure(new ConvertMethodInvocationHistory<TInput, TResult>(arguments, default !, ex)))
 				{
-					_convertMethodInvocationHistoryCollection.Add(new ConvertMethodInvocationHistory<TInput, TResult>(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -616,6 +621,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			internal void Add(IDescribeMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IDescribeMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<T>()
@@ -948,9 +959,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					_describeMethodInvocationHistoryCollection.Add(new DescribeMethodInvocationHistory<T>(result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_describeMethodInvocationHistoryCollection.RecordFailure(new DescribeMethodInvocationHistory<T>(default !, ex)))
 				{
-					_describeMethodInvocationHistoryCollection.Add(new DescribeMethodInvocationHistory<T>(default !, ex));
 					throw;
 				}
 			}
@@ -1098,6 +1108,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			internal void Add(IExecuteMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IExecuteMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<T>()
@@ -1414,9 +1430,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual void ClassWithUninferableGenericMethods.Execute<T>()", baseImplementation);
 					_executeMethodInvocationHistoryCollection.Add(new ExecuteMethodInvocationHistory<T>(default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_executeMethodInvocationHistoryCollection.RecordFailure(new ExecuteMethodInvocationHistory<T>(ex)))
 				{
-					_executeMethodInvocationHistoryCollection.Add(new ExecuteMethodInvocationHistory<T>(ex));
 					throw;
 				}
 			}

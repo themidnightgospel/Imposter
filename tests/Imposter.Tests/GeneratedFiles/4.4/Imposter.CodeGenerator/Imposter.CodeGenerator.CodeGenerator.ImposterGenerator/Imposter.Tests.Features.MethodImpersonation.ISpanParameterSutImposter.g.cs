@@ -143,6 +143,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IContainsMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count<T>(ContainsArgumentsCriteria<T> argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches<T>(argumentsCriteria));
@@ -464,9 +470,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_containsMethodInvocationHistoryCollection.Add(new ContainsMethodInvocationHistory<T>(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_containsMethodInvocationHistoryCollection.RecordFailure(new ContainsMethodInvocationHistory<T>(arguments, default !, ex)))
 				{
-					_containsMethodInvocationHistoryCollection.Add(new ContainsMethodInvocationHistory<T>(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -640,6 +645,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(ICountAsyncMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(CountAsyncArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -774,13 +785,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				internal void ReturnsAsync(int value)
 				{
+					global::System.Threading.Tasks.Task<int> asyncResult = global::System.Threading.Tasks.Task.FromResult<int>(value);
 					_resultGenerator = (global::System.ReadOnlySpan<byte> data) =>
 					{
-						return AsyncResult();
-						async global::System.Threading.Tasks.Task<int> AsyncResult()
-						{
-							return value;
-						}
+						return asyncResult;
 					};
 				}
 
@@ -794,14 +802,15 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				internal void ThrowsAsync(global::System.Exception exception)
 				{
+					global::System.Threading.Tasks.Task<int> asyncResult = AsyncResult();
 					_resultGenerator = (global::System.ReadOnlySpan<byte> data) =>
 					{
-						return AsyncResult();
-						async global::System.Threading.Tasks.Task<int> AsyncResult()
-						{
-							throw exception;
-						}
+						return asyncResult;
 					};
+					async global::System.Threading.Tasks.Task<int> AsyncResult()
+					{
+						throw exception;
+					}
 				}
 
 				internal static global::System.Threading.Tasks.Task<int> DefaultResultGenerator(global::System.ReadOnlySpan<byte> data)
@@ -901,9 +910,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_countAsyncMethodInvocationHistoryCollection.Add(new CountAsyncMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_countAsyncMethodInvocationHistoryCollection.RecordFailure(new CountAsyncMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_countAsyncMethodInvocationHistoryCollection.Add(new CountAsyncMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -1102,6 +1110,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IFillMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IFillMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<T>(FillArgumentsCriteria<T> argumentsCriteria)
@@ -1411,9 +1425,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void ISpanParameterSut.Fill<T>(Span<byte> buffer, T value)", buffer, value);
 					_fillMethodInvocationHistoryCollection.Add(new FillMethodInvocationHistory<T>(arguments, default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_fillMethodInvocationHistoryCollection.RecordFailure(new FillMethodInvocationHistory<T>(arguments, ex)))
 				{
-					_fillMethodInvocationHistoryCollection.Add(new FillMethodInvocationHistory<T>(arguments, ex));
 					throw;
 				}
 			}
@@ -1573,6 +1586,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IParseMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IParseMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(ParseArgumentsCriteria argumentsCriteria)
@@ -1802,9 +1821,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_parseMethodInvocationHistoryCollection.Add(new ParseMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_parseMethodInvocationHistoryCollection.RecordFailure(new ParseMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_parseMethodInvocationHistoryCollection.Add(new ParseMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -1973,6 +1991,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IWriteMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IWriteMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(WriteArgumentsCriteria argumentsCriteria)
@@ -2189,9 +2213,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void ISpanParameterSut.Write(Span<byte> buffer)", buffer);
 					_writeMethodInvocationHistoryCollection.Add(new WriteMethodInvocationHistory(arguments, default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_writeMethodInvocationHistoryCollection.RecordFailure(new WriteMethodInvocationHistory(arguments, ex)))
 				{
-					_writeMethodInvocationHistoryCollection.Add(new WriteMethodInvocationHistory(arguments, ex));
 					throw;
 				}
 			}

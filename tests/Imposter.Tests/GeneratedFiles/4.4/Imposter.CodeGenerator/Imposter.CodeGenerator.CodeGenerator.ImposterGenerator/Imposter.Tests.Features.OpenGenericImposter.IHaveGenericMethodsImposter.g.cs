@@ -130,6 +130,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IAddItemMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count<TItem>(AddItemArgumentsCriteria<TItem> argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches<TItem>(argumentsCriteria));
@@ -437,9 +443,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void IHaveGenericMethods.AddItem<TItem>(TItem item)", item);
 					_addItemMethodInvocationHistoryCollection.Add(new AddItemMethodInvocationHistory<TItem>(arguments, default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_addItemMethodInvocationHistoryCollection.RecordFailure(new AddItemMethodInvocationHistory<TItem>(arguments, ex)))
 				{
-					_addItemMethodInvocationHistoryCollection.Add(new AddItemMethodInvocationHistory<TItem>(arguments, ex));
 					throw;
 				}
 			}
@@ -567,6 +572,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal void Add(IGetValueMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IGetValueMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<TResult>()
@@ -883,9 +894,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					_getValueMethodInvocationHistoryCollection.Add(new GetValueMethodInvocationHistory<TResult>(result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_getValueMethodInvocationHistoryCollection.RecordFailure(new GetValueMethodInvocationHistory<TResult>(default !, ex)))
 				{
-					_getValueMethodInvocationHistoryCollection.Add(new GetValueMethodInvocationHistory<TResult>(default !, ex));
 					throw;
 				}
 			}
@@ -1067,6 +1077,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IProcessAsyncMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count<TItem>(ProcessAsyncArgumentsCriteria<TItem> argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches<TItem>(argumentsCriteria));
@@ -1239,9 +1255,10 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				internal void ReturnsAsync(TItem value)
 				{
-					_resultGenerator = async (global::System.Collections.Generic.IEnumerable<TItem> items) =>
+					global::System.Threading.Tasks.Task<TItem> asyncResult = global::System.Threading.Tasks.Task.FromResult<TItem>(value);
+					_resultGenerator = (global::System.Collections.Generic.IEnumerable<TItem> items) =>
 					{
-						return value;
+						return asyncResult;
 					};
 				}
 
@@ -1255,10 +1272,15 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				internal void ThrowsAsync(global::System.Exception exception)
 				{
-					_resultGenerator = async (global::System.Collections.Generic.IEnumerable<TItem> items) =>
+					global::System.Threading.Tasks.Task<TItem> asyncResult = AsyncResult();
+					_resultGenerator = (global::System.Collections.Generic.IEnumerable<TItem> items) =>
+					{
+						return asyncResult;
+					};
+					async global::System.Threading.Tasks.Task<TItem> AsyncResult()
 					{
 						throw exception;
-					};
+					}
 				}
 
 				internal static async global::System.Threading.Tasks.Task<TItem> DefaultResultGenerator(global::System.Collections.Generic.IEnumerable<TItem> items)
@@ -1410,9 +1432,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					_processAsyncMethodInvocationHistoryCollection.Add(new ProcessAsyncMethodInvocationHistory<TItem>(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_processAsyncMethodInvocationHistoryCollection.RecordFailure(new ProcessAsyncMethodInvocationHistory<TItem>(arguments, default !, ex)))
 				{
-					_processAsyncMethodInvocationHistoryCollection.Add(new ProcessAsyncMethodInvocationHistory<TItem>(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -1612,6 +1633,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IProcessComplexAsyncMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count<TItem, TResult>(ProcessComplexAsyncArgumentsCriteria<TItem, TResult> argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches<TItem, TResult>(argumentsCriteria));
@@ -1784,9 +1811,10 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				internal void ReturnsAsync(TResult value)
 				{
-					_resultGenerator = async (global::System.Collections.Generic.IEnumerable<TItem> items) =>
+					global::System.Threading.Tasks.Task<TResult> asyncResult = global::System.Threading.Tasks.Task.FromResult<TResult>(value);
+					_resultGenerator = (global::System.Collections.Generic.IEnumerable<TItem> items) =>
 					{
-						return value;
+						return asyncResult;
 					};
 				}
 
@@ -1800,10 +1828,15 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				internal void ThrowsAsync(global::System.Exception exception)
 				{
-					_resultGenerator = async (global::System.Collections.Generic.IEnumerable<TItem> items) =>
+					global::System.Threading.Tasks.Task<TResult> asyncResult = AsyncResult();
+					_resultGenerator = (global::System.Collections.Generic.IEnumerable<TItem> items) =>
+					{
+						return asyncResult;
+					};
+					async global::System.Threading.Tasks.Task<TResult> AsyncResult()
 					{
 						throw exception;
-					};
+					}
 				}
 
 				internal static async global::System.Threading.Tasks.Task<TResult> DefaultResultGenerator(global::System.Collections.Generic.IEnumerable<TItem> items)
@@ -1955,9 +1988,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					_processComplexAsyncMethodInvocationHistoryCollection.Add(new ProcessComplexAsyncMethodInvocationHistory<TItem, TResult>(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_processComplexAsyncMethodInvocationHistoryCollection.RecordFailure(new ProcessComplexAsyncMethodInvocationHistory<TItem, TResult>(arguments, default !, ex)))
 				{
-					_processComplexAsyncMethodInvocationHistoryCollection.Add(new ProcessComplexAsyncMethodInvocationHistory<TItem, TResult>(arguments, default !, ex));
 					throw;
 				}
 			}

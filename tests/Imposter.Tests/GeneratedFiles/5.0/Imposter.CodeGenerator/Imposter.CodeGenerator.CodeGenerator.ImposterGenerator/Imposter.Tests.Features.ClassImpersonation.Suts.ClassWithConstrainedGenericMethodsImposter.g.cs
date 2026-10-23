@@ -129,6 +129,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IDescribeMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count<T>(DescribeArgumentsCriteria<T> argumentsCriteria)
 				where T : new()
 			{
@@ -473,9 +479,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					_describeMethodInvocationHistoryCollection.Add(new DescribeMethodInvocationHistory<T>(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_describeMethodInvocationHistoryCollection.RecordFailure(new DescribeMethodInvocationHistory<T>(arguments, default !, ex)))
 				{
-					_describeMethodInvocationHistoryCollection.Add(new DescribeMethodInvocationHistory<T>(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -674,6 +679,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			internal void Add(IEchoMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IEchoMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<T>(EchoArgumentsCriteria<T> argumentsCriteria)
@@ -1020,9 +1031,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					_echoMethodInvocationHistoryCollection.Add(new EchoMethodInvocationHistory<T>(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_echoMethodInvocationHistoryCollection.RecordFailure(new EchoMethodInvocationHistory<T>(arguments, default !, ex)))
 				{
-					_echoMethodInvocationHistoryCollection.Add(new EchoMethodInvocationHistory<T>(arguments, default !, ex));
 					throw;
 				}
 			}

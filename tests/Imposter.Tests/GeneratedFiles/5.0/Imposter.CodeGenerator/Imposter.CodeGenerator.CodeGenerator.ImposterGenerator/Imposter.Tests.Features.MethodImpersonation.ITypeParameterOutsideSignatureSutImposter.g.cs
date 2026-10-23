@@ -102,6 +102,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(INameMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count<T>()
 			{
 				return _invocationHistory.Count(it => it.Matches<T>());
@@ -416,9 +422,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_nameMethodInvocationHistoryCollection.Add(new NameMethodInvocationHistory<T>(result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_nameMethodInvocationHistoryCollection.RecordFailure(new NameMethodInvocationHistory<T>(default !, ex)))
 				{
-					_nameMethodInvocationHistoryCollection.Add(new NameMethodInvocationHistory<T>(default !, ex));
 					throw;
 				}
 			}
@@ -596,6 +601,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IPutMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IPutMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<T, TKey>(PutArgumentsCriteria<T, TKey> argumentsCriteria)
@@ -905,9 +916,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void ITypeParameterOutsideSignatureSut.Put<T, TKey>(T value)", value);
 					_putMethodInvocationHistoryCollection.Add(new PutMethodInvocationHistory<T, TKey>(arguments, default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_putMethodInvocationHistoryCollection.RecordFailure(new PutMethodInvocationHistory<T, TKey>(arguments, ex)))
 				{
-					_putMethodInvocationHistoryCollection.Add(new PutMethodInvocationHistory<T, TKey>(arguments, ex));
 					throw;
 				}
 			}
@@ -1033,6 +1043,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IRegisterMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IRegisterMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<T>()
@@ -1335,9 +1351,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void ITypeParameterOutsideSignatureSut.Register<T>()");
 					_registerMethodInvocationHistoryCollection.Add(new RegisterMethodInvocationHistory<T>(default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_registerMethodInvocationHistoryCollection.RecordFailure(new RegisterMethodInvocationHistory<T>(ex)))
 				{
-					_registerMethodInvocationHistoryCollection.Add(new RegisterMethodInvocationHistory<T>(ex));
 					throw;
 				}
 			}
@@ -1508,6 +1523,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IRelateMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IRelateMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<T, TDerived>(RelateArgumentsCriteria<T, TDerived> argumentsCriteria)
@@ -1824,9 +1845,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void ITypeParameterOutsideSignatureSut.Relate<T, TDerived>(TDerived value)", value);
 					_relateMethodInvocationHistoryCollection.Add(new RelateMethodInvocationHistory<T, TDerived>(arguments, default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_relateMethodInvocationHistoryCollection.RecordFailure(new RelateMethodInvocationHistory<T, TDerived>(arguments, ex)))
 				{
-					_relateMethodInvocationHistoryCollection.Add(new RelateMethodInvocationHistory<T, TDerived>(arguments, ex));
 					throw;
 				}
 			}
@@ -1990,6 +2010,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(ITagMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(ITagMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<T>(TagArgumentsCriteria<T> argumentsCriteria)
@@ -2299,9 +2325,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void ITypeParameterOutsideSignatureSut.Tag<T>(int value)", value);
 					_tagMethodInvocationHistoryCollection.Add(new TagMethodInvocationHistory<T>(arguments, default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_tagMethodInvocationHistoryCollection.RecordFailure(new TagMethodInvocationHistory<T>(arguments, ex)))
 				{
-					_tagMethodInvocationHistoryCollection.Add(new TagMethodInvocationHistory<T>(arguments, ex));
 					throw;
 				}
 			}

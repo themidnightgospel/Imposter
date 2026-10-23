@@ -112,6 +112,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Verification
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(ICombineMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(CombineArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -339,9 +345,8 @@ namespace Imposter.Tests.Features.Docs.Methods.Verification
 					_combineMethodInvocationHistoryCollection.Add(new CombineMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_combineMethodInvocationHistoryCollection.RecordFailure(new CombineMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_combineMethodInvocationHistoryCollection.Add(new CombineMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -510,6 +515,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Verification
 			internal void Add(IIncrementMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IIncrementMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(IncrementArgumentsCriteria argumentsCriteria)
@@ -726,9 +737,8 @@ namespace Imposter.Tests.Features.Docs.Methods.Verification
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void IVerifyService.Increment(int v)", v);
 					_incrementMethodInvocationHistoryCollection.Add(new IncrementMethodInvocationHistory(arguments, default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_incrementMethodInvocationHistoryCollection.RecordFailure(new IncrementMethodInvocationHistory(arguments, ex)))
 				{
-					_incrementMethodInvocationHistoryCollection.Add(new IncrementMethodInvocationHistory(arguments, ex));
 					throw;
 				}
 			}

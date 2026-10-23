@@ -101,6 +101,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(ISaveAsyncMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(SaveAsyncArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -235,9 +241,10 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 
 				internal void ReturnsAsync(int value)
 				{
-					_resultGenerator = async (string name) =>
+					global::System.Threading.Tasks.Task<int> asyncResult = global::System.Threading.Tasks.Task.FromResult<int>(value);
+					_resultGenerator = (string name) =>
 					{
-						return value;
+						return asyncResult;
 					};
 				}
 
@@ -251,10 +258,15 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 
 				internal void ThrowsAsync(global::System.Exception exception)
 				{
-					_resultGenerator = async (string name) =>
+					global::System.Threading.Tasks.Task<int> asyncResult = AsyncResult();
+					_resultGenerator = (string name) =>
+					{
+						return asyncResult;
+					};
+					async global::System.Threading.Tasks.Task<int> AsyncResult()
 					{
 						throw exception;
-					};
+					}
 				}
 
 				internal static async global::System.Threading.Tasks.Task<int> DefaultResultGenerator(string name)
@@ -350,9 +362,8 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					_saveAsyncMethodInvocationHistoryCollection.Add(new SaveAsyncMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_saveAsyncMethodInvocationHistoryCollection.RecordFailure(new SaveAsyncMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_saveAsyncMethodInvocationHistoryCollection.Add(new SaveAsyncMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}

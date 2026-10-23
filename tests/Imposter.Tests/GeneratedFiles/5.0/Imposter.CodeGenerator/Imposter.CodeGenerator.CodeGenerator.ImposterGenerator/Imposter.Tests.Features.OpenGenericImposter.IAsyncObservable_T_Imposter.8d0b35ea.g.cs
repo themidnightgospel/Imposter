@@ -99,6 +99,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IOnNextMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(OnNextArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -313,9 +319,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void IAsyncObservable<T>.OnNext(T item)", item);
 					_onNextMethodInvocationHistoryCollection.Add(new OnNextMethodInvocationHistory(arguments, default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_onNextMethodInvocationHistoryCollection.RecordFailure(new OnNextMethodInvocationHistory(arguments, ex)))
 				{
-					_onNextMethodInvocationHistoryCollection.Add(new OnNextMethodInvocationHistory(arguments, ex));
 					throw;
 				}
 			}

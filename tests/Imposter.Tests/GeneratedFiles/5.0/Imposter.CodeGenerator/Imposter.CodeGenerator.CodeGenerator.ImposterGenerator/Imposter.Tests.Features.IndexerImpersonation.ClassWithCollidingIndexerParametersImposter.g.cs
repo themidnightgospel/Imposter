@@ -421,17 +421,17 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 							}
 						}
 
+						if (_defaultBehaviour.IsOn)
+						{
+							return _defaultBehaviour.Get(arguments_1, baseImplementation_1);
+						}
+
 						global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int> generator = ResolveNextGenerator(arguments_1);
 						return generator(arguments_1, baseImplementation_1);
 					}
 
 					private global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int> ResolveNextGenerator(IndexerIndexerArguments arguments_1)
 					{
-						if (_defaultBehaviour.IsOn)
-						{
-							return (arguments_1, baseImplementation_1) => _defaultBehaviour.Get(arguments_1, baseImplementation_1);
-						}
-
 						var nextReturnValue = NextReturnValue();
 						if (nextReturnValue == null)
 						{

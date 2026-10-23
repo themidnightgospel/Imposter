@@ -109,6 +109,12 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IProcessMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(ProcessArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -336,9 +342,8 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 					_processMethodInvocationHistoryCollection.Add(new ProcessMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_processMethodInvocationHistoryCollection.RecordFailure(new ProcessMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_processMethodInvocationHistoryCollection.Add(new ProcessMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}

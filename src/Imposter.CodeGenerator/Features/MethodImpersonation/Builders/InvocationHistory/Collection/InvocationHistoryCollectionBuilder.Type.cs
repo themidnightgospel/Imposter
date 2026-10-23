@@ -1,4 +1,4 @@
-﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationHistory;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -27,6 +27,7 @@ internal static partial class InvocationHistoryCollectionBuilder
                 )
             )
             .AddMember(BuildAddMethod(method))
+            .AddMember(BuildRecordFailureMethod(method))
             .AddMember(BuildCountMethod(method))
             .AddMember(BuildToStringMethod())
             .Build();

@@ -108,6 +108,12 @@ namespace Imposter.Tests.Features.Docs.Methods.ProtectedMethods
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IInvokeProtectedMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(InvokeProtectedArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -351,9 +357,8 @@ namespace Imposter.Tests.Features.Docs.Methods.ProtectedMethods
 					_invokeProtectedMethodInvocationHistoryCollection.Add(new InvokeProtectedMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_invokeProtectedMethodInvocationHistoryCollection.RecordFailure(new InvokeProtectedMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_invokeProtectedMethodInvocationHistoryCollection.Add(new InvokeProtectedMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -532,6 +537,12 @@ namespace Imposter.Tests.Features.Docs.Methods.ProtectedMethods
 			internal void Add(IProtectedAddMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IProtectedAddMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(ProtectedAddArgumentsCriteria argumentsCriteria)
@@ -777,9 +788,8 @@ namespace Imposter.Tests.Features.Docs.Methods.ProtectedMethods
 					_protectedAddMethodInvocationHistoryCollection.Add(new ProtectedAddMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_protectedAddMethodInvocationHistoryCollection.RecordFailure(new ProtectedAddMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_protectedAddMethodInvocationHistoryCollection.Add(new ProtectedAddMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}

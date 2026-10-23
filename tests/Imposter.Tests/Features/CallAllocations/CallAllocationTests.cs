@@ -1,5 +1,6 @@
 using System;
 using Imposter.Abstractions;
+using Imposter.Tests.Features.EventImpersonation;
 using Shouldly;
 using Xunit;
 
@@ -187,6 +188,80 @@ namespace Imposter.Tests.Features.CallAllocations
             var instance = _sut.Instance();
 
             AllocatedBytesPerCall(() => instance[1] = 2).ShouldBeLessThanOrEqualTo(64);
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void GivenFixedAsyncOutcome_WhenCalled_ShouldOnlyAllocateArgumentsAndHistory(
+            bool throws
+        )
+        {
+            var sut = new IAsyncAllocationSutImposter();
+            if (throws)
+            {
+                sut.GetAsync(Arg<int>.Any()).ThrowsAsync(new InvalidOperationException("failure"));
+                sut.PeekAsync(Arg<int>.Any()).ThrowsAsync(new InvalidOperationException("failure"));
+            }
+            else
+            {
+                sut.GetAsync(Arg<int>.Any()).ReturnsAsync(12345);
+                sut.PeekAsync(Arg<int>.Any()).ReturnsAsync(12345);
+            }
+            var instance = sut.Instance();
+            // Do not await faults here: exception dispatch is runtime work, not generator allocation.
+            AllocatedBytesPerCall(() => _ = instance.GetAsync(1)).ShouldBeLessThanOrEqualTo(96);
+            AllocatedBytesPerCall(() => _ = instance.PeekAsync(1)).ShouldBeLessThanOrEqualTo(104);
+        }
+
+        [Fact]
+        public void GivenByReferenceAsyncOutcome_WhenCalled_ShouldOnlyAllocateArgumentsAndHistory()
+        {
+            var sut = new IAsyncAllocationSutImposter();
+            sut.GetByReferenceAsync(Arg<int>.Any(), OutArg<int>.Any(), Arg<int>.Any())
+                .ReturnsAsync(12345);
+            var instance = sut.Instance();
+            var key = 7;
+            var extra = 9;
+            AllocatedBytesPerCall(() => _ = instance.GetByReferenceAsync(ref key, out _, in extra))
+                .ShouldBeLessThanOrEqualTo(104);
+        }
+
+        [Fact]
+        public void GivenCallbackOnlyIndexerGetter_WhenCalled_ShouldUseDefaultValueWithoutAllocatingDelegate()
+        {
+            var callbacks = 0;
+            _sut[Arg<int>.Any()].Getter().Callback(_ => callbacks++);
+            var instance = _sut.Instance();
+            instance[1] = 42;
+            AllocatedBytesPerCall(() => _ = instance[1]).ShouldBeLessThanOrEqualTo(56);
+            instance[1].ShouldBe(42);
+            callbacks.ShouldBe(Calls * 2 + 1);
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void GivenAsyncEventWithoutTasks_WhenRaised_ShouldNotAllocatePendingTaskList(
+            bool nullCallback
+        )
+        {
+            var sut = new IEventSetupSutImposter();
+            if (nullCallback)
+            {
+                sut.AsyncSomethingHappened.Callback((_, __) => null!);
+            }
+            // The public API returns Task<IEventSetupBuilder>, so its completed result still allocates.
+            // Debug also allocates the compiler's async state machine classes.
+#if DEBUG
+            const long budget = 328;
+#else
+            const long budget = 112;
+#endif
+            AllocatedBytesPerCall(() =>
+                    _ = sut.AsyncSomethingHappened.RaiseAsync(null, EventArgs.Empty)
+                )
+                .ShouldBeLessThanOrEqualTo(budget);
         }
 
         // The call is warmed up first, so static initialization doesn't count.

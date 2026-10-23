@@ -57,6 +57,9 @@ internal readonly struct ReturnTypeMetadata
     internal ExpressionSyntax KeptValue(ExpressionSyntax result) =>
         SyntaxFactoryHelper.KeptValue(result, _returnType.Span, _returnType.Type);
 
+    internal ExpressionSyntax AwaitableResultValue(ExpressionSyntax result) =>
+        SyntaxFactoryHelper.RuntimeValue(result, _returnType.AwaitableResultType!);
+
     private static TypeSyntax NullableReturnTypeSyntax(
         ReturnTypeModel returnType,
         TypeSyntax typeSyntax

@@ -87,6 +87,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IGetAsyncMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count()
 			{
 				return _invocationHistory.Count(it => it.Matches());
@@ -219,14 +225,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				internal void ReturnsAsync(int value)
 				{
+					global::System.Threading.Tasks.Task<int> asyncResult = global::System.Threading.Tasks.Task.FromResult<int>(value);
 					_resultGenerator = (out int count) =>
 					{
 						InitializeOutParametersWithDefaultValues(out count);
-						return AsyncResult();
-						async global::System.Threading.Tasks.Task<int> AsyncResult()
-						{
-							return value;
-						}
+						return asyncResult;
 					};
 				}
 
@@ -240,15 +243,16 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				internal void ThrowsAsync(global::System.Exception exception)
 				{
+					global::System.Threading.Tasks.Task<int> asyncResult = AsyncResult();
 					_resultGenerator = (out int count) =>
 					{
 						InitializeOutParametersWithDefaultValues(out count);
-						return AsyncResult();
-						async global::System.Threading.Tasks.Task<int> AsyncResult()
-						{
-							throw exception;
-						}
+						return asyncResult;
 					};
+					async global::System.Threading.Tasks.Task<int> AsyncResult()
+					{
+						throw exception;
+					}
 				}
 
 				private static void InitializeOutParametersWithDefaultValues(out int count)
@@ -350,9 +354,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_getAsyncMethodInvocationHistoryCollection.Add(new GetAsyncMethodInvocationHistory(result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_getAsyncMethodInvocationHistoryCollection.RecordFailure(new GetAsyncMethodInvocationHistory(default !, ex)))
 				{
-					_getAsyncMethodInvocationHistoryCollection.Add(new GetAsyncMethodInvocationHistory(default !, ex));
 					throw;
 				}
 			}
@@ -539,6 +542,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(INextAsyncMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(NextAsyncArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -673,13 +682,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				internal void ReturnsAsync(int value)
 				{
+					global::System.Threading.Tasks.Task<int> asyncResult = global::System.Threading.Tasks.Task.FromResult<int>(value);
 					_resultGenerator = (ref int position) =>
 					{
-						return AsyncResult();
-						async global::System.Threading.Tasks.Task<int> AsyncResult()
-						{
-							return value;
-						}
+						return asyncResult;
 					};
 				}
 
@@ -693,14 +699,15 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				internal void ThrowsAsync(global::System.Exception exception)
 				{
+					global::System.Threading.Tasks.Task<int> asyncResult = AsyncResult();
 					_resultGenerator = (ref int position) =>
 					{
-						return AsyncResult();
-						async global::System.Threading.Tasks.Task<int> AsyncResult()
-						{
-							throw exception;
-						}
+						return asyncResult;
 					};
+					async global::System.Threading.Tasks.Task<int> AsyncResult()
+					{
+						throw exception;
+					}
 				}
 
 				internal static global::System.Threading.Tasks.Task<int> DefaultResultGenerator(ref int position)
@@ -800,9 +807,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_nextAsyncMethodInvocationHistoryCollection.Add(new NextAsyncMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_nextAsyncMethodInvocationHistoryCollection.RecordFailure(new NextAsyncMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_nextAsyncMethodInvocationHistoryCollection.Add(new NextAsyncMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -991,6 +997,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IPeekAsyncMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(PeekAsyncArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -1125,13 +1137,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				internal void ReturnsAsync(int value)
 				{
+					global::System.Threading.Tasks.ValueTask<int> asyncResult = new global::System.Threading.Tasks.ValueTask<int>(value);
 					_resultGenerator = (in int key) =>
 					{
-						return AsyncResult();
-						async global::System.Threading.Tasks.ValueTask<int> AsyncResult()
-						{
-							return value;
-						}
+						return asyncResult;
 					};
 				}
 
@@ -1145,14 +1154,15 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				internal void ThrowsAsync(global::System.Exception exception)
 				{
+					global::System.Threading.Tasks.ValueTask<int> asyncResult = AsyncResult();
 					_resultGenerator = (in int key) =>
 					{
-						return AsyncResult();
-						async global::System.Threading.Tasks.ValueTask<int> AsyncResult()
-						{
-							throw exception;
-						}
+						return asyncResult;
 					};
+					async global::System.Threading.Tasks.ValueTask<int> AsyncResult()
+					{
+						throw exception;
+					}
 				}
 
 				internal static global::System.Threading.Tasks.ValueTask<int> DefaultResultGenerator(in int key)
@@ -1252,9 +1262,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_peekAsyncMethodInvocationHistoryCollection.Add(new PeekAsyncMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_peekAsyncMethodInvocationHistoryCollection.RecordFailure(new PeekAsyncMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_peekAsyncMethodInvocationHistoryCollection.Add(new PeekAsyncMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}

@@ -115,6 +115,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IRentMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(RentArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -342,9 +348,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_rentMethodInvocationHistoryCollection.Add(new RentMethodInvocationHistory(arguments, result.ToArray(), default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_rentMethodInvocationHistoryCollection.RecordFailure(new RentMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_rentMethodInvocationHistoryCollection.Add(new RentMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -529,6 +534,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IRepeatMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IRepeatMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<T>(RepeatArgumentsCriteria<T> argumentsCriteria)
@@ -852,9 +863,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_repeatMethodInvocationHistoryCollection.Add(new RepeatMethodInvocationHistory<T>(arguments, result.ToArray(), default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_repeatMethodInvocationHistoryCollection.RecordFailure(new RepeatMethodInvocationHistory<T>(arguments, default !, ex)))
 				{
-					_repeatMethodInvocationHistoryCollection.Add(new RepeatMethodInvocationHistory<T>(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -1026,6 +1036,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(ITrimMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(ITrimMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(TrimArgumentsCriteria argumentsCriteria)
@@ -1255,9 +1271,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_trimMethodInvocationHistoryCollection.Add(new TrimMethodInvocationHistory(arguments, result.ToArray(), default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_trimMethodInvocationHistoryCollection.RecordFailure(new TrimMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_trimMethodInvocationHistoryCollection.Add(new TrimMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}

@@ -119,6 +119,12 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IAddMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(AddArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -362,9 +368,8 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 					_addMethodInvocationHistoryCollection.Add(new AddMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_addMethodInvocationHistoryCollection.RecordFailure(new AddMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_addMethodInvocationHistoryCollection.Add(new AddMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -543,6 +548,12 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 			internal void Add(IMightFailMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IMightFailMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(MightFailArgumentsCriteria argumentsCriteria)
@@ -788,9 +799,8 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 					_mightFailMethodInvocationHistoryCollection.Add(new MightFailMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_mightFailMethodInvocationHistoryCollection.RecordFailure(new MightFailMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_mightFailMethodInvocationHistoryCollection.Add(new MightFailMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -971,6 +981,12 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IProcessAsyncMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(ProcessAsyncArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -1122,11 +1138,16 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 
 				internal void ThrowsAsync(global::System.Exception exception)
 				{
+					global::System.Threading.Tasks.Task asyncResult = AsyncResult();
 					_useBaseImplementation = false;
-					_resultGenerator = async (string s) =>
+					_resultGenerator = (string s) =>
+					{
+						return asyncResult;
+					};
+					async global::System.Threading.Tasks.Task AsyncResult()
 					{
 						throw exception;
-					};
+					}
 				}
 
 				internal void UseBaseImplementation()
@@ -1228,9 +1249,8 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 					_processAsyncMethodInvocationHistoryCollection.Add(new ProcessAsyncMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_processAsyncMethodInvocationHistoryCollection.RecordFailure(new ProcessAsyncMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_processAsyncMethodInvocationHistoryCollection.Add(new ProcessAsyncMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}

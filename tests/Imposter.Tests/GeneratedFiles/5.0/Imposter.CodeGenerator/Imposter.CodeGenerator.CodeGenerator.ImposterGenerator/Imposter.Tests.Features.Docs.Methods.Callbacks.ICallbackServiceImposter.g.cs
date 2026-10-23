@@ -125,6 +125,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IGenericAllRefKindMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(GenericAllRefKindArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -359,9 +365,8 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					_genericAllRefKindMethodInvocationHistoryCollection.Add(new GenericAllRefKindMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_genericAllRefKindMethodInvocationHistoryCollection.RecordFailure(new GenericAllRefKindMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_genericAllRefKindMethodInvocationHistoryCollection.Add(new GenericAllRefKindMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -504,6 +509,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 			internal void Add(IGetNumberMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IGetNumberMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count()
@@ -726,9 +737,8 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					_getNumberMethodInvocationHistoryCollection.Add(new GetNumberMethodInvocationHistory(result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_getNumberMethodInvocationHistoryCollection.RecordFailure(new GetNumberMethodInvocationHistory(default !, ex)))
 				{
-					_getNumberMethodInvocationHistoryCollection.Add(new GetNumberMethodInvocationHistory(default !, ex));
 					throw;
 				}
 			}
@@ -897,6 +907,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 			internal void Add(IIncrementMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IIncrementMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(IncrementArgumentsCriteria argumentsCriteria)
@@ -1126,9 +1142,8 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					_incrementMethodInvocationHistoryCollection.Add(new IncrementMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_incrementMethodInvocationHistoryCollection.RecordFailure(new IncrementMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_incrementMethodInvocationHistoryCollection.Add(new IncrementMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}

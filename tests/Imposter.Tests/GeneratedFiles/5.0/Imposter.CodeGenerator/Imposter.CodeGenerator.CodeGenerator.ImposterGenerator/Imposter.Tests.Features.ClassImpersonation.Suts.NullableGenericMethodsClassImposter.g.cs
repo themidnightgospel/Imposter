@@ -119,6 +119,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IEchoMaybeDefaultMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count<T>(EchoMaybeDefaultArgumentsCriteria<T> argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches<T>(argumentsCriteria));
@@ -456,9 +462,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					_echoMaybeDefaultMethodInvocationHistoryCollection.Add(new EchoMaybeDefaultMethodInvocationHistory<T>(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_echoMaybeDefaultMethodInvocationHistoryCollection.RecordFailure(new EchoMaybeDefaultMethodInvocationHistory<T>(arguments, default !, ex)))
 				{
-					_echoMaybeDefaultMethodInvocationHistoryCollection.Add(new EchoMaybeDefaultMethodInvocationHistory<T>(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -657,6 +662,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			internal void Add(IEchoNullableReferenceMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IEchoNullableReferenceMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<T>(EchoNullableReferenceArgumentsCriteria<T> argumentsCriteria)
@@ -1003,9 +1014,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					_echoNullableReferenceMethodInvocationHistoryCollection.Add(new EchoNullableReferenceMethodInvocationHistory<T>(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_echoNullableReferenceMethodInvocationHistoryCollection.RecordFailure(new EchoNullableReferenceMethodInvocationHistory<T>(arguments, default !, ex)))
 				{
-					_echoNullableReferenceMethodInvocationHistoryCollection.Add(new EchoNullableReferenceMethodInvocationHistory<T>(arguments, default !, ex));
 					throw;
 				}
 			}

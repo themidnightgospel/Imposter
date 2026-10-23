@@ -125,6 +125,12 @@ namespace Imposter.Benchmarks
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IEchoMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count<T>(EchoArgumentsCriteria<T> argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches<T>(argumentsCriteria));
@@ -446,9 +452,8 @@ namespace Imposter.Benchmarks
 					_echoMethodInvocationHistoryCollection.Add(new EchoMethodInvocationHistory<T>(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_echoMethodInvocationHistoryCollection.RecordFailure(new EchoMethodInvocationHistory<T>(arguments, default !, ex)))
 				{
-					_echoMethodInvocationHistoryCollection.Add(new EchoMethodInvocationHistory<T>(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -618,6 +623,12 @@ namespace Imposter.Benchmarks
 			internal void Add(ILogMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(ILogMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(LogArgumentsCriteria argumentsCriteria)
@@ -834,9 +845,8 @@ namespace Imposter.Benchmarks
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void ISetupLookupBenchmarkService.Log(string message)", message);
 					_logMethodInvocationHistoryCollection.Add(new LogMethodInvocationHistory(arguments, default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_logMethodInvocationHistoryCollection.RecordFailure(new LogMethodInvocationHistory(arguments, ex)))
 				{
-					_logMethodInvocationHistoryCollection.Add(new LogMethodInvocationHistory(arguments, ex));
 					throw;
 				}
 			}
@@ -991,6 +1001,12 @@ namespace Imposter.Benchmarks
 			internal void Add(ISquareMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(ISquareMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(SquareArgumentsCriteria argumentsCriteria)
@@ -1220,9 +1236,8 @@ namespace Imposter.Benchmarks
 					_squareMethodInvocationHistoryCollection.Add(new SquareMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_squareMethodInvocationHistoryCollection.RecordFailure(new SquareMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_squareMethodInvocationHistoryCollection.Add(new SquareMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -1660,17 +1675,17 @@ namespace Imposter.Benchmarks
 							}
 						}
 
+						if (_defaultBehaviour.IsOn)
+						{
+							return _defaultBehaviour.Get(arguments, baseImplementation);
+						}
+
 						global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int> generator = ResolveNextGenerator(arguments);
 						return generator(arguments, baseImplementation);
 					}
 
 					private global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int> ResolveNextGenerator(IndexerIndexerArguments arguments)
 					{
-						if (_defaultBehaviour.IsOn)
-						{
-							return (arguments, baseImplementation) => _defaultBehaviour.Get(arguments, baseImplementation);
-						}
-
 						var nextReturnValue = NextReturnValue();
 						if (nextReturnValue == null)
 						{

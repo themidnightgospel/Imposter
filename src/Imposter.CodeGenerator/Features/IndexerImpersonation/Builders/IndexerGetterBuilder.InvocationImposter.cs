@@ -255,7 +255,36 @@ internal static partial class IndexerGetterBuilder
             )
             .AddParameters(PassedThroughKeyParameters(indexer, indexer.GetterPassedThroughKeyNames))
             .AddParameter(ParameterSyntax(getter.BaseImplementationParameter))
-            .WithBody(Block(invokeCallbacks, generatorDeclaration, returnGenerated))
+            .WithBody(
+                Block(
+                    invokeCallbacks,
+                    IfStatement(
+                        IdentifierName(getter.Invocation.DefaultBehaviourField.Name)
+                            .Dot(IdentifierName(indexer.DefaultIndexerBehaviour.IsOnPropertyName)),
+                        Block(
+                            ReturnStatement(
+                                IdentifierName(getter.Invocation.DefaultBehaviourField.Name)
+                                    .Dot(IdentifierName("Get"))
+                                    .Call(
+                                        ArgumentListSyntax([
+                                            .. HandlerArguments(
+                                                indexer,
+                                                indexer.GetterPassedThroughKeyNames
+                                            ),
+                                            Argument(
+                                                IdentifierName(
+                                                    getter.BaseImplementationParameter.Name
+                                                )
+                                            ),
+                                        ])
+                                    )
+                            )
+                        )
+                    ),
+                    generatorDeclaration,
+                    returnGenerated
+                )
+            )
             .Build();
     }
 
@@ -266,12 +295,6 @@ internal static partial class IndexerGetterBuilder
         var getter = indexer.GetterImplementation;
         var invocation = getter.Invocation;
         var nextReturnValue = IdentifierName("nextReturnValue");
-
-        var returnDefaultBehaviourWhileOn = IfStatement(
-            IdentifierName(invocation.DefaultBehaviourField.Name)
-                .Dot(IdentifierName(indexer.DefaultIndexerBehaviour.IsOnPropertyName)),
-            Block(ReturnStatement(DefaultBehaviourHandler(indexer)))
-        );
 
         var declareNextReturnValue = LocalVariableDeclarationSyntax(
             Var,
@@ -295,35 +318,8 @@ internal static partial class IndexerGetterBuilder
             .AddParameter(
                 ParameterSyntax(indexer.Arguments.TypeSyntax, getter.ArgumentsVariableName)
             )
-            .WithBody(
-                Block(
-                    returnDefaultBehaviourWhileOn,
-                    declareNextReturnValue,
-                    throwIfMissing,
-                    returnNext
-                )
-            )
+            .WithBody(Block(declareNextReturnValue, throwIfMissing, returnNext))
             .Build();
-    }
-
-    // A handler that gets the value from the default behaviour.
-    private static ParenthesizedLambdaExpressionSyntax DefaultBehaviourHandler(
-        in ImposterIndexerMetadata indexer
-    )
-    {
-        var getter = indexer.GetterImplementation;
-
-        return ReturnHandler(indexer)
-            .WithExpressionBody(
-                IdentifierName(getter.Invocation.DefaultBehaviourField.Name)
-                    .Dot(IdentifierName("Get"))
-                    .Call(
-                        ArgumentListSyntax([
-                            .. HandlerArguments(indexer, indexer.GetterPassedThroughKeyNames),
-                            Argument(IdentifierName(getter.BaseImplementationParameter.Name)),
-                        ])
-                    )
-            );
     }
 
     private static MethodDeclarationSyntax BuildGetterInvocationNextReturnValueMethod(

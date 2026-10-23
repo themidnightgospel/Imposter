@@ -87,6 +87,12 @@ namespace Imposter.Tests.Features.ClassImpersonation
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IReadAsyncMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count()
 			{
 				return _invocationHistory.Count(it => it.Matches());
@@ -218,9 +224,10 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 				internal void ReturnsAsync(int value)
 				{
-					_resultGenerator = async () =>
+					global::System.Threading.Tasks.Task<int> asyncResult = global::System.Threading.Tasks.Task.FromResult<int>(value);
+					_resultGenerator = () =>
 					{
-						return value;
+						return asyncResult;
 					};
 				}
 
@@ -234,10 +241,15 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 				internal void ThrowsAsync(global::System.Exception exception)
 				{
-					_resultGenerator = async () =>
+					global::System.Threading.Tasks.Task<int> asyncResult = AsyncResult();
+					_resultGenerator = () =>
+					{
+						return asyncResult;
+					};
+					async global::System.Threading.Tasks.Task<int> AsyncResult()
 					{
 						throw exception;
-					};
+					}
 				}
 
 				internal static async global::System.Threading.Tasks.Task<int> DefaultResultGenerator()
@@ -329,9 +341,8 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					_readAsyncMethodInvocationHistoryCollection.Add(new ReadAsyncMethodInvocationHistory(result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_readAsyncMethodInvocationHistoryCollection.RecordFailure(new ReadAsyncMethodInvocationHistory(default !, ex)))
 				{
-					_readAsyncMethodInvocationHistoryCollection.Add(new ReadAsyncMethodInvocationHistory(default !, ex));
 					throw;
 				}
 			}
@@ -486,6 +497,12 @@ namespace Imposter.Tests.Features.ClassImpersonation
 			internal void Add(ITouchMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(ITouchMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count()
@@ -695,9 +712,8 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "abstract void ConstructorAbstractMembersTarget.Touch()");
 					_touchMethodInvocationHistoryCollection.Add(new TouchMethodInvocationHistory(default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_touchMethodInvocationHistoryCollection.RecordFailure(new TouchMethodInvocationHistory(ex)))
 				{
-					_touchMethodInvocationHistoryCollection.Add(new TouchMethodInvocationHistory(ex));
 					throw;
 				}
 			}
@@ -866,6 +882,12 @@ namespace Imposter.Tests.Features.ClassImpersonation
 			internal void Add(ITransformMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(ITransformMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<T>(TransformArgumentsCriteria<T> argumentsCriteria)
@@ -1200,9 +1222,8 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					_transformMethodInvocationHistoryCollection.Add(new TransformMethodInvocationHistory<T>(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_transformMethodInvocationHistoryCollection.RecordFailure(new TransformMethodInvocationHistory<T>(arguments, default !, ex)))
 				{
-					_transformMethodInvocationHistoryCollection.Add(new TransformMethodInvocationHistory<T>(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -2305,17 +2326,17 @@ namespace Imposter.Tests.Features.ClassImpersonation
 							}
 						}
 
+						if (_defaultBehaviour.IsOn)
+						{
+							return _defaultBehaviour.Get(arguments, baseImplementation);
+						}
+
 						global::System.Func<IndexerIndexerArguments, global::System.Func<string>?, string> generator = ResolveNextGenerator(arguments);
 						return generator(arguments, baseImplementation);
 					}
 
 					private global::System.Func<IndexerIndexerArguments, global::System.Func<string>?, string> ResolveNextGenerator(IndexerIndexerArguments arguments)
 					{
-						if (_defaultBehaviour.IsOn)
-						{
-							return (arguments, baseImplementation) => _defaultBehaviour.Get(arguments, baseImplementation);
-						}
-
 						var nextReturnValue = NextReturnValue();
 						if (nextReturnValue == null)
 						{

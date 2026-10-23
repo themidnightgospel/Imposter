@@ -73,6 +73,12 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IGetNumberMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count()
 			{
 				return _invocationHistory.Count(it => it.Matches());
@@ -309,9 +315,8 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
 					_getNumberMethodInvocationHistoryCollection.Add(new GetNumberMethodInvocationHistory(result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_getNumberMethodInvocationHistoryCollection.RecordFailure(new GetNumberMethodInvocationHistory(default !, ex)))
 				{
-					_getNumberMethodInvocationHistoryCollection.Add(new GetNumberMethodInvocationHistory(default !, ex));
 					throw;
 				}
 			}

@@ -80,6 +80,12 @@ namespace Imposter.Tests.Docs.Properties
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IReadProtectedMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count()
 			{
 				return _invocationHistory.Count(it => it.Matches());
@@ -316,9 +322,8 @@ namespace Imposter.Tests.Docs.Properties
 					_readProtectedMethodInvocationHistoryCollection.Add(new ReadProtectedMethodInvocationHistory(result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_readProtectedMethodInvocationHistoryCollection.RecordFailure(new ReadProtectedMethodInvocationHistory(default !, ex)))
 				{
-					_readProtectedMethodInvocationHistoryCollection.Add(new ReadProtectedMethodInvocationHistory(default !, ex));
 					throw;
 				}
 			}
@@ -493,6 +498,12 @@ namespace Imposter.Tests.Docs.Properties
 			internal void Add(IWriteProtectedMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IWriteProtectedMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(WriteProtectedArgumentsCriteria argumentsCriteria)
@@ -723,9 +734,8 @@ namespace Imposter.Tests.Docs.Properties
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual void MyService.WriteProtected(int value)", value, baseImplementation);
 					_writeProtectedMethodInvocationHistoryCollection.Add(new WriteProtectedMethodInvocationHistory(arguments, default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_writeProtectedMethodInvocationHistoryCollection.RecordFailure(new WriteProtectedMethodInvocationHistory(arguments, ex)))
 				{
-					_writeProtectedMethodInvocationHistoryCollection.Add(new WriteProtectedMethodInvocationHistory(arguments, ex));
 					throw;
 				}
 			}

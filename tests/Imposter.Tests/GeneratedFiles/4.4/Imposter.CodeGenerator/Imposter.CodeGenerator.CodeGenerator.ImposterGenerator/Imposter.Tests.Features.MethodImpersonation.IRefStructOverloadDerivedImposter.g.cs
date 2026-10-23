@@ -108,6 +108,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IRead_1MethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(Read_1ArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -335,9 +341,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_read_1MethodInvocationHistoryCollection.Add(new Read_1MethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_read_1MethodInvocationHistoryCollection.RecordFailure(new Read_1MethodInvocationHistory(arguments, default !, ex)))
 				{
-					_read_1MethodInvocationHistoryCollection.Add(new Read_1MethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -508,6 +513,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IReadMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IReadMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(ReadArgumentsCriteria argumentsCriteria)
@@ -737,9 +748,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_readMethodInvocationHistoryCollection.Add(new ReadMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_readMethodInvocationHistoryCollection.RecordFailure(new ReadMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_readMethodInvocationHistoryCollection.Add(new ReadMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}

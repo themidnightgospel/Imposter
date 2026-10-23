@@ -85,6 +85,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IAdvanceMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count()
 			{
 				return _invocationHistory.Count(it => it.Matches());
@@ -292,9 +298,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void IRefStructParameterSut.Advance(ref Cursor cursor)", ref cursor);
 					_advanceMethodInvocationHistoryCollection.Add(new AdvanceMethodInvocationHistory(default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_advanceMethodInvocationHistoryCollection.RecordFailure(new AdvanceMethodInvocationHistory(ex)))
 				{
-					_advanceMethodInvocationHistoryCollection.Add(new AdvanceMethodInvocationHistory(ex));
 					throw;
 				}
 			}
@@ -447,6 +452,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IReadMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IReadMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(ReadArgumentsCriteria argumentsCriteria)
@@ -676,9 +687,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_readMethodInvocationHistoryCollection.Add(new ReadMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_readMethodInvocationHistoryCollection.RecordFailure(new ReadMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_readMethodInvocationHistoryCollection.Add(new ReadMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -821,6 +831,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(ITryOpenMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(ITryOpenMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count()
@@ -1050,9 +1066,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_tryOpenMethodInvocationHistoryCollection.Add(new TryOpenMethodInvocationHistory(result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_tryOpenMethodInvocationHistoryCollection.RecordFailure(new TryOpenMethodInvocationHistory(default !, ex)))
 				{
-					_tryOpenMethodInvocationHistoryCollection.Add(new TryOpenMethodInvocationHistory(default !, ex));
 					throw;
 				}
 			}

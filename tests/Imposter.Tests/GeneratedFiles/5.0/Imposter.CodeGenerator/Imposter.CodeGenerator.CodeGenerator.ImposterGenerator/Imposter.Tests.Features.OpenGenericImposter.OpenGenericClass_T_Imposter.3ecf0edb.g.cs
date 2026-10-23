@@ -108,6 +108,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IDescribeMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(DescribeArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -351,9 +357,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					_describeMethodInvocationHistoryCollection.Add(new DescribeMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_describeMethodInvocationHistoryCollection.RecordFailure(new DescribeMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_describeMethodInvocationHistoryCollection.Add(new DescribeMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -532,6 +537,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal void Add(IEchoMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IEchoMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(EchoArgumentsCriteria argumentsCriteria)
@@ -777,9 +788,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					_echoMethodInvocationHistoryCollection.Add(new EchoMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_echoMethodInvocationHistoryCollection.RecordFailure(new EchoMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_echoMethodInvocationHistoryCollection.Add(new EchoMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -2008,17 +2018,17 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 							}
 						}
 
+						if (_defaultBehaviour.IsOn)
+						{
+							return _defaultBehaviour.Get(arguments, baseImplementation);
+						}
+
 						global::System.Func<IndexerIndexerArguments, global::System.Func<T>?, T> generator = ResolveNextGenerator(arguments);
 						return generator(arguments, baseImplementation);
 					}
 
 					private global::System.Func<IndexerIndexerArguments, global::System.Func<T>?, T> ResolveNextGenerator(IndexerIndexerArguments arguments)
 					{
-						if (_defaultBehaviour.IsOn)
-						{
-							return (arguments, baseImplementation) => _defaultBehaviour.Get(arguments, baseImplementation);
-						}
-
 						var nextReturnValue = NextReturnValue();
 						if (nextReturnValue == null)
 						{
@@ -2661,17 +2671,17 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 							}
 						}
 
+						if (_defaultBehaviour.IsOn)
+						{
+							return _defaultBehaviour.Get(arguments, baseImplementation);
+						}
+
 						global::System.Func<Indexer_1IndexerArguments, global::System.Func<T>?, T> generator = ResolveNextGenerator(arguments);
 						return generator(arguments, baseImplementation);
 					}
 
 					private global::System.Func<Indexer_1IndexerArguments, global::System.Func<T>?, T> ResolveNextGenerator(Indexer_1IndexerArguments arguments)
 					{
-						if (_defaultBehaviour.IsOn)
-						{
-							return (arguments, baseImplementation) => _defaultBehaviour.Get(arguments, baseImplementation);
-						}
-
 						var nextReturnValue = NextReturnValue();
 						if (nextReturnValue == null)
 						{

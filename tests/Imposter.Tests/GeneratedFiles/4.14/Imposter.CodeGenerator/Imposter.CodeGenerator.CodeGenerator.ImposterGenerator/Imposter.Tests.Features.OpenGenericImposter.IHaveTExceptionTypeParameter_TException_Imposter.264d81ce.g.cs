@@ -73,6 +73,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IGetMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count()
 			{
 				return _invocationHistory.Count(it => it.Matches());
@@ -293,9 +299,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					_getMethodInvocationHistoryCollection.Add(new GetMethodInvocationHistory(result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_getMethodInvocationHistoryCollection.RecordFailure(new GetMethodInvocationHistory(default !, ex)))
 				{
-					_getMethodInvocationHistoryCollection.Add(new GetMethodInvocationHistory(default !, ex));
 					throw;
 				}
 			}
@@ -910,17 +915,17 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 							}
 						}
 
+						if (_defaultBehaviour.IsOn)
+						{
+							return _defaultBehaviour.Get(arguments, baseImplementation);
+						}
+
 						global::System.Func<IndexerIndexerArguments, global::System.Func<TException>?, TException> generator = ResolveNextGenerator(arguments);
 						return generator(arguments, baseImplementation);
 					}
 
 					private global::System.Func<IndexerIndexerArguments, global::System.Func<TException>?, TException> ResolveNextGenerator(IndexerIndexerArguments arguments)
 					{
-						if (_defaultBehaviour.IsOn)
-						{
-							return (arguments, baseImplementation) => _defaultBehaviour.Get(arguments, baseImplementation);
-						}
-
 						var nextReturnValue = NextReturnValue();
 						if (nextReturnValue == null)
 						{

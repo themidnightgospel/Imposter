@@ -109,6 +109,12 @@ namespace Imposter.Tests.Shared
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IIndexerMethodMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(IndexerMethodArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -336,9 +342,8 @@ namespace Imposter.Tests.Shared
 					_indexerMethodMethodInvocationHistoryCollection.Add(new IndexerMethodMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_indexerMethodMethodInvocationHistoryCollection.RecordFailure(new IndexerMethodMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_indexerMethodMethodInvocationHistoryCollection.Add(new IndexerMethodMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}

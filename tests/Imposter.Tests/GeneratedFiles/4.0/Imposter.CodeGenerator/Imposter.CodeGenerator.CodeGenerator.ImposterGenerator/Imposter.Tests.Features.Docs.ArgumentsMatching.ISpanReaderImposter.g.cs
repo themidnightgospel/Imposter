@@ -73,6 +73,12 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(ITryReadMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count()
 			{
 				return _invocationHistory.Count(it => it.Matches());
@@ -300,9 +306,8 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					_tryReadMethodInvocationHistoryCollection.Add(new TryReadMethodInvocationHistory(result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_tryReadMethodInvocationHistoryCollection.RecordFailure(new TryReadMethodInvocationHistory(default !, ex)))
 				{
-					_tryReadMethodInvocationHistoryCollection.Add(new TryReadMethodInvocationHistory(default !, ex));
 					throw;
 				}
 			}

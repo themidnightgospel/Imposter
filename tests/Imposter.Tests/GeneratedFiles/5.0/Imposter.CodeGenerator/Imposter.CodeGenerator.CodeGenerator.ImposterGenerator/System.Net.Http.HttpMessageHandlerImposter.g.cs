@@ -113,6 +113,12 @@ namespace System.Net.Http
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IDisposeMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(DisposeArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -341,9 +347,8 @@ namespace System.Net.Http
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual void HttpMessageHandler.Dispose(bool disposing)", disposing, baseImplementation);
 					_disposeMethodInvocationHistoryCollection.Add(new DisposeMethodInvocationHistory(arguments, default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_disposeMethodInvocationHistoryCollection.RecordFailure(new DisposeMethodInvocationHistory(arguments, ex)))
 				{
-					_disposeMethodInvocationHistoryCollection.Add(new DisposeMethodInvocationHistory(arguments, ex));
 					throw;
 				}
 			}
@@ -510,6 +515,12 @@ namespace System.Net.Http
 			internal void Add(ISendMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(ISendMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(SendArgumentsCriteria argumentsCriteria)
@@ -755,9 +766,8 @@ namespace System.Net.Http
 					_sendMethodInvocationHistoryCollection.Add(new SendMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_sendMethodInvocationHistoryCollection.RecordFailure(new SendMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_sendMethodInvocationHistoryCollection.Add(new SendMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -942,6 +952,12 @@ namespace System.Net.Http
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(ISendAsyncMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(SendAsyncArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -1076,9 +1092,10 @@ namespace System.Net.Http
 
 				internal void ReturnsAsync(global::System.Net.Http.HttpResponseMessage value)
 				{
-					_resultGenerator = async (global::System.Net.Http.HttpRequestMessage request, global::System.Threading.CancellationToken cancellationToken) =>
+					global::System.Threading.Tasks.Task<global::System.Net.Http.HttpResponseMessage> asyncResult = global::System.Threading.Tasks.Task.FromResult<global::System.Net.Http.HttpResponseMessage>(value);
+					_resultGenerator = (global::System.Net.Http.HttpRequestMessage request, global::System.Threading.CancellationToken cancellationToken) =>
 					{
-						return value;
+						return asyncResult;
 					};
 				}
 
@@ -1092,10 +1109,15 @@ namespace System.Net.Http
 
 				internal void ThrowsAsync(global::System.Exception exception)
 				{
-					_resultGenerator = async (global::System.Net.Http.HttpRequestMessage request, global::System.Threading.CancellationToken cancellationToken) =>
+					global::System.Threading.Tasks.Task<global::System.Net.Http.HttpResponseMessage> asyncResult = AsyncResult();
+					_resultGenerator = (global::System.Net.Http.HttpRequestMessage request, global::System.Threading.CancellationToken cancellationToken) =>
+					{
+						return asyncResult;
+					};
+					async global::System.Threading.Tasks.Task<global::System.Net.Http.HttpResponseMessage> AsyncResult()
 					{
 						throw exception;
-					};
+					}
 				}
 
 				internal static async global::System.Threading.Tasks.Task<global::System.Net.Http.HttpResponseMessage> DefaultResultGenerator(global::System.Net.Http.HttpRequestMessage request, global::System.Threading.CancellationToken cancellationToken)
@@ -1191,9 +1213,8 @@ namespace System.Net.Http
 					_sendAsyncMethodInvocationHistoryCollection.Add(new SendAsyncMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_sendAsyncMethodInvocationHistoryCollection.RecordFailure(new SendAsyncMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_sendAsyncMethodInvocationHistoryCollection.Add(new SendAsyncMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}

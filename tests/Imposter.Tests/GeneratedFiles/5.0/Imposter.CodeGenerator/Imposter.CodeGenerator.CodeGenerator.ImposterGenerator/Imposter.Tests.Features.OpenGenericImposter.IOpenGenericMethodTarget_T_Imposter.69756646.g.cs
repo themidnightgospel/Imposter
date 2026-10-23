@@ -138,6 +138,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IAddMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(AddArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -352,9 +358,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void IOpenGenericMethodTarget<T>.Add(T item, int index)", item, index);
 					_addMethodInvocationHistoryCollection.Add(new AddMethodInvocationHistory(arguments, default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_addMethodInvocationHistoryCollection.RecordFailure(new AddMethodInvocationHistory(arguments, ex)))
 				{
-					_addMethodInvocationHistoryCollection.Add(new AddMethodInvocationHistory(arguments, ex));
 					throw;
 				}
 			}
@@ -509,6 +514,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal void Add(ICountForMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(ICountForMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(CountForArgumentsCriteria argumentsCriteria)
@@ -738,9 +749,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					_countForMethodInvocationHistoryCollection.Add(new CountForMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_countForMethodInvocationHistoryCollection.RecordFailure(new CountForMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_countForMethodInvocationHistoryCollection.Add(new CountForMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -883,6 +893,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal void Add(IGetNextMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IGetNextMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count()
@@ -1105,9 +1121,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					_getNextMethodInvocationHistoryCollection.Add(new GetNextMethodInvocationHistory(result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_getNextMethodInvocationHistoryCollection.RecordFailure(new GetNextMethodInvocationHistory(default !, ex)))
 				{
-					_getNextMethodInvocationHistoryCollection.Add(new GetNextMethodInvocationHistory(default !, ex));
 					throw;
 				}
 			}
@@ -1282,6 +1297,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal void Add(IPublishMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IPublishMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(PublishArgumentsCriteria argumentsCriteria)
@@ -1498,9 +1519,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void IOpenGenericMethodTarget<T>.Publish(T payload, string category, int priority)", payload, category, priority);
 					_publishMethodInvocationHistoryCollection.Add(new PublishMethodInvocationHistory(arguments, default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_publishMethodInvocationHistoryCollection.RecordFailure(new PublishMethodInvocationHistory(arguments, ex)))
 				{
-					_publishMethodInvocationHistoryCollection.Add(new PublishMethodInvocationHistory(arguments, ex));
 					throw;
 				}
 			}
@@ -1627,6 +1647,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal void Add(IResilientFetchMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IResilientFetchMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count()
@@ -1849,9 +1875,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					_resilientFetchMethodInvocationHistoryCollection.Add(new ResilientFetchMethodInvocationHistory(result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_resilientFetchMethodInvocationHistoryCollection.RecordFailure(new ResilientFetchMethodInvocationHistory(default !, ex)))
 				{
-					_resilientFetchMethodInvocationHistoryCollection.Add(new ResilientFetchMethodInvocationHistory(default !, ex));
 					throw;
 				}
 			}
@@ -2020,6 +2045,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal void Add(ITryAddMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(ITryAddMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(TryAddArgumentsCriteria argumentsCriteria)
@@ -2249,9 +2280,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					_tryAddMethodInvocationHistoryCollection.Add(new TryAddMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_tryAddMethodInvocationHistoryCollection.RecordFailure(new TryAddMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_tryAddMethodInvocationHistoryCollection.Add(new TryAddMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}

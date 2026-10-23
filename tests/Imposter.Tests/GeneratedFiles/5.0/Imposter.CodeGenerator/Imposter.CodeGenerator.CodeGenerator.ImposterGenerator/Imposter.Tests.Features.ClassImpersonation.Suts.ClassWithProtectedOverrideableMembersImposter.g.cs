@@ -143,6 +143,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IInvokeProtectedMethodMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(InvokeProtectedMethodArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -386,9 +392,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					_invokeProtectedMethodMethodInvocationHistoryCollection.Add(new InvokeProtectedMethodMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_invokeProtectedMethodMethodInvocationHistoryCollection.RecordFailure(new InvokeProtectedMethodMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_invokeProtectedMethodMethodInvocationHistoryCollection.Add(new InvokeProtectedMethodMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -567,6 +572,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			internal void Add(IProtectedVirtualMethodMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IProtectedVirtualMethodMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(ProtectedVirtualMethodArgumentsCriteria argumentsCriteria)
@@ -812,9 +823,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					_protectedVirtualMethodMethodInvocationHistoryCollection.Add(new ProtectedVirtualMethodMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_protectedVirtualMethodMethodInvocationHistoryCollection.RecordFailure(new ProtectedVirtualMethodMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_protectedVirtualMethodMethodInvocationHistoryCollection.Add(new ProtectedVirtualMethodMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -965,6 +975,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			internal void Add(IReadProtectedPropertyMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IReadProtectedPropertyMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count()
@@ -1203,9 +1219,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					_readProtectedPropertyMethodInvocationHistoryCollection.Add(new ReadProtectedPropertyMethodInvocationHistory(result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_readProtectedPropertyMethodInvocationHistoryCollection.RecordFailure(new ReadProtectedPropertyMethodInvocationHistory(default !, ex)))
 				{
-					_readProtectedPropertyMethodInvocationHistoryCollection.Add(new ReadProtectedPropertyMethodInvocationHistory(default !, ex));
 					throw;
 				}
 			}
@@ -1382,6 +1397,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			internal void Add(IReadProtectedValueMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IReadProtectedValueMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(ReadProtectedValueArgumentsCriteria argumentsCriteria)
@@ -1627,9 +1648,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					_readProtectedValueMethodInvocationHistoryCollection.Add(new ReadProtectedValueMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_readProtectedValueMethodInvocationHistoryCollection.RecordFailure(new ReadProtectedValueMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_readProtectedValueMethodInvocationHistoryCollection.Add(new ReadProtectedValueMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -1806,6 +1826,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			internal void Add(ISubscribeToProtectedEventMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(ISubscribeToProtectedEventMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(SubscribeToProtectedEventArgumentsCriteria argumentsCriteria)
@@ -2036,9 +2062,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual void ClassWithProtectedOverrideableMembers.SubscribeToProtectedEvent(EventHandler handler)", handler, baseImplementation);
 					_subscribeToProtectedEventMethodInvocationHistoryCollection.Add(new SubscribeToProtectedEventMethodInvocationHistory(arguments, default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_subscribeToProtectedEventMethodInvocationHistoryCollection.RecordFailure(new SubscribeToProtectedEventMethodInvocationHistory(arguments, ex)))
 				{
-					_subscribeToProtectedEventMethodInvocationHistoryCollection.Add(new SubscribeToProtectedEventMethodInvocationHistory(arguments, ex));
 					throw;
 				}
 			}
@@ -2199,6 +2224,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			internal void Add(IWriteProtectedPropertyMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IWriteProtectedPropertyMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(WriteProtectedPropertyArgumentsCriteria argumentsCriteria)
@@ -2429,9 +2460,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual void ClassWithProtectedOverrideableMembers.WriteProtectedProperty(string value)", value, baseImplementation);
 					_writeProtectedPropertyMethodInvocationHistoryCollection.Add(new WriteProtectedPropertyMethodInvocationHistory(arguments, default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_writeProtectedPropertyMethodInvocationHistoryCollection.RecordFailure(new WriteProtectedPropertyMethodInvocationHistory(arguments, ex)))
 				{
-					_writeProtectedPropertyMethodInvocationHistoryCollection.Add(new WriteProtectedPropertyMethodInvocationHistory(arguments, ex));
 					throw;
 				}
 			}
@@ -2596,6 +2626,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			internal void Add(IWriteProtectedValueMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IWriteProtectedValueMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(WriteProtectedValueArgumentsCriteria argumentsCriteria)
@@ -2826,9 +2862,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual void ClassWithProtectedOverrideableMembers.WriteProtectedValue(int index, int value)", index, value, baseImplementation);
 					_writeProtectedValueMethodInvocationHistoryCollection.Add(new WriteProtectedValueMethodInvocationHistory(arguments, default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_writeProtectedValueMethodInvocationHistoryCollection.RecordFailure(new WriteProtectedValueMethodInvocationHistory(arguments, ex)))
 				{
-					_writeProtectedValueMethodInvocationHistoryCollection.Add(new WriteProtectedValueMethodInvocationHistory(arguments, ex));
 					throw;
 				}
 			}
@@ -4041,17 +4076,17 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 							}
 						}
 
+						if (_defaultBehaviour.IsOn)
+						{
+							return _defaultBehaviour.Get(arguments, baseImplementation);
+						}
+
 						global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int> generator = ResolveNextGenerator(arguments);
 						return generator(arguments, baseImplementation);
 					}
 
 					private global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int> ResolveNextGenerator(IndexerIndexerArguments arguments)
 					{
-						if (_defaultBehaviour.IsOn)
-						{
-							return (arguments, baseImplementation) => _defaultBehaviour.Get(arguments, baseImplementation);
-						}
-
 						var nextReturnValue = NextReturnValue();
 						if (nextReturnValue == null)
 						{

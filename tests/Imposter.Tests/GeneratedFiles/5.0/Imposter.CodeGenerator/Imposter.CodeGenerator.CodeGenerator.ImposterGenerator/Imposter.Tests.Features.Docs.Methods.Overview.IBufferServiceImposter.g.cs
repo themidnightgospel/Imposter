@@ -101,6 +101,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IRentMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(RentArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -328,9 +334,8 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 					_rentMethodInvocationHistoryCollection.Add(new RentMethodInvocationHistory(arguments, result.ToArray(), default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_rentMethodInvocationHistoryCollection.RecordFailure(new RentMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_rentMethodInvocationHistoryCollection.Add(new RentMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}

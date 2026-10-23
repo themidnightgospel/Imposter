@@ -73,6 +73,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter.NestedTargets
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IGetMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count()
 			{
 				return _invocationHistory.Count(it => it.Matches());
@@ -293,9 +299,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter.NestedTargets
 					_getMethodInvocationHistoryCollection.Add(new GetMethodInvocationHistory(result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_getMethodInvocationHistoryCollection.RecordFailure(new GetMethodInvocationHistory(default !, ex)))
 				{
-					_getMethodInvocationHistoryCollection.Add(new GetMethodInvocationHistory(default !, ex));
 					throw;
 				}
 			}

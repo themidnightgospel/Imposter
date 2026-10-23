@@ -20,7 +20,7 @@ public class DynamicMemberBindingTests
     public async Task GivenInterfaceMembersOfDynamicType_WhenImposterIsCompiled_ShouldNotUseTheRuntimeBinder()
     {
         var binderReferences = await RuntimeBinderReferences(
-            "public interface IService { dynamic Echo(dynamic value); void Use<T>(T first, dynamic second); dynamic? Value { get; set; } dynamic this[dynamic key] { get; set; } event System.Action<dynamic> Raised; }",
+            "public interface IService { dynamic Echo(dynamic value); void Use<T>(T first, dynamic second); dynamic? Value { get; set; } dynamic this[dynamic key] { get; set; } event System.Action<dynamic> Raised; System.Threading.Tasks.Task<dynamic> GetAsync(); System.Threading.Tasks.ValueTask<dynamic> PeekAsync(); }",
             "Sample.IService"
         );
 

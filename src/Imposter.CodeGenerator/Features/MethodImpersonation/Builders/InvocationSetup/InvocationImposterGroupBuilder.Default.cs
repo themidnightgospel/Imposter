@@ -73,4 +73,27 @@ internal static partial class InvocationImposterGroupBuilder
             return SyntaxFactoryHelper.ReturnDefaultNonNullable;
         }
     }
+
+    // Assigns the out parameters, which the local function can't (CS1628), and returns the result of a parameterless
+    // async local function that runs asyncBody.
+    private static BlockSyntax AsyncResultFunctionCall(
+        in ImposterTargetMethodMetadata method,
+        BlockSyntax asyncBody
+    )
+    {
+        var functionName = method.MethodInvocationImposter.AsyncResultFunctionName;
+
+        return new BlockBuilder()
+            .AddStatement(InitializeOutParametersMethodBuilder.Invoke(method))
+            .AddStatement(ReturnStatement(IdentifierName(functionName).Call()))
+            .AddStatement(
+                LocalFunctionStatement(
+                        method.NullableAwareReturnTypeSyntax,
+                        Identifier(functionName)
+                    )
+                    .AddModifiers(Token(SyntaxKind.AsyncKeyword))
+                    .WithBody(asyncBody)
+            )
+            .Build();
+    }
 }

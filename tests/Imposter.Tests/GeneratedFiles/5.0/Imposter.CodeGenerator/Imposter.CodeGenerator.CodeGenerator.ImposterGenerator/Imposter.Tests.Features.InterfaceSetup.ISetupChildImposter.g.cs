@@ -156,6 +156,12 @@ namespace Imposter.Tests.Features.InterfaceSetup
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IEchoMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count<T>(EchoArgumentsCriteria<T> argumentsCriteria)
 				where T : class
 			{
@@ -484,9 +490,8 @@ namespace Imposter.Tests.Features.InterfaceSetup
 					_echoMethodInvocationHistoryCollection.Add(new EchoMethodInvocationHistory<T>(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_echoMethodInvocationHistoryCollection.RecordFailure(new EchoMethodInvocationHistory<T>(arguments, default !, ex)))
 				{
-					_echoMethodInvocationHistoryCollection.Add(new EchoMethodInvocationHistory<T>(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -658,6 +663,12 @@ namespace Imposter.Tests.Features.InterfaceSetup
 			internal void Add(IExecuteMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IExecuteMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(ExecuteArgumentsCriteria argumentsCriteria)
@@ -887,9 +898,8 @@ namespace Imposter.Tests.Features.InterfaceSetup
 					_executeMethodInvocationHistoryCollection.Add(new ExecuteMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_executeMethodInvocationHistoryCollection.RecordFailure(new ExecuteMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_executeMethodInvocationHistoryCollection.Add(new ExecuteMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -1060,6 +1070,12 @@ namespace Imposter.Tests.Features.InterfaceSetup
 			internal void Add(IExecute_1MethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IExecute_1MethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(Execute_1ArgumentsCriteria argumentsCriteria)
@@ -1289,9 +1305,8 @@ namespace Imposter.Tests.Features.InterfaceSetup
 					_execute_1MethodInvocationHistoryCollection.Add(new Execute_1MethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_execute_1MethodInvocationHistoryCollection.RecordFailure(new Execute_1MethodInvocationHistory(arguments, default !, ex)))
 				{
-					_execute_1MethodInvocationHistoryCollection.Add(new Execute_1MethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -1432,6 +1447,12 @@ namespace Imposter.Tests.Features.InterfaceSetup
 			internal void Add(INoOpMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(INoOpMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count()
@@ -1641,9 +1662,8 @@ namespace Imposter.Tests.Features.InterfaceSetup
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void ISetupChild.NoOp()");
 					_noOpMethodInvocationHistoryCollection.Add(new NoOpMethodInvocationHistory(default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_noOpMethodInvocationHistoryCollection.RecordFailure(new NoOpMethodInvocationHistory(ex)))
 				{
-					_noOpMethodInvocationHistoryCollection.Add(new NoOpMethodInvocationHistory(ex));
 					throw;
 				}
 			}
@@ -1794,6 +1814,12 @@ namespace Imposter.Tests.Features.InterfaceSetup
 			internal void Add(INotifyMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(INotifyMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(NotifyArgumentsCriteria argumentsCriteria)
@@ -2010,9 +2036,8 @@ namespace Imposter.Tests.Features.InterfaceSetup
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void ISetupChild.Notify(string value)", value);
 					_notifyMethodInvocationHistoryCollection.Add(new NotifyMethodInvocationHistory(arguments, default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_notifyMethodInvocationHistoryCollection.RecordFailure(new NotifyMethodInvocationHistory(arguments, ex)))
 				{
-					_notifyMethodInvocationHistoryCollection.Add(new NotifyMethodInvocationHistory(arguments, ex));
 					throw;
 				}
 			}
@@ -2165,6 +2190,12 @@ namespace Imposter.Tests.Features.InterfaceSetup
 			internal void Add(INotify_1MethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(INotify_1MethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(Notify_1ArgumentsCriteria argumentsCriteria)
@@ -2381,9 +2412,8 @@ namespace Imposter.Tests.Features.InterfaceSetup
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void ISetupParent.Notify(int value)", value);
 					_notify_1MethodInvocationHistoryCollection.Add(new Notify_1MethodInvocationHistory(arguments, default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_notify_1MethodInvocationHistoryCollection.RecordFailure(new Notify_1MethodInvocationHistory(arguments, ex)))
 				{
-					_notify_1MethodInvocationHistoryCollection.Add(new Notify_1MethodInvocationHistory(arguments, ex));
 					throw;
 				}
 			}
@@ -4435,17 +4465,17 @@ namespace Imposter.Tests.Features.InterfaceSetup
 							}
 						}
 
+						if (_defaultBehaviour.IsOn)
+						{
+							return _defaultBehaviour.Get(arguments, baseImplementation);
+						}
+
 						global::System.Func<IndexerIndexerArguments, global::System.Func<string>?, string> generator = ResolveNextGenerator(arguments);
 						return generator(arguments, baseImplementation);
 					}
 
 					private global::System.Func<IndexerIndexerArguments, global::System.Func<string>?, string> ResolveNextGenerator(IndexerIndexerArguments arguments)
 					{
-						if (_defaultBehaviour.IsOn)
-						{
-							return (arguments, baseImplementation) => _defaultBehaviour.Get(arguments, baseImplementation);
-						}
-
 						var nextReturnValue = NextReturnValue();
 						if (nextReturnValue == null)
 						{
@@ -5027,17 +5057,17 @@ namespace Imposter.Tests.Features.InterfaceSetup
 							}
 						}
 
+						if (_defaultBehaviour.IsOn)
+						{
+							return _defaultBehaviour.Get(arguments, baseImplementation);
+						}
+
 						global::System.Func<Indexer_1IndexerArguments, global::System.Func<string>?, string> generator = ResolveNextGenerator(arguments);
 						return generator(arguments, baseImplementation);
 					}
 
 					private global::System.Func<Indexer_1IndexerArguments, global::System.Func<string>?, string> ResolveNextGenerator(Indexer_1IndexerArguments arguments)
 					{
-						if (_defaultBehaviour.IsOn)
-						{
-							return (arguments, baseImplementation) => _defaultBehaviour.Get(arguments, baseImplementation);
-						}
-
 						var nextReturnValue = NextReturnValue();
 						if (nextReturnValue == null)
 						{

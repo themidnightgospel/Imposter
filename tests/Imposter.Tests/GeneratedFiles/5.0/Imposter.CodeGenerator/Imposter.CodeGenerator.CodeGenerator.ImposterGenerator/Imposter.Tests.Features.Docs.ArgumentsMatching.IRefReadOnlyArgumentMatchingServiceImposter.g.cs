@@ -101,6 +101,12 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IDoubleMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(DoubleArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -328,9 +334,8 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					_doubleMethodInvocationHistoryCollection.Add(new DoubleMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_doubleMethodInvocationHistoryCollection.RecordFailure(new DoubleMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_doubleMethodInvocationHistoryCollection.Add(new DoubleMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}

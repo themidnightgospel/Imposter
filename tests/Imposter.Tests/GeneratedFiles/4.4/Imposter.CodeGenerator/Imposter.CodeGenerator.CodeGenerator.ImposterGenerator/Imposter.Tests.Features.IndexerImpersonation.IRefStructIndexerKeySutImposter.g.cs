@@ -389,17 +389,17 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 							}
 						}
 
+						if (_defaultBehaviour.IsOn)
+						{
+							return _defaultBehaviour.Get(arguments, locator, baseImplementation);
+						}
+
 						IndexerIndexerReturnHandler generator = ResolveNextGenerator(arguments);
 						return generator(arguments, locator, baseImplementation);
 					}
 
 					private IndexerIndexerReturnHandler ResolveNextGenerator(IndexerIndexerArguments arguments)
 					{
-						if (_defaultBehaviour.IsOn)
-						{
-							return (arguments, locator, baseImplementation) => _defaultBehaviour.Get(arguments, locator, baseImplementation);
-						}
-
 						var nextReturnValue = NextReturnValue();
 						if (nextReturnValue == null)
 						{
@@ -980,17 +980,17 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 							}
 						}
 
+						if (_defaultBehaviour.IsOn)
+						{
+							return _defaultBehaviour.Get(arguments, locator, baseImplementation);
+						}
+
 						Indexer_1IndexerReturnHandler generator = ResolveNextGenerator(arguments);
 						return generator(arguments, locator, baseImplementation);
 					}
 
 					private Indexer_1IndexerReturnHandler ResolveNextGenerator(Indexer_1IndexerArguments arguments)
 					{
-						if (_defaultBehaviour.IsOn)
-						{
-							return (arguments, locator, baseImplementation) => _defaultBehaviour.Get(arguments, locator, baseImplementation);
-						}
-
 						var nextReturnValue = NextReturnValue();
 						if (nextReturnValue == null)
 						{

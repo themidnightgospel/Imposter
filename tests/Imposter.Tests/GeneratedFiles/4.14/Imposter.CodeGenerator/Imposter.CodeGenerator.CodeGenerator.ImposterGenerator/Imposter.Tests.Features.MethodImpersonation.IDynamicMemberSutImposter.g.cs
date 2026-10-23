@@ -108,6 +108,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IEchoMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(EchoArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -335,9 +341,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_echoMethodInvocationHistoryCollection.Add(new EchoMethodInvocationHistory(arguments, (object)result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_echoMethodInvocationHistoryCollection.RecordFailure(new EchoMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_echoMethodInvocationHistoryCollection.Add(new EchoMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -520,6 +525,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IUseMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IUseMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<T>(UseArgumentsCriteria<T> argumentsCriteria)
@@ -829,9 +840,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void IDynamicMemberSut.Use<T>(T first, dynamic second)", first, (object)second);
 					_useMethodInvocationHistoryCollection.Add(new UseMethodInvocationHistory<T>(arguments, default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_useMethodInvocationHistoryCollection.RecordFailure(new UseMethodInvocationHistory<T>(arguments, ex)))
 				{
-					_useMethodInvocationHistoryCollection.Add(new UseMethodInvocationHistory<T>(arguments, ex));
 					throw;
 				}
 			}

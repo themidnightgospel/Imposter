@@ -150,9 +150,9 @@ internal static class EventImposterRaiseBuilder
             .AddExpression(RecordRaise(@event))
             .AddStatement(
                 LocalVariableDeclarationSyntax(
-                    taskListType,
+                    taskListType.ToNullableType(),
                     pendingTasks.Identifier.Text,
-                    taskListType.New()
+                    Null
                 )
             )
             .AddStatement(
@@ -162,7 +162,12 @@ internal static class EventImposterRaiseBuilder
                 )
             )
             .AddStatement(AwaitPendingTasksStatement(pendingTasks))
-            .AddStatement(pendingTasks.Dot(IdentifierName("Clear")).Call().ToStatementSyntax())
+            .AddStatement(
+                IfStatement(
+                    pendingTasks.IsNotNull(),
+                    Block(pendingTasks.Dot(IdentifierName("Clear")).Call().ToStatementSyntax())
+                )
+            )
             .AddStatement(
                 ForEachActiveHandler(
                     @event,
@@ -254,7 +259,17 @@ internal static class EventImposterRaiseBuilder
             IfStatement(
                 task.IsNotDefault(),
                 Block(
-                    IdentifierName(localNames.PendingTasks)
+                    ParenthesizedExpression(
+                            AssignmentExpression(
+                                SyntaxKind.CoalesceAssignmentExpression,
+                                IdentifierName(localNames.PendingTasks),
+                                WellKnownTypes
+                                    .System.Collections.Generic.List(
+                                        WellKnownTypes.System.Threading.Tasks.Task
+                                    )
+                                    .New()
+                            )
+                        )
                         .Dot(IdentifierName("Add"))
                         .Call(Argument(ToTaskExpression(task, usesValueTask)))
                         .ToStatementSyntax()
@@ -267,11 +282,15 @@ internal static class EventImposterRaiseBuilder
         IdentifierNameSyntax pendingTasks
     ) =>
         IfStatement(
-            BinaryExpression(
-                SyntaxKind.GreaterThanExpression,
-                pendingTasks.Dot(IdentifierName("Count")),
-                LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))
-            ),
+            pendingTasks
+                .IsNotNull()
+                .And(
+                    BinaryExpression(
+                        SyntaxKind.GreaterThanExpression,
+                        pendingTasks.Dot(IdentifierName("Count")),
+                        LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))
+                    )
+                ),
             Block(
                 WellKnownTypes
                     .System.Threading.Tasks.Task.Dot(IdentifierName("WhenAll"))

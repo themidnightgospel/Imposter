@@ -145,6 +145,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(ICloneStructMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count<TArg>(CloneStructArgumentsCriteria<TArg> argumentsCriteria)
 				where TArg : struct
 			{
@@ -473,9 +479,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					_cloneStructMethodInvocationHistoryCollection.Add(new CloneStructMethodInvocationHistory<TArg>(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_cloneStructMethodInvocationHistoryCollection.RecordFailure(new CloneStructMethodInvocationHistory<TArg>(arguments, default !, ex)))
 				{
-					_cloneStructMethodInvocationHistoryCollection.Add(new CloneStructMethodInvocationHistory<TArg>(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -668,6 +673,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal void Add(ICompareValuesMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(ICompareValuesMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<TArg>(CompareValuesArgumentsCriteria<TArg> argumentsCriteria)
@@ -984,9 +995,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void IGenericConstraintsTarget.CompareValues<TArg>(TArg left, TArg right)", left, right);
 					_compareValuesMethodInvocationHistoryCollection.Add(new CompareValuesMethodInvocationHistory<TArg>(arguments, default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_compareValuesMethodInvocationHistoryCollection.RecordFailure(new CompareValuesMethodInvocationHistory<TArg>(arguments, ex)))
 				{
-					_compareValuesMethodInvocationHistoryCollection.Add(new CompareValuesMethodInvocationHistory<TArg>(arguments, ex));
 					throw;
 				}
 			}
@@ -1119,6 +1129,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal void Add(ICreateInstanceMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(ICreateInstanceMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<TArg>()
@@ -1442,9 +1458,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					_createInstanceMethodInvocationHistoryCollection.Add(new CreateInstanceMethodInvocationHistory<TArg>(result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_createInstanceMethodInvocationHistoryCollection.RecordFailure(new CreateInstanceMethodInvocationHistory<TArg>(default !, ex)))
 				{
-					_createInstanceMethodInvocationHistoryCollection.Add(new CreateInstanceMethodInvocationHistory<TArg>(default !, ex));
 					throw;
 				}
 			}
@@ -1631,6 +1646,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal void Add(IHandleReferenceMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IHandleReferenceMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<TArg>(HandleReferenceArgumentsCriteria<TArg> argumentsCriteria)
@@ -1947,9 +1968,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void IGenericConstraintsTarget.HandleReference<TArg>(TArg value)", value);
 					_handleReferenceMethodInvocationHistoryCollection.Add(new HandleReferenceMethodInvocationHistory<TArg>(arguments, default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_handleReferenceMethodInvocationHistoryCollection.RecordFailure(new HandleReferenceMethodInvocationHistory<TArg>(arguments, ex)))
 				{
-					_handleReferenceMethodInvocationHistoryCollection.Add(new HandleReferenceMethodInvocationHistory<TArg>(arguments, ex));
 					throw;
 				}
 			}

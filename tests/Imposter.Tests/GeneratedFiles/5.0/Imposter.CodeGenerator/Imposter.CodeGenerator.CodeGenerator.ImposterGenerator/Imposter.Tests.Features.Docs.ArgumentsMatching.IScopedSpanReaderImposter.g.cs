@@ -101,6 +101,12 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(ITrimMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(TrimArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -328,9 +334,8 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					_trimMethodInvocationHistoryCollection.Add(new TrimMethodInvocationHistory(arguments, result.ToArray(), default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_trimMethodInvocationHistoryCollection.RecordFailure(new TrimMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_trimMethodInvocationHistoryCollection.Add(new TrimMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}

@@ -126,6 +126,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(ICopyMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(CopyArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -353,9 +359,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_copyMethodInvocationHistoryCollection.Add(new CopyMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_copyMethodInvocationHistoryCollection.RecordFailure(new CopyMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_copyMethodInvocationHistoryCollection.Add(new CopyMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -526,6 +531,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IFirstMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IFirstMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(FirstArgumentsCriteria argumentsCriteria)
@@ -755,9 +766,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_firstMethodInvocationHistoryCollection.Add(new FirstMethodInvocationHistory(arguments, result.ToArray(), default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_firstMethodInvocationHistoryCollection.RecordFailure(new FirstMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_firstMethodInvocationHistoryCollection.Add(new FirstMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -928,6 +938,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(INameMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(INameMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(NameArgumentsCriteria argumentsCriteria)
@@ -1157,9 +1173,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_nameMethodInvocationHistoryCollection.Add(new NameMethodInvocationHistory(arguments, result.ToArray(), default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_nameMethodInvocationHistoryCollection.RecordFailure(new NameMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_nameMethodInvocationHistoryCollection.Add(new NameMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -1330,6 +1345,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(ISliceMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(ISliceMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(SliceArgumentsCriteria argumentsCriteria)
@@ -1559,9 +1580,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_sliceMethodInvocationHistoryCollection.Add(new SliceMethodInvocationHistory(arguments, result.ToArray(), default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_sliceMethodInvocationHistoryCollection.RecordFailure(new SliceMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_sliceMethodInvocationHistoryCollection.Add(new SliceMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}

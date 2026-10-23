@@ -227,6 +227,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IAsyncTaskIntNoParamsMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count()
 			{
 				return _invocationHistory.Count(it => it.Matches());
@@ -358,9 +364,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				internal void ReturnsAsync(int value)
 				{
-					_resultGenerator = async () =>
+					global::System.Threading.Tasks.Task<int> asyncResult = global::System.Threading.Tasks.Task.FromResult<int>(value);
+					_resultGenerator = () =>
 					{
-						return value;
+						return asyncResult;
 					};
 				}
 
@@ -374,10 +381,15 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				internal void ThrowsAsync(global::System.Exception exception)
 				{
-					_resultGenerator = async () =>
+					global::System.Threading.Tasks.Task<int> asyncResult = AsyncResult();
+					_resultGenerator = () =>
+					{
+						return asyncResult;
+					};
+					async global::System.Threading.Tasks.Task<int> AsyncResult()
 					{
 						throw exception;
-					};
+					}
 				}
 
 				internal static async global::System.Threading.Tasks.Task<int> DefaultResultGenerator()
@@ -469,9 +481,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_asyncTaskIntNoParamsMethodInvocationHistoryCollection.Add(new AsyncTaskIntNoParamsMethodInvocationHistory(result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_asyncTaskIntNoParamsMethodInvocationHistoryCollection.RecordFailure(new AsyncTaskIntNoParamsMethodInvocationHistory(default !, ex)))
 				{
-					_asyncTaskIntNoParamsMethodInvocationHistoryCollection.Add(new AsyncTaskIntNoParamsMethodInvocationHistory(default !, ex));
 					throw;
 				}
 			}
@@ -630,6 +641,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IAsyncValueTaskIntNoParamsMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count()
 			{
 				return _invocationHistory.Count(it => it.Matches());
@@ -761,9 +778,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				internal void ReturnsAsync(int value)
 				{
-					_resultGenerator = async () =>
+					global::System.Threading.Tasks.ValueTask<int> asyncResult = new global::System.Threading.Tasks.ValueTask<int>(value);
+					_resultGenerator = () =>
 					{
-						return value;
+						return asyncResult;
 					};
 				}
 
@@ -777,10 +795,15 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				internal void ThrowsAsync(global::System.Exception exception)
 				{
-					_resultGenerator = async () =>
+					global::System.Threading.Tasks.ValueTask<int> asyncResult = AsyncResult();
+					_resultGenerator = () =>
+					{
+						return asyncResult;
+					};
+					async global::System.Threading.Tasks.ValueTask<int> AsyncResult()
 					{
 						throw exception;
-					};
+					}
 				}
 
 				internal static async global::System.Threading.Tasks.ValueTask<int> DefaultResultGenerator()
@@ -872,9 +895,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_asyncValueTaskIntNoParamsMethodInvocationHistoryCollection.Add(new AsyncValueTaskIntNoParamsMethodInvocationHistory(result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_asyncValueTaskIntNoParamsMethodInvocationHistoryCollection.RecordFailure(new AsyncValueTaskIntNoParamsMethodInvocationHistory(default !, ex)))
 				{
-					_asyncValueTaskIntNoParamsMethodInvocationHistoryCollection.Add(new AsyncValueTaskIntNoParamsMethodInvocationHistory(default !, ex));
 					throw;
 				}
 			}
@@ -1079,6 +1101,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IGenericAllRefKindMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IGenericAllRefKindMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<TOut, TRef, TIn, TParams, TResult>(GenericAllRefKindArgumentsCriteria<TOut, TRef, TIn, TParams, TResult> argumentsCriteria)
@@ -1413,9 +1441,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_genericAllRefKindMethodInvocationHistoryCollection.Add(new GenericAllRefKindMethodInvocationHistory<TOut, TRef, TIn, TParams, TResult>(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_genericAllRefKindMethodInvocationHistoryCollection.RecordFailure(new GenericAllRefKindMethodInvocationHistory<TOut, TRef, TIn, TParams, TResult>(arguments, default !, ex)))
 				{
-					_genericAllRefKindMethodInvocationHistoryCollection.Add(new GenericAllRefKindMethodInvocationHistory<TOut, TRef, TIn, TParams, TResult>(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -1559,6 +1586,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IGenericInnerOutParamMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IGenericInnerOutParamMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<TValue, TResult>()
@@ -1884,9 +1917,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_genericInnerOutParamMethodInvocationHistoryCollection.Add(new GenericInnerOutParamMethodInvocationHistory<TValue, TResult>(result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_genericInnerOutParamMethodInvocationHistoryCollection.RecordFailure(new GenericInnerOutParamMethodInvocationHistory<TValue, TResult>(default !, ex)))
 				{
-					_genericInnerOutParamMethodInvocationHistoryCollection.Add(new GenericInnerOutParamMethodInvocationHistory<TValue, TResult>(default !, ex));
 					throw;
 				}
 			}
@@ -2066,6 +2098,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IGenericInnerParamsParamMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IGenericInnerParamsParamMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<TValue, TResult>(GenericInnerParamsParamArgumentsCriteria<TValue, TResult> argumentsCriteria)
@@ -2389,9 +2427,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_genericInnerParamsParamMethodInvocationHistoryCollection.Add(new GenericInnerParamsParamMethodInvocationHistory<TValue, TResult>(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_genericInnerParamsParamMethodInvocationHistoryCollection.RecordFailure(new GenericInnerParamsParamMethodInvocationHistory<TValue, TResult>(arguments, default !, ex)))
 				{
-					_genericInnerParamsParamMethodInvocationHistoryCollection.Add(new GenericInnerParamsParamMethodInvocationHistory<TValue, TResult>(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -2573,6 +2610,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IGenericInnerRefParamMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IGenericInnerRefParamMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<TValue, TResult>(GenericInnerRefParamArgumentsCriteria<TValue, TResult> argumentsCriteria)
@@ -2898,9 +2941,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_genericInnerRefParamMethodInvocationHistoryCollection.Add(new GenericInnerRefParamMethodInvocationHistory<TValue, TResult>(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_genericInnerRefParamMethodInvocationHistoryCollection.RecordFailure(new GenericInnerRefParamMethodInvocationHistory<TValue, TResult>(arguments, default !, ex)))
 				{
-					_genericInnerRefParamMethodInvocationHistoryCollection.Add(new GenericInnerRefParamMethodInvocationHistory<TValue, TResult>(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -3080,6 +3122,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IGenericInnerSingleParamMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IGenericInnerSingleParamMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<TValue>(GenericInnerSingleParamArgumentsCriteria<TValue> argumentsCriteria)
@@ -3389,9 +3437,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void IMethodSetupFeatureSut.GenericInnerSingleParam<TValue>(List<TValue> value)", value);
 					_genericInnerSingleParamMethodInvocationHistoryCollection.Add(new GenericInnerSingleParamMethodInvocationHistory<TValue>(arguments, default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_genericInnerSingleParamMethodInvocationHistoryCollection.RecordFailure(new GenericInnerSingleParamMethodInvocationHistory<TValue>(arguments, ex)))
 				{
-					_genericInnerSingleParamMethodInvocationHistoryCollection.Add(new GenericInnerSingleParamMethodInvocationHistory<TValue>(arguments, ex));
 					throw;
 				}
 			}
@@ -3519,6 +3566,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IGenericOutParamMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IGenericOutParamMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<TValue, TResult>()
@@ -3844,9 +3897,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_genericOutParamMethodInvocationHistoryCollection.Add(new GenericOutParamMethodInvocationHistory<TValue, TResult>(result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_genericOutParamMethodInvocationHistoryCollection.RecordFailure(new GenericOutParamMethodInvocationHistory<TValue, TResult>(default !, ex)))
 				{
-					_genericOutParamMethodInvocationHistoryCollection.Add(new GenericOutParamMethodInvocationHistory<TValue, TResult>(default !, ex));
 					throw;
 				}
 			}
@@ -4026,6 +4078,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IGenericParamsParamMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IGenericParamsParamMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<TValue, TResult>(GenericParamsParamArgumentsCriteria<TValue, TResult> argumentsCriteria)
@@ -4349,9 +4407,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_genericParamsParamMethodInvocationHistoryCollection.Add(new GenericParamsParamMethodInvocationHistory<TValue, TResult>(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_genericParamsParamMethodInvocationHistoryCollection.RecordFailure(new GenericParamsParamMethodInvocationHistory<TValue, TResult>(arguments, default !, ex)))
 				{
-					_genericParamsParamMethodInvocationHistoryCollection.Add(new GenericParamsParamMethodInvocationHistory<TValue, TResult>(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -4533,6 +4590,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IGenericRefParamMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IGenericRefParamMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<TValue, TResult>(GenericRefParamArgumentsCriteria<TValue, TResult> argumentsCriteria)
@@ -4858,9 +4921,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_genericRefParamMethodInvocationHistoryCollection.Add(new GenericRefParamMethodInvocationHistory<TValue, TResult>(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_genericRefParamMethodInvocationHistoryCollection.RecordFailure(new GenericRefParamMethodInvocationHistory<TValue, TResult>(arguments, default !, ex)))
 				{
-					_genericRefParamMethodInvocationHistoryCollection.Add(new GenericRefParamMethodInvocationHistory<TValue, TResult>(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -5004,6 +5066,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IGenericReturnTypeMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IGenericReturnTypeMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<TValue>()
@@ -5320,9 +5388,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_genericReturnTypeMethodInvocationHistoryCollection.Add(new GenericReturnTypeMethodInvocationHistory<TValue>(result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_genericReturnTypeMethodInvocationHistoryCollection.RecordFailure(new GenericReturnTypeMethodInvocationHistory<TValue>(default !, ex)))
 				{
-					_genericReturnTypeMethodInvocationHistoryCollection.Add(new GenericReturnTypeMethodInvocationHistory<TValue>(default !, ex));
 					throw;
 				}
 			}
@@ -5462,6 +5529,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IGenericSingleOutParamMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IGenericSingleOutParamMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<TValue>()
@@ -5772,9 +5845,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void IMethodSetupFeatureSut.GenericSingleOutParam<TValue>(out TValue value)", out value);
 					_genericSingleOutParamMethodInvocationHistoryCollection.Add(new GenericSingleOutParamMethodInvocationHistory<TValue>(default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_genericSingleOutParamMethodInvocationHistoryCollection.RecordFailure(new GenericSingleOutParamMethodInvocationHistory<TValue>(ex)))
 				{
-					_genericSingleOutParamMethodInvocationHistoryCollection.Add(new GenericSingleOutParamMethodInvocationHistory<TValue>(ex));
 					throw;
 				}
 			}
@@ -5936,6 +6008,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IGenericSingleParamMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IGenericSingleParamMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<TValue>(GenericSingleParamArgumentsCriteria<TValue> argumentsCriteria)
@@ -6245,9 +6323,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void IMethodSetupFeatureSut.GenericSingleParam<TValue>(TValue value)", value);
 					_genericSingleParamMethodInvocationHistoryCollection.Add(new GenericSingleParamMethodInvocationHistory<TValue>(arguments, default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_genericSingleParamMethodInvocationHistoryCollection.RecordFailure(new GenericSingleParamMethodInvocationHistory<TValue>(arguments, ex)))
 				{
-					_genericSingleParamMethodInvocationHistoryCollection.Add(new GenericSingleParamMethodInvocationHistory<TValue>(arguments, ex));
 					throw;
 				}
 			}
@@ -6411,6 +6488,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IGenericSingleRefParamMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IGenericSingleRefParamMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count<TValue>(GenericSingleRefParamArgumentsCriteria<TValue> argumentsCriteria)
@@ -6722,9 +6805,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void IMethodSetupFeatureSut.GenericSingleRefParam<TValue>(ref TValue value)", ref value);
 					_genericSingleRefParamMethodInvocationHistoryCollection.Add(new GenericSingleRefParamMethodInvocationHistory<TValue>(arguments, default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_genericSingleRefParamMethodInvocationHistoryCollection.RecordFailure(new GenericSingleRefParamMethodInvocationHistory<TValue>(arguments, ex)))
 				{
-					_genericSingleRefParamMethodInvocationHistoryCollection.Add(new GenericSingleRefParamMethodInvocationHistory<TValue>(arguments, ex));
 					throw;
 				}
 			}
@@ -6894,6 +6976,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IIntAllRefKindsMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IIntAllRefKindsMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(IntAllRefKindsArgumentsCriteria argumentsCriteria)
@@ -7130,9 +7218,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_intAllRefKindsMethodInvocationHistoryCollection.Add(new IntAllRefKindsMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_intAllRefKindsMethodInvocationHistoryCollection.RecordFailure(new IntAllRefKindsMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_intAllRefKindsMethodInvocationHistoryCollection.Add(new IntAllRefKindsMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -7303,6 +7390,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IIntInParamMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IIntInParamMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(IntInParamArgumentsCriteria argumentsCriteria)
@@ -7532,9 +7625,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_intInParamMethodInvocationHistoryCollection.Add(new IntInParamMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_intInParamMethodInvocationHistoryCollection.RecordFailure(new IntInParamMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_intInParamMethodInvocationHistoryCollection.Add(new IntInParamMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -7677,6 +7769,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IIntNoParamsMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IIntNoParamsMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count()
@@ -7899,9 +7997,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_intNoParamsMethodInvocationHistoryCollection.Add(new IntNoParamsMethodInvocationHistory(result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_intNoParamsMethodInvocationHistoryCollection.RecordFailure(new IntNoParamsMethodInvocationHistory(default !, ex)))
 				{
-					_intNoParamsMethodInvocationHistoryCollection.Add(new IntNoParamsMethodInvocationHistory(default !, ex));
 					throw;
 				}
 			}
@@ -8042,6 +8139,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IIntOutParamMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IIntOutParamMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count()
@@ -8271,9 +8374,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_intOutParamMethodInvocationHistoryCollection.Add(new IntOutParamMethodInvocationHistory(result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_intOutParamMethodInvocationHistoryCollection.RecordFailure(new IntOutParamMethodInvocationHistory(default !, ex)))
 				{
-					_intOutParamMethodInvocationHistoryCollection.Add(new IntOutParamMethodInvocationHistory(default !, ex));
 					throw;
 				}
 			}
@@ -8450,6 +8552,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IIntParamsMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IIntParamsMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(IntParamsArgumentsCriteria argumentsCriteria)
@@ -8679,9 +8787,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_intParamsMethodInvocationHistoryCollection.Add(new IntParamsMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_intParamsMethodInvocationHistoryCollection.RecordFailure(new IntParamsMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_intParamsMethodInvocationHistoryCollection.Add(new IntParamsMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -8852,6 +8959,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IIntParamsParamMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IIntParamsParamMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(IntParamsParamArgumentsCriteria argumentsCriteria)
@@ -9081,9 +9194,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_intParamsParamMethodInvocationHistoryCollection.Add(new IntParamsParamMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_intParamsParamMethodInvocationHistoryCollection.RecordFailure(new IntParamsParamMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_intParamsParamMethodInvocationHistoryCollection.Add(new IntParamsParamMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -9254,6 +9366,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IIntRefParamMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IIntRefParamMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(IntRefParamArgumentsCriteria argumentsCriteria)
@@ -9483,9 +9601,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_intRefParamMethodInvocationHistoryCollection.Add(new IntRefParamMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_intRefParamMethodInvocationHistoryCollection.RecordFailure(new IntRefParamMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_intRefParamMethodInvocationHistoryCollection.Add(new IntRefParamMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -9656,6 +9773,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IIntSingleParamMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IIntSingleParamMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count(IntSingleParamArgumentsCriteria argumentsCriteria)
@@ -9885,9 +10008,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_intSingleParamMethodInvocationHistoryCollection.Add(new IntSingleParamMethodInvocationHistory(arguments, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_intSingleParamMethodInvocationHistoryCollection.RecordFailure(new IntSingleParamMethodInvocationHistory(arguments, default !, ex)))
 				{
-					_intSingleParamMethodInvocationHistoryCollection.Add(new IntSingleParamMethodInvocationHistory(arguments, default !, ex));
 					throw;
 				}
 			}
@@ -10028,6 +10150,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal void Add(IVoidNoParamsMethodInvocationHistory invocationHistory)
 			{
 				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal bool RecordFailure(IVoidNoParamsMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
 			}
 
 			internal int Count()
@@ -10237,9 +10365,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void IMethodSetupFeatureSut.VoidNoParams()");
 					_voidNoParamsMethodInvocationHistoryCollection.Add(new VoidNoParamsMethodInvocationHistory(default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_voidNoParamsMethodInvocationHistoryCollection.RecordFailure(new VoidNoParamsMethodInvocationHistory(ex)))
 				{
-					_voidNoParamsMethodInvocationHistoryCollection.Add(new VoidNoParamsMethodInvocationHistory(ex));
 					throw;
 				}
 			}
