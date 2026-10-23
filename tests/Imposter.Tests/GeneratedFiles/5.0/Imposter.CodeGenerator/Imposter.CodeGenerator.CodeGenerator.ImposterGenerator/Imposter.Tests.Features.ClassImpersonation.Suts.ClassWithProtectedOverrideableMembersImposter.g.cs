@@ -357,19 +357,13 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			private InvokeProtectedMethodMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(InvokeProtectedMethodArguments arguments)
 			{
-				InvokeProtectedMethodMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(int value, InvokeProtectedMethodDelegate? baseImplementation = null)
@@ -788,19 +782,13 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			private ProtectedVirtualMethodMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(ProtectedVirtualMethodArguments arguments)
 			{
-				ProtectedVirtualMethodMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(int value, ProtectedVirtualMethodDelegate? baseImplementation = null)
@@ -1188,16 +1176,13 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			private ReadProtectedPropertyMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
 			{
-				ReadProtectedPropertyMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.HasConfiguredOutcome)
 						return invocationImposterGroup;
-					if (bareMatch == null)
-						bareMatch = invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public string Invoke(ReadProtectedPropertyDelegate? baseImplementation = null)
@@ -1613,19 +1598,13 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			private ReadProtectedValueMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(ReadProtectedValueArguments arguments)
 			{
-				ReadProtectedValueMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(int index, ReadProtectedValueDelegate? baseImplementation = null)
@@ -1883,7 +1862,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 					if (!invocationImposter.IsConfigured)
 					{
-						return _latestInvocationImposter ?? MethodInvocationImposter.Default;
+						return _latestInvocationImposter;
 					}
 
 					_latestInvocationImposter = invocationImposter;
@@ -2028,19 +2007,13 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			private SubscribeToProtectedEventMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(SubscribeToProtectedEventArguments arguments)
 			{
-				SubscribeToProtectedEventMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public void Invoke(global::System.EventHandler handler, SubscribeToProtectedEventDelegate? baseImplementation = null)
@@ -2281,7 +2254,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 					if (!invocationImposter.IsConfigured)
 					{
-						return _latestInvocationImposter ?? MethodInvocationImposter.Default;
+						return _latestInvocationImposter;
 					}
 
 					_latestInvocationImposter = invocationImposter;
@@ -2426,19 +2399,13 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			private WriteProtectedPropertyMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(WriteProtectedPropertyArguments arguments)
 			{
-				WriteProtectedPropertyMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public void Invoke(string value, WriteProtectedPropertyDelegate? baseImplementation = null)
@@ -2683,7 +2650,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 					if (!invocationImposter.IsConfigured)
 					{
-						return _latestInvocationImposter ?? MethodInvocationImposter.Default;
+						return _latestInvocationImposter;
 					}
 
 					_latestInvocationImposter = invocationImposter;
@@ -2828,19 +2795,13 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			private WriteProtectedValueMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(WriteProtectedValueArguments arguments)
 			{
-				WriteProtectedValueMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public void Invoke(int index, int value, WriteProtectedValueDelegate? baseImplementation = null)
@@ -3222,6 +3183,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				internal void Callback(global::Imposter.Abstractions.Arg<string> criteria, global::System.Action<string> callback)
 				{
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(new global::System.Tuple<global::Imposter.Abstractions.Arg<string>, global::System.Action<string>>(criteria, callback));
+					_hasConfiguredSetter = true;
 				}
 
 				void Called(global::Imposter.Abstractions.Arg<string> criteria, global::Imposter.Abstractions.Count count)
@@ -3285,11 +3247,6 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
 				}
 
-				internal void MarkConfigured()
-				{
-					_hasConfiguredSetter = true;
-				}
-
 				private static string FormatValue(object? value)
 				{
 					return "<" + (value?.ToString() ?? "null") + ">";
@@ -3337,7 +3294,6 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			IProtectedVirtualPropertyPropertySetterBuilder IProtectedVirtualPropertyPropertyBuilder.Setter(global::Imposter.Abstractions.Arg<string> criteria)
 			{
-				_setterImposter.MarkConfigured();
 				return new SetterImposter.Builder(_setterImposter, criteria);
 			}
 
@@ -3815,7 +3771,6 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			internal IIndexerIndexerSetterBuilder CreateSetter(IndexerIndexerArgumentsCriteria criteria)
 			{
-				_setterImposter.MarkConfigured();
 				return new SetterImposter.Builder(_setterImposter, criteria);
 			}
 
@@ -4154,6 +4109,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				public void Callback(IndexerIndexerArgumentsCriteria criteria, IndexerIndexerSetterCallback callback)
 				{
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add((criteria, callback));
+					MarkConfigured();
 				}
 
 				public void Called(IndexerIndexerArgumentsCriteria criteria, global::Imposter.Abstractions.Count count)

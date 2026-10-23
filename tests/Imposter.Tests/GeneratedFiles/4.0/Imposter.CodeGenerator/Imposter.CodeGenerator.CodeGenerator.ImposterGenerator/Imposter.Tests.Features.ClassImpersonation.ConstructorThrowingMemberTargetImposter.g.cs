@@ -123,7 +123,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 					if (!invocationImposter.IsConfigured)
 					{
-						return _latestInvocationImposter ?? MethodInvocationImposter.Default;
+						return _latestInvocationImposter;
 					}
 
 					_latestInvocationImposter = invocationImposter;
@@ -268,16 +268,13 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			private RunMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
 			{
-				RunMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.HasConfiguredOutcome)
 						return invocationImposterGroup;
-					if (bareMatch == null)
-						bareMatch = invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public void Invoke(RunDelegate? baseImplementation = null)

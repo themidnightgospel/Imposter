@@ -306,19 +306,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private EchoMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(EchoArguments arguments)
 			{
-				EchoMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public dynamic Invoke(dynamic value)
@@ -565,20 +559,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			internal IUseMethodImposter<T> GetImposterWithMatchingInvocationImposterGroup<T>(UseArguments<T> arguments)
 			{
-				IUseMethodImposter<T>? bareMatch = null;
 				foreach (var storedImposter in _imposters)
 				{
 					var typedImposter = storedImposter.As<T>();
-					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments, out var hasConfiguredOutcome))
-					{
-						if (hasConfiguredOutcome)
-							return typedImposter;
-						if (bareMatch == null)
-							bareMatch = typedImposter;
-					}
+					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments))
+						return typedImposter;
 				}
 
-				return bareMatch ?? new UseMethodImposter<T>(_useMethodInvocationHistoryCollection, _invocationBehavior);
+				return new UseMethodImposter<T>(_useMethodInvocationHistoryCollection, _invocationBehavior);
 			}
 		}
 
@@ -620,7 +608,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 					if (!invocationImposter.IsConfigured)
 					{
-						return _latestInvocationImposter ?? MethodInvocationImposter.Default;
+						return _latestInvocationImposter;
 					}
 
 					_latestInvocationImposter = invocationImposter;
@@ -735,7 +723,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		internal interface IUseMethodImposter<T> : IUseMethodImposter
 		{
 			void Invoke(T first, dynamic second);
-			bool HasMatchingInvocationImposterGroup(UseArguments<T> arguments, out bool hasConfiguredOutcome);
+			bool HasMatchingInvocationImposterGroup(UseArguments<T> arguments);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -786,9 +774,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_target.Invoke(global::Imposter.Abstractions.TypeCaster.Cast<TTarget, T>(first), (object)second);
 				}
 
-				public bool HasMatchingInvocationImposterGroup(UseArguments<TTarget> arguments, out bool hasConfiguredOutcome)
+				public bool HasMatchingInvocationImposterGroup(UseArguments<TTarget> arguments)
 				{
-					return _target.HasMatchingInvocationImposterGroup(arguments.As<T>(), out hasConfiguredOutcome);
+					return _target.HasMatchingInvocationImposterGroup(arguments.As<T>());
 				}
 
 				IUseMethodImposter<TTarget1>? IUseMethodImposter.As<TTarget1>()
@@ -797,28 +785,20 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 			}
 
-			public bool HasMatchingInvocationImposterGroup(UseArguments<T> arguments, out bool hasConfiguredOutcome)
+			public bool HasMatchingInvocationImposterGroup(UseArguments<T> arguments)
 			{
-				var invocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
-				hasConfiguredOutcome = (invocationImposterGroup != null) && invocationImposterGroup.HasConfiguredOutcome;
-				return invocationImposterGroup != null;
+				return FindMatchingInvocationImposterGroup(arguments) != null;
 			}
 
 			private UseMethodInvocationImposterGroup<T>? FindMatchingInvocationImposterGroup(UseArguments<T> arguments)
 			{
-				UseMethodInvocationImposterGroup<T>? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public void Invoke(T first, dynamic second)

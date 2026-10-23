@@ -322,19 +322,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private ProtectedReadMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(ProtectedReadArguments arguments)
 			{
-				ProtectedReadMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(ref readonly int key, ProtectedReadDelegate? baseImplementation = null)
@@ -753,19 +747,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private ReadMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(ReadArguments arguments)
 			{
-				ReadMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(ref readonly int key, ReadDelegate? baseImplementation = null)

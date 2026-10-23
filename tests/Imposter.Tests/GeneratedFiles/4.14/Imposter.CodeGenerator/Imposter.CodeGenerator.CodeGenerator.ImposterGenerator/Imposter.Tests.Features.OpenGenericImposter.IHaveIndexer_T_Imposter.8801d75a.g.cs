@@ -130,7 +130,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			internal IIndexerIndexerSetterBuilder CreateSetter(IndexerIndexerArgumentsCriteria criteria)
 			{
-				_setterImposter.MarkConfigured();
 				return new SetterImposter.Builder(_setterImposter, criteria);
 			}
 
@@ -446,6 +445,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				public void Callback(IndexerIndexerArgumentsCriteria criteria, IndexerIndexerSetterCallback callback)
 				{
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add((criteria, callback));
+					MarkConfigured();
 				}
 
 				public void Called(IndexerIndexerArgumentsCriteria criteria, global::Imposter.Abstractions.Count count)
@@ -722,7 +722,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			internal IIndexer_1IndexerSetterBuilder CreateSetter(Indexer_1IndexerArgumentsCriteria criteria)
 			{
-				_setterImposter.MarkConfigured();
 				return new SetterImposter.Builder(_setterImposter, criteria);
 			}
 
@@ -1038,6 +1037,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				public void Callback(Indexer_1IndexerArgumentsCriteria criteria, Indexer_1IndexerSetterCallback callback)
 				{
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add((criteria, callback));
+					MarkConfigured();
 				}
 
 				public void Called(Indexer_1IndexerArgumentsCriteria criteria, global::Imposter.Abstractions.Count count)
@@ -1319,7 +1319,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			internal IIndexer_2IndexerSetterBuilder CreateSetter(Indexer_2IndexerArgumentsCriteria criteria)
 			{
-				_setterImposter.MarkConfigured();
 				return new SetterImposter.Builder(_setterImposter, criteria);
 			}
 
@@ -1635,6 +1634,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				public void Callback(Indexer_2IndexerArgumentsCriteria criteria, Indexer_2IndexerSetterCallback callback)
 				{
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add((criteria, callback));
+					MarkConfigured();
 				}
 
 				public void Called(Indexer_2IndexerArgumentsCriteria criteria, global::Imposter.Abstractions.Count count)

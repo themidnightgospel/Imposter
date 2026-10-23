@@ -12,14 +12,13 @@ internal static class NextOutcomeSyntaxHelper
     /// published outcome once the queue is empty. An outcome is published before it leaves the queue, and outcomes
     /// leave it one at a time under a lock on the queue. So a concurrent caller that finds the queue empty always
     /// sees the newest outcome, never a missing or older one. If readiness is supplied, an unfinished head stays
-    /// queued and calls use the previous outcome (or the supplied fallback) until it is ready to be consumed.
+    /// queued and calls use the previous outcome until it is ready to be consumed.
     /// </summary>
     internal static BlockSyntax TakeNextOutcomeBody(
         IdentifierNameSyntax queue,
         IdentifierNameSyntax lastOutcome,
         IdentifierNameSyntax outcome,
-        ExpressionSyntax? readyCondition = null,
-        ExpressionSyntax? pendingOutcomeFallback = null
+        ExpressionSyntax? readyCondition = null
     )
     {
         return Block(
@@ -43,10 +42,7 @@ internal static class NextOutcomeSyntaxHelper
                     .AddStatement(
                         readyCondition is null
                             ? null
-                            : IfStatement(
-                                Not(readyCondition),
-                                Block(ReturnStatement(pendingOutcomeFallback ?? lastOutcome))
-                            )
+                            : IfStatement(Not(readyCondition), Block(ReturnStatement(lastOutcome)))
                     )
                     .AddStatement(lastOutcome.Assign(outcome).ToStatementSyntax())
                     .AddStatement(

@@ -181,20 +181,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			internal IContainsMethodImposter<T> GetImposterWithMatchingInvocationImposterGroup<T>(ContainsArguments<T> arguments)
 			{
-				IContainsMethodImposter<T>? bareMatch = null;
 				foreach (var storedImposter in _imposters)
 				{
 					var typedImposter = storedImposter.As<T>();
-					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments, out var hasConfiguredOutcome))
-					{
-						if (hasConfiguredOutcome)
-							return typedImposter;
-						if (bareMatch == null)
-							bareMatch = typedImposter;
-					}
+					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments))
+						return typedImposter;
 				}
 
-				return bareMatch ?? new ContainsMethodImposter<T>(_containsMethodInvocationHistoryCollection, _invocationBehavior);
+				return new ContainsMethodImposter<T>(_containsMethodInvocationHistoryCollection, _invocationBehavior);
 			}
 		}
 
@@ -363,7 +357,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		internal interface IContainsMethodImposter<T> : IContainsMethodImposter
 		{
 			bool Invoke(global::System.ReadOnlySpan<T> items, T item);
-			bool HasMatchingInvocationImposterGroup(ContainsArguments<T> arguments, out bool hasConfiguredOutcome);
+			bool HasMatchingInvocationImposterGroup(ContainsArguments<T> arguments);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -415,9 +409,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					return global::Imposter.Abstractions.TypeCaster.Cast<bool, bool>(result);
 				}
 
-				public bool HasMatchingInvocationImposterGroup(ContainsArguments<TTarget> arguments, out bool hasConfiguredOutcome)
+				public bool HasMatchingInvocationImposterGroup(ContainsArguments<TTarget> arguments)
 				{
-					return _target.HasMatchingInvocationImposterGroup(arguments.As<T>(), out hasConfiguredOutcome);
+					return _target.HasMatchingInvocationImposterGroup(arguments.As<T>());
 				}
 
 				IContainsMethodImposter<TTarget1>? IContainsMethodImposter.As<TTarget1>()
@@ -426,28 +420,20 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 			}
 
-			public bool HasMatchingInvocationImposterGroup(ContainsArguments<T> arguments, out bool hasConfiguredOutcome)
+			public bool HasMatchingInvocationImposterGroup(ContainsArguments<T> arguments)
 			{
-				var invocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
-				hasConfiguredOutcome = (invocationImposterGroup != null) && invocationImposterGroup.HasConfiguredOutcome;
-				return invocationImposterGroup != null;
+				return FindMatchingInvocationImposterGroup(arguments) != null;
 			}
 
 			private ContainsMethodInvocationImposterGroup<T>? FindMatchingInvocationImposterGroup(ContainsArguments<T> arguments)
 			{
-				ContainsMethodInvocationImposterGroup<T>? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public bool Invoke(global::System.ReadOnlySpan<T> items, T item)
@@ -875,19 +861,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private CountAsyncMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(CountAsyncArguments arguments)
 			{
-				CountAsyncMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public global::System.Threading.Tasks.Task<int> Invoke(global::System.ReadOnlySpan<byte> data)
@@ -1150,20 +1130,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			internal IFillMethodImposter<T> GetImposterWithMatchingInvocationImposterGroup<T>(FillArguments<T> arguments)
 			{
-				IFillMethodImposter<T>? bareMatch = null;
 				foreach (var storedImposter in _imposters)
 				{
 					var typedImposter = storedImposter.As<T>();
-					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments, out var hasConfiguredOutcome))
-					{
-						if (hasConfiguredOutcome)
-							return typedImposter;
-						if (bareMatch == null)
-							bareMatch = typedImposter;
-					}
+					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments))
+						return typedImposter;
 				}
 
-				return bareMatch ?? new FillMethodImposter<T>(_fillMethodInvocationHistoryCollection, _invocationBehavior);
+				return new FillMethodImposter<T>(_fillMethodInvocationHistoryCollection, _invocationBehavior);
 			}
 		}
 
@@ -1205,7 +1179,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 					if (!invocationImposter.IsConfigured)
 					{
-						return _latestInvocationImposter ?? MethodInvocationImposter.Default;
+						return _latestInvocationImposter;
 					}
 
 					_latestInvocationImposter = invocationImposter;
@@ -1320,7 +1294,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		internal interface IFillMethodImposter<T> : IFillMethodImposter
 		{
 			void Invoke(global::System.Span<byte> buffer, T value);
-			bool HasMatchingInvocationImposterGroup(FillArguments<T> arguments, out bool hasConfiguredOutcome);
+			bool HasMatchingInvocationImposterGroup(FillArguments<T> arguments);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1371,9 +1345,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_target.Invoke(buffer, global::Imposter.Abstractions.TypeCaster.Cast<TTarget, T>(value));
 				}
 
-				public bool HasMatchingInvocationImposterGroup(FillArguments<TTarget> arguments, out bool hasConfiguredOutcome)
+				public bool HasMatchingInvocationImposterGroup(FillArguments<TTarget> arguments)
 				{
-					return _target.HasMatchingInvocationImposterGroup(arguments.As<T>(), out hasConfiguredOutcome);
+					return _target.HasMatchingInvocationImposterGroup(arguments.As<T>());
 				}
 
 				IFillMethodImposter<TTarget1>? IFillMethodImposter.As<TTarget1>()
@@ -1382,28 +1356,20 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 			}
 
-			public bool HasMatchingInvocationImposterGroup(FillArguments<T> arguments, out bool hasConfiguredOutcome)
+			public bool HasMatchingInvocationImposterGroup(FillArguments<T> arguments)
 			{
-				var invocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
-				hasConfiguredOutcome = (invocationImposterGroup != null) && invocationImposterGroup.HasConfiguredOutcome;
-				return invocationImposterGroup != null;
+				return FindMatchingInvocationImposterGroup(arguments) != null;
 			}
 
 			private FillMethodInvocationImposterGroup<T>? FindMatchingInvocationImposterGroup(FillArguments<T> arguments)
 			{
-				FillMethodInvocationImposterGroup<T>? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public void Invoke(global::System.Span<byte> buffer, T value)
@@ -1786,19 +1752,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private ParseMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(ParseArguments arguments)
 			{
-				ParseMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(global::System.ReadOnlySpan<char> text, int start)
@@ -2048,7 +2008,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 					if (!invocationImposter.IsConfigured)
 					{
-						return _latestInvocationImposter ?? MethodInvocationImposter.Default;
+						return _latestInvocationImposter;
 					}
 
 					_latestInvocationImposter = invocationImposter;
@@ -2179,19 +2139,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private WriteMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(WriteArguments arguments)
 			{
-				WriteMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public void Invoke(global::System.Span<byte> buffer)

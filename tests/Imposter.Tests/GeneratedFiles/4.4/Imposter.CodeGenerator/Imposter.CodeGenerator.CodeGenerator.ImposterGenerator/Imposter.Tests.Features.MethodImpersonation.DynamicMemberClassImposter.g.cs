@@ -315,19 +315,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private DescribeMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(DescribeArguments arguments)
 			{
-				DescribeMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public dynamic Invoke(dynamic value, DescribeDelegate? baseImplementation = null)
@@ -726,6 +720,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				internal void Callback(global::Imposter.Abstractions.Arg<dynamic?> criteria, global::System.Action<dynamic?> callback)
 				{
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(new global::System.Tuple<global::Imposter.Abstractions.Arg<dynamic?>, global::System.Action<dynamic?>>(criteria, callback));
+					_hasConfiguredSetter = true;
 				}
 
 				void Called(global::Imposter.Abstractions.Arg<dynamic?> criteria, global::Imposter.Abstractions.Count count)
@@ -789,11 +784,6 @@ namespace Imposter.Tests.Features.MethodImpersonation
 						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
 				}
 
-				internal void MarkConfigured()
-				{
-					_hasConfiguredSetter = true;
-				}
-
 				private static string FormatValue(object? value)
 				{
 					return "<" + (value?.ToString() ?? "null") + ">";
@@ -841,7 +831,6 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IValuePropertySetterBuilder IValuePropertyBuilder.Setter(global::Imposter.Abstractions.Arg<dynamic?> criteria)
 			{
-				_setterImposter.MarkConfigured();
 				return new SetterImposter.Builder(_setterImposter, criteria);
 			}
 
@@ -962,7 +951,6 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			internal IIndexerIndexerSetterBuilder CreateSetter(IndexerIndexerArgumentsCriteria criteria)
 			{
-				_setterImposter.MarkConfigured();
 				return new SetterImposter.Builder(_setterImposter, criteria);
 			}
 
@@ -1301,6 +1289,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				public void Callback(IndexerIndexerArgumentsCriteria criteria, IndexerIndexerSetterCallback callback)
 				{
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add((criteria, callback));
+					MarkConfigured();
 				}
 
 				public void Called(IndexerIndexerArgumentsCriteria criteria, global::Imposter.Abstractions.Count count)

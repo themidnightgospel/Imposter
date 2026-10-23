@@ -291,16 +291,13 @@ namespace Imposter.Tests.Docs.Properties
 
 			private ReadProtectedMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
 			{
-				ReadProtectedMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.HasConfiguredOutcome)
 						return invocationImposterGroup;
-					if (bareMatch == null)
-						bareMatch = invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(ReadProtectedDelegate? baseImplementation = null)
@@ -555,7 +552,7 @@ namespace Imposter.Tests.Docs.Properties
 
 					if (!invocationImposter.IsConfigured)
 					{
-						return _latestInvocationImposter ?? MethodInvocationImposter.Default;
+						return _latestInvocationImposter;
 					}
 
 					_latestInvocationImposter = invocationImposter;
@@ -700,19 +697,13 @@ namespace Imposter.Tests.Docs.Properties
 
 			private WriteProtectedMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(WriteProtectedArguments arguments)
 			{
-				WriteProtectedMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public void Invoke(int value, WriteProtectedDelegate? baseImplementation = null)
@@ -1094,6 +1085,7 @@ namespace Imposter.Tests.Docs.Properties
 				internal void Callback(global::Imposter.Abstractions.Arg<int> criteria, global::System.Action<int> callback)
 				{
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(new global::System.Tuple<global::Imposter.Abstractions.Arg<int>, global::System.Action<int>>(criteria, callback));
+					_hasConfiguredSetter = true;
 				}
 
 				void Called(global::Imposter.Abstractions.Arg<int> criteria, global::Imposter.Abstractions.Count count)
@@ -1157,11 +1149,6 @@ namespace Imposter.Tests.Docs.Properties
 						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
 				}
 
-				internal void MarkConfigured()
-				{
-					_hasConfiguredSetter = true;
-				}
-
 				private static string FormatValue(object? value)
 				{
 					return "<" + (value?.ToString() ?? "null") + ">";
@@ -1209,7 +1196,6 @@ namespace Imposter.Tests.Docs.Properties
 
 			IProtectedAgePropertySetterBuilder IProtectedAgePropertyBuilder.Setter(global::Imposter.Abstractions.Arg<int> criteria)
 			{
-				_setterImposter.MarkConfigured();
 				return new SetterImposter.Builder(_setterImposter, criteria);
 			}
 

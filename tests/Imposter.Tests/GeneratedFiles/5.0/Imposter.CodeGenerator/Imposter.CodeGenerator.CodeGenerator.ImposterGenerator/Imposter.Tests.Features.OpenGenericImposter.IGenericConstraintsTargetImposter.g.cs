@@ -186,20 +186,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal ICloneStructMethodImposter<TArg> GetImposterWithMatchingInvocationImposterGroup<TArg>(CloneStructArguments<TArg> arguments)
 				where TArg : struct
 			{
-				ICloneStructMethodImposter<TArg>? bareMatch = null;
 				foreach (var storedImposter in _imposters)
 				{
 					var typedImposter = storedImposter.As<TArg>();
-					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments, out var hasConfiguredOutcome))
-					{
-						if (hasConfiguredOutcome)
-							return typedImposter;
-						if (bareMatch == null)
-							bareMatch = typedImposter;
-					}
+					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments))
+						return typedImposter;
 				}
 
-				return bareMatch ?? new CloneStructMethodImposter<TArg>(_cloneStructMethodInvocationHistoryCollection, _invocationBehavior);
+				return new CloneStructMethodImposter<TArg>(_cloneStructMethodInvocationHistoryCollection, _invocationBehavior);
 			}
 		}
 
@@ -371,7 +365,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		internal interface ICloneStructMethodImposter<TArg> : ICloneStructMethodImposter where TArg : struct
 		{
 			TArg Invoke(TArg value);
-			bool HasMatchingInvocationImposterGroup(CloneStructArguments<TArg> arguments, out bool hasConfiguredOutcome);
+			bool HasMatchingInvocationImposterGroup(CloneStructArguments<TArg> arguments);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -424,9 +418,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					return global::Imposter.Abstractions.TypeCaster.Cast<TArg, TArgTarget>(result);
 				}
 
-				public bool HasMatchingInvocationImposterGroup(CloneStructArguments<TArgTarget> arguments, out bool hasConfiguredOutcome)
+				public bool HasMatchingInvocationImposterGroup(CloneStructArguments<TArgTarget> arguments)
 				{
-					return _target.HasMatchingInvocationImposterGroup(arguments.As<TArg>(), out hasConfiguredOutcome);
+					return _target.HasMatchingInvocationImposterGroup(arguments.As<TArg>());
 				}
 
 				ICloneStructMethodImposter<TArgTarget1>? ICloneStructMethodImposter.As<TArgTarget1>()
@@ -435,28 +429,20 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				}
 			}
 
-			public bool HasMatchingInvocationImposterGroup(CloneStructArguments<TArg> arguments, out bool hasConfiguredOutcome)
+			public bool HasMatchingInvocationImposterGroup(CloneStructArguments<TArg> arguments)
 			{
-				var invocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
-				hasConfiguredOutcome = (invocationImposterGroup != null) && invocationImposterGroup.HasConfiguredOutcome;
-				return invocationImposterGroup != null;
+				return FindMatchingInvocationImposterGroup(arguments) != null;
 			}
 
 			private CloneStructMethodInvocationImposterGroup<TArg>? FindMatchingInvocationImposterGroup(CloneStructArguments<TArg> arguments)
 			{
-				CloneStructMethodInvocationImposterGroup<TArg>? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public TArg Invoke(TArg value)
@@ -716,20 +702,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal ICompareValuesMethodImposter<TArg> GetImposterWithMatchingInvocationImposterGroup<TArg>(CompareValuesArguments<TArg> arguments)
 				where TArg : global::System.IComparable<TArg>
 			{
-				ICompareValuesMethodImposter<TArg>? bareMatch = null;
 				foreach (var storedImposter in _imposters)
 				{
 					var typedImposter = storedImposter.As<TArg>();
-					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments, out var hasConfiguredOutcome))
-					{
-						if (hasConfiguredOutcome)
-							return typedImposter;
-						if (bareMatch == null)
-							bareMatch = typedImposter;
-					}
+					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments))
+						return typedImposter;
 				}
 
-				return bareMatch ?? new CompareValuesMethodImposter<TArg>(_compareValuesMethodInvocationHistoryCollection, _invocationBehavior);
+				return new CompareValuesMethodImposter<TArg>(_compareValuesMethodInvocationHistoryCollection, _invocationBehavior);
 			}
 		}
 
@@ -772,7 +752,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 					if (!invocationImposter.IsConfigured)
 					{
-						return _latestInvocationImposter ?? MethodInvocationImposter.Default;
+						return _latestInvocationImposter;
 					}
 
 					_latestInvocationImposter = invocationImposter;
@@ -889,7 +869,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		internal interface ICompareValuesMethodImposter<TArg> : ICompareValuesMethodImposter where TArg : global::System.IComparable<TArg>
 		{
 			void Invoke(TArg left, TArg right);
-			bool HasMatchingInvocationImposterGroup(CompareValuesArguments<TArg> arguments, out bool hasConfiguredOutcome);
+			bool HasMatchingInvocationImposterGroup(CompareValuesArguments<TArg> arguments);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -941,9 +921,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					_target.Invoke(global::Imposter.Abstractions.TypeCaster.Cast<TArgTarget, TArg>(left), global::Imposter.Abstractions.TypeCaster.Cast<TArgTarget, TArg>(right));
 				}
 
-				public bool HasMatchingInvocationImposterGroup(CompareValuesArguments<TArgTarget> arguments, out bool hasConfiguredOutcome)
+				public bool HasMatchingInvocationImposterGroup(CompareValuesArguments<TArgTarget> arguments)
 				{
-					return _target.HasMatchingInvocationImposterGroup(arguments.As<TArg>(), out hasConfiguredOutcome);
+					return _target.HasMatchingInvocationImposterGroup(arguments.As<TArg>());
 				}
 
 				ICompareValuesMethodImposter<TArgTarget1>? ICompareValuesMethodImposter.As<TArgTarget1>()
@@ -952,28 +932,20 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				}
 			}
 
-			public bool HasMatchingInvocationImposterGroup(CompareValuesArguments<TArg> arguments, out bool hasConfiguredOutcome)
+			public bool HasMatchingInvocationImposterGroup(CompareValuesArguments<TArg> arguments)
 			{
-				var invocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
-				hasConfiguredOutcome = (invocationImposterGroup != null) && invocationImposterGroup.HasConfiguredOutcome;
-				return invocationImposterGroup != null;
+				return FindMatchingInvocationImposterGroup(arguments) != null;
 			}
 
 			private CompareValuesMethodInvocationImposterGroup<TArg>? FindMatchingInvocationImposterGroup(CompareValuesArguments<TArg> arguments)
 			{
-				CompareValuesMethodInvocationImposterGroup<TArg>? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public void Invoke(TArg left, TArg right)
@@ -1172,20 +1144,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal ICreateInstanceMethodImposter<TArg> GetImposterWithMatchingInvocationImposterGroup<TArg>()
 				where TArg : new()
 			{
-				ICreateInstanceMethodImposter<TArg>? bareMatch = null;
 				foreach (var storedImposter in _imposters)
 				{
 					var typedImposter = storedImposter.As<TArg>();
-					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(out var hasConfiguredOutcome))
-					{
-						if (hasConfiguredOutcome)
-							return typedImposter;
-						if (bareMatch == null)
-							bareMatch = typedImposter;
-					}
+					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup())
+						return typedImposter;
 				}
 
-				return bareMatch ?? new CreateInstanceMethodImposter<TArg>(_createInstanceMethodInvocationHistoryCollection, _invocationBehavior);
+				return new CreateInstanceMethodImposter<TArg>(_createInstanceMethodInvocationHistoryCollection, _invocationBehavior);
 			}
 		}
 
@@ -1354,7 +1320,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		internal interface ICreateInstanceMethodImposter<TArg> : ICreateInstanceMethodImposter where TArg : new()
 		{
 			TArg Invoke();
-			bool HasMatchingInvocationImposterGroup(out bool hasConfiguredOutcome);
+			bool HasMatchingInvocationImposterGroup();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1407,9 +1373,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					return global::Imposter.Abstractions.TypeCaster.Cast<TArg, TArgTarget>(result);
 				}
 
-				public bool HasMatchingInvocationImposterGroup(out bool hasConfiguredOutcome)
+				public bool HasMatchingInvocationImposterGroup()
 				{
-					return _target.HasMatchingInvocationImposterGroup(out hasConfiguredOutcome);
+					return _target.HasMatchingInvocationImposterGroup();
 				}
 
 				ICreateInstanceMethodImposter<TArgTarget1>? ICreateInstanceMethodImposter.As<TArgTarget1>()
@@ -1418,25 +1384,20 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				}
 			}
 
-			public bool HasMatchingInvocationImposterGroup(out bool hasConfiguredOutcome)
+			public bool HasMatchingInvocationImposterGroup()
 			{
-				var invocationImposterGroup = FindMatchingInvocationImposterGroup();
-				hasConfiguredOutcome = (invocationImposterGroup != null) && invocationImposterGroup.HasConfiguredOutcome;
-				return invocationImposterGroup != null;
+				return FindMatchingInvocationImposterGroup() != null;
 			}
 
 			private CreateInstanceMethodInvocationImposterGroup<TArg>? FindMatchingInvocationImposterGroup()
 			{
-				CreateInstanceMethodInvocationImposterGroup<TArg>? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.HasConfiguredOutcome)
 						return invocationImposterGroup;
-					if (bareMatch == null)
-						bareMatch = invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public TArg Invoke()
@@ -1689,20 +1650,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal IHandleReferenceMethodImposter<TArg> GetImposterWithMatchingInvocationImposterGroup<TArg>(HandleReferenceArguments<TArg> arguments)
 				where TArg : class, new()
 			{
-				IHandleReferenceMethodImposter<TArg>? bareMatch = null;
 				foreach (var storedImposter in _imposters)
 				{
 					var typedImposter = storedImposter.As<TArg>();
-					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments, out var hasConfiguredOutcome))
-					{
-						if (hasConfiguredOutcome)
-							return typedImposter;
-						if (bareMatch == null)
-							bareMatch = typedImposter;
-					}
+					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments))
+						return typedImposter;
 				}
 
-				return bareMatch ?? new HandleReferenceMethodImposter<TArg>(_handleReferenceMethodInvocationHistoryCollection, _invocationBehavior);
+				return new HandleReferenceMethodImposter<TArg>(_handleReferenceMethodInvocationHistoryCollection, _invocationBehavior);
 			}
 		}
 
@@ -1745,7 +1700,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 					if (!invocationImposter.IsConfigured)
 					{
-						return _latestInvocationImposter ?? MethodInvocationImposter.Default;
+						return _latestInvocationImposter;
 					}
 
 					_latestInvocationImposter = invocationImposter;
@@ -1862,7 +1817,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		internal interface IHandleReferenceMethodImposter<TArg> : IHandleReferenceMethodImposter where TArg : class, new()
 		{
 			void Invoke(TArg value);
-			bool HasMatchingInvocationImposterGroup(HandleReferenceArguments<TArg> arguments, out bool hasConfiguredOutcome);
+			bool HasMatchingInvocationImposterGroup(HandleReferenceArguments<TArg> arguments);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1914,9 +1869,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					_target.Invoke(global::Imposter.Abstractions.TypeCaster.Cast<TArgTarget, TArg>(value));
 				}
 
-				public bool HasMatchingInvocationImposterGroup(HandleReferenceArguments<TArgTarget> arguments, out bool hasConfiguredOutcome)
+				public bool HasMatchingInvocationImposterGroup(HandleReferenceArguments<TArgTarget> arguments)
 				{
-					return _target.HasMatchingInvocationImposterGroup(arguments.As<TArg>(), out hasConfiguredOutcome);
+					return _target.HasMatchingInvocationImposterGroup(arguments.As<TArg>());
 				}
 
 				IHandleReferenceMethodImposter<TArgTarget1>? IHandleReferenceMethodImposter.As<TArgTarget1>()
@@ -1925,28 +1880,20 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				}
 			}
 
-			public bool HasMatchingInvocationImposterGroup(HandleReferenceArguments<TArg> arguments, out bool hasConfiguredOutcome)
+			public bool HasMatchingInvocationImposterGroup(HandleReferenceArguments<TArg> arguments)
 			{
-				var invocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
-				hasConfiguredOutcome = (invocationImposterGroup != null) && invocationImposterGroup.HasConfiguredOutcome;
-				return invocationImposterGroup != null;
+				return FindMatchingInvocationImposterGroup(arguments) != null;
 			}
 
 			private HandleReferenceMethodInvocationImposterGroup<TArg>? FindMatchingInvocationImposterGroup(HandleReferenceArguments<TArg> arguments)
 			{
-				HandleReferenceMethodInvocationImposterGroup<TArg>? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public void Invoke(TArg value)

@@ -323,16 +323,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private GetAsyncMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
 			{
-				GetAsyncMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.HasConfiguredOutcome)
 						return invocationImposterGroup;
-					if (bareMatch == null)
-						bareMatch = invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public global::System.Threading.Tasks.Task<int> Invoke(out int count)
@@ -772,19 +769,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private NextAsyncMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(NextAsyncArguments arguments)
 			{
-				NextAsyncMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public global::System.Threading.Tasks.Task<int> Invoke(ref int position)
@@ -1227,19 +1218,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private PeekAsyncMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(PeekAsyncArguments arguments)
 			{
-				PeekAsyncMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public global::System.Threading.Tasks.ValueTask<int> Invoke(in int key)

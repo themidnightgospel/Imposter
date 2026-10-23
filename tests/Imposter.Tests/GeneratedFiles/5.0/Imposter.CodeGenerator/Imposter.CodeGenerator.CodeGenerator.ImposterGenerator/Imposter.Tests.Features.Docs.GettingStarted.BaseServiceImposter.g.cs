@@ -284,16 +284,13 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
 
 			private GetNumberMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
 			{
-				GetNumberMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.HasConfiguredOutcome)
 						return invocationImposterGroup;
-					if (bareMatch == null)
-						bareMatch = invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(GetNumberDelegate? baseImplementation = null)

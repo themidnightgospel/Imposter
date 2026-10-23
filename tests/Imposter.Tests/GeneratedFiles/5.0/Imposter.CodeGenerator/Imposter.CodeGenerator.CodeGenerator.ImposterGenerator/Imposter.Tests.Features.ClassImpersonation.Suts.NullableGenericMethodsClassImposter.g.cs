@@ -157,20 +157,14 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			internal IEchoMaybeDefaultMethodImposter<T> GetImposterWithMatchingInvocationImposterGroup<T>(EchoMaybeDefaultArguments<T> arguments)
 			{
-				IEchoMaybeDefaultMethodImposter<T>? bareMatch = null;
 				foreach (var storedImposter in _imposters)
 				{
 					var typedImposter = storedImposter.As<T>();
-					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments, out var hasConfiguredOutcome))
-					{
-						if (hasConfiguredOutcome)
-							return typedImposter;
-						if (bareMatch == null)
-							bareMatch = typedImposter;
-					}
+					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments))
+						return typedImposter;
 				}
 
-				return bareMatch ?? new EchoMaybeDefaultMethodImposter<T>(_echoMaybeDefaultMethodInvocationHistoryCollection, _invocationBehavior);
+				return new EchoMaybeDefaultMethodImposter<T>(_echoMaybeDefaultMethodInvocationHistoryCollection, _invocationBehavior);
 			}
 		}
 
@@ -355,7 +349,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		internal interface IEchoMaybeDefaultMethodImposter<T> : IEchoMaybeDefaultMethodImposter
 		{
 			T? Invoke(T? value, EchoMaybeDefaultDelegate<T>? baseImplementation = null);
-			bool HasMatchingInvocationImposterGroup(EchoMaybeDefaultArguments<T> arguments, out bool hasConfiguredOutcome);
+			bool HasMatchingInvocationImposterGroup(EchoMaybeDefaultArguments<T> arguments);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -407,9 +401,9 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					return global::Imposter.Abstractions.TypeCaster.Cast<T?, TTarget?>(result);
 				}
 
-				public bool HasMatchingInvocationImposterGroup(EchoMaybeDefaultArguments<TTarget> arguments, out bool hasConfiguredOutcome)
+				public bool HasMatchingInvocationImposterGroup(EchoMaybeDefaultArguments<TTarget> arguments)
 				{
-					return _target.HasMatchingInvocationImposterGroup(arguments.As<T>(), out hasConfiguredOutcome);
+					return _target.HasMatchingInvocationImposterGroup(arguments.As<T>());
 				}
 
 				IEchoMaybeDefaultMethodImposter<TTarget1>? IEchoMaybeDefaultMethodImposter.As<TTarget1>()
@@ -418,28 +412,20 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				}
 			}
 
-			public bool HasMatchingInvocationImposterGroup(EchoMaybeDefaultArguments<T> arguments, out bool hasConfiguredOutcome)
+			public bool HasMatchingInvocationImposterGroup(EchoMaybeDefaultArguments<T> arguments)
 			{
-				var invocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
-				hasConfiguredOutcome = (invocationImposterGroup != null) && invocationImposterGroup.HasConfiguredOutcome;
-				return invocationImposterGroup != null;
+				return FindMatchingInvocationImposterGroup(arguments) != null;
 			}
 
 			private EchoMaybeDefaultMethodInvocationImposterGroup<T>? FindMatchingInvocationImposterGroup(EchoMaybeDefaultArguments<T> arguments)
 			{
-				EchoMaybeDefaultMethodInvocationImposterGroup<T>? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public T? Invoke(T? value, EchoMaybeDefaultDelegate<T>? baseImplementation = null)
@@ -705,20 +691,14 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			internal IEchoNullableReferenceMethodImposter<T> GetImposterWithMatchingInvocationImposterGroup<T>(EchoNullableReferenceArguments<T> arguments)
 				where T : class ?, global::System.IDisposable?
 			{
-				IEchoNullableReferenceMethodImposter<T>? bareMatch = null;
 				foreach (var storedImposter in _imposters)
 				{
 					var typedImposter = storedImposter.As<T>();
-					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments, out var hasConfiguredOutcome))
-					{
-						if (hasConfiguredOutcome)
-							return typedImposter;
-						if (bareMatch == null)
-							bareMatch = typedImposter;
-					}
+					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments))
+						return typedImposter;
 				}
 
-				return bareMatch ?? new EchoNullableReferenceMethodImposter<T>(_echoNullableReferenceMethodInvocationHistoryCollection, _invocationBehavior);
+				return new EchoNullableReferenceMethodImposter<T>(_echoNullableReferenceMethodInvocationHistoryCollection, _invocationBehavior);
 			}
 		}
 
@@ -906,7 +886,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		internal interface IEchoNullableReferenceMethodImposter<T> : IEchoNullableReferenceMethodImposter where T : class ?, global::System.IDisposable?
 		{
 			T Invoke(T value, EchoNullableReferenceDelegate<T>? baseImplementation = null);
-			bool HasMatchingInvocationImposterGroup(EchoNullableReferenceArguments<T> arguments, out bool hasConfiguredOutcome);
+			bool HasMatchingInvocationImposterGroup(EchoNullableReferenceArguments<T> arguments);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -959,9 +939,9 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					return global::Imposter.Abstractions.TypeCaster.Cast<T, TTarget>(result);
 				}
 
-				public bool HasMatchingInvocationImposterGroup(EchoNullableReferenceArguments<TTarget> arguments, out bool hasConfiguredOutcome)
+				public bool HasMatchingInvocationImposterGroup(EchoNullableReferenceArguments<TTarget> arguments)
 				{
-					return _target.HasMatchingInvocationImposterGroup(arguments.As<T>(), out hasConfiguredOutcome);
+					return _target.HasMatchingInvocationImposterGroup(arguments.As<T>());
 				}
 
 				IEchoNullableReferenceMethodImposter<TTarget1>? IEchoNullableReferenceMethodImposter.As<TTarget1>()
@@ -970,28 +950,20 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				}
 			}
 
-			public bool HasMatchingInvocationImposterGroup(EchoNullableReferenceArguments<T> arguments, out bool hasConfiguredOutcome)
+			public bool HasMatchingInvocationImposterGroup(EchoNullableReferenceArguments<T> arguments)
 			{
-				var invocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
-				hasConfiguredOutcome = (invocationImposterGroup != null) && invocationImposterGroup.HasConfiguredOutcome;
-				return invocationImposterGroup != null;
+				return FindMatchingInvocationImposterGroup(arguments) != null;
 			}
 
 			private EchoNullableReferenceMethodInvocationImposterGroup<T>? FindMatchingInvocationImposterGroup(EchoNullableReferenceArguments<T> arguments)
 			{
-				EchoNullableReferenceMethodInvocationImposterGroup<T>? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public T Invoke(T value, EchoNullableReferenceDelegate<T>? baseImplementation = null)

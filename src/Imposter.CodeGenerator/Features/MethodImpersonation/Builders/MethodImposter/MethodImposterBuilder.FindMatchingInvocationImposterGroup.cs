@@ -11,28 +11,21 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.MethodImp
 
 internal partial class MethodImposterBuilder
 {
+    // Only a group with a configured outcome answers a call. A bare one, which a builder registers before it is
+    // configured or only to verify, leaves the call to the default outcome, or to MissingImposterException in Explicit
+    // mode.
     internal static MemberDeclarationSyntax BuildFindMatchingInvocationImposterGroupMethod(
         in ImposterTargetMethodMetadata method
     )
     {
         var lookup = method.MethodImposter.FindMatchingInvocationImposterGroupMethod;
         var group = IdentifierName(lookup.GroupVariableName);
-        var bareMatch = IdentifierName(lookup.BareMatchVariableName);
-        var matchingBody = Block(
-            IfStatement(
-                group.Dot(
-                    IdentifierName(
-                        method.MethodInvocationImposterGroup.HasConfiguredOutcomeFieldName
-                    )
-                ),
-                ReturnStatement(group)
-            ),
-            IfStatement(bareMatch.IsNull(), bareMatch.Assign(group).ToStatementSyntax())
+        ExpressionSyntax answersTheCall = group.Dot(
+            IdentifierName(method.MethodInvocationImposterGroup.HasConfiguredOutcomeFieldName)
         );
-        StatementSyntax candidateBody = matchingBody;
         if (method.Parameters.HasInputParameters)
         {
-            candidateBody = IfStatement(
+            answersTheCall = answersTheCall.And(
                 group
                     .Dot(
                         IdentifierName(
@@ -40,8 +33,7 @@ internal partial class MethodImposterBuilder
                         )
                     )
                     .Dot(IdentifierName(method.ArgumentsCriteria.MatchesMethod.Name))
-                    .Call(Argument(IdentifierName("arguments"))),
-                matchingBody
+                    .Call(Argument(IdentifierName("arguments")))
             );
         }
 
@@ -57,18 +49,13 @@ internal partial class MethodImposterBuilder
             )
             .WithBody(
                 Block(
-                    LocalVariableDeclarationSyntax(
-                        NullableType(method.MethodInvocationImposterGroup.Syntax),
-                        bareMatch.Identifier.Text,
-                        Null
-                    ),
                     ForEachStatement(
                         Var,
                         group.Identifier,
                         IdentifierName(method.MethodImposter.InvocationImposterGroupsField.Name),
-                        candidateBody is BlockSyntax body ? body : Block(candidateBody)
+                        Block(IfStatement(answersTheCall, ReturnStatement(group)))
                     ),
-                    ReturnStatement(bareMatch)
+                    ReturnStatement(Null)
                 )
             )
             .Build();

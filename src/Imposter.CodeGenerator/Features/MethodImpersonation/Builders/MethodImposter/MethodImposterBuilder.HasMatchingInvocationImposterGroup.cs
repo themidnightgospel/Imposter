@@ -16,25 +16,12 @@ internal static partial class MethodImposterBuilder
     {
         var hasMatchingMethod = method.MethodImposter.HasMatchingInvocationImposterGroupMethod;
 
-        var group = IdentifierName(
-            method.MethodImposter.FindMatchingInvocationImposterGroupMethod.GroupVariableName
-        );
         return new MethodDeclarationBuilder(hasMatchingMethod.ReturnType, hasMatchingMethod.Name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddParameter(GetHasMatchingInvocationImposterGroupParameter(method, hasMatchingMethod))
-            .AddParameter(
-                SyntaxFactoryHelper
-                    .ParameterSyntax(
-                        WellKnownTypes.Bool,
-                        hasMatchingMethod.HasConfiguredOutcomeParameterName
-                    )
-                    .WithModifiers(TokenList(Token(SyntaxKind.OutKeyword)))
-            )
             .WithBody(
                 Block(
-                    SyntaxFactoryHelper.LocalVariableDeclarationSyntax(
-                        SyntaxFactoryHelper.Var,
-                        group.Identifier.Text,
+                    ReturnStatement(
                         IdentifierName(
                                 method.MethodImposter.FindMatchingInvocationImposterGroupMethod.Name
                             )
@@ -44,23 +31,8 @@ internal static partial class MethodImposterBuilder
                                     hasMatchingMethod
                                 )
                             )
-                    ),
-                    IdentifierName(hasMatchingMethod.HasConfiguredOutcomeParameterName)
-                        .Assign(
-                            group
-                                .IsNotNull()
-                                .And(
-                                    group.Dot(
-                                        IdentifierName(
-                                            method
-                                                .MethodInvocationImposterGroup
-                                                .HasConfiguredOutcomeFieldName
-                                        )
-                                    )
-                                )
-                        )
-                        .ToStatementSyntax(),
-                    ReturnStatement(group.IsNotNull())
+                            .IsNotNull()
+                    )
                 )
             )
             .Build();

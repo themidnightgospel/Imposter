@@ -150,7 +150,8 @@ internal static class IndexerSetterBuilder
                         .EnsureInitialized(setter.CallbacksField.Name)
                         .Dot(IdentifierName("Add"))
                         .Call(Argument(tupleExpression))
-                        .ToStatementSyntax()
+                        .ToStatementSyntax(),
+                    IdentifierName(setter.MarkConfiguredMethod.Name).Call().ToStatementSyntax()
                 )
             )
             .Build();

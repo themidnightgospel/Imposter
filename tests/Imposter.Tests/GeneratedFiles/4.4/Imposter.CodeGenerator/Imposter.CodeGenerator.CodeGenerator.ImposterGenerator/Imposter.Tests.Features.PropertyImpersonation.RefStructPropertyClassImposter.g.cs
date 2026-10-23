@@ -259,6 +259,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 				internal void Callback(CurrentPropertySetterCallback callback)
 				{
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
+					_hasConfiguredSetter = true;
 				}
 
 				void Called(global::Imposter.Abstractions.Count count)
@@ -303,11 +304,6 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
 				}
 
-				internal void MarkConfigured()
-				{
-					_hasConfiguredSetter = true;
-				}
-
 				[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 				internal class Builder : ICurrentPropertySetterBuilder, ICurrentPropertySetterFluentBuilder, ICurrentPropertySetterUseBaseImplementationBuilder
 				{
@@ -348,7 +344,6 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 			ICurrentPropertySetterBuilder ICurrentPropertyBuilder.Setter()
 			{
-				_setterImposter.MarkConfigured();
 				return new SetterImposter.Builder(_setterImposter);
 			}
 

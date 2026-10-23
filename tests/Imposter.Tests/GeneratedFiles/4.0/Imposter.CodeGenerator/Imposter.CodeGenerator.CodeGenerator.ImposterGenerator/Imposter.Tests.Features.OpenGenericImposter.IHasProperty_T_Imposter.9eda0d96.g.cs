@@ -781,6 +781,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				internal void Callback(global::Imposter.Abstractions.Arg<T> criteria, global::System.Action<T> callback)
 				{
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(new global::System.Tuple<global::Imposter.Abstractions.Arg<T>, global::System.Action<T>>(criteria, callback));
+					_hasConfiguredSetter = true;
 				}
 
 				void Called(global::Imposter.Abstractions.Arg<T> criteria, global::Imposter.Abstractions.Count count)
@@ -827,11 +828,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
 				}
 
-				internal void MarkConfigured()
-				{
-					_hasConfiguredSetter = true;
-				}
-
 				private static string FormatValue(object? value)
 				{
 					return "<" + (value?.ToString() ?? "null") + ">";
@@ -873,7 +869,6 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			IValuePropertySetterBuilder IValuePropertyBuilder.Setter(global::Imposter.Abstractions.Arg<T> criteria)
 			{
-				_setterImposter.MarkConfigured();
 				return new SetterImposter.Builder(_setterImposter, criteria);
 			}
 		}

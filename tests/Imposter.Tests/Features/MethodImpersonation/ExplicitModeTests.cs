@@ -65,13 +65,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
         }
 
         [Fact]
-        public void GivenExplicitMode_WhenVoidMethodSetupWithoutConfiguration_ShouldInvokeSuccessfully()
+        public void GivenExplicitMode_WhenVoidMethodSetupWithoutConfiguration_ShouldThrowMissingImposterException()
         {
             var sut = new IMethodSetupFeatureSutImposter(ImposterMode.Explicit);
 
             sut.VoidNoParams();
 
-            Should.NotThrow(() => sut.Instance().VoidNoParams());
+            Should.Throw<MissingImposterException>(() => sut.Instance().VoidNoParams());
         }
 
         [Fact]
@@ -84,6 +84,74 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
             Should.NotThrow(() => sut.Instance().VoidNoParams());
             callbackInvoked.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void GivenExplicitMode_WhenVoidMethodVerified_ShouldStillThrowMissingImposterException()
+        {
+            var sut = new IMethodSetupFeatureSutImposter(ImposterMode.Explicit);
+
+            sut.VoidNoParams().Called(Count.Never());
+
+            Should.Throw<MissingImposterException>(() => sut.Instance().VoidNoParams());
+        }
+
+        [Fact]
+        public void GivenExplicitMode_WhenVoidMethodCallCountRead_ShouldStillThrowMissingImposterException()
+        {
+            var sut = new IMethodSetupFeatureSutImposter(ImposterMode.Explicit);
+
+            sut.VoidNoParams().CallCount().ShouldBe(0);
+
+            Should.Throw<MissingImposterException>(() => sut.Instance().VoidNoParams());
+        }
+
+        [Fact]
+        public void GivenExplicitMode_WhenGenericVoidMethodVerified_ShouldStillThrowMissingImposterException()
+        {
+            var sut = new IMethodSetupFeatureSutImposter(ImposterMode.Explicit);
+
+            sut.GenericSingleParam<int>(Arg<int>.Any()).Called(Count.Never());
+
+            Should.Throw<MissingImposterException>(() => sut.Instance().GenericSingleParam(1));
+        }
+
+        [Fact]
+        public void GivenExplicitMode_WhenVerifiedBuilderIsConfiguredLater_ShouldUseItsOutcome()
+        {
+            var sut = new IMethodSetupFeatureSutImposter(ImposterMode.Explicit);
+            var callbackInvoked = false;
+            var builder = sut.VoidNoParams();
+
+            builder.Called(Count.Never());
+            builder.Callback(() => callbackInvoked = true);
+
+            Should.NotThrow(() => sut.Instance().VoidNoParams());
+            callbackInvoked.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void GivenExplicitMode_WhenGenericVoidMethodVerifiedForAnotherTypeArgument_ShouldStillThrowMissingImposterException()
+        {
+            var sut = new IMethodSetupFeatureSutImposter(ImposterMode.Explicit);
+
+            sut.GenericSingleParam<object>(Arg<object>.Any()).Called(Count.Never());
+
+            Should.Throw<MissingImposterException>(() =>
+                sut.Instance().GenericSingleParam("value")
+            );
+        }
+
+        [Fact]
+        public void GivenImplicitMode_WhenGenericVoidMethodVerifiedForAnotherTypeArgument_ShouldRecordCallsUnderTheirOwnTypeArgument()
+        {
+            var sut = new IMethodSetupFeatureSutImposter(ImposterMode.Implicit);
+
+            sut.GenericSingleParam<object>(Arg<object>.Any()).Called(Count.Never());
+            sut.Instance().GenericSingleParam("value");
+
+            sut.GenericSingleParam<string>(Arg<string>.Any()).Called(Count.Once());
+            sut.GenericSingleParam<object>(Arg<object>.Any()).Called(Count.Never());
         }
     }
 }

@@ -156,8 +156,6 @@ namespace Imposter.Tests.Features.CallAllocations
             );
             pending.Callback(_ => { });
             Should.NotThrow(() => imposter.Instance().GenericSingleParam(5));
-            imposter.GenericSingleParam<string>(Arg<string>.Any());
-            Should.NotThrow(() => imposter.Instance().GenericSingleParam("bare"));
         }
 
         [Theory]
@@ -201,14 +199,12 @@ namespace Imposter.Tests.Features.CallAllocations
         }
 
         [Fact]
-        public void Given_ExplicitMode_When_OnlyBareVoidSetupMatches_Should_AllowRepeatedCalls()
+        public void Given_ExplicitMode_When_OnlyBareVoidSetupMatches_Should_ThrowMissingImposterException()
         {
             var imposter = new ICallAllocationSutImposter(ImposterMode.Explicit);
             imposter.Log(Arg<string>.Is("health"));
             imposter.Log(Arg<string>.Is("other")).Throws<InvalidOperationException>();
-            imposter.Instance().Log("health");
-            imposter.Instance().Log("health");
-            imposter.Log(Arg<string>.Is("health")).CallCount().ShouldBe(2);
+            Should.Throw<MissingImposterException>(() => imposter.Instance().Log("health"));
         }
     }
 }

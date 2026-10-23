@@ -175,7 +175,7 @@ If verification fails, a `VerificationFailedException` is thrown with a clear me
 
 The newest matching setup with a configured outcome wins. `Returns`, `ReturnsAsync`, `Throws`, `ThrowsAsync`, `Callback`, and `UseBaseImplementation` configure outcomes. A newer bare setup, including one created for `Called` or `CallCount`, does not replace an older configured outcome.
 
-When no configured setup matches, the newest bare match supplies the usual default behavior. In particular, a bare void setup still allows a call in `Explicit` mode. To override an older void `Throws` or `Callback` with a no-op, configure an empty callback explicitly:
+A bare setup never answers a call. When no configured setup matches, the call gets the usual default behavior in `Implicit` mode and throws `MissingImposterException` in `Explicit` mode, even for a void method. To allow a void call in `Explicit` mode, or to override an older void `Throws` or `Callback` with a no-op, configure an empty callback:
 
 ```csharp
 imposter.Log(Arg<string>.Any()).Throws<InvalidOperationException>();

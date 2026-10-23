@@ -404,19 +404,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private BoolDefaultMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(BoolDefaultArguments arguments)
 			{
-				BoolDefaultMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(bool flag)
@@ -811,19 +805,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private CharDefaultMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(CharDefaultArguments arguments)
 			{
-				CharDefaultMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(char value)
@@ -1218,19 +1206,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private DecimalDefaultMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(DecimalDefaultArguments arguments)
 			{
-				DecimalDefaultMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(decimal value)
@@ -1625,19 +1607,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private DoubleDefaultMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(DoubleDefaultArguments arguments)
 			{
-				DoubleDefaultMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(double value)
@@ -2032,19 +2008,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private EnumDefaultMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(EnumDefaultArguments arguments)
 			{
-				EnumDefaultMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum mode)
@@ -2439,19 +2409,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private FloatDefaultMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(FloatDefaultArguments arguments)
 			{
-				FloatDefaultMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(float value)
@@ -2846,19 +2810,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private IntDefaultMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(IntDefaultArguments arguments)
 			{
-				IntDefaultMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(int value)
@@ -3261,19 +3219,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private MultipleOptionalsMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(MultipleOptionalsArguments arguments)
 			{
-				MultipleOptionalsMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(string command, bool validate, int timeout)
@@ -3668,19 +3620,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private NameDefaultMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(NameDefaultArguments arguments)
 			{
-				NameDefaultMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(string name)
@@ -4075,19 +4021,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private NullableDefaultMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(NullableDefaultArguments arguments)
 			{
-				NullableDefaultMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(string? text)
@@ -4482,19 +4422,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private NullableInMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(NullableInArguments arguments)
 			{
-				NullableInMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(in string? text)
@@ -4865,16 +4799,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private NullableOutMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
 			{
-				NullableOutMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.HasConfiguredOutcome)
 						return invocationImposterGroup;
-					if (bareMatch == null)
-						bareMatch = invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(out string? text)
@@ -5266,19 +5197,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private NullableParamsMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(NullableParamsArguments arguments)
 			{
-				NullableParamsMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(string? [] values)
@@ -5673,19 +5598,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private NullableRefMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(NullableRefArguments arguments)
 			{
-				NullableRefMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(ref string? text)
@@ -6088,19 +6007,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private OptionalThenParamsMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(OptionalThenParamsArguments arguments)
 			{
-				OptionalThenParamsMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(int value, string? option, int[] extras)
@@ -6499,19 +6412,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private RequiredThenOptionalMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(RequiredThenOptionalArguments arguments)
 			{
-				RequiredThenOptionalMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(string data, bool validate)

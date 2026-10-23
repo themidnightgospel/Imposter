@@ -137,7 +137,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 					if (!invocationImposter.IsConfigured)
 					{
-						return _latestInvocationImposter ?? MethodInvocationImposter.Default;
+						return _latestInvocationImposter;
 					}
 
 					_latestInvocationImposter = invocationImposter;
@@ -268,16 +268,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private AdvanceMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
 			{
-				AdvanceMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.HasConfiguredOutcome)
 						return invocationImposterGroup;
-					if (bareMatch == null)
-						bareMatch = invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public void Invoke(ref global::Imposter.Tests.Features.MethodImpersonation.Cursor cursor)
@@ -652,19 +649,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private ReadMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(ReadArguments arguments)
 			{
-				ReadMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public int Invoke(int id, global::Imposter.Tests.Features.MethodImpersonation.Cursor cursor)
@@ -1035,16 +1026,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private TryOpenMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
 			{
-				TryOpenMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.HasConfiguredOutcome)
 						return invocationImposterGroup;
-					if (bareMatch == null)
-						bareMatch = invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public bool Invoke(out global::Imposter.Tests.Features.MethodImpersonation.Cursor cursor)

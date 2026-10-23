@@ -28,9 +28,6 @@ internal static partial class MethodImposterCollectionBuilder
         var storedImposterIdentifier = Identifier(localNames.Use("storedImposter"));
         var typedImposterName = IdentifierName(localNames.Use("typedImposter"));
 
-        var bareMatch = IdentifierName(localNames.Use("bareMatch"));
-        var hasConfiguredOutcome = IdentifierName(localNames.Use("hasConfiguredOutcome"));
-
         var methodBuilder = new MethodDeclarationBuilder(
             method.MethodImposter.GenericInterface.Syntax,
             MethodImposterCollectionMetadata.GetImposterWithMatchingInvocationImposterGroupMethodName
@@ -41,11 +38,6 @@ internal static partial class MethodImposterCollectionBuilder
             .AddConstraintClauses(method.GenericTypeConstraintClauses)
             .WithBody(
                 Block(
-                    LocalVariableDeclarationSyntax(
-                        NullableType(method.MethodImposter.GenericInterface.Syntax),
-                        bareMatch.Identifier.Text,
-                        Null
-                    ),
                     ForEachStatement(
                         Var,
                         storedImposterIdentifier,
@@ -70,34 +62,19 @@ internal static partial class MethodImposterCollectionBuilder
                                         typedImposterName
                                             .Dot(IdentifierName(hasMatchingMethod.Name))
                                             .Call(
-                                                (
-                                                    method.Parameters.HasInputParameters
-                                                        ? IdentifierName(parameterName)
-                                                            .ToSingleArgumentList()
-                                                        : EmptyArgumentListSyntax
-                                                ).AddArguments(
-                                                    OutVarArgument(
-                                                        hasConfiguredOutcome.Identifier.Text
-                                                    )
-                                                )
+                                                method.Parameters.HasInputParameters
+                                                    ? IdentifierName(parameterName)
+                                                        .ToSingleArgumentList()
+                                                    : EmptyArgumentListSyntax
                                             )
                                     ),
-                                Block(
-                                    IfStatement(
-                                        hasConfiguredOutcome,
-                                        ReturnStatement(typedImposterName)
-                                    ),
-                                    IfStatement(
-                                        bareMatch.IsNull(),
-                                        bareMatch.Assign(typedImposterName).ToStatementSyntax()
-                                    )
-                                )
+                                ReturnStatement(typedImposterName)
                             )
                         )
                     ),
-                    // Without a matching setup, the invocation is served by a transient imposter that
+                    // Without a matching configured setup, the invocation is served by a transient imposter that
                     // records history but is not stored, so unconfigured invocations do not accumulate.
-                    ReturnStatement(bareMatch.Coalesce(NewMethodImposterExpression(method)))
+                    ReturnStatement(NewMethodImposterExpression(method))
                 )
             );
 

@@ -232,5 +232,27 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
             Should.Throw<MissingImposterException>(() => sut.Instance()[1] = 10);
         }
+
+        [Fact]
+        public void GivenExplicitModeSetter_WhenOnlyVerified_ShouldThrow()
+        {
+            var sut = new ISetterOnlyIndexerSetupSutImposter(ImposterMode.Explicit);
+
+            sut[Arg<int>.Any()].Setter().Called(Count.Never());
+
+            Should.Throw<MissingImposterException>(() => sut.Instance()[1] = 10);
+        }
+
+        [Fact]
+        public void GivenExplicitModeSetter_WhenCallbackConfigured_ShouldAllowSettingValues()
+        {
+            var sut = new ISetterOnlyIndexerSetupSutImposter(ImposterMode.Explicit);
+            var setValue = 0;
+
+            sut[Arg<int>.Any()].Setter().Callback((_, value) => setValue = value);
+
+            Should.NotThrow(() => sut.Instance()[1] = 10);
+            setValue.ShouldBe(10);
+        }
     }
 }

@@ -288,6 +288,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 				internal void Callback(global::Imposter.Abstractions.SpanArg<byte> criteria, global::System.Action<byte[]> callback)
 				{
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(new global::System.Tuple<global::Imposter.Abstractions.SpanArg<byte>, global::System.Action<byte[]>>(criteria, callback));
+					_hasConfiguredSetter = true;
 				}
 
 				void Called(global::Imposter.Abstractions.SpanArg<byte> criteria, global::Imposter.Abstractions.Count count)
@@ -351,11 +352,6 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
 				}
 
-				internal void MarkConfigured()
-				{
-					_hasConfiguredSetter = true;
-				}
-
 				private static string FormatValue(object? value)
 				{
 					return "<" + (value?.ToString() ?? "null") + ">";
@@ -403,7 +399,6 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 			IBufferPropertySetterBuilder IBufferPropertyBuilder.Setter(global::Imposter.Abstractions.SpanArg<byte> criteria)
 			{
-				_setterImposter.MarkConfigured();
 				return new SetterImposter.Builder(_setterImposter, criteria);
 			}
 

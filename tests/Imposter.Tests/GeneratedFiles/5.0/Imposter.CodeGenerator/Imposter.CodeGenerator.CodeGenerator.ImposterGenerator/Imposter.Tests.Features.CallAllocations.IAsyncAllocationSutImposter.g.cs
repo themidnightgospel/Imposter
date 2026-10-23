@@ -362,19 +362,13 @@ namespace Imposter.Tests.Features.CallAllocations
 
 			private GetAsyncMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(GetAsyncArguments arguments)
 			{
-				GetAsyncMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public global::System.Threading.Tasks.Task<int> Invoke(int key)
@@ -832,19 +826,13 @@ namespace Imposter.Tests.Features.CallAllocations
 
 			private GetByReferenceAsyncMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(GetByReferenceAsyncArguments arguments)
 			{
-				GetByReferenceAsyncMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public global::System.Threading.Tasks.Task<int> Invoke(ref int key, out int count, in int extra)
@@ -1252,16 +1240,13 @@ namespace Imposter.Tests.Features.CallAllocations
 
 			private GetDynamicAsyncMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
 			{
-				GetDynamicAsyncMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.HasConfiguredOutcome)
 						return invocationImposterGroup;
-					if (bareMatch == null)
-						bareMatch = invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public global::System.Threading.Tasks.ValueTask<dynamic> Invoke()
@@ -1697,19 +1682,13 @@ namespace Imposter.Tests.Features.CallAllocations
 
 			private PeekAsyncMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(PeekAsyncArguments arguments)
 			{
-				PeekAsyncMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-					{
-						if (invocationImposterGroup.HasConfiguredOutcome)
-							return invocationImposterGroup;
-						if (bareMatch == null)
-							bareMatch = invocationImposterGroup;
-					}
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public global::System.Threading.Tasks.ValueTask<int> Invoke(int key)
@@ -2107,16 +2086,13 @@ namespace Imposter.Tests.Features.CallAllocations
 
 			private RunAsyncMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
 			{
-				RunAsyncMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.HasConfiguredOutcome)
 						return invocationImposterGroup;
-					if (bareMatch == null)
-						bareMatch = invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public global::System.Threading.Tasks.Task Invoke()
@@ -2503,16 +2479,13 @@ namespace Imposter.Tests.Features.CallAllocations
 
 			private RunValueAsyncMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
 			{
-				RunValueAsyncMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.HasConfiguredOutcome)
 						return invocationImposterGroup;
-					if (bareMatch == null)
-						bareMatch = invocationImposterGroup;
 				}
 
-				return bareMatch;
+				return null;
 			}
 
 			public global::System.Threading.Tasks.ValueTask Invoke()
