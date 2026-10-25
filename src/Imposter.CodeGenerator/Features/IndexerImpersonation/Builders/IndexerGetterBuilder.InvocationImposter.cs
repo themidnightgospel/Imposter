@@ -23,7 +23,6 @@ internal static partial class IndexerGetterBuilder
         return new ClassDeclarationBuilder(invocation.Name)
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddModifier(Token(SyntaxKind.SealedKeyword))
-            .AddMember(SinglePrivateReadonlyVariableField(invocation.ParentField))
             .AddMember(SinglePrivateReadonlyVariableField(invocation.DefaultBehaviourField))
             .AddMember(
                 SinglePrivateReadonlyVariableField(
@@ -55,6 +54,7 @@ internal static partial class IndexerGetterBuilder
             .AddMember(BuildGetterInvocationConstructor(indexer))
             .AddMember(BuildGetterInvocationAddReturnValueMethod(indexer))
             .AddMember(BuildGetterInvocationAddCallbackMethod(indexer))
+            .AddMember(BuildGetterInvocationInvokeCallbacksMethod(indexer))
             .AddMember(BuildGetterInvocationInvokeMethod(indexer))
             .AddMember(BuildGetterInvocationResolveNextGeneratorMethod(indexer))
             .AddMember(BuildGetterInvocationNextReturnValueMethod(invocation))
@@ -106,12 +106,6 @@ internal static partial class IndexerGetterBuilder
             )
             .WithBody(
                 new BlockBuilder()
-                    .AddStatement(
-                        ThisExpression()
-                            .Dot(IdentifierName(invocation.ParentField.Name))
-                            .Assign(parent)
-                            .ToStatementSyntax()
-                    )
                     .AddStatement(
                         ThisExpression()
                             .Dot(IdentifierName(invocation.DefaultBehaviourField.Name))
@@ -173,10 +167,6 @@ internal static partial class IndexerGetterBuilder
                                 .HasConfiguredReturnFieldName
                         )
                         .Assign(True)
-                        .ToStatementSyntax(),
-                    IdentifierName(invocation.ParentField.Name)
-                        .Dot(IdentifierName(getter.MarkReturnConfiguredMethod.Name))
-                        .Call()
                         .ToStatementSyntax()
                 )
             )
@@ -206,6 +196,49 @@ internal static partial class IndexerGetterBuilder
             .Build();
     }
 
+    private static MethodDeclarationSyntax BuildGetterInvocationInvokeCallbacksMethod(
+        in ImposterIndexerMetadata indexer
+    )
+    {
+        var getter = indexer.GetterImplementation;
+        var arguments = IdentifierName(getter.ArgumentsVariableName);
+
+        return new MethodDeclarationBuilder(
+            WellKnownTypes.Void,
+            getter.Invocation.InvokeCallbacksMethodName
+        )
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddParameter(
+                ParameterSyntax(indexer.Arguments.TypeSyntax, getter.ArgumentsVariableName)
+            )
+            .AddParameters(PassedThroughKeyParameters(indexer, indexer.GetterPassedThroughKeyNames))
+            .WithBody(
+                Block(
+                    LazyCollectionSyntaxHelper.UnlessNull(
+                        ForEachStatement(
+                            Var,
+                            Identifier(IndexerGetterImposterMetadata.CallbackVariableName),
+                            IdentifierName(getter.Invocation.CallbacksField.Name),
+                            Block(
+                                IdentifierName(IndexerGetterImposterMetadata.CallbackVariableName)
+                                    .Call(
+                                        BuildDelegateInvocationArguments(
+                                            arguments,
+                                            indexer,
+                                            indexer.GetterPassedThroughKeyNames
+                                        )
+                                    )
+                                    .ToStatementSyntax()
+                            )
+                        )
+                    )
+                )
+            )
+            .Build();
+    }
+
+    // Only a setup with a configured return is invoked. Its return turned the default behaviour off before the setup
+    // was marked configured, so the value always comes from the configured returns.
     private static MethodDeclarationSyntax BuildGetterInvocationInvokeMethod(
         in ImposterIndexerMetadata indexer
     )
@@ -213,24 +246,13 @@ internal static partial class IndexerGetterBuilder
         var getter = indexer.GetterImplementation;
         var arguments = IdentifierName(getter.ArgumentsVariableName);
 
-        var invokeCallbacks = LazyCollectionSyntaxHelper.UnlessNull(
-            ForEachStatement(
-                Var,
-                Identifier(IndexerGetterImposterMetadata.CallbackVariableName),
-                IdentifierName(getter.Invocation.CallbacksField.Name),
-                Block(
-                    IdentifierName(IndexerGetterImposterMetadata.CallbackVariableName)
-                        .Call(
-                            BuildDelegateInvocationArguments(
-                                arguments,
-                                indexer,
-                                indexer.GetterPassedThroughKeyNames
-                            )
-                        )
-                        .ToStatementSyntax()
-                )
+        // Through this, since a key passed through can share the method's name.
+        var invokeCallbacks = ThisExpression()
+            .Dot(IdentifierName(getter.Invocation.InvokeCallbacksMethodName))
+            .Call(
+                ArgumentListSyntax(HandlerArguments(indexer, indexer.GetterPassedThroughKeyNames))
             )
-        );
+            .ToStatementSyntax();
 
         var generatorDeclaration = LocalVariableDeclarationSyntax(
             getter.ReturnHandlerType,
@@ -255,36 +277,7 @@ internal static partial class IndexerGetterBuilder
             )
             .AddParameters(PassedThroughKeyParameters(indexer, indexer.GetterPassedThroughKeyNames))
             .AddParameter(ParameterSyntax(getter.BaseImplementationParameter))
-            .WithBody(
-                Block(
-                    invokeCallbacks,
-                    IfStatement(
-                        IdentifierName(getter.Invocation.DefaultBehaviourField.Name)
-                            .Dot(IdentifierName(indexer.DefaultIndexerBehaviour.IsOnPropertyName)),
-                        Block(
-                            ReturnStatement(
-                                IdentifierName(getter.Invocation.DefaultBehaviourField.Name)
-                                    .Dot(IdentifierName("Get"))
-                                    .Call(
-                                        ArgumentListSyntax([
-                                            .. HandlerArguments(
-                                                indexer,
-                                                indexer.GetterPassedThroughKeyNames
-                                            ),
-                                            Argument(
-                                                IdentifierName(
-                                                    getter.BaseImplementationParameter.Name
-                                                )
-                                            ),
-                                        ])
-                                    )
-                            )
-                        )
-                    ),
-                    generatorDeclaration,
-                    returnGenerated
-                )
-            )
+            .WithBody(Block(invokeCallbacks, generatorDeclaration, returnGenerated))
             .Build();
     }
 
@@ -360,14 +353,6 @@ internal static partial class IndexerGetterBuilder
                                 .HasConfiguredReturnFieldName
                         )
                         .Assign(True)
-                        .ToStatementSyntax(),
-                    IdentifierName(invocation.ParentField.Name)
-                        .Dot(
-                            IdentifierName(
-                                indexer.GetterImplementation.MarkReturnConfiguredMethod.Name
-                            )
-                        )
-                        .Call()
                         .ToStatementSyntax()
                 )
             )

@@ -44,11 +44,22 @@ public class IndexerImposterMemberNameCollisionTests
     }
 
     [Fact]
-    public async Task GivenParametersNamedLikeTheGetterImposterMethods_WhenIndexerIsUsed_ShouldCompile()
+    public async Task GivenParameterNamedLikeTheGetterImposterMethod_WhenIndexerIsUsed_ShouldCompile()
     {
         await AssertInterfaceCompiles(
-            "public interface IService { int this[int EnsureGetterConfigured, int FindGetterInvocationImposter] { get; set; } }",
+            "public interface IService { int this[int FindGetterInvocationImposter, int key] { get; set; } }",
             Usage,
+            nameof(IndexerImposterMemberNameCollisionTests)
+        );
+    }
+
+    // A ref struct key can't be kept, so it passes through to the getter invocation imposter's methods.
+    [Fact]
+    public async Task GivenRefStructKeyNamedLikeTheGetterInvocationImposterMethod_WhenIndexerIsUsed_ShouldCompile()
+    {
+        await AssertInterfaceCompiles(
+            "public ref struct Cursor { public int Position; } public interface IService { int this[int row, Cursor InvokeCallbacks] { get; set; } }",
+            "imposter[Arg<int>.Is(1)].Getter().Returns((row, cursor) => row).Callback((row, cursor) => { }); imposter[Arg<int>.Is(2)].Getter().Callback((row, cursor) => { }); _ = imposter.Instance()[1, new Sample.Cursor()] + imposter.Instance()[2, new Sample.Cursor()];",
             nameof(IndexerImposterMemberNameCollisionTests)
         );
     }

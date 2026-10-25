@@ -1438,7 +1438,6 @@ namespace Imposter.Benchmarks
 				private global::System.Collections.Concurrent.ConcurrentStack<IndexerIndexerArguments>? _invocationHistory;
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 				private readonly string _propertyDisplayName;
-				private bool _hasConfiguredReturn;
 				internal GetterImposter(DefaultIndexerIndexerBehaviour defaultBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName)
 				{
 					this._defaultBehaviour = defaultBehaviour;
@@ -1452,22 +1451,18 @@ namespace Imposter.Benchmarks
 					try
 					{
 						var getterInvocationImposter = FindGetterInvocationImposter(arguments);
-						if (getterInvocationImposter is null)
+						if ((getterInvocationImposter != null) && getterInvocationImposter.HasConfiguredReturn)
+							return getterInvocationImposter.Invoke(arguments, baseImplementation);
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
 						{
-							EnsureGetterConfigured();
-							if (_defaultBehaviour.IsOn)
-								return _defaultBehaviour.Get(arguments, baseImplementation);
-							if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-							{
-								throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
-							}
-							else
-							{
-								return default !;
-							}
+							throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
 						}
 
-						return getterInvocationImposter.Invoke(arguments, baseImplementation);
+						if (getterInvocationImposter != null)
+							getterInvocationImposter.InvokeCallbacks(arguments);
+						if (_defaultBehaviour.IsOn)
+							return _defaultBehaviour.Get(arguments, baseImplementation);
+						return default !;
 					}
 					finally
 					{
@@ -1526,19 +1521,6 @@ namespace Imposter.Benchmarks
 				}
 
 				internal string PropertyDisplayName => _propertyDisplayName;
-
-				internal void MarkReturnConfigured()
-				{
-					global::System.Threading.Volatile.Write(ref _hasConfiguredReturn, true);
-				}
-
-				private void EnsureGetterConfigured()
-				{
-					if ((_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit) && !global::System.Threading.Volatile.Read(ref _hasConfiguredReturn))
-					{
-						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
-					}
-				}
 
 				[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 				internal class Builder : IIndexerIndexerGetterBuilder, IIndexerIndexerGetterFluentBuilder
@@ -1609,7 +1591,6 @@ namespace Imposter.Benchmarks
 				[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 				private sealed class GetterInvocationImposter
 				{
-					private readonly GetterImposter _parent;
 					private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
 					private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int>>();
 					private global::Imposter.Abstractions.CallbackCollection<IndexerIndexerGetterCallback>? _callbacks;
@@ -1620,7 +1601,6 @@ namespace Imposter.Benchmarks
 
 					internal GetterInvocationImposter(GetterImposter parent, DefaultIndexerIndexerBehaviour defaultBehaviour, IndexerIndexerArgumentsCriteria criteria)
 					{
-						this._parent = parent;
 						this._defaultBehaviour = defaultBehaviour;
 						this._propertyDisplayName = parent.PropertyDisplayName;
 						this.Criteria = criteria;
@@ -1631,7 +1611,6 @@ namespace Imposter.Benchmarks
 						_returnValues.Enqueue((arguments, baseImplementation) => generator(arguments));
 						_defaultBehaviour.IsOn = false;
 						HasConfiguredReturn = true;
-						_parent.MarkReturnConfigured();
 					}
 
 					internal void AddCallback(IndexerIndexerGetterCallback callback)
@@ -1639,7 +1618,7 @@ namespace Imposter.Benchmarks
 						global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 					}
 
-					internal int Invoke(IndexerIndexerArguments arguments, global::System.Func<int>? baseImplementation = null)
+					internal void InvokeCallbacks(IndexerIndexerArguments arguments)
 					{
 						if (_callbacks != null)
 						{
@@ -1648,12 +1627,11 @@ namespace Imposter.Benchmarks
 								callback(arguments.key);
 							}
 						}
+					}
 
-						if (_defaultBehaviour.IsOn)
-						{
-							return _defaultBehaviour.Get(arguments, baseImplementation);
-						}
-
+					internal int Invoke(IndexerIndexerArguments arguments, global::System.Func<int>? baseImplementation = null)
+					{
+						this.InvokeCallbacks(arguments);
 						global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int> generator = ResolveNextGenerator(arguments);
 						return generator(arguments, baseImplementation);
 					}

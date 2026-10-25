@@ -177,7 +177,6 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 				private global::System.Collections.Concurrent.ConcurrentStack<IndexerIndexerArguments>? _invocationHistory;
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 				private readonly string _propertyDisplayName;
-				private bool _hasConfiguredReturn;
 				internal GetterImposter(DefaultIndexerIndexerBehaviour defaultBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName)
 				{
 					this._defaultBehaviour = defaultBehaviour;
@@ -191,22 +190,18 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 					try
 					{
 						var getterInvocationImposter = FindGetterInvocationImposter(arguments);
-						if (getterInvocationImposter is null)
+						if ((getterInvocationImposter != null) && getterInvocationImposter.HasConfiguredReturn)
+							return getterInvocationImposter.Invoke(arguments, locator, baseImplementation);
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
 						{
-							EnsureGetterConfigured();
-							if (_defaultBehaviour.IsOn)
-								return _defaultBehaviour.Get(arguments, locator, baseImplementation);
-							if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-							{
-								throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
-							}
-							else
-							{
-								return default !;
-							}
+							throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
 						}
 
-						return getterInvocationImposter.Invoke(arguments, locator, baseImplementation);
+						if (getterInvocationImposter != null)
+							getterInvocationImposter.InvokeCallbacks(arguments, locator);
+						if (_defaultBehaviour.IsOn)
+							return _defaultBehaviour.Get(arguments, locator, baseImplementation);
+						return default !;
 					}
 					finally
 					{
@@ -265,19 +260,6 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 				}
 
 				internal string PropertyDisplayName => _propertyDisplayName;
-
-				internal void MarkReturnConfigured()
-				{
-					global::System.Threading.Volatile.Write(ref _hasConfiguredReturn, true);
-				}
-
-				private void EnsureGetterConfigured()
-				{
-					if ((_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit) && !global::System.Threading.Volatile.Read(ref _hasConfiguredReturn))
-					{
-						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
-					}
-				}
 
 				[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 				internal class Builder : IIndexerIndexerGetterBuilder, IIndexerIndexerGetterFluentBuilder
@@ -348,7 +330,6 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 				[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 				private sealed class GetterInvocationImposter
 				{
-					private readonly GetterImposter _parent;
 					private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
 					private readonly global::System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerReturnHandler> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerReturnHandler>();
 					private global::Imposter.Abstractions.CallbackCollection<IndexerIndexerGetterCallback>? _callbacks;
@@ -359,7 +340,6 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 					internal GetterInvocationImposter(GetterImposter parent, DefaultIndexerIndexerBehaviour defaultBehaviour, IndexerIndexerArgumentsCriteria criteria)
 					{
-						this._parent = parent;
 						this._defaultBehaviour = defaultBehaviour;
 						this._propertyDisplayName = parent.PropertyDisplayName;
 						this.Criteria = criteria;
@@ -370,7 +350,6 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 						_returnValues.Enqueue((arguments, locator, baseImplementation) => generator(arguments, locator));
 						_defaultBehaviour.IsOn = false;
 						HasConfiguredReturn = true;
-						_parent.MarkReturnConfigured();
 					}
 
 					internal void AddCallback(IndexerIndexerGetterCallback callback)
@@ -378,7 +357,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 						global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 					}
 
-					internal int Invoke(IndexerIndexerArguments arguments, global::Imposter.Tests.Features.IndexerImpersonation.Locator locator, IndexerIndexerBaseGetter? baseImplementation = null)
+					internal void InvokeCallbacks(IndexerIndexerArguments arguments, global::Imposter.Tests.Features.IndexerImpersonation.Locator locator)
 					{
 						if (_callbacks != null)
 						{
@@ -387,12 +366,11 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 								callback(arguments.row, locator);
 							}
 						}
+					}
 
-						if (_defaultBehaviour.IsOn)
-						{
-							return _defaultBehaviour.Get(arguments, locator, baseImplementation);
-						}
-
+					internal int Invoke(IndexerIndexerArguments arguments, global::Imposter.Tests.Features.IndexerImpersonation.Locator locator, IndexerIndexerBaseGetter? baseImplementation = null)
+					{
+						this.InvokeCallbacks(arguments, locator);
 						IndexerIndexerReturnHandler generator = ResolveNextGenerator(arguments);
 						return generator(arguments, locator, baseImplementation);
 					}
@@ -768,7 +746,6 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 				private global::System.Collections.Concurrent.ConcurrentStack<Indexer_1IndexerArguments>? _invocationHistory;
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 				private readonly string _propertyDisplayName;
-				private bool _hasConfiguredReturn;
 				internal GetterImposter(DefaultIndexer_1IndexerBehaviour defaultBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName)
 				{
 					this._defaultBehaviour = defaultBehaviour;
@@ -782,22 +759,18 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 					try
 					{
 						var getterInvocationImposter = FindGetterInvocationImposter(arguments);
-						if (getterInvocationImposter is null)
+						if ((getterInvocationImposter != null) && getterInvocationImposter.HasConfiguredReturn)
+							return getterInvocationImposter.Invoke(arguments, locator, baseImplementation);
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
 						{
-							EnsureGetterConfigured();
-							if (_defaultBehaviour.IsOn)
-								return _defaultBehaviour.Get(arguments, locator, baseImplementation);
-							if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-							{
-								throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
-							}
-							else
-							{
-								return default !;
-							}
+							throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
 						}
 
-						return getterInvocationImposter.Invoke(arguments, locator, baseImplementation);
+						if (getterInvocationImposter != null)
+							getterInvocationImposter.InvokeCallbacks(arguments, locator);
+						if (_defaultBehaviour.IsOn)
+							return _defaultBehaviour.Get(arguments, locator, baseImplementation);
+						return default !;
 					}
 					finally
 					{
@@ -856,19 +829,6 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 				}
 
 				internal string PropertyDisplayName => _propertyDisplayName;
-
-				internal void MarkReturnConfigured()
-				{
-					global::System.Threading.Volatile.Write(ref _hasConfiguredReturn, true);
-				}
-
-				private void EnsureGetterConfigured()
-				{
-					if ((_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit) && !global::System.Threading.Volatile.Read(ref _hasConfiguredReturn))
-					{
-						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
-					}
-				}
 
 				[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 				internal class Builder : IIndexer_1IndexerGetterBuilder, IIndexer_1IndexerGetterFluentBuilder
@@ -939,7 +899,6 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 				[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 				private sealed class GetterInvocationImposter
 				{
-					private readonly GetterImposter _parent;
 					private readonly DefaultIndexer_1IndexerBehaviour _defaultBehaviour;
 					private readonly global::System.Collections.Concurrent.ConcurrentQueue<Indexer_1IndexerReturnHandler> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<Indexer_1IndexerReturnHandler>();
 					private global::Imposter.Abstractions.CallbackCollection<Indexer_1IndexerGetterCallback>? _callbacks;
@@ -950,7 +909,6 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 					internal GetterInvocationImposter(GetterImposter parent, DefaultIndexer_1IndexerBehaviour defaultBehaviour, Indexer_1IndexerArgumentsCriteria criteria)
 					{
-						this._parent = parent;
 						this._defaultBehaviour = defaultBehaviour;
 						this._propertyDisplayName = parent.PropertyDisplayName;
 						this.Criteria = criteria;
@@ -961,7 +919,6 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 						_returnValues.Enqueue((arguments, locator, baseImplementation) => generator(arguments, locator));
 						_defaultBehaviour.IsOn = false;
 						HasConfiguredReturn = true;
-						_parent.MarkReturnConfigured();
 					}
 
 					internal void AddCallback(Indexer_1IndexerGetterCallback callback)
@@ -969,7 +926,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 						global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 					}
 
-					internal string Invoke(Indexer_1IndexerArguments arguments, global::Imposter.Tests.Features.IndexerImpersonation.Locator locator, Indexer_1IndexerBaseGetter? baseImplementation = null)
+					internal void InvokeCallbacks(Indexer_1IndexerArguments arguments, global::Imposter.Tests.Features.IndexerImpersonation.Locator locator)
 					{
 						if (_callbacks != null)
 						{
@@ -978,12 +935,11 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 								callback(locator);
 							}
 						}
+					}
 
-						if (_defaultBehaviour.IsOn)
-						{
-							return _defaultBehaviour.Get(arguments, locator, baseImplementation);
-						}
-
+					internal string Invoke(Indexer_1IndexerArguments arguments, global::Imposter.Tests.Features.IndexerImpersonation.Locator locator, Indexer_1IndexerBaseGetter? baseImplementation = null)
+					{
+						this.InvokeCallbacks(arguments, locator);
 						Indexer_1IndexerReturnHandler generator = ResolveNextGenerator(arguments);
 						return generator(arguments, locator, baseImplementation);
 					}
