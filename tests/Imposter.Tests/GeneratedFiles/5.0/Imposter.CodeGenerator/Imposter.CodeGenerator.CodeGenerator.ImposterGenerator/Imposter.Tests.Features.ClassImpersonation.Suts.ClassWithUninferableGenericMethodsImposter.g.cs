@@ -77,6 +77,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			public ConvertArgumentsCriteria<TInputTarget, TResultTarget> As<TInputTarget, TResultTarget>()
 			{
+				if ((typeof(TInputTarget) == typeof(TInput)) && (typeof(TResultTarget) == typeof(TResult)))
+					return (ConvertArgumentsCriteria<TInputTarget, TResultTarget>)(object)this;
 				return new ConvertArgumentsCriteria<TInputTarget, TResultTarget>(global::Imposter.Abstractions.Arg<TInputTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TInputTarget, TInput>(it, out TInput inputTarget) && input.Matches(inputTarget)));
 			}
 		}
@@ -156,6 +158,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			private readonly global::Imposter.Abstractions.SetupCollection<IConvertMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IConvertMethodImposter>();
 			internal ConvertMethodImposter<TInput, TResult> AddNew<TInput, TResult>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is ConvertMethodImposter<TInput, TResult> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new ConvertMethodImposter<TInput, TResult>(_convertMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -384,6 +388,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			IConvertMethodImposter<TInputTarget, TResultTarget>? IConvertMethodImposter.As<TInputTarget, TResultTarget>()
 			{
+				if ((typeof(TInputTarget) == typeof(TInput)) && (typeof(TResultTarget) == typeof(TResult)))
+					return (IConvertMethodImposter<TInputTarget, TResultTarget>)(object)this;
 				if (typeof(TInput).IsAssignableFrom(typeof(TInputTarget)) && (typeof(TResultTarget) == typeof(TResult)))
 				{
 					return new Adapter<TInputTarget, TResultTarget>(this);
@@ -640,6 +646,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			private readonly global::Imposter.Abstractions.SetupCollection<IDescribeMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IDescribeMethodImposter>();
 			internal DescribeMethodImposter<T> AddNew<T>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is DescribeMethodImposter<T> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new DescribeMethodImposter<T>(_describeMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -865,6 +873,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			IDescribeMethodImposter<TTarget>? IDescribeMethodImposter.As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (IDescribeMethodImposter<TTarget>)(object)this;
 				if (typeof(TTarget) == typeof(T))
 				{
 					return new Adapter<TTarget>(this);
@@ -1116,6 +1126,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			private readonly global::Imposter.Abstractions.SetupCollection<IExecuteMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IExecuteMethodImposter>();
 			internal ExecuteMethodImposter<T> AddNew<T>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is ExecuteMethodImposter<T> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new ExecuteMethodImposter<T>(_executeMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -1327,6 +1339,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			IExecuteMethodImposter<TTarget>? IExecuteMethodImposter.As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (IExecuteMethodImposter<TTarget>)(object)this;
 				if (typeof(TTarget) == typeof(T))
 				{
 					return new Adapter<TTarget>(this);

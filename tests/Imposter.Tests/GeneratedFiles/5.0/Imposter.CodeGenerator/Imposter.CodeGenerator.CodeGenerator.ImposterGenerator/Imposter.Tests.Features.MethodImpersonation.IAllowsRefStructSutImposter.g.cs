@@ -134,6 +134,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal CreateMethodImposter<T> AddNew<T>()
 				where T : allows ref struct
 			{
+				if (_imposters.TryPeek(out var newest) && newest is CreateMethodImposter<T> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new CreateMethodImposter<T>(_createMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -550,6 +552,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal EchoMethodImposter<T> AddNew<T>()
 				where T : allows ref struct
 			{
+				if (_imposters.TryPeek(out var newest) && newest is EchoMethodImposter<T> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new EchoMethodImposter<T>(_echoMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -921,6 +925,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			public MeasureArgumentsCriteria<TTarget> As<TTarget>()
 				where TTarget : allows ref struct
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (MeasureArgumentsCriteria<TTarget>)(object)this;
 				return new MeasureArgumentsCriteria<TTarget>(global::Imposter.Abstractions.Arg<int>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<int, int>(it, out int scaleTarget) && scale.Matches(scaleTarget)));
 			}
 		}
@@ -1004,6 +1010,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal MeasureMethodImposter<T> AddNew<T>()
 				where T : allows ref struct
 			{
+				if (_imposters.TryPeek(out var newest) && newest is MeasureMethodImposter<T> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new MeasureMethodImposter<T>(_measureMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -1443,6 +1451,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal ResetMethodImposter<T> AddNew<T>()
 				where T : allows ref struct
 			{
+				if (_imposters.TryPeek(out var newest) && newest is ResetMethodImposter<T> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new ResetMethodImposter<T>(_resetMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;

@@ -1,4 +1,5 @@
 using System.Linq;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Shared;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.SyntaxHelpers;
@@ -81,7 +82,15 @@ public static class ArgumentsCriteriaBuilder
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithTypeParameters(method.TargetGenericTypeParameterListSyntax)
             .AddConstraintClauses(method.TargetGenericTypeConstraintClauses)
-            .WithBody(Block(ReturnStatement(returnType.New(ArgumentList(constructorArgs)))))
+            .WithBody(
+                Block(
+                    GenericArgumentsMatcherBuilder.ReturnThisWhenSameTypeArguments(
+                        method,
+                        returnType
+                    ),
+                    ReturnStatement(returnType.New(ArgumentList(constructorArgs)))
+                )
+            )
             .Build();
 
         static SeparatedSyntaxList<ArgumentSyntax> BuildConstructorArgs(

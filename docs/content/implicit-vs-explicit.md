@@ -90,7 +90,7 @@ In Implicit mode, property getters without setups return `default(T)` and setter
 
 ## Indexers
 
-Indexers follow the same rules: Implicit mode returns defaults / does nothing; Explicit mode throws when no setup matches.
+Indexers follow the same rules: Implicit mode returns defaults / does nothing; Explicit mode throws when no setup matches. A getter counts as set up once it has `Returns`, `Throws` or `UseBaseImplementation`; a `Callback` alone doesn't allow reads in Explicit mode.
 
 !!! example
     ```csharp

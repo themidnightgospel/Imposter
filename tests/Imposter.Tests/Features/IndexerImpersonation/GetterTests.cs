@@ -413,5 +413,54 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
             Should.Throw<MissingImposterException>(() => _ = sut.Instance()[1, "missing"]);
         }
+
+        [Fact]
+        public void GivenExplicitModeCallbackOnlyGetter_WhenAccessed_ShouldThrowWithoutRunningCallback()
+        {
+            var sut = new IIndexerSetupSutImposter(ImposterMode.Explicit);
+            var callbackInvoked = false;
+            sut[Arg<int>.Is(2)].Getter().Callback(_ => callbackInvoked = true);
+
+            Should.Throw<MissingImposterException>(() => _ = sut.Instance()[2]);
+            callbackInvoked.ShouldBeFalse();
+        }
+
+        [Fact]
+        public void GivenExplicitModeCallbackOnlyGetter_WhenOtherCriteriaReturn_ShouldThrowWithoutRunningCallback()
+        {
+            var sut = new IIndexerSetupSutImposter(ImposterMode.Explicit);
+            var callbackInvoked = false;
+            sut[Arg<int>.Is(1)].Getter().Returns(5);
+            sut[Arg<int>.Is(2)].Getter().Callback(_ => callbackInvoked = true);
+            var instance = sut.Instance();
+
+            Should.Throw<MissingImposterException>(() => _ = instance[2]);
+            callbackInvoked.ShouldBeFalse();
+            instance[1].ShouldBe(5);
+        }
+
+        [Fact]
+        public void GivenImplicitModeCallbackOnlyGetter_WhenOtherCriteriaReturn_ShouldReturnDefaultAndRunCallback()
+        {
+            var visitedKeys = new List<int>();
+            _sut[Arg<int>.Is(1)].Getter().Returns(5);
+            _sut[Arg<int>.Is(2)].Getter().Callback(key => visitedKeys.Add(key));
+
+            _sut.Instance()[2].ShouldBe(0);
+            visitedKeys.ShouldBe(new[] { 2 });
+        }
+
+        [Fact]
+        public void GivenImplicitModeCallbackOnlyGetter_WhenValueWasSet_ShouldReturnStoredValueAndRunCallback()
+        {
+            var visitedKeys = new List<int>();
+            _sut[Arg<int>.Is(2)].Getter().Callback(key => visitedKeys.Add(key));
+            var instance = _sut.Instance();
+
+            instance[2] = 20;
+
+            instance[2].ShouldBe(20);
+            visitedKeys.ShouldBe(new[] { 2 });
+        }
     }
 }

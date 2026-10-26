@@ -69,6 +69,32 @@ namespace Imposter.Tests.Features.MethodImpersonation
             Should.Throw<MissingImposterException>(() => sut.Instance().GenericReturnType<int>());
         }
 
+        [Fact]
+        public void Given_RepeatedSetupsOfOneTypeArgument_When_Configuring_Should_ShareOneImposter()
+        {
+            for (var i = 0; i < 10; i++)
+            {
+                _sut.GenericSingleParam(Arg<int>.Is(i));
+            }
+
+            StoredMethodImposterCount(_sut, "_genericSingleParamMethodImposterCollection")
+                .ShouldBe(1);
+        }
+
+        [Fact]
+        public void Given_SetupsInterleavedAcrossTypeArguments_When_Invoking_Should_UseNewestMatchingSetup()
+        {
+            _sut.GenericReturnType<int>().Returns(1);
+            _sut.GenericReturnType<string>().Returns("text");
+            _sut.GenericReturnType<int>().Returns(2);
+            _sut.GenericReturnType<int>();
+
+            _sut.Instance().GenericReturnType<int>().ShouldBe(2);
+            _sut.Instance().GenericReturnType<string>().ShouldBe("text");
+            StoredMethodImposterCount(_sut, "_genericReturnTypeMethodImposterCollection")
+                .ShouldBe(3);
+        }
+
         // Method imposter collections are generated implementation details, so reflection is the only
         // way to observe whether an imposter is retained for every invocation that has no matching setup.
         private static int StoredMethodImposterCount(

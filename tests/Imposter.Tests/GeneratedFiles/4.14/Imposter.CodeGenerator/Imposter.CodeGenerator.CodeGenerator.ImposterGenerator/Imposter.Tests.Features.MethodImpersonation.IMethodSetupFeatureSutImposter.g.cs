@@ -1049,6 +1049,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public GenericAllRefKindArgumentsCriteria<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget> As<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget>()
 			{
+				if (((((typeof(TOutTarget) == typeof(TOut)) && (typeof(TRefTarget) == typeof(TRef))) && (typeof(TInTarget) == typeof(TIn))) && (typeof(TParamsTarget) == typeof(TParams))) && (typeof(TResultTarget) == typeof(TResult)))
+					return (GenericAllRefKindArgumentsCriteria<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget>)(object)this;
 				return new GenericAllRefKindArgumentsCriteria<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget>(global::Imposter.Abstractions.OutArg<TOutTarget>.Any(), global::Imposter.Abstractions.Arg<TRefTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TRefTarget, TRef>(it, out TRef refValueTarget) && refValue.Matches(refValueTarget)), global::Imposter.Abstractions.Arg<TInTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TInTarget, TIn>(it, out TIn inValueTarget) && inValue.Matches(inValueTarget)), global::Imposter.Abstractions.Arg<TParamsTarget[]>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TParamsTarget[], TParams[]>(it, out TParams[] paramsValuesTarget) && paramsValues.Matches(paramsValuesTarget)));
 			}
 		}
@@ -1128,6 +1130,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private readonly global::Imposter.Abstractions.SetupCollection<IGenericAllRefKindMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IGenericAllRefKindMethodImposter>();
 			internal GenericAllRefKindMethodImposter<TOut, TRef, TIn, TParams, TResult> AddNew<TOut, TRef, TIn, TParams, TResult>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is GenericAllRefKindMethodImposter<TOut, TRef, TIn, TParams, TResult> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new GenericAllRefKindMethodImposter<TOut, TRef, TIn, TParams, TResult>(_genericAllRefKindMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -1347,6 +1351,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IGenericAllRefKindMethodImposter<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget>? IGenericAllRefKindMethodImposter.As<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget>()
 			{
+				if (((((typeof(TOutTarget) == typeof(TOut)) && (typeof(TRefTarget) == typeof(TRef))) && (typeof(TInTarget) == typeof(TIn))) && (typeof(TParamsTarget) == typeof(TParams))) && (typeof(TResultTarget) == typeof(TResult)))
+					return (IGenericAllRefKindMethodImposter<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget>)(object)this;
 				if ((((typeof(TOutTarget).IsAssignableFrom(typeof(TOut)) && (typeof(TRefTarget) == typeof(TRef))) && typeof(TIn).IsAssignableFrom(typeof(TInTarget))) && typeof(TParams[]).IsAssignableFrom(typeof(TParamsTarget[]))) && typeof(TResultTarget).IsAssignableFrom(typeof(TResult)))
 				{
 					return new Adapter<TOutTarget, TRefTarget, TInTarget, TParamsTarget, TResultTarget>(this);
@@ -1599,6 +1605,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private readonly global::Imposter.Abstractions.SetupCollection<IGenericInnerOutParamMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IGenericInnerOutParamMethodImposter>();
 			internal GenericInnerOutParamMethodImposter<TValue, TResult> AddNew<TValue, TResult>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is GenericInnerOutParamMethodImposter<TValue, TResult> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new GenericInnerOutParamMethodImposter<TValue, TResult>(_genericInnerOutParamMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -1815,6 +1823,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IGenericInnerOutParamMethodImposter<TValueTarget, TResultTarget>? IGenericInnerOutParamMethodImposter.As<TValueTarget, TResultTarget>()
 			{
+				if ((typeof(TValueTarget) == typeof(TValue)) && (typeof(TResultTarget) == typeof(TResult)))
+					return (IGenericInnerOutParamMethodImposter<TValueTarget, TResultTarget>)(object)this;
 				if (typeof(global::System.Collections.Generic.List<TValueTarget>).IsAssignableFrom(typeof(global::System.Collections.Generic.List<TValue>)) && typeof(global::System.Collections.Generic.Stack<TResultTarget>).IsAssignableFrom(typeof(global::System.Collections.Generic.Stack<TResult>)))
 				{
 					return new Adapter<TValueTarget, TResultTarget>(this);
@@ -2021,6 +2031,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public GenericInnerParamsParamArgumentsCriteria<TValueTarget, TResultTarget> As<TValueTarget, TResultTarget>()
 			{
+				if ((typeof(TValueTarget) == typeof(TValue)) && (typeof(TResultTarget) == typeof(TResult)))
+					return (GenericInnerParamsParamArgumentsCriteria<TValueTarget, TResultTarget>)(object)this;
 				return new GenericInnerParamsParamArgumentsCriteria<TValueTarget, TResultTarget>(global::Imposter.Abstractions.Arg<global::System.Collections.Generic.List<TValueTarget>[]>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<global::System.Collections.Generic.List<TValueTarget>[], global::System.Collections.Generic.List<TValue>[]>(it, out global::System.Collections.Generic.List<TValue>[] valueTarget) && value.Matches(valueTarget)));
 			}
 		}
@@ -2100,6 +2112,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private readonly global::Imposter.Abstractions.SetupCollection<IGenericInnerParamsParamMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IGenericInnerParamsParamMethodImposter>();
 			internal GenericInnerParamsParamMethodImposter<TValue, TResult> AddNew<TValue, TResult>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is GenericInnerParamsParamMethodImposter<TValue, TResult> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new GenericInnerParamsParamMethodImposter<TValue, TResult>(_genericInnerParamsParamMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -2312,6 +2326,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IGenericInnerParamsParamMethodImposter<TValueTarget, TResultTarget>? IGenericInnerParamsParamMethodImposter.As<TValueTarget, TResultTarget>()
 			{
+				if ((typeof(TValueTarget) == typeof(TValue)) && (typeof(TResultTarget) == typeof(TResult)))
+					return (IGenericInnerParamsParamMethodImposter<TValueTarget, TResultTarget>)(object)this;
 				if (typeof(global::System.Collections.Generic.List<TValue>[]).IsAssignableFrom(typeof(global::System.Collections.Generic.List<TValueTarget>[])) && typeof(global::System.Collections.Generic.Stack<TResultTarget>).IsAssignableFrom(typeof(global::System.Collections.Generic.Stack<TResult>)))
 				{
 					return new Adapter<TValueTarget, TResultTarget>(this);
@@ -2519,6 +2535,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public GenericInnerRefParamArgumentsCriteria<TValueTarget, TResultTarget> As<TValueTarget, TResultTarget>()
 			{
+				if ((typeof(TValueTarget) == typeof(TValue)) && (typeof(TResultTarget) == typeof(TResult)))
+					return (GenericInnerRefParamArgumentsCriteria<TValueTarget, TResultTarget>)(object)this;
 				return new GenericInnerRefParamArgumentsCriteria<TValueTarget, TResultTarget>(global::Imposter.Abstractions.Arg<global::System.Collections.Generic.List<TValueTarget>>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<global::System.Collections.Generic.List<TValueTarget>, global::System.Collections.Generic.List<TValue>>(it, out global::System.Collections.Generic.List<TValue> valueTarget) && value.Matches(valueTarget)));
 			}
 		}
@@ -2598,6 +2616,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private readonly global::Imposter.Abstractions.SetupCollection<IGenericInnerRefParamMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IGenericInnerRefParamMethodImposter>();
 			internal GenericInnerRefParamMethodImposter<TValue, TResult> AddNew<TValue, TResult>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is GenericInnerRefParamMethodImposter<TValue, TResult> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new GenericInnerRefParamMethodImposter<TValue, TResult>(_genericInnerRefParamMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -2810,6 +2830,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IGenericInnerRefParamMethodImposter<TValueTarget, TResultTarget>? IGenericInnerRefParamMethodImposter.As<TValueTarget, TResultTarget>()
 			{
+				if ((typeof(TValueTarget) == typeof(TValue)) && (typeof(TResultTarget) == typeof(TResult)))
+					return (IGenericInnerRefParamMethodImposter<TValueTarget, TResultTarget>)(object)this;
 				if ((typeof(global::System.Collections.Generic.List<TValueTarget>) == typeof(global::System.Collections.Generic.List<TValue>)) && typeof(global::System.Collections.Generic.Stack<TResultTarget>).IsAssignableFrom(typeof(global::System.Collections.Generic.Stack<TResult>)))
 				{
 					return new Adapter<TValueTarget, TResultTarget>(this);
@@ -3019,6 +3041,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public GenericInnerSingleParamArgumentsCriteria<TValueTarget> As<TValueTarget>()
 			{
+				if (typeof(TValueTarget) == typeof(TValue))
+					return (GenericInnerSingleParamArgumentsCriteria<TValueTarget>)(object)this;
 				return new GenericInnerSingleParamArgumentsCriteria<TValueTarget>(global::Imposter.Abstractions.Arg<global::System.Collections.Generic.List<TValueTarget>>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<global::System.Collections.Generic.List<TValueTarget>, global::System.Collections.Generic.List<TValue>>(it, out global::System.Collections.Generic.List<TValue> valueTarget) && value.Matches(valueTarget)));
 			}
 		}
@@ -3096,6 +3120,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private readonly global::Imposter.Abstractions.SetupCollection<IGenericInnerSingleParamMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IGenericInnerSingleParamMethodImposter>();
 			internal GenericInnerSingleParamMethodImposter<TValue> AddNew<TValue>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is GenericInnerSingleParamMethodImposter<TValue> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new GenericInnerSingleParamMethodImposter<TValue>(_genericInnerSingleParamMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -3296,6 +3322,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IGenericInnerSingleParamMethodImposter<TValueTarget>? IGenericInnerSingleParamMethodImposter.As<TValueTarget>()
 			{
+				if (typeof(TValueTarget) == typeof(TValue))
+					return (IGenericInnerSingleParamMethodImposter<TValueTarget>)(object)this;
 				if (typeof(global::System.Collections.Generic.List<TValue>).IsAssignableFrom(typeof(global::System.Collections.Generic.List<TValueTarget>)))
 				{
 					return new Adapter<TValueTarget>(this);
@@ -3526,6 +3554,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private readonly global::Imposter.Abstractions.SetupCollection<IGenericOutParamMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IGenericOutParamMethodImposter>();
 			internal GenericOutParamMethodImposter<TValue, TResult> AddNew<TValue, TResult>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is GenericOutParamMethodImposter<TValue, TResult> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new GenericOutParamMethodImposter<TValue, TResult>(_genericOutParamMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -3742,6 +3772,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IGenericOutParamMethodImposter<TValueTarget, TResultTarget>? IGenericOutParamMethodImposter.As<TValueTarget, TResultTarget>()
 			{
+				if ((typeof(TValueTarget) == typeof(TValue)) && (typeof(TResultTarget) == typeof(TResult)))
+					return (IGenericOutParamMethodImposter<TValueTarget, TResultTarget>)(object)this;
 				if (typeof(TValueTarget).IsAssignableFrom(typeof(TValue)) && typeof(TResultTarget).IsAssignableFrom(typeof(TResult)))
 				{
 					return new Adapter<TValueTarget, TResultTarget>(this);
@@ -3948,6 +3980,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public GenericParamsParamArgumentsCriteria<TValueTarget, TResultTarget> As<TValueTarget, TResultTarget>()
 			{
+				if ((typeof(TValueTarget) == typeof(TValue)) && (typeof(TResultTarget) == typeof(TResult)))
+					return (GenericParamsParamArgumentsCriteria<TValueTarget, TResultTarget>)(object)this;
 				return new GenericParamsParamArgumentsCriteria<TValueTarget, TResultTarget>(global::Imposter.Abstractions.Arg<TValueTarget[]>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TValueTarget[], TValue[]>(it, out TValue[] valueTarget) && value.Matches(valueTarget)));
 			}
 		}
@@ -4027,6 +4061,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private readonly global::Imposter.Abstractions.SetupCollection<IGenericParamsParamMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IGenericParamsParamMethodImposter>();
 			internal GenericParamsParamMethodImposter<TValue, TResult> AddNew<TValue, TResult>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is GenericParamsParamMethodImposter<TValue, TResult> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new GenericParamsParamMethodImposter<TValue, TResult>(_genericParamsParamMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -4239,6 +4275,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IGenericParamsParamMethodImposter<TValueTarget, TResultTarget>? IGenericParamsParamMethodImposter.As<TValueTarget, TResultTarget>()
 			{
+				if ((typeof(TValueTarget) == typeof(TValue)) && (typeof(TResultTarget) == typeof(TResult)))
+					return (IGenericParamsParamMethodImposter<TValueTarget, TResultTarget>)(object)this;
 				if (typeof(TValue[]).IsAssignableFrom(typeof(TValueTarget[])) && typeof(TResultTarget).IsAssignableFrom(typeof(TResult)))
 				{
 					return new Adapter<TValueTarget, TResultTarget>(this);
@@ -4446,6 +4484,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public GenericRefParamArgumentsCriteria<TValueTarget, TResultTarget> As<TValueTarget, TResultTarget>()
 			{
+				if ((typeof(TValueTarget) == typeof(TValue)) && (typeof(TResultTarget) == typeof(TResult)))
+					return (GenericRefParamArgumentsCriteria<TValueTarget, TResultTarget>)(object)this;
 				return new GenericRefParamArgumentsCriteria<TValueTarget, TResultTarget>(global::Imposter.Abstractions.Arg<TValueTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TValueTarget, TValue>(it, out TValue valueTarget) && value.Matches(valueTarget)));
 			}
 		}
@@ -4525,6 +4565,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private readonly global::Imposter.Abstractions.SetupCollection<IGenericRefParamMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IGenericRefParamMethodImposter>();
 			internal GenericRefParamMethodImposter<TValue, TResult> AddNew<TValue, TResult>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is GenericRefParamMethodImposter<TValue, TResult> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new GenericRefParamMethodImposter<TValue, TResult>(_genericRefParamMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -4737,6 +4779,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IGenericRefParamMethodImposter<TValueTarget, TResultTarget>? IGenericRefParamMethodImposter.As<TValueTarget, TResultTarget>()
 			{
+				if ((typeof(TValueTarget) == typeof(TValue)) && (typeof(TResultTarget) == typeof(TResult)))
+					return (IGenericRefParamMethodImposter<TValueTarget, TResultTarget>)(object)this;
 				if ((typeof(TValueTarget) == typeof(TValue)) && typeof(TResultTarget).IsAssignableFrom(typeof(TResult)))
 				{
 					return new Adapter<TValueTarget, TResultTarget>(this);
@@ -4987,6 +5031,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private readonly global::Imposter.Abstractions.SetupCollection<IGenericReturnTypeMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IGenericReturnTypeMethodImposter>();
 			internal GenericReturnTypeMethodImposter<TValue> AddNew<TValue>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is GenericReturnTypeMethodImposter<TValue> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new GenericReturnTypeMethodImposter<TValue>(_genericReturnTypeMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -5196,6 +5242,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IGenericReturnTypeMethodImposter<TValueTarget>? IGenericReturnTypeMethodImposter.As<TValueTarget>()
 			{
+				if (typeof(TValueTarget) == typeof(TValue))
+					return (IGenericReturnTypeMethodImposter<TValueTarget>)(object)this;
 				if (typeof(TValueTarget).IsAssignableFrom(typeof(TValue)))
 				{
 					return new Adapter<TValueTarget>(this);
@@ -5439,6 +5487,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private readonly global::Imposter.Abstractions.SetupCollection<IGenericSingleOutParamMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IGenericSingleOutParamMethodImposter>();
 			internal GenericSingleOutParamMethodImposter<TValue> AddNew<TValue>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is GenericSingleOutParamMethodImposter<TValue> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new GenericSingleOutParamMethodImposter<TValue>(_genericSingleOutParamMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -5642,6 +5692,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IGenericSingleOutParamMethodImposter<TValueTarget>? IGenericSingleOutParamMethodImposter.As<TValueTarget>()
 			{
+				if (typeof(TValueTarget) == typeof(TValue))
+					return (IGenericSingleOutParamMethodImposter<TValueTarget>)(object)this;
 				if (typeof(TValueTarget).IsAssignableFrom(typeof(TValue)))
 				{
 					return new Adapter<TValueTarget>(this);
@@ -5830,6 +5882,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public GenericSingleParamArgumentsCriteria<TValueTarget> As<TValueTarget>()
 			{
+				if (typeof(TValueTarget) == typeof(TValue))
+					return (GenericSingleParamArgumentsCriteria<TValueTarget>)(object)this;
 				return new GenericSingleParamArgumentsCriteria<TValueTarget>(global::Imposter.Abstractions.Arg<TValueTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TValueTarget, TValue>(it, out TValue valueTarget) && value.Matches(valueTarget)));
 			}
 		}
@@ -5907,6 +5961,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private readonly global::Imposter.Abstractions.SetupCollection<IGenericSingleParamMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IGenericSingleParamMethodImposter>();
 			internal GenericSingleParamMethodImposter<TValue> AddNew<TValue>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is GenericSingleParamMethodImposter<TValue> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new GenericSingleParamMethodImposter<TValue>(_genericSingleParamMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -6107,6 +6163,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IGenericSingleParamMethodImposter<TValueTarget>? IGenericSingleParamMethodImposter.As<TValueTarget>()
 			{
+				if (typeof(TValueTarget) == typeof(TValue))
+					return (IGenericSingleParamMethodImposter<TValueTarget>)(object)this;
 				if (typeof(TValue).IsAssignableFrom(typeof(TValueTarget)))
 				{
 					return new Adapter<TValueTarget>(this);
@@ -6296,6 +6354,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public GenericSingleRefParamArgumentsCriteria<TValueTarget> As<TValueTarget>()
 			{
+				if (typeof(TValueTarget) == typeof(TValue))
+					return (GenericSingleRefParamArgumentsCriteria<TValueTarget>)(object)this;
 				return new GenericSingleRefParamArgumentsCriteria<TValueTarget>(global::Imposter.Abstractions.Arg<TValueTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TValueTarget, TValue>(it, out TValue valueTarget) && value.Matches(valueTarget)));
 			}
 		}
@@ -6373,6 +6433,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private readonly global::Imposter.Abstractions.SetupCollection<IGenericSingleRefParamMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IGenericSingleRefParamMethodImposter>();
 			internal GenericSingleRefParamMethodImposter<TValue> AddNew<TValue>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is GenericSingleRefParamMethodImposter<TValue> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new GenericSingleRefParamMethodImposter<TValue>(_genericSingleRefParamMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -6573,6 +6635,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IGenericSingleRefParamMethodImposter<TValueTarget>? IGenericSingleRefParamMethodImposter.As<TValueTarget>()
 			{
+				if (typeof(TValueTarget) == typeof(TValue))
+					return (IGenericSingleRefParamMethodImposter<TValueTarget>)(object)this;
 				if (typeof(TValueTarget) == typeof(TValue))
 				{
 					return new Adapter<TValueTarget>(this);

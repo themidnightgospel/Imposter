@@ -75,17 +75,12 @@ internal static partial class IndexerGetterBuilder
             .AddMember(LazyCollectionSyntaxHelper.Field(getter.InvocationHistoryField))
             .AddMember(SinglePrivateReadonlyVariableField(getter.InvocationBehaviorField))
             .AddMember(SinglePrivateReadonlyVariableField(getter.PropertyDisplayNameField))
-            .AddMember(
-                SingleVariableField(getter.HasConfiguredReturnField, SyntaxKind.PrivateKeyword)
-            )
             .AddMember(BuildGetterConstructor(indexer))
             .AddMember(BuildGetterGetMethod(indexer))
             .AddMember(BuildFindGetterInvocationImposterMethod(indexer))
             .AddMember(BuildGetOrCreateMethod(indexer))
             .AddMember(BuildGetterCalledMethod(indexer))
             .AddMember(BuildPropertyDisplayNameProperty(getter))
-            .AddMember(BuildMarkReturnConfiguredMethod(getter))
-            .AddMember(BuildEnsureGetterConfiguredMethod(getter))
             .AddMember(BuildGetterBuilder(indexer))
             .AddMember(BuildGetterInvocationImposter(indexer))
             .Build();
@@ -142,12 +137,24 @@ internal static partial class IndexerGetterBuilder
                     CreateArgumentsDeclaration(indexer, getter.ArgumentsVariableName),
                     TryStatement(
                         Block(
-                            findSetup,
-                            IfStatement(
-                                IsPatternExpression(setup, ConstantPattern(Null)),
-                                WithoutMatchingSetup(indexer)
-                            ),
-                            invokeSetup
+                            List<StatementSyntax>([
+                                findSetup,
+                                IfStatement(
+                                    setup
+                                        .IsNotNull()
+                                        .And(
+                                            setup.Dot(
+                                                IdentifierName(
+                                                    IndexerGetterImposterMetadata
+                                                        .GetterInvocationMetadata
+                                                        .HasConfiguredReturnFieldName
+                                                )
+                                            )
+                                        ),
+                                    invokeSetup
+                                ),
+                                .. WithoutConfiguredReturn(indexer),
+                            ])
                         ),
                         default,
                         recordInvocation
@@ -157,15 +164,36 @@ internal static partial class IndexerGetterBuilder
             .Build();
     }
 
-    // Without a matching setup, a getter returns the default behaviour's value while that's on, throws in explicit
-    // mode and returns the default value otherwise.
-    private static BlockSyntax WithoutMatchingSetup(in ImposterIndexerMetadata indexer)
+    // Without a configured return, a getter throws in explicit mode, as a method or a property getter does, before
+    // any callback runs. Otherwise a callback-only setup that matched runs its callbacks, and the getter returns the
+    // default behaviour's value while that's on and the default value after.
+    private static IEnumerable<StatementSyntax> WithoutConfiguredReturn(
+        in ImposterIndexerMetadata indexer
+    )
     {
         var getter = indexer.GetterImplementation;
+        var setup = IdentifierName(getter.SetupVariableName);
         var defaultBehaviour = IdentifierName(getter.DefaultBehaviourField.Name);
 
-        return Block(
-            IdentifierName(getter.EnsureGetterConfiguredMethodName).Call().ToStatementSyntax(),
+        return
+        [
+            IfStatement(
+                IsExplicit(IdentifierName(getter.InvocationBehaviorField.Name)),
+                Block(
+                    ThrowMissingImposter(getter.PropertyDisplayNameField.Name, getter.GetterSuffix)
+                )
+            ),
+            IfStatement(
+                setup.IsNotNull(),
+                setup
+                    .Dot(IdentifierName(getter.Invocation.InvokeCallbacksMethodName))
+                    .Call(
+                        ArgumentListSyntax(
+                            HandlerArguments(indexer, indexer.Core.PassedThroughKeyNames)
+                        )
+                    )
+                    .ToStatementSyntax()
+            ),
             IfStatement(
                 defaultBehaviour.Dot(
                     IdentifierName(indexer.DefaultIndexerBehaviour.IsOnPropertyName)
@@ -181,16 +209,12 @@ internal static partial class IndexerGetterBuilder
                         )
                 )
             ),
-            IfStatement(
-                IsExplicit(IdentifierName(getter.InvocationBehaviorField.Name)),
-                Block(
-                    ThrowMissingImposter(getter.PropertyDisplayNameField.Name, getter.GetterSuffix)
-                ),
-                ElseClause(Block(ReturnDefaultNonNullable))
-            )
-        );
+            ReturnDefaultNonNullable,
+        ];
     }
 
+    // The newest matching setup with a configured return, or else the first matching callback-only setup, which
+    // doesn't answer the call but still runs its callbacks.
     private static MethodDeclarationSyntax BuildFindGetterInvocationImposterMethod(
         in ImposterIndexerMetadata indexer
     )
@@ -386,22 +410,4 @@ internal static partial class IndexerGetterBuilder
                 ArrowExpressionClause(IdentifierName(getter.PropertyDisplayNameField.Name))
             )
             .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
-
-    private static MethodDeclarationSyntax BuildMarkReturnConfiguredMethod(
-        in IndexerGetterImposterMetadata getter
-    ) =>
-        BuildMarkConfiguredMethod(
-            getter.MarkReturnConfiguredMethod.Name,
-            getter.HasConfiguredReturnField.Name
-        );
-
-    private static MethodDeclarationSyntax BuildEnsureGetterConfiguredMethod(
-        in IndexerGetterImposterMetadata getter
-    ) =>
-        EnsureConfiguredMethod(
-            getter.EnsureGetterConfiguredMethodName,
-            getter.InvocationBehaviorField.Name,
-            VolatileRead(getter.HasConfiguredReturnField.Name),
-            Block(ThrowMissingImposter(getter.PropertyDisplayNameField.Name, getter.GetterSuffix))
-        );
 }

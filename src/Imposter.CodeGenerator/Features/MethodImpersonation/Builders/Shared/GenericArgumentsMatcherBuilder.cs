@@ -24,4 +24,17 @@ internal static class GenericArgumentsMatcherBuilder
             TypeOfExpression(targetType),
             TypeOfExpression(sourceType)
         );
+
+    // When the target type arguments are the method's own, `this` already is the target type: it's returned through a
+    // cast instead of being converted. The JIT folds the typeof comparisons for value types.
+    internal static IfStatementSyntax ReturnThisWhenSameTypeArguments(
+        in ImposterTargetMethodMetadata method,
+        TypeSyntax targetType
+    ) =>
+        IfStatement(
+            GenerateExactMatchCriteria(method),
+            ReturnStatement(
+                CastExpression(targetType, CastExpression(WellKnownTypes.Object, ThisExpression()))
+            )
+        );
 }

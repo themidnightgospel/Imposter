@@ -79,6 +79,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			public DescribeArgumentsCriteria<TTarget> As<TTarget>()
 				where TTarget : new()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (DescribeArgumentsCriteria<TTarget>)(object)this;
 				return new DescribeArgumentsCriteria<TTarget>(global::Imposter.Abstractions.Arg<TTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TTarget, T>(it, out T valueTarget) && value.Matches(valueTarget)));
 			}
 		}
@@ -162,6 +164,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			internal DescribeMethodImposter<T> AddNew<T>()
 				where T : new()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is DescribeMethodImposter<T> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new DescribeMethodImposter<T>(_describeMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -395,6 +399,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			IDescribeMethodImposter<TTarget>? IDescribeMethodImposter.As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (IDescribeMethodImposter<TTarget>)(object)this;
 				if (typeof(T).IsAssignableFrom(typeof(TTarget)))
 				{
 					return new Adapter<TTarget>(this);
@@ -617,6 +623,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			public EchoArgumentsCriteria<TTarget> As<TTarget>()
 				where TTarget : global::System.IDisposable
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (EchoArgumentsCriteria<TTarget>)(object)this;
 				return new EchoArgumentsCriteria<TTarget>(global::Imposter.Abstractions.Arg<TTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TTarget, T>(it, out T valueTarget) && value.Matches(valueTarget)));
 			}
 		}
@@ -700,6 +708,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			internal EchoMethodImposter<T> AddNew<T>()
 				where T : global::System.IDisposable
 			{
+				if (_imposters.TryPeek(out var newest) && newest is EchoMethodImposter<T> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new EchoMethodImposter<T>(_echoMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -933,6 +943,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			IEchoMethodImposter<TTarget>? IEchoMethodImposter.As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (IEchoMethodImposter<TTarget>)(object)this;
 				if (typeof(T).IsAssignableFrom(typeof(TTarget)) && typeof(TTarget).IsAssignableFrom(typeof(T)))
 				{
 					return new Adapter<TTarget>(this);

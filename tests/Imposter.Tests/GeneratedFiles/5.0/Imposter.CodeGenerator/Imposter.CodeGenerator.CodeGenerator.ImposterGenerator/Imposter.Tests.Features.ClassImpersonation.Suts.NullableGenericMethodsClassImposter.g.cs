@@ -71,6 +71,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			public EchoMaybeDefaultArgumentsCriteria<TTarget> As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (EchoMaybeDefaultArgumentsCriteria<TTarget>)(object)this;
 				return new EchoMaybeDefaultArgumentsCriteria<TTarget>(global::Imposter.Abstractions.Arg<TTarget?>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TTarget?, T?>(it, out T? valueTarget) && value.Matches(valueTarget)));
 			}
 		}
@@ -150,6 +152,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			private readonly global::Imposter.Abstractions.SetupCollection<IEchoMaybeDefaultMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IEchoMaybeDefaultMethodImposter>();
 			internal EchoMaybeDefaultMethodImposter<T> AddNew<T>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is EchoMaybeDefaultMethodImposter<T> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new EchoMaybeDefaultMethodImposter<T>(_echoMaybeDefaultMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -378,6 +382,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			IEchoMaybeDefaultMethodImposter<TTarget>? IEchoMaybeDefaultMethodImposter.As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (IEchoMaybeDefaultMethodImposter<TTarget>)(object)this;
 				if (typeof(T).IsAssignableFrom(typeof(TTarget)) && typeof(TTarget).IsAssignableFrom(typeof(T)))
 				{
 					return new Adapter<TTarget>(this);
@@ -600,6 +606,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			public EchoNullableReferenceArgumentsCriteria<TTarget> As<TTarget>()
 				where TTarget : class ?, global::System.IDisposable?
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (EchoNullableReferenceArgumentsCriteria<TTarget>)(object)this;
 				return new EchoNullableReferenceArgumentsCriteria<TTarget>(global::Imposter.Abstractions.Arg<TTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TTarget, T>(it, out T valueTarget) && value.Matches(valueTarget)));
 			}
 		}
@@ -683,6 +691,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			internal EchoNullableReferenceMethodImposter<T> AddNew<T>()
 				where T : class ?, global::System.IDisposable?
 			{
+				if (_imposters.TryPeek(out var newest) && newest is EchoNullableReferenceMethodImposter<T> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new EchoNullableReferenceMethodImposter<T>(_echoNullableReferenceMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -916,6 +926,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			IEchoNullableReferenceMethodImposter<TTarget>? IEchoNullableReferenceMethodImposter.As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (IEchoNullableReferenceMethodImposter<TTarget>)(object)this;
 				if (typeof(T).IsAssignableFrom(typeof(TTarget)) && typeof(TTarget).IsAssignableFrom(typeof(T)))
 				{
 					return new Adapter<TTarget>(this);

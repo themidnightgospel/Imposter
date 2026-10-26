@@ -84,6 +84,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public AddItemArgumentsCriteria<TItemTarget> As<TItemTarget>()
 			{
+				if (typeof(TItemTarget) == typeof(TItem))
+					return (AddItemArgumentsCriteria<TItemTarget>)(object)this;
 				return new AddItemArgumentsCriteria<TItemTarget>(global::Imposter.Abstractions.Arg<TItemTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TItemTarget, TItem>(it, out TItem itemTarget) && item.Matches(itemTarget)));
 			}
 		}
@@ -161,6 +163,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			private readonly global::Imposter.Abstractions.SetupCollection<IAddItemMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IAddItemMethodImposter>();
 			internal AddItemMethodImposter<TItem> AddNew<TItem>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is AddItemMethodImposter<TItem> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new AddItemMethodImposter<TItem>(_addItemMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -361,6 +365,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			IAddItemMethodImposter<TItemTarget>? IAddItemMethodImposter.As<TItemTarget>()
 			{
+				if (typeof(TItemTarget) == typeof(TItem))
+					return (IAddItemMethodImposter<TItemTarget>)(object)this;
 				if (typeof(TItem).IsAssignableFrom(typeof(TItemTarget)))
 				{
 					return new Adapter<TItemTarget>(this);
@@ -591,6 +597,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			private readonly global::Imposter.Abstractions.SetupCollection<IGetValueMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IGetValueMethodImposter>();
 			internal GetValueMethodImposter<TResult> AddNew<TResult>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is GetValueMethodImposter<TResult> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new GetValueMethodImposter<TResult>(_getValueMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -800,6 +808,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			IGetValueMethodImposter<TResultTarget>? IGetValueMethodImposter.As<TResultTarget>()
 			{
+				if (typeof(TResultTarget) == typeof(TResult))
+					return (IGetValueMethodImposter<TResultTarget>)(object)this;
 				if (typeof(TResultTarget).IsAssignableFrom(typeof(TResult)))
 				{
 					return new Adapter<TResultTarget>(this);
@@ -1004,6 +1014,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public ProcessAsyncArgumentsCriteria<TItemTarget> As<TItemTarget>()
 			{
+				if (typeof(TItemTarget) == typeof(TItem))
+					return (ProcessAsyncArgumentsCriteria<TItemTarget>)(object)this;
 				return new ProcessAsyncArgumentsCriteria<TItemTarget>(global::Imposter.Abstractions.Arg<global::System.Collections.Generic.IEnumerable<TItemTarget>>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<global::System.Collections.Generic.IEnumerable<TItemTarget>, global::System.Collections.Generic.IEnumerable<TItem>>(it, out global::System.Collections.Generic.IEnumerable<TItem> itemsTarget) && items.Matches(itemsTarget)));
 			}
 		}
@@ -1083,6 +1095,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			private readonly global::Imposter.Abstractions.SetupCollection<IProcessAsyncMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IProcessAsyncMethodImposter>();
 			internal ProcessAsyncMethodImposter<TItem> AddNew<TItem>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is ProcessAsyncMethodImposter<TItem> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new ProcessAsyncMethodImposter<TItem>(_processAsyncMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -1323,6 +1337,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			IProcessAsyncMethodImposter<TItemTarget>? IProcessAsyncMethodImposter.As<TItemTarget>()
 			{
+				if (typeof(TItemTarget) == typeof(TItem))
+					return (IProcessAsyncMethodImposter<TItemTarget>)(object)this;
 				if (typeof(global::System.Collections.Generic.IEnumerable<TItem>).IsAssignableFrom(typeof(global::System.Collections.Generic.IEnumerable<TItemTarget>)) && typeof(global::System.Threading.Tasks.Task<TItemTarget>).IsAssignableFrom(typeof(global::System.Threading.Tasks.Task<TItem>)))
 				{
 					return new Adapter<TItemTarget>(this);
@@ -1546,6 +1562,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public ProcessComplexAsyncArgumentsCriteria<TItemTarget, TResultTarget> As<TItemTarget, TResultTarget>()
 			{
+				if ((typeof(TItemTarget) == typeof(TItem)) && (typeof(TResultTarget) == typeof(TResult)))
+					return (ProcessComplexAsyncArgumentsCriteria<TItemTarget, TResultTarget>)(object)this;
 				return new ProcessComplexAsyncArgumentsCriteria<TItemTarget, TResultTarget>(global::Imposter.Abstractions.Arg<global::System.Collections.Generic.IEnumerable<TItemTarget>>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<global::System.Collections.Generic.IEnumerable<TItemTarget>, global::System.Collections.Generic.IEnumerable<TItem>>(it, out global::System.Collections.Generic.IEnumerable<TItem> itemsTarget) && items.Matches(itemsTarget)));
 			}
 		}
@@ -1625,6 +1643,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			private readonly global::Imposter.Abstractions.SetupCollection<IProcessComplexAsyncMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IProcessComplexAsyncMethodImposter>();
 			internal ProcessComplexAsyncMethodImposter<TItem, TResult> AddNew<TItem, TResult>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is ProcessComplexAsyncMethodImposter<TItem, TResult> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new ProcessComplexAsyncMethodImposter<TItem, TResult>(_processComplexAsyncMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -1865,6 +1885,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			IProcessComplexAsyncMethodImposter<TItemTarget, TResultTarget>? IProcessComplexAsyncMethodImposter.As<TItemTarget, TResultTarget>()
 			{
+				if ((typeof(TItemTarget) == typeof(TItem)) && (typeof(TResultTarget) == typeof(TResult)))
+					return (IProcessComplexAsyncMethodImposter<TItemTarget, TResultTarget>)(object)this;
 				if (typeof(global::System.Collections.Generic.IEnumerable<TItem>).IsAssignableFrom(typeof(global::System.Collections.Generic.IEnumerable<TItemTarget>)) && typeof(global::System.Threading.Tasks.Task<TResultTarget>).IsAssignableFrom(typeof(global::System.Threading.Tasks.Task<TResult>)))
 				{
 					return new Adapter<TItemTarget, TResultTarget>(this);

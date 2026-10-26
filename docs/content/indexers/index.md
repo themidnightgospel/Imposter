@@ -25,7 +25,7 @@ Use the generated imposter type for your indexer-bearing interface or class and 
     var value = service[123]; // 10
     ```
 
-When getter setups overlap, the newest matching setup with a configured return or throw wins. `UseBaseImplementation` also counts as a configured return. A newer getter builder or callback-only setup does not hide an older configured return, including while another thread is configuring it. If no matching setup has a configured return, the usual default or missing-setup behavior applies.
+When getter setups overlap, the newest matching setup with a configured return or throw wins. `UseBaseImplementation` also counts as a configured return. A newer getter builder or callback-only setup does not hide an older configured return, including while another thread is configuring it. If no matching setup has a configured return, the usual default or missing-setup behavior applies: `Explicit` mode throws `MissingImposterException`, even when a callback-only setup matches, and `Implicit` mode runs that setup's callbacks and returns the stored or default value.
 
 ## Setter
 

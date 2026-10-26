@@ -86,6 +86,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public AdaptOutArgumentsCriteria<TTarget> As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (AdaptOutArgumentsCriteria<TTarget>)(object)this;
 				return new AdaptOutArgumentsCriteria<TTarget>(global::Imposter.Abstractions.OutArg<int>.Any(), global::Imposter.Abstractions.Arg<int>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<int, int>(it, out int valueAdaptedTarget) && valueAdapted.Matches(valueAdaptedTarget)));
 			}
 		}
@@ -165,6 +167,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private readonly global::Imposter.Abstractions.SetupCollection<IAdaptOutMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IAdaptOutMethodImposter>();
 			internal AdaptOutMethodImposter<T> AddNew<T>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is AdaptOutMethodImposter<T> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new AdaptOutMethodImposter<T>(_adaptOutMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -384,6 +388,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IAdaptOutMethodImposter<TTarget>? IAdaptOutMethodImposter.As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (IAdaptOutMethodImposter<TTarget>)(object)this;
 				if (typeof(TTarget).IsAssignableFrom(typeof(T)))
 				{
 					return new Adapter<TTarget>(this);
@@ -597,6 +603,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public AdaptRefArgumentsCriteria<TTarget> As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (AdaptRefArgumentsCriteria<TTarget>)(object)this;
 				return new AdaptRefArgumentsCriteria<TTarget>(global::Imposter.Abstractions.Arg<int>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<int, int>(it, out int valueTarget) && value.Matches(valueTarget)), global::Imposter.Abstractions.Arg<int>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<int, int>(it, out int valueAdaptedTarget) && valueAdapted.Matches(valueAdaptedTarget)));
 			}
 		}
@@ -676,6 +684,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private readonly global::Imposter.Abstractions.SetupCollection<IAdaptRefMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IAdaptRefMethodImposter>();
 			internal AdaptRefMethodImposter<T> AddNew<T>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is AdaptRefMethodImposter<T> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new AdaptRefMethodImposter<T>(_adaptRefMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -888,6 +898,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IAdaptRefMethodImposter<TTarget>? IAdaptRefMethodImposter.As<TTarget>()
 			{
+				if (typeof(TTarget) == typeof(T))
+					return (IAdaptRefMethodImposter<TTarget>)(object)this;
 				if (typeof(TTarget).IsAssignableFrom(typeof(T)))
 				{
 					return new Adapter<TTarget>(this);
@@ -1530,6 +1542,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public VerifyArgumentsCriteria<CalledTarget> As<CalledTarget>()
 			{
+				if (typeof(CalledTarget) == typeof(Called))
+					return (VerifyArgumentsCriteria<CalledTarget>)(object)this;
 				return new VerifyArgumentsCriteria<CalledTarget>(global::Imposter.Abstractions.Arg<CalledTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<CalledTarget, Called>(it, out Called valueTarget) && value.Matches(valueTarget)));
 			}
 		}
@@ -1609,6 +1623,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private readonly global::Imposter.Abstractions.SetupCollection<IVerifyMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IVerifyMethodImposter>();
 			internal VerifyMethodImposter<Called> AddNew<Called>()
 			{
+				if (_imposters.TryPeek(out var newest) && newest is VerifyMethodImposter<Called> sameTypeImposter)
+					return sameTypeImposter;
 				var imposter = new VerifyMethodImposter<Called>(_verifyMethodInvocationHistoryCollection, _invocationBehavior);
 				_imposters.Push(imposter);
 				return imposter;
@@ -1837,6 +1853,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IVerifyMethodImposter<CalledTarget>? IVerifyMethodImposter.As<CalledTarget>()
 			{
+				if (typeof(CalledTarget) == typeof(Called))
+					return (IVerifyMethodImposter<CalledTarget>)(object)this;
 				if (typeof(Called).IsAssignableFrom(typeof(CalledTarget)) && typeof(CalledTarget).IsAssignableFrom(typeof(Called)))
 				{
 					return new Adapter<CalledTarget>(this);

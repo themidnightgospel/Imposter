@@ -26,8 +26,6 @@ internal readonly struct IndexerGetterImposterMetadata
 
     internal readonly FieldMetadata PropertyDisplayNameField;
 
-    internal readonly FieldMetadata HasConfiguredReturnField;
-
     internal readonly GetterBuilderMetadata Builder;
 
     internal readonly GetterInvocationMetadata Invocation;
@@ -48,10 +46,6 @@ internal readonly struct IndexerGetterImposterMetadata
 
     internal readonly string FindGetterInvocationImposterMethodName;
 
-    internal readonly string EnsureGetterConfiguredMethodName;
-
-    internal readonly MethodMetadata MarkReturnConfiguredMethod;
-
     internal IndexerGetterImposterMetadata(in ImposterIndexerMetadata indexer)
     {
         // The getter's Get takes the indexer's parameters and refers to these locals and members by name.
@@ -67,7 +61,6 @@ internal readonly struct IndexerGetterImposterMetadata
             names.Use(ImposterIndexerCoreMetadata.BaseImplementationParameterName)
         );
         FindGetterInvocationImposterMethodName = names.Use("FindGetterInvocationImposter");
-        EnsureGetterConfiguredMethodName = names.Use("EnsureGetterConfigured");
 
         var returnGeneratorType = indexer.Core.HasGeneratedValueDelegates
             ? indexer.Delegates.ReturnGeneratorDelegateType
@@ -82,7 +75,7 @@ internal readonly struct IndexerGetterImposterMetadata
                 indexer.Core.BaseGetterType.ToNullableType(),
                 indexer.Core.NullableAwareValueTypeSyntax
             );
-        Invocation = new GetterInvocationMetadata(indexer, TypeSyntax, ReturnHandlerType);
+        Invocation = new GetterInvocationMetadata(indexer, ReturnHandlerType);
 
         DefaultBehaviourField = new FieldMetadata(
             names.Use("_defaultBehaviour"),
@@ -106,16 +99,7 @@ internal readonly struct IndexerGetterImposterMetadata
             names.Use("_propertyDisplayName"),
             WellKnownTypes.String
         );
-        HasConfiguredReturnField = new FieldMetadata(
-            names.Use("_hasConfiguredReturn"),
-            WellKnownTypes.Bool
-        );
-
         Builder = new GetterBuilderMetadata(returnGeneratorType);
-        MarkReturnConfiguredMethod = new MethodMetadata(
-            "MarkReturnConfigured",
-            WellKnownTypes.Void
-        );
     }
 
     internal readonly struct GetterBuilderMetadata
@@ -150,7 +134,7 @@ internal readonly struct IndexerGetterImposterMetadata
 
         internal readonly NameSyntax TypeSyntax;
 
-        internal readonly FieldMetadata ParentField;
+        internal readonly string InvokeCallbacksMethodName;
 
         internal readonly FieldMetadata DefaultBehaviourField;
 
@@ -168,13 +152,12 @@ internal readonly struct IndexerGetterImposterMetadata
 
         internal GetterInvocationMetadata(
             in ImposterIndexerMetadata indexer,
-            NameSyntax getterImposterType,
             TypeSyntax returnHandlerType
         )
         {
             Name = "GetterInvocationImposter";
             TypeSyntax = IdentifierName(Name);
-            ParentField = new FieldMetadata("_parent", getterImposterType);
+            InvokeCallbacksMethodName = "InvokeCallbacks";
             DefaultBehaviourField = new FieldMetadata(
                 "_defaultBehaviour",
                 indexer.DefaultIndexerBehaviour.TypeSyntax
