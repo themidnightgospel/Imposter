@@ -11,4 +11,14 @@ internal readonly record struct ImposterGenerationTarget(
     bool PutInTheSameNamespace,
     bool ExtensionClassNameIncludesArity,
     bool HintNameIncludesHash
-);
+)
+{
+    // Derived from the target, and from whether another target's differs from it only in letter case, so it does not
+    // depend on the order in which targets are processed.
+    internal string HintName =>
+        ImposterGenerationContext.GetHintName(
+            Target.IdentityName,
+            PutInTheSameNamespace,
+            HintNameIncludesHash
+        );
+}

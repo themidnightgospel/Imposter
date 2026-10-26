@@ -26,6 +26,7 @@ using Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.PropertyImp
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -90,10 +91,13 @@ public sealed class ImposterGenerator : IIncrementalGenerator
 #endif
         ;
 
+        // A cache per pipeline rather than a static one, so projects don't share it.
+        var sourceCache = new ImposterSourceCache();
+
         context.RegisterSourceOutput(
             targets.Combine(optionsProvider),
-            static (sourceProductionContext, inputs) =>
-                GenerateImposter(sourceProductionContext, inputs.Left, inputs.Right)
+            (sourceProductionContext, inputs) =>
+                GenerateImposter(sourceProductionContext, inputs.Left, inputs.Right, sourceCache)
         );
     }
 
@@ -119,7 +123,8 @@ public sealed class ImposterGenerator : IIncrementalGenerator
     private static void GenerateImposter(
         in SourceProductionContext sourceProductionContext,
         in ImposterGenerationTarget target,
-        GeneratorOptions options
+        GeneratorOptions options,
+        ImposterSourceCache sourceCache
     )
     {
         // Returning instead would leave the driver a cached result without the imposter, which a later run with the
@@ -134,43 +139,24 @@ public sealed class ImposterGenerator : IIncrementalGenerator
 
         try
         {
-            var supportedCSharpFeatures = new SupportedCSharpFeatures(options.LanguageVersion);
-            var avoidedUniqueNames = new HashSet<string>();
-            ImposterGenerationContext imposterGenerationContext;
-            CompilationUnitSyntax imposter;
-
-            // A member whose types would clash with another member's name takes another unique name to name them
-            // after, which can clash in turn, so the imposter is built until none does. Only a target with such a
-            // member is built more than once. An avoided name is never given out again, so every build avoids new
-            // ones, and the target has only so many names they can clash with. MemberTypes.Add checks that each
-            // registered type's name contains its member's current unique name, rejecting types that cannot be renamed.
-            while (true)
+            var hintName = target.HintName;
+            var source = sourceCache.Get(hintName, target, options.LanguageVersion);
+            if (source is null)
             {
-                imposterGenerationContext = new ImposterGenerationContext(
+                var imposter = BuildImposter(
                     target,
-                    supportedCSharpFeatures,
-                    avoidedUniqueNames
+                    options.LanguageVersion,
+                    sourceProductionContext.CancellationToken
                 );
-                imposter = BuildImposter(
-                    imposterGenerationContext,
-                    sourceProductionContext.CancellationToken,
-                    out var clashingUniqueNames
-                );
-                if (clashingUniqueNames.Count == 0)
-                {
-                    break;
-                }
-
-                avoidedUniqueNames.UnionWith(clashingUniqueNames);
+                source = SourceText.From(GeneratedCodeWriter.Write(imposter), Encoding.UTF8);
+                sourceCache.Set(hintName, target, options.LanguageVersion, source);
             }
 
-            sourceProductionContext.AddSource(
-                imposterGenerationContext.HintName,
-                SourceText.From(GeneratedCodeWriter.Write(imposter), Encoding.UTF8)
-            );
+            sourceProductionContext.AddSource(hintName, source);
 
             new DiagnosticLogger(sourceProductionContext, options.IsLoggingEnabled).LogImposter(
-                imposterGenerationContext
+                hintName,
+                target.Target
             );
         }
         // Cancellation must propagate: reporting it as a crash would leave the driver with a cached result
@@ -181,6 +167,36 @@ public sealed class ImposterGenerator : IIncrementalGenerator
 #if DEBUG
             throw;
 #endif
+        }
+    }
+
+    private static CompilationUnitSyntax BuildImposter(
+        in ImposterGenerationTarget target,
+        LanguageVersion languageVersion,
+        in CancellationToken cancellationToken
+    )
+    {
+        var supportedCSharpFeatures = new SupportedCSharpFeatures(languageVersion);
+        var avoidedUniqueNames = new HashSet<string>();
+
+        // A member whose types would clash with another member's name takes another unique name to name them
+        // after, which can clash in turn, so the imposter is built until none does. Only a target with such a
+        // member is built more than once. An avoided name is never given out again, so every build avoids new
+        // ones, and the target has only so many names they can clash with. MemberTypes.Add checks that each
+        // registered type's name contains its member's current unique name, rejecting types that cannot be renamed.
+        while (true)
+        {
+            var imposter = BuildImposter(
+                new ImposterGenerationContext(target, supportedCSharpFeatures, avoidedUniqueNames),
+                cancellationToken,
+                out var clashingUniqueNames
+            );
+            if (clashingUniqueNames.Count == 0)
+            {
+                return imposter;
+            }
+
+            avoidedUniqueNames.UnionWith(clashingUniqueNames);
         }
     }
 
