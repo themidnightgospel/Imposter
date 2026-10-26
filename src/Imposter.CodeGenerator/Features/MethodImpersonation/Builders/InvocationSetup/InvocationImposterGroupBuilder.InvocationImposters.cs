@@ -15,31 +15,19 @@ internal static partial class InvocationImposterGroupBuilder
         in ImposterTargetMethodMetadata method
     )
     {
-        var invocationImposterType = IdentifierName(
-            method.MethodInvocationImposterGroup.MethodInvocationImposterTypeName
-        );
-        var queueType = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
-            invocationImposterType
+        var sequenceType = WellKnownTypes.Imposter.Abstractions.ReturnValueSequence(
+            IdentifierName(method.MethodInvocationImposterGroup.MethodInvocationImposterTypeName)
+                .ToNullableType()
         );
 
         return SinglePrivateReadonlyVariableField(
-            queueType,
+            sequenceType,
             MethodInvocationImposterGroupMetadata.InvocationImpostersFieldName,
-            queueType.New(ArgumentList())
+            sequenceType.New(ArgumentList())
         );
     }
 
-    internal static FieldDeclarationSyntax LastInvocationImposterFieldDeclaration(
-        in ImposterTargetMethodMetadata method
-    ) =>
-        SingleVariableField(
-            IdentifierName(method.MethodInvocationImposterGroup.MethodInvocationImposterTypeName)
-                .ToNullableType(),
-            MethodInvocationImposterGroupMetadata.LatestInvocationImposterFieldName,
-            TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.VolatileKeyword))
-        );
-
-    internal static MethodDeclarationSyntax AddInvocationImposterMethod(
+    internal static MethodDeclarationSyntax CreateInvocationImposterMethod(
         in ImposterTargetMethodMetadata method
     )
     {
@@ -65,50 +53,56 @@ internal static partial class InvocationImposterGroupBuilder
             );
         }
 
-        bodyBuilder
-            .AddStatement(
-                IdentifierName(MethodInvocationImposterGroupMetadata.InvocationImpostersFieldName)
-                    .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
-                    .Call(Argument(IdentifierName("invocationImposter")))
-                    .ToStatementSyntax()
-            )
-            .AddStatement(ReturnStatement(IdentifierName("invocationImposter")));
+        bodyBuilder.AddStatement(ReturnStatement(IdentifierName("invocationImposter")));
 
         return new MethodDeclarationBuilder(
             invocationImposterType,
-            MethodInvocationImposterGroupMetadata.AddInvocationImposterMethodName
+            MethodInvocationImposterGroupMetadata.CreateInvocationImposterMethodName
         )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(bodyBuilder.Build())
             .Build();
     }
 
-    internal static MethodDeclarationSyntax GetInvocationImposterMethod(
+    // Calls take a step only once it's configured, so a pending step is never consumed and a bare void setup's
+    // default no-op never counts as an outcome. Configuring an added step again changes the step calls already take.
+    internal static MethodDeclarationSyntax AddInvocationImposterMethod(
         in ImposterTargetMethodMetadata method
     )
     {
-        var invocationImposterType = IdentifierName(
-            method.MethodInvocationImposterGroup.MethodInvocationImposterTypeName
+        var invocationImposter = IdentifierName("invocationImposter");
+        var isConfigured = invocationImposter.Dot(
+            IdentifierName(method.MethodInvocationImposter.IsConfiguredFieldName)
         );
 
         return new MethodDeclarationBuilder(
-            invocationImposterType.ToNullableType(),
-            method.MethodInvocationImposterGroup.GetInvocationImposterMethodName
+            WellKnownTypes.Void,
+            MethodInvocationImposterGroupMetadata.AddInvocationImposterMethodName
         )
-            .AddModifier(Token(SyntaxKind.PrivateKeyword))
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddParameter(
+                ParameterSyntax(
+                    IdentifierName(
+                        method.MethodInvocationImposterGroup.MethodInvocationImposterTypeName
+                    ),
+                    invocationImposter.Identifier.Text
+                )
+            )
             .WithBody(
-                NextOutcomeSyntaxHelper.TakeNextOutcomeBody(
+                Block(
+                    IfStatement(isConfigured, Block(ReturnStatement())),
+                    isConfigured.Assign(True).ToStatementSyntax(),
                     IdentifierName(
-                        MethodInvocationImposterGroupMetadata.InvocationImpostersFieldName
-                    ),
+                            MethodInvocationImposterGroupMetadata.InvocationImpostersFieldName
+                        )
+                        .Dot(IdentifierName("Add"))
+                        .Call(Argument(invocationImposter))
+                        .ToStatementSyntax(),
                     IdentifierName(
-                        MethodInvocationImposterGroupMetadata.LatestInvocationImposterFieldName
-                    ),
-                    IdentifierName("invocationImposter"),
-                    // Do not consume a pending step or invoke its mutable default generator. A later Returns,
-                    // Throws or Callback must still be able to publish this same step to the queue's readers.
-                    IdentifierName("invocationImposter")
-                        .Dot(IdentifierName(method.MethodInvocationImposter.IsConfiguredFieldName))
+                            method.MethodInvocationImposterGroup.HasConfiguredOutcomeFieldName
+                        )
+                        .Assign(True)
+                        .ToStatementSyntax()
                 )
             )
             .Build();

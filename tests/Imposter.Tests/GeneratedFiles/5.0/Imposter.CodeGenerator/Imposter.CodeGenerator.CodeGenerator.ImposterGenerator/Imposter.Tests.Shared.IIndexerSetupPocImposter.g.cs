@@ -132,49 +132,34 @@ namespace Imposter.Tests.Shared
 			internal static IndexerMethodMethodInvocationImposterGroup Default = new IndexerMethodMethodInvocationImposterGroup(new IndexerMethodArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any(), global::Imposter.Abstractions.Arg<string>.Any(), global::Imposter.Abstractions.Arg<global::System.Text.RegularExpressions.Regex>.Any()));
 			internal IndexerMethodArgumentsCriteria ArgumentsCriteria { get; }
 
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private volatile MethodInvocationImposter? _latestInvocationImposter;
+			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
 			internal volatile bool HasConfiguredOutcome;
 			public IndexerMethodMethodInvocationImposterGroup(IndexerMethodArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
 			}
 
-			internal MethodInvocationImposter AddInvocationImposter()
+			internal MethodInvocationImposter CreateInvocationImposter()
 			{
 				MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
-				_invocationImposters.Enqueue(invocationImposter);
 				return invocationImposter;
 			}
 
-			private MethodInvocationImposter? GetInvocationImposter()
+			internal void AddInvocationImposter(MethodInvocationImposter invocationImposter)
 			{
-				if (_invocationImposters.IsEmpty)
+				if (invocationImposter.IsConfigured)
 				{
-					return _latestInvocationImposter;
+					return;
 				}
 
-				lock (_invocationImposters)
-				{
-					if (!_invocationImposters.TryPeek(out var invocationImposter))
-					{
-						return _latestInvocationImposter;
-					}
-
-					if (!invocationImposter.IsConfigured)
-					{
-						return _latestInvocationImposter;
-					}
-
-					_latestInvocationImposter = invocationImposter;
-					_invocationImposters.TryDequeue(out _);
-					return invocationImposter;
-				}
+				invocationImposter.IsConfigured = true;
+				_invocationImposters.Add(invocationImposter);
+				HasConfiguredOutcome = true;
 			}
 
 			public string Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int name, string lastname, in global::System.Text.RegularExpressions.Regex dog)
 			{
-				var invocationImposter = GetInvocationImposter();
+				var invocationImposter = this._invocationImposters.Next(null);
 				if (invocationImposter == null)
 				{
 					if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -199,8 +184,8 @@ namespace Imposter.Tests.Shared
 				}
 
 				private IndexerMethodDelegate? _resultGenerator;
-				private readonly global::System.Collections.Concurrent.ConcurrentQueue<IndexerMethodCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<IndexerMethodCallbackDelegate>();
-				internal volatile bool IsConfigured;
+				private global::Imposter.Abstractions.CallbackCollection<IndexerMethodCallbackDelegate>? _callbacks;
+				internal bool IsConfigured;
 				public string Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int name, string lastname, in global::System.Text.RegularExpressions.Regex dog)
 				{
 					if (_resultGenerator == null)
@@ -214,7 +199,7 @@ namespace Imposter.Tests.Shared
 					}
 
 					string result = _resultGenerator.Invoke(name, lastname, in dog);
-					if (!_callbacks.IsEmpty)
+					if (_callbacks != null)
 					{
 						foreach (var callback in _callbacks)
 						{
@@ -227,7 +212,7 @@ namespace Imposter.Tests.Shared
 
 				internal void Callback(IndexerMethodCallbackDelegate callback)
 				{
-					_callbacks.Enqueue(callback);
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
 				internal void Returns(IndexerMethodDelegate resultGenerator)
@@ -354,7 +339,7 @@ namespace Imposter.Tests.Shared
 					this._indexerMethodMethodInvocationHistoryCollection = _indexerMethodMethodInvocationHistoryCollection;
 					this._argumentsCriteria = _argumentsCriteria;
 					this._invocationImposterGroup = new IndexerMethodMethodInvocationImposterGroup(_argumentsCriteria);
-					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+					this._currentInvocationImposter = this._invocationImposterGroup.CreateInvocationImposter();
 					imposter._invocationImposters.Push(_invocationImposterGroup);
 				}
 
@@ -364,8 +349,7 @@ namespace Imposter.Tests.Shared
 					{
 						throw new TException();
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
@@ -375,8 +359,7 @@ namespace Imposter.Tests.Shared
 					{
 						throw exception;
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
@@ -386,38 +369,34 @@ namespace Imposter.Tests.Shared
 					{
 						throw exceptionGenerator.Invoke(name, lastname, in dog);
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				IIndexerMethodMethodInvocationImposterGroupContinuation IIndexerMethodMethodInvocationImposterGroupCallback.Callback(IndexerMethodCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				IIndexerMethodMethodInvocationImposterGroupContinuation IIndexerMethodMethodInvocationImposterGroup.Returns(IndexerMethodDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				IIndexerMethodMethodInvocationImposterGroupContinuation IIndexerMethodMethodInvocationImposterGroup.Returns(string value)
 				{
 					_currentInvocationImposter.Returns(value);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				IIndexerMethodMethodInvocationImposterGroup IIndexerMethodMethodInvocationImposterGroupContinuation.Then()
 				{
-					this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+					this._currentInvocationImposter = _invocationImposterGroup.CreateInvocationImposter();
 					return this;
 				}
 

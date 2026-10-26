@@ -94,48 +94,33 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		class TryReadMethodInvocationImposterGroup
 		{
 			internal static TryReadMethodInvocationImposterGroup Default = new TryReadMethodInvocationImposterGroup();
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private volatile MethodInvocationImposter? _latestInvocationImposter;
+			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
 			internal volatile bool HasConfiguredOutcome;
 			public TryReadMethodInvocationImposterGroup()
 			{
 			}
 
-			internal MethodInvocationImposter AddInvocationImposter()
+			internal MethodInvocationImposter CreateInvocationImposter()
 			{
 				MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
-				_invocationImposters.Enqueue(invocationImposter);
 				return invocationImposter;
 			}
 
-			private MethodInvocationImposter? GetInvocationImposter()
+			internal void AddInvocationImposter(MethodInvocationImposter invocationImposter)
 			{
-				if (_invocationImposters.IsEmpty)
+				if (invocationImposter.IsConfigured)
 				{
-					return _latestInvocationImposter;
+					return;
 				}
 
-				lock (_invocationImposters)
-				{
-					if (!_invocationImposters.TryPeek(out var invocationImposter))
-					{
-						return _latestInvocationImposter;
-					}
-
-					if (!invocationImposter.IsConfigured)
-					{
-						return _latestInvocationImposter;
-					}
-
-					_latestInvocationImposter = invocationImposter;
-					_invocationImposters.TryDequeue(out _);
-					return invocationImposter;
-				}
+				invocationImposter.IsConfigured = true;
+				_invocationImposters.Add(invocationImposter);
+				HasConfiguredOutcome = true;
 			}
 
 			public bool Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, out global::System.ReadOnlySpan<byte> data)
 			{
-				var invocationImposter = GetInvocationImposter();
+				var invocationImposter = this._invocationImposters.Next(null);
 				if (invocationImposter == null)
 				{
 					if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -160,8 +145,8 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				}
 
 				private TryReadDelegate? _resultGenerator;
-				private readonly global::System.Collections.Concurrent.ConcurrentQueue<TryReadCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<TryReadCallbackDelegate>();
-				internal volatile bool IsConfigured;
+				private global::Imposter.Abstractions.CallbackCollection<TryReadCallbackDelegate>? _callbacks;
+				internal bool IsConfigured;
 				public bool Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, out global::System.ReadOnlySpan<byte> data)
 				{
 					if (_resultGenerator == null)
@@ -175,7 +160,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					}
 
 					bool result = _resultGenerator.Invoke(out data);
-					if (!_callbacks.IsEmpty)
+					if (_callbacks != null)
 					{
 						foreach (var callback in _callbacks)
 						{
@@ -188,7 +173,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 				internal void Callback(TryReadCallbackDelegate callback)
 				{
-					_callbacks.Enqueue(callback);
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
 				internal void Returns(TryReadDelegate resultGenerator)
@@ -319,7 +304,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				{
 					this._tryReadMethodInvocationHistoryCollection = _tryReadMethodInvocationHistoryCollection;
 					this._invocationImposterGroup = new TryReadMethodInvocationImposterGroup();
-					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+					this._currentInvocationImposter = this._invocationImposterGroup.CreateInvocationImposter();
 					imposter._invocationImposters.Push(_invocationImposterGroup);
 				}
 
@@ -329,8 +314,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					{
 						throw new TException();
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
@@ -340,8 +324,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					{
 						throw exception;
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
@@ -351,38 +334,34 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					{
 						throw exceptionGenerator.Invoke(out data);
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				ITryReadMethodInvocationImposterGroupContinuation ITryReadMethodInvocationImposterGroupCallback.Callback(TryReadCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				ITryReadMethodInvocationImposterGroupContinuation ITryReadMethodInvocationImposterGroup.Returns(TryReadDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				ITryReadMethodInvocationImposterGroupContinuation ITryReadMethodInvocationImposterGroup.Returns(bool value)
 				{
 					_currentInvocationImposter.Returns(value);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				ITryReadMethodInvocationImposterGroup ITryReadMethodInvocationImposterGroupContinuation.Then()
 				{
-					this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+					this._currentInvocationImposter = _invocationImposterGroup.CreateInvocationImposter();
 					return this;
 				}
 

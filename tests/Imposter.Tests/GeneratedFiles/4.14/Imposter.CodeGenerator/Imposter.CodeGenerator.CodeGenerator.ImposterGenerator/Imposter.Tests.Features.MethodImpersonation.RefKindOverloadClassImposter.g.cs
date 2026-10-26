@@ -131,49 +131,34 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal static Count_1MethodInvocationImposterGroup Default = new Count_1MethodInvocationImposterGroup(new Count_1ArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
 			internal Count_1ArgumentsCriteria ArgumentsCriteria { get; }
 
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private volatile MethodInvocationImposter? _latestInvocationImposter;
+			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
 			internal volatile bool HasConfiguredOutcome;
 			public Count_1MethodInvocationImposterGroup(Count_1ArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
 			}
 
-			internal MethodInvocationImposter AddInvocationImposter()
+			internal MethodInvocationImposter CreateInvocationImposter()
 			{
 				MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
-				_invocationImposters.Enqueue(invocationImposter);
 				return invocationImposter;
 			}
 
-			private MethodInvocationImposter? GetInvocationImposter()
+			internal void AddInvocationImposter(MethodInvocationImposter invocationImposter)
 			{
-				if (_invocationImposters.IsEmpty)
+				if (invocationImposter.IsConfigured)
 				{
-					return _latestInvocationImposter;
+					return;
 				}
 
-				lock (_invocationImposters)
-				{
-					if (!_invocationImposters.TryPeek(out var invocationImposter))
-					{
-						return _latestInvocationImposter;
-					}
-
-					if (!invocationImposter.IsConfigured)
-					{
-						return _latestInvocationImposter;
-					}
-
-					_latestInvocationImposter = invocationImposter;
-					_invocationImposters.TryDequeue(out _);
-					return invocationImposter;
-				}
+				invocationImposter.IsConfigured = true;
+				_invocationImposters.Add(invocationImposter);
+				HasConfiguredOutcome = true;
 			}
 
 			public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, in int value, Count_1Delegate? baseImplementation = null)
 			{
-				var invocationImposter = GetInvocationImposter();
+				var invocationImposter = this._invocationImposters.Next(null);
 				if (invocationImposter == null)
 				{
 					if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -198,9 +183,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				private Count_1Delegate? _resultGenerator;
-				private readonly global::System.Collections.Concurrent.ConcurrentQueue<Count_1CallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<Count_1CallbackDelegate>();
+				private global::Imposter.Abstractions.CallbackCollection<Count_1CallbackDelegate>? _callbacks;
 				private bool _useBaseImplementation;
-				internal volatile bool IsConfigured;
+				internal bool IsConfigured;
 				public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, in int value, Count_1Delegate? baseImplementation = null)
 				{
 					if (_useBaseImplementation)
@@ -219,7 +204,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					int result = _resultGenerator.Invoke(in value);
-					if (!_callbacks.IsEmpty)
+					if (_callbacks != null)
 					{
 						foreach (var callback in _callbacks)
 						{
@@ -232,7 +217,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				internal void Callback(Count_1CallbackDelegate callback)
 				{
-					_callbacks.Enqueue(callback);
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
 				internal void Returns(Count_1Delegate resultGenerator)
@@ -369,7 +354,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					this._count_1MethodInvocationHistoryCollection = _count_1MethodInvocationHistoryCollection;
 					this._argumentsCriteria = _argumentsCriteria;
 					this._invocationImposterGroup = new Count_1MethodInvocationImposterGroup(_argumentsCriteria);
-					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+					this._currentInvocationImposter = this._invocationImposterGroup.CreateInvocationImposter();
 					imposter._invocationImposters.Push(_invocationImposterGroup);
 				}
 
@@ -379,8 +364,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					{
 						throw new TException();
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
@@ -390,8 +374,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					{
 						throw exception;
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
@@ -401,46 +384,41 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					{
 						throw exceptionGenerator.Invoke(in value);
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				ICount_1MethodInvocationImposterGroupContinuation ICount_1MethodInvocationImposterGroupCallback.Callback(Count_1CallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				ICount_1MethodInvocationImposterGroupContinuation ICount_1MethodInvocationImposterGroup.Returns(Count_1Delegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				ICount_1MethodInvocationImposterGroupContinuation ICount_1MethodInvocationImposterGroup.Returns(int value_1)
 				{
 					_currentInvocationImposter.Returns(value_1);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				ICount_1MethodInvocationImposterGroupContinuation ICount_1MethodInvocationImposterGroup.UseBaseImplementation()
 				{
 					_currentInvocationImposter.UseBaseImplementation();
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				ICount_1MethodInvocationImposterGroup ICount_1MethodInvocationImposterGroupContinuation.Then()
 				{
-					this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+					this._currentInvocationImposter = _invocationImposterGroup.CreateInvocationImposter();
 					return this;
 				}
 
@@ -556,49 +534,34 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal static CountMethodInvocationImposterGroup Default = new CountMethodInvocationImposterGroup(new CountArgumentsCriteria(global::Imposter.Abstractions.Arg<int>.Any()));
 			internal CountArgumentsCriteria ArgumentsCriteria { get; }
 
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private volatile MethodInvocationImposter? _latestInvocationImposter;
+			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
 			internal volatile bool HasConfiguredOutcome;
 			public CountMethodInvocationImposterGroup(CountArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
 			}
 
-			internal MethodInvocationImposter AddInvocationImposter()
+			internal MethodInvocationImposter CreateInvocationImposter()
 			{
 				MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
-				_invocationImposters.Enqueue(invocationImposter);
 				return invocationImposter;
 			}
 
-			private MethodInvocationImposter? GetInvocationImposter()
+			internal void AddInvocationImposter(MethodInvocationImposter invocationImposter)
 			{
-				if (_invocationImposters.IsEmpty)
+				if (invocationImposter.IsConfigured)
 				{
-					return _latestInvocationImposter;
+					return;
 				}
 
-				lock (_invocationImposters)
-				{
-					if (!_invocationImposters.TryPeek(out var invocationImposter))
-					{
-						return _latestInvocationImposter;
-					}
-
-					if (!invocationImposter.IsConfigured)
-					{
-						return _latestInvocationImposter;
-					}
-
-					_latestInvocationImposter = invocationImposter;
-					_invocationImposters.TryDequeue(out _);
-					return invocationImposter;
-				}
+				invocationImposter.IsConfigured = true;
+				_invocationImposters.Add(invocationImposter);
+				HasConfiguredOutcome = true;
 			}
 
 			public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int value, CountDelegate? baseImplementation = null)
 			{
-				var invocationImposter = GetInvocationImposter();
+				var invocationImposter = this._invocationImposters.Next(null);
 				if (invocationImposter == null)
 				{
 					if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -623,9 +586,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				private CountDelegate? _resultGenerator;
-				private readonly global::System.Collections.Concurrent.ConcurrentQueue<CountCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<CountCallbackDelegate>();
+				private global::Imposter.Abstractions.CallbackCollection<CountCallbackDelegate>? _callbacks;
 				private bool _useBaseImplementation;
-				internal volatile bool IsConfigured;
+				internal bool IsConfigured;
 				public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int value, CountDelegate? baseImplementation = null)
 				{
 					if (_useBaseImplementation)
@@ -644,7 +607,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					int result = _resultGenerator.Invoke(value);
-					if (!_callbacks.IsEmpty)
+					if (_callbacks != null)
 					{
 						foreach (var callback in _callbacks)
 						{
@@ -657,7 +620,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				internal void Callback(CountCallbackDelegate callback)
 				{
-					_callbacks.Enqueue(callback);
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
 				internal void Returns(CountDelegate resultGenerator)
@@ -794,7 +757,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					this._countMethodInvocationHistoryCollection = _countMethodInvocationHistoryCollection;
 					this._argumentsCriteria = _argumentsCriteria;
 					this._invocationImposterGroup = new CountMethodInvocationImposterGroup(_argumentsCriteria);
-					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+					this._currentInvocationImposter = this._invocationImposterGroup.CreateInvocationImposter();
 					imposter._invocationImposters.Push(_invocationImposterGroup);
 				}
 
@@ -804,8 +767,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					{
 						throw new TException();
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
@@ -815,8 +777,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					{
 						throw exception;
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
@@ -826,46 +787,41 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					{
 						throw exceptionGenerator.Invoke(value);
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				ICountMethodInvocationImposterGroupContinuation ICountMethodInvocationImposterGroupCallback.Callback(CountCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				ICountMethodInvocationImposterGroupContinuation ICountMethodInvocationImposterGroup.Returns(CountDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				ICountMethodInvocationImposterGroupContinuation ICountMethodInvocationImposterGroup.Returns(int value_1)
 				{
 					_currentInvocationImposter.Returns(value_1);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				ICountMethodInvocationImposterGroupContinuation ICountMethodInvocationImposterGroup.UseBaseImplementation()
 				{
 					_currentInvocationImposter.UseBaseImplementation();
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				ICountMethodInvocationImposterGroup ICountMethodInvocationImposterGroupContinuation.Then()
 				{
-					this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+					this._currentInvocationImposter = _invocationImposterGroup.CreateInvocationImposter();
 					return this;
 				}
 

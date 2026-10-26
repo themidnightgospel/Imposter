@@ -363,9 +363,8 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 				private sealed class GetterInvocationImposter
 				{
 					private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
-					private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int>>();
+					private global::Imposter.Abstractions.ReturnValueSequence<global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int>?>? _returnValues;
 					private global::Imposter.Abstractions.CallbackCollection<IndexerIndexerGetterCallback>? _callbacks;
-					private volatile global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int>? _lastReturnValue;
 					private string _propertyDisplayName;
 					internal volatile bool HasConfiguredReturn;
 					internal IndexerIndexerArgumentsCriteria Criteria { get; private set; }
@@ -379,7 +378,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 					internal void AddReturnValue(global::System.Func<IndexerIndexerArguments, int> generator)
 					{
-						_returnValues.Enqueue((arguments_1, baseImplementation_1) => generator(arguments_1));
+						global::System.Threading.LazyInitializer.EnsureInitialized(ref _returnValues).Add((arguments_1, baseImplementation_1) => generator(arguments_1));
 						_defaultBehaviour.IsOn = false;
 						HasConfiguredReturn = true;
 					}
@@ -420,27 +419,13 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 					private global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int>? NextReturnValue()
 					{
-						if (_returnValues.IsEmpty)
-						{
-							return _lastReturnValue;
-						}
-
-						lock (_returnValues)
-						{
-							if (!_returnValues.TryPeek(out var returnValue))
-							{
-								return _lastReturnValue;
-							}
-
-							_lastReturnValue = returnValue;
-							_returnValues.TryDequeue(out _);
-							return returnValue;
-						}
+						var returnValues = global::System.Threading.Volatile.Read(ref _returnValues);
+						return returnValues != null ? returnValues.Next(null) : null;
 					}
 
 					internal void UseBaseImplementation()
 					{
-						_returnValues.Enqueue((arguments_1, baseImplementation_1) =>
+						global::System.Threading.LazyInitializer.EnsureInitialized(ref _returnValues).Add((arguments_1, baseImplementation_1) =>
 						{
 							if (baseImplementation_1 == null)
 							{

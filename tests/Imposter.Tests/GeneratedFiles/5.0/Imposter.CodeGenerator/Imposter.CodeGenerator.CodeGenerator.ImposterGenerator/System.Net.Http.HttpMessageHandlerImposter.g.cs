@@ -136,50 +136,35 @@ namespace System.Net.Http
 			internal static DisposeMethodInvocationImposterGroup Default = new DisposeMethodInvocationImposterGroup(new DisposeArgumentsCriteria(global::Imposter.Abstractions.Arg<bool>.Any()));
 			internal DisposeArgumentsCriteria ArgumentsCriteria { get; }
 
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private volatile MethodInvocationImposter? _latestInvocationImposter;
+			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
 			internal volatile bool HasConfiguredOutcome;
 			public DisposeMethodInvocationImposterGroup(DisposeArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
 			}
 
-			internal MethodInvocationImposter AddInvocationImposter()
+			internal MethodInvocationImposter CreateInvocationImposter()
 			{
 				MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
 				invocationImposter.UseDefaultResultGenerator();
-				_invocationImposters.Enqueue(invocationImposter);
 				return invocationImposter;
 			}
 
-			private MethodInvocationImposter? GetInvocationImposter()
+			internal void AddInvocationImposter(MethodInvocationImposter invocationImposter)
 			{
-				if (_invocationImposters.IsEmpty)
+				if (invocationImposter.IsConfigured)
 				{
-					return _latestInvocationImposter;
+					return;
 				}
 
-				lock (_invocationImposters)
-				{
-					if (!_invocationImposters.TryPeek(out var invocationImposter))
-					{
-						return _latestInvocationImposter;
-					}
-
-					if (!invocationImposter.IsConfigured)
-					{
-						return _latestInvocationImposter;
-					}
-
-					_latestInvocationImposter = invocationImposter;
-					_invocationImposters.TryDequeue(out _);
-					return invocationImposter;
-				}
+				invocationImposter.IsConfigured = true;
+				_invocationImposters.Add(invocationImposter);
+				HasConfiguredOutcome = true;
 			}
 
 			public void Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, bool disposing, DisposeDelegate? baseImplementation = null)
 			{
-				var invocationImposter = GetInvocationImposter();
+				var invocationImposter = this._invocationImposters.Next(null);
 				if (invocationImposter == null)
 				{
 					if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -204,9 +189,9 @@ namespace System.Net.Http
 				}
 
 				private DisposeDelegate? _resultGenerator;
-				private readonly global::System.Collections.Concurrent.ConcurrentQueue<DisposeCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<DisposeCallbackDelegate>();
+				private global::Imposter.Abstractions.CallbackCollection<DisposeCallbackDelegate>? _callbacks;
 				private bool _useBaseImplementation;
-				internal volatile bool IsConfigured;
+				internal bool IsConfigured;
 				public void Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, bool disposing, DisposeDelegate? baseImplementation = null)
 				{
 					if (_useBaseImplementation)
@@ -225,7 +210,7 @@ namespace System.Net.Http
 					}
 
 					_resultGenerator.Invoke(disposing);
-					if (!_callbacks.IsEmpty)
+					if (_callbacks != null)
 					{
 						foreach (var callback in _callbacks)
 						{
@@ -236,7 +221,7 @@ namespace System.Net.Http
 
 				internal void Callback(DisposeCallbackDelegate callback)
 				{
-					_callbacks.Enqueue(callback);
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
 				internal void Throws(DisposeExceptionGeneratorDelegate exceptionGenerator)
@@ -359,7 +344,7 @@ namespace System.Net.Http
 					this._disposeMethodInvocationHistoryCollection = _disposeMethodInvocationHistoryCollection;
 					this._argumentsCriteria = _argumentsCriteria;
 					this._invocationImposterGroup = new DisposeMethodInvocationImposterGroup(_argumentsCriteria);
-					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+					this._currentInvocationImposter = this._invocationImposterGroup.CreateInvocationImposter();
 					imposter._invocationImposters.Push(_invocationImposterGroup);
 				}
 
@@ -369,8 +354,7 @@ namespace System.Net.Http
 					{
 						throw new TException();
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
@@ -380,8 +364,7 @@ namespace System.Net.Http
 					{
 						throw exception;
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
@@ -391,30 +374,27 @@ namespace System.Net.Http
 					{
 						throw exceptionGenerator.Invoke(disposing);
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				IDisposeMethodInvocationImposterGroupContinuation IDisposeMethodInvocationImposterGroupCallback.Callback(DisposeCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				IDisposeMethodInvocationImposterGroupContinuation IDisposeMethodInvocationImposterGroup.UseBaseImplementation()
 				{
 					_currentInvocationImposter.UseBaseImplementation();
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				IDisposeMethodInvocationImposterGroup IDisposeMethodInvocationImposterGroupContinuation.Then()
 				{
-					this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+					this._currentInvocationImposter = _invocationImposterGroup.CreateInvocationImposter();
 					return this;
 				}
 
@@ -534,49 +514,34 @@ namespace System.Net.Http
 			internal static SendMethodInvocationImposterGroup Default = new SendMethodInvocationImposterGroup(new SendArgumentsCriteria(global::Imposter.Abstractions.Arg<global::System.Net.Http.HttpRequestMessage>.Any(), global::Imposter.Abstractions.Arg<global::System.Threading.CancellationToken>.Any()));
 			internal SendArgumentsCriteria ArgumentsCriteria { get; }
 
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private volatile MethodInvocationImposter? _latestInvocationImposter;
+			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
 			internal volatile bool HasConfiguredOutcome;
 			public SendMethodInvocationImposterGroup(SendArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
 			}
 
-			internal MethodInvocationImposter AddInvocationImposter()
+			internal MethodInvocationImposter CreateInvocationImposter()
 			{
 				MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
-				_invocationImposters.Enqueue(invocationImposter);
 				return invocationImposter;
 			}
 
-			private MethodInvocationImposter? GetInvocationImposter()
+			internal void AddInvocationImposter(MethodInvocationImposter invocationImposter)
 			{
-				if (_invocationImposters.IsEmpty)
+				if (invocationImposter.IsConfigured)
 				{
-					return _latestInvocationImposter;
+					return;
 				}
 
-				lock (_invocationImposters)
-				{
-					if (!_invocationImposters.TryPeek(out var invocationImposter))
-					{
-						return _latestInvocationImposter;
-					}
-
-					if (!invocationImposter.IsConfigured)
-					{
-						return _latestInvocationImposter;
-					}
-
-					_latestInvocationImposter = invocationImposter;
-					_invocationImposters.TryDequeue(out _);
-					return invocationImposter;
-				}
+				invocationImposter.IsConfigured = true;
+				_invocationImposters.Add(invocationImposter);
+				HasConfiguredOutcome = true;
 			}
 
 			public global::System.Net.Http.HttpResponseMessage Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, global::System.Net.Http.HttpRequestMessage request, global::System.Threading.CancellationToken cancellationToken, SendDelegate? baseImplementation = null)
 			{
-				var invocationImposter = GetInvocationImposter();
+				var invocationImposter = this._invocationImposters.Next(null);
 				if (invocationImposter == null)
 				{
 					if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -601,9 +566,9 @@ namespace System.Net.Http
 				}
 
 				private SendDelegate? _resultGenerator;
-				private readonly global::System.Collections.Concurrent.ConcurrentQueue<SendCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<SendCallbackDelegate>();
+				private global::Imposter.Abstractions.CallbackCollection<SendCallbackDelegate>? _callbacks;
 				private bool _useBaseImplementation;
-				internal volatile bool IsConfigured;
+				internal bool IsConfigured;
 				public global::System.Net.Http.HttpResponseMessage Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, global::System.Net.Http.HttpRequestMessage request, global::System.Threading.CancellationToken cancellationToken, SendDelegate? baseImplementation = null)
 				{
 					if (_useBaseImplementation)
@@ -622,7 +587,7 @@ namespace System.Net.Http
 					}
 
 					global::System.Net.Http.HttpResponseMessage result = _resultGenerator.Invoke(request, cancellationToken);
-					if (!_callbacks.IsEmpty)
+					if (_callbacks != null)
 					{
 						foreach (var callback in _callbacks)
 						{
@@ -635,7 +600,7 @@ namespace System.Net.Http
 
 				internal void Callback(SendCallbackDelegate callback)
 				{
-					_callbacks.Enqueue(callback);
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
 				internal void Returns(SendDelegate resultGenerator)
@@ -772,7 +737,7 @@ namespace System.Net.Http
 					this._sendMethodInvocationHistoryCollection = _sendMethodInvocationHistoryCollection;
 					this._argumentsCriteria = _argumentsCriteria;
 					this._invocationImposterGroup = new SendMethodInvocationImposterGroup(_argumentsCriteria);
-					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+					this._currentInvocationImposter = this._invocationImposterGroup.CreateInvocationImposter();
 					imposter._invocationImposters.Push(_invocationImposterGroup);
 				}
 
@@ -782,8 +747,7 @@ namespace System.Net.Http
 					{
 						throw new TException();
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
@@ -793,8 +757,7 @@ namespace System.Net.Http
 					{
 						throw exception;
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
@@ -804,46 +767,41 @@ namespace System.Net.Http
 					{
 						throw exceptionGenerator.Invoke(request, cancellationToken);
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				ISendMethodInvocationImposterGroupContinuation ISendMethodInvocationImposterGroupCallback.Callback(SendCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				ISendMethodInvocationImposterGroupContinuation ISendMethodInvocationImposterGroup.Returns(SendDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				ISendMethodInvocationImposterGroupContinuation ISendMethodInvocationImposterGroup.Returns(global::System.Net.Http.HttpResponseMessage value)
 				{
 					_currentInvocationImposter.Returns(value);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				ISendMethodInvocationImposterGroupContinuation ISendMethodInvocationImposterGroup.UseBaseImplementation()
 				{
 					_currentInvocationImposter.UseBaseImplementation();
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				ISendMethodInvocationImposterGroup ISendMethodInvocationImposterGroupContinuation.Then()
 				{
-					this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+					this._currentInvocationImposter = _invocationImposterGroup.CreateInvocationImposter();
 					return this;
 				}
 
@@ -963,49 +921,34 @@ namespace System.Net.Http
 			internal static SendAsyncMethodInvocationImposterGroup Default = new SendAsyncMethodInvocationImposterGroup(new SendAsyncArgumentsCriteria(global::Imposter.Abstractions.Arg<global::System.Net.Http.HttpRequestMessage>.Any(), global::Imposter.Abstractions.Arg<global::System.Threading.CancellationToken>.Any()));
 			internal SendAsyncArgumentsCriteria ArgumentsCriteria { get; }
 
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private volatile MethodInvocationImposter? _latestInvocationImposter;
+			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
 			internal volatile bool HasConfiguredOutcome;
 			public SendAsyncMethodInvocationImposterGroup(SendAsyncArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
 			}
 
-			internal MethodInvocationImposter AddInvocationImposter()
+			internal MethodInvocationImposter CreateInvocationImposter()
 			{
 				MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
-				_invocationImposters.Enqueue(invocationImposter);
 				return invocationImposter;
 			}
 
-			private MethodInvocationImposter? GetInvocationImposter()
+			internal void AddInvocationImposter(MethodInvocationImposter invocationImposter)
 			{
-				if (_invocationImposters.IsEmpty)
+				if (invocationImposter.IsConfigured)
 				{
-					return _latestInvocationImposter;
+					return;
 				}
 
-				lock (_invocationImposters)
-				{
-					if (!_invocationImposters.TryPeek(out var invocationImposter))
-					{
-						return _latestInvocationImposter;
-					}
-
-					if (!invocationImposter.IsConfigured)
-					{
-						return _latestInvocationImposter;
-					}
-
-					_latestInvocationImposter = invocationImposter;
-					_invocationImposters.TryDequeue(out _);
-					return invocationImposter;
-				}
+				invocationImposter.IsConfigured = true;
+				_invocationImposters.Add(invocationImposter);
+				HasConfiguredOutcome = true;
 			}
 
 			public global::System.Threading.Tasks.Task<global::System.Net.Http.HttpResponseMessage> Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, global::System.Net.Http.HttpRequestMessage request, global::System.Threading.CancellationToken cancellationToken)
 			{
-				var invocationImposter = GetInvocationImposter();
+				var invocationImposter = this._invocationImposters.Next(null);
 				if (invocationImposter == null)
 				{
 					if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -1030,8 +973,8 @@ namespace System.Net.Http
 				}
 
 				private SendAsyncDelegate? _resultGenerator;
-				private readonly global::System.Collections.Concurrent.ConcurrentQueue<SendAsyncCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<SendAsyncCallbackDelegate>();
-				internal volatile bool IsConfigured;
+				private global::Imposter.Abstractions.CallbackCollection<SendAsyncCallbackDelegate>? _callbacks;
+				internal bool IsConfigured;
 				public global::System.Threading.Tasks.Task<global::System.Net.Http.HttpResponseMessage> Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, global::System.Net.Http.HttpRequestMessage request, global::System.Threading.CancellationToken cancellationToken)
 				{
 					if (_resultGenerator == null)
@@ -1045,7 +988,7 @@ namespace System.Net.Http
 					}
 
 					global::System.Threading.Tasks.Task<global::System.Net.Http.HttpResponseMessage> result = _resultGenerator.Invoke(request, cancellationToken);
-					if (!_callbacks.IsEmpty)
+					if (_callbacks != null)
 					{
 						global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>? callbackTasks = null;
 						foreach (var callback in _callbacks)
@@ -1062,7 +1005,7 @@ namespace System.Net.Http
 
 				internal void Callback(SendAsyncCallbackDelegate callback)
 				{
-					_callbacks.Enqueue(callback);
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
 				internal void Returns(SendAsyncDelegate resultGenerator)
@@ -1213,7 +1156,7 @@ namespace System.Net.Http
 					this._sendAsyncMethodInvocationHistoryCollection = _sendAsyncMethodInvocationHistoryCollection;
 					this._argumentsCriteria = _argumentsCriteria;
 					this._invocationImposterGroup = new SendAsyncMethodInvocationImposterGroup(_argumentsCriteria);
-					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+					this._currentInvocationImposter = this._invocationImposterGroup.CreateInvocationImposter();
 					imposter._invocationImposters.Push(_invocationImposterGroup);
 				}
 
@@ -1223,8 +1166,7 @@ namespace System.Net.Http
 					{
 						throw new TException();
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
@@ -1234,8 +1176,7 @@ namespace System.Net.Http
 					{
 						throw exception;
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
@@ -1245,54 +1186,48 @@ namespace System.Net.Http
 					{
 						throw exceptionGenerator.Invoke(request, cancellationToken);
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				ISendAsyncMethodInvocationImposterGroupContinuation ISendAsyncMethodInvocationImposterGroupCallback.Callback(SendAsyncCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				ISendAsyncMethodInvocationImposterGroupContinuation ISendAsyncMethodInvocationImposterGroup.Returns(SendAsyncDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				ISendAsyncMethodInvocationImposterGroupContinuation ISendAsyncMethodInvocationImposterGroup.Returns(global::System.Threading.Tasks.Task<global::System.Net.Http.HttpResponseMessage> value)
 				{
 					_currentInvocationImposter.Returns(value);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				ISendAsyncMethodInvocationImposterGroupContinuation ISendAsyncMethodInvocationImposterGroup.ReturnsAsync(global::System.Net.Http.HttpResponseMessage value)
 				{
 					_currentInvocationImposter.ReturnsAsync(value);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				ISendAsyncMethodInvocationImposterGroupContinuation ISendAsyncMethodInvocationImposterGroup.ThrowsAsync(global::System.Exception exception)
 				{
 					_currentInvocationImposter.ThrowsAsync(exception);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				ISendAsyncMethodInvocationImposterGroup ISendAsyncMethodInvocationImposterGroupContinuation.Then()
 				{
-					this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+					this._currentInvocationImposter = _invocationImposterGroup.CreateInvocationImposter();
 					return this;
 				}
 

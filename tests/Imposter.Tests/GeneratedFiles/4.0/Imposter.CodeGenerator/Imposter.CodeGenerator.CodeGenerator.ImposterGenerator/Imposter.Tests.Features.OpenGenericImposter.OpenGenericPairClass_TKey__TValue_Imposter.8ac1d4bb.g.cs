@@ -135,49 +135,34 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal static DescribePairMethodInvocationImposterGroup Default = new DescribePairMethodInvocationImposterGroup(new DescribePairArgumentsCriteria(global::Imposter.Abstractions.Arg<TKey>.Any(), global::Imposter.Abstractions.Arg<TValue>.Any()));
 			internal DescribePairArgumentsCriteria ArgumentsCriteria { get; }
 
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private volatile MethodInvocationImposter? _latestInvocationImposter;
+			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
 			internal volatile bool HasConfiguredOutcome;
 			public DescribePairMethodInvocationImposterGroup(DescribePairArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
 			}
 
-			internal MethodInvocationImposter AddInvocationImposter()
+			internal MethodInvocationImposter CreateInvocationImposter()
 			{
 				MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
-				_invocationImposters.Enqueue(invocationImposter);
 				return invocationImposter;
 			}
 
-			private MethodInvocationImposter? GetInvocationImposter()
+			internal void AddInvocationImposter(MethodInvocationImposter invocationImposter)
 			{
-				if (_invocationImposters.IsEmpty)
+				if (invocationImposter.IsConfigured)
 				{
-					return _latestInvocationImposter;
+					return;
 				}
 
-				lock (_invocationImposters)
-				{
-					if (!_invocationImposters.TryPeek(out var invocationImposter))
-					{
-						return _latestInvocationImposter;
-					}
-
-					if (!invocationImposter.IsConfigured)
-					{
-						return _latestInvocationImposter;
-					}
-
-					_latestInvocationImposter = invocationImposter;
-					_invocationImposters.TryDequeue(out _);
-					return invocationImposter;
-				}
+				invocationImposter.IsConfigured = true;
+				_invocationImposters.Add(invocationImposter);
+				HasConfiguredOutcome = true;
 			}
 
 			public string Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, TKey key, TValue value, DescribePairDelegate? baseImplementation = null)
 			{
-				var invocationImposter = GetInvocationImposter();
+				var invocationImposter = this._invocationImposters.Next(null);
 				if (invocationImposter == null)
 				{
 					if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -202,9 +187,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				}
 
 				private DescribePairDelegate? _resultGenerator;
-				private readonly global::System.Collections.Concurrent.ConcurrentQueue<DescribePairCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<DescribePairCallbackDelegate>();
+				private global::Imposter.Abstractions.CallbackCollection<DescribePairCallbackDelegate>? _callbacks;
 				private bool _useBaseImplementation;
-				internal volatile bool IsConfigured;
+				internal bool IsConfigured;
 				public string Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, TKey key, TValue value, DescribePairDelegate? baseImplementation = null)
 				{
 					if (_useBaseImplementation)
@@ -223,7 +208,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					}
 
 					string result = _resultGenerator.Invoke(key, value);
-					if (!_callbacks.IsEmpty)
+					if (_callbacks != null)
 					{
 						foreach (var callback in _callbacks)
 						{
@@ -236,7 +221,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				internal void Callback(DescribePairCallbackDelegate callback)
 				{
-					_callbacks.Enqueue(callback);
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
 				internal void Returns(DescribePairDelegate resultGenerator)
@@ -373,7 +358,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					this._describePairMethodInvocationHistoryCollection = _describePairMethodInvocationHistoryCollection;
 					this._argumentsCriteria = _argumentsCriteria;
 					this._invocationImposterGroup = new DescribePairMethodInvocationImposterGroup(_argumentsCriteria);
-					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+					this._currentInvocationImposter = this._invocationImposterGroup.CreateInvocationImposter();
 					imposter._invocationImposters.Push(_invocationImposterGroup);
 				}
 
@@ -383,8 +368,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						throw new TException();
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
@@ -394,8 +378,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						throw exception;
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
@@ -405,46 +388,41 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						throw exceptionGenerator.Invoke(key, value);
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				IDescribePairMethodInvocationImposterGroupContinuation IDescribePairMethodInvocationImposterGroupCallback.Callback(DescribePairCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				IDescribePairMethodInvocationImposterGroupContinuation IDescribePairMethodInvocationImposterGroup.Returns(DescribePairDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				IDescribePairMethodInvocationImposterGroupContinuation IDescribePairMethodInvocationImposterGroup.Returns(string value_1)
 				{
 					_currentInvocationImposter.Returns(value_1);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				IDescribePairMethodInvocationImposterGroupContinuation IDescribePairMethodInvocationImposterGroup.UseBaseImplementation()
 				{
 					_currentInvocationImposter.UseBaseImplementation();
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				IDescribePairMethodInvocationImposterGroup IDescribePairMethodInvocationImposterGroupContinuation.Then()
 				{
-					this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+					this._currentInvocationImposter = _invocationImposterGroup.CreateInvocationImposter();
 					return this;
 				}
 
@@ -564,49 +542,34 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal static ResolveMethodInvocationImposterGroup Default = new ResolveMethodInvocationImposterGroup(new ResolveArgumentsCriteria(global::Imposter.Abstractions.Arg<TKey>.Any(), global::Imposter.Abstractions.Arg<TValue>.Any()));
 			internal ResolveArgumentsCriteria ArgumentsCriteria { get; }
 
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private volatile MethodInvocationImposter? _latestInvocationImposter;
+			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
 			internal volatile bool HasConfiguredOutcome;
 			public ResolveMethodInvocationImposterGroup(ResolveArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
 			}
 
-			internal MethodInvocationImposter AddInvocationImposter()
+			internal MethodInvocationImposter CreateInvocationImposter()
 			{
 				MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
-				_invocationImposters.Enqueue(invocationImposter);
 				return invocationImposter;
 			}
 
-			private MethodInvocationImposter? GetInvocationImposter()
+			internal void AddInvocationImposter(MethodInvocationImposter invocationImposter)
 			{
-				if (_invocationImposters.IsEmpty)
+				if (invocationImposter.IsConfigured)
 				{
-					return _latestInvocationImposter;
+					return;
 				}
 
-				lock (_invocationImposters)
-				{
-					if (!_invocationImposters.TryPeek(out var invocationImposter))
-					{
-						return _latestInvocationImposter;
-					}
-
-					if (!invocationImposter.IsConfigured)
-					{
-						return _latestInvocationImposter;
-					}
-
-					_latestInvocationImposter = invocationImposter;
-					_invocationImposters.TryDequeue(out _);
-					return invocationImposter;
-				}
+				invocationImposter.IsConfigured = true;
+				_invocationImposters.Add(invocationImposter);
+				HasConfiguredOutcome = true;
 			}
 
 			public TValue Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, TKey key, TValue defaultValue, ResolveDelegate? baseImplementation = null)
 			{
-				var invocationImposter = GetInvocationImposter();
+				var invocationImposter = this._invocationImposters.Next(null);
 				if (invocationImposter == null)
 				{
 					if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -631,9 +594,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				}
 
 				private ResolveDelegate? _resultGenerator;
-				private readonly global::System.Collections.Concurrent.ConcurrentQueue<ResolveCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<ResolveCallbackDelegate>();
+				private global::Imposter.Abstractions.CallbackCollection<ResolveCallbackDelegate>? _callbacks;
 				private bool _useBaseImplementation;
-				internal volatile bool IsConfigured;
+				internal bool IsConfigured;
 				public TValue Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, TKey key, TValue defaultValue, ResolveDelegate? baseImplementation = null)
 				{
 					if (_useBaseImplementation)
@@ -652,7 +615,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					}
 
 					TValue result = _resultGenerator.Invoke(key, defaultValue);
-					if (!_callbacks.IsEmpty)
+					if (_callbacks != null)
 					{
 						foreach (var callback in _callbacks)
 						{
@@ -665,7 +628,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				internal void Callback(ResolveCallbackDelegate callback)
 				{
-					_callbacks.Enqueue(callback);
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
 				internal void Returns(ResolveDelegate resultGenerator)
@@ -802,7 +765,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					this._resolveMethodInvocationHistoryCollection = _resolveMethodInvocationHistoryCollection;
 					this._argumentsCriteria = _argumentsCriteria;
 					this._invocationImposterGroup = new ResolveMethodInvocationImposterGroup(_argumentsCriteria);
-					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+					this._currentInvocationImposter = this._invocationImposterGroup.CreateInvocationImposter();
 					imposter._invocationImposters.Push(_invocationImposterGroup);
 				}
 
@@ -812,8 +775,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						throw new TException();
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
@@ -823,8 +785,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						throw exception;
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
@@ -834,46 +795,41 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						throw exceptionGenerator.Invoke(key, defaultValue);
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				IResolveMethodInvocationImposterGroupContinuation IResolveMethodInvocationImposterGroupCallback.Callback(ResolveCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				IResolveMethodInvocationImposterGroupContinuation IResolveMethodInvocationImposterGroup.Returns(ResolveDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				IResolveMethodInvocationImposterGroupContinuation IResolveMethodInvocationImposterGroup.Returns(TValue value)
 				{
 					_currentInvocationImposter.Returns(value);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				IResolveMethodInvocationImposterGroupContinuation IResolveMethodInvocationImposterGroup.UseBaseImplementation()
 				{
 					_currentInvocationImposter.UseBaseImplementation();
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				IResolveMethodInvocationImposterGroup IResolveMethodInvocationImposterGroupContinuation.Then()
 				{
-					this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+					this._currentInvocationImposter = _invocationImposterGroup.CreateInvocationImposter();
 					return this;
 				}
 
@@ -1594,9 +1550,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				private sealed class GetterInvocationImposter
 				{
 					private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
-					private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<TValue>?, TValue>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<TValue>?, TValue>>();
+					private global::Imposter.Abstractions.ReturnValueSequence<global::System.Func<IndexerIndexerArguments, global::System.Func<TValue>?, TValue>?>? _returnValues;
 					private global::Imposter.Abstractions.CallbackCollection<IndexerIndexerGetterCallback>? _callbacks;
-					private volatile global::System.Func<IndexerIndexerArguments, global::System.Func<TValue>?, TValue>? _lastReturnValue;
 					private string _propertyDisplayName;
 					internal volatile bool HasConfiguredReturn;
 					internal IndexerIndexerArgumentsCriteria Criteria { get; private set; }
@@ -1610,7 +1565,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 					internal void AddReturnValue(global::System.Func<IndexerIndexerArguments, TValue> generator)
 					{
-						_returnValues.Enqueue((arguments, baseImplementation) => generator(arguments));
+						global::System.Threading.LazyInitializer.EnsureInitialized(ref _returnValues).Add((arguments, baseImplementation) => generator(arguments));
 						_defaultBehaviour.IsOn = false;
 						HasConfiguredReturn = true;
 					}
@@ -1651,27 +1606,13 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 					private global::System.Func<IndexerIndexerArguments, global::System.Func<TValue>?, TValue>? NextReturnValue()
 					{
-						if (_returnValues.IsEmpty)
-						{
-							return _lastReturnValue;
-						}
-
-						lock (_returnValues)
-						{
-							if (!_returnValues.TryPeek(out var returnValue))
-							{
-								return _lastReturnValue;
-							}
-
-							_lastReturnValue = returnValue;
-							_returnValues.TryDequeue(out _);
-							return returnValue;
-						}
+						var returnValues = global::System.Threading.Volatile.Read(ref _returnValues);
+						return returnValues != null ? returnValues.Next(null) : null;
 					}
 
 					internal void UseBaseImplementation()
 					{
-						_returnValues.Enqueue((arguments, baseImplementation) =>
+						global::System.Threading.LazyInitializer.EnsureInitialized(ref _returnValues).Add((arguments, baseImplementation) =>
 						{
 							if (baseImplementation == null)
 							{

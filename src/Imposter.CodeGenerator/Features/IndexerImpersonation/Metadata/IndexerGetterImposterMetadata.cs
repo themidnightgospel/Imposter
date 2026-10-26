@@ -142,8 +142,6 @@ internal readonly struct IndexerGetterImposterMetadata
 
         internal readonly FieldMetadata CallbacksField;
 
-        internal readonly FieldMetadata LastReturnValueField;
-
         internal readonly FieldMetadata PropertyDisplayNameField;
 
         internal readonly FieldMetadata CriteriaField;
@@ -162,9 +160,10 @@ internal readonly struct IndexerGetterImposterMetadata
                 "_defaultBehaviour",
                 indexer.DefaultIndexerBehaviour.TypeSyntax
             );
+            var nullableReturnHandlerType = NullableType(returnHandlerType);
             ReturnValuesField = new FieldMetadata(
                 "_returnValues",
-                WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(returnHandlerType)
+                WellKnownTypes.Imposter.Abstractions.ReturnValueSequence(nullableReturnHandlerType)
             );
             CallbacksField = new FieldMetadata(
                 "_callbacks",
@@ -172,16 +171,12 @@ internal readonly struct IndexerGetterImposterMetadata
                     indexer.Delegates.GetterCallbackDelegateType
                 )
             );
-            LastReturnValueField = new FieldMetadata(
-                "_lastReturnValue",
-                NullableType(returnHandlerType)
-            );
             PropertyDisplayNameField = new FieldMetadata(
                 "_propertyDisplayName",
                 WellKnownTypes.String
             );
             CriteriaField = new FieldMetadata("Criteria", indexer.ArgumentsCriteria.TypeSyntax);
-            NextReturnValueMethod = new NextReturnValueMethodMetadata(LastReturnValueField.Type);
+            NextReturnValueMethod = new NextReturnValueMethodMetadata(nullableReturnHandlerType);
         }
     }
 }

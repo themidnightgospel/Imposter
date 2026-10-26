@@ -6,26 +6,42 @@ namespace Imposter.Abstractions;
 /// <typeparam name="T">The reference type representing an outcome.</typeparam>
 /// <remarks>
 /// Public for generated code only and may change with the generator in the same package.
-/// Create this collection lazily on the first setup.
+/// Neither adding nor consuming takes a lock.
 /// </remarks>
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class ReturnValueSequence<T>
     where T : class?
 {
-    private readonly List<T> _items = new();
-    private int _index;
-    private int _pending;
-    private T _last = default!;
-    private bool _hasLast;
+    // The outcomes form a chain from the last consumed one, which starts as an empty node. Consumed outcomes before
+    // it are unreachable, so a long sequence doesn't keep what it has already served.
+    private Node _current;
+    private Node _tail;
+
+    /// <summary>Constructor</summary>
+    public ReturnValueSequence()
+    {
+        _current = _tail = new Node(default!, hasItem: false);
+    }
 
     /// <summary>Appends an outcome, including after earlier outcomes have been consumed.</summary>
     /// <param name="item">The outcome to append.</param>
     public void Add(T item)
     {
-        lock (_items)
+        var node = new Node(item, hasItem: true);
+        while (true)
         {
-            _items.Add(item);
-            Volatile.Write(ref _pending, _items.Count - _index);
+            var tail = Volatile.Read(ref _tail);
+            var next = Volatile.Read(ref tail.Next);
+            if (next is not null)
+            {
+                // Another Add linked its node but hasn't moved the tail yet.
+                Interlocked.CompareExchange(ref _tail, next, tail);
+            }
+            else if (Interlocked.CompareExchange(ref tail.Next, node, null) is null)
+            {
+                Interlocked.CompareExchange(ref _tail, node, tail);
+                return;
+            }
         }
     }
 
@@ -34,30 +50,28 @@ public sealed class ReturnValueSequence<T>
     /// <returns>The next, last, or fallback outcome.</returns>
     public T Next(T fallback)
     {
-        // Publish the last outcome before publishing exhaustion. Repeated reads then need no lock,
-        // while a later Add publishes pending work again under the same lock as consumption.
-        if (Volatile.Read(ref _pending) == 0)
+        while (true)
         {
-            return Volatile.Read(ref _hasLast) ? Volatile.Read(ref _last) : fallback;
-        }
-
-        lock (_items)
-        {
-            if (_index < _items.Count)
+            var current = Volatile.Read(ref _current);
+            var next = Volatile.Read(ref current.Next);
+            if (next is null)
             {
-                Volatile.Write(ref _last, _items[_index]);
-                Volatile.Write(ref _hasLast, true);
-                _items[_index++] = default!;
-                if (_index == _items.Count)
-                {
-                    _items.Clear();
-                    _index = 0;
-                }
-
-                Volatile.Write(ref _pending, _items.Count - _index);
+                return current.HasItem ? current.Item : fallback;
             }
 
-            return _hasLast ? _last : fallback;
+            // Only the caller that moves the chain onto a node serves it. One that loses the race retries from the
+            // node the winner moved to, so it takes the outcome after it or repeats it.
+            if (Interlocked.CompareExchange(ref _current, next, current) == current)
+            {
+                return next.Item;
+            }
         }
+    }
+
+    private sealed class Node(T item, bool hasItem)
+    {
+        internal readonly T Item = item;
+        internal readonly bool HasItem = hasItem;
+        internal Node? Next;
     }
 }

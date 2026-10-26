@@ -283,6 +283,59 @@ namespace Imposter.Tests.Features.CallAllocations
                 .ShouldBe(withOneCall);
         }
 
+        // The arguments (24 bytes), the history entry (40) and its stack node (32): running the callbacks allocates
+        // nothing.
+        [Fact]
+        public void GivenMethodWithCallback_WhenCalled_ShouldOnlyAllocateItsArgumentsAndHistory()
+        {
+            _sut.Square(Arg<int>.Any()).Returns(4).Callback(_ => { });
+            var instance = _sut.Instance();
+
+            AllocatedBytesPerCall(() => instance.Square(2)).ShouldBeLessThanOrEqualTo(96);
+        }
+
+        // A setup keeps its builder, group, step and Returns closure, and the steps' sequence. A queue for the steps
+        // and one for each step's callbacks took 832 bytes each.
+        [Fact]
+        public void GivenMethod_WhenSetUp_ShouldNotAllocateQueues()
+        {
+            AllocatedBytesPerSetup(sut => sut.Square(Arg<int>.Any()).Returns(4))
+                .ShouldBeLessThanOrEqualTo(400);
+        }
+
+        // Each Then() adds only its step, the step's node in the sequence and its Returns closure.
+        [Fact]
+        public void GivenMethodSequence_WhenSetUp_ShouldOnlyAllocateEachStep()
+        {
+            AllocatedBytesPerSetup(sut =>
+                    sut.Square(Arg<int>.Any()).Returns(1).Then().Returns(2).Then().Returns(3)
+                )
+                .ShouldBeLessThanOrEqualTo(736);
+        }
+
+        // The setup is warmed up on other imposters first, so static initialization doesn't count.
+        private static long AllocatedBytesPerSetup(Action<ICallAllocationSutImposter> setup)
+        {
+            for (var i = 0; i < Calls; i++)
+            {
+                setup(new ICallAllocationSutImposter());
+            }
+
+            var suts = new ICallAllocationSutImposter[Calls];
+            for (var i = 0; i < Calls; i++)
+            {
+                suts[i] = new ICallAllocationSutImposter();
+            }
+
+            var before = GC.GetAllocatedBytesForCurrentThread();
+            foreach (var sut in suts)
+            {
+                setup(sut);
+            }
+
+            return (GC.GetAllocatedBytesForCurrentThread() - before) / Calls;
+        }
+
         // The call is warmed up first, so static initialization doesn't count.
         private static long AllocatedBytesPerCall(Action call)
         {

@@ -32,7 +32,7 @@ internal static partial class InvocationImposterGroupBuilder
                 SingleVariableField(
                     WellKnownTypes.Bool,
                     method.MethodInvocationImposter.IsConfiguredFieldName,
-                    TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.VolatileKeyword))
+                    TokenList(Token(SyntaxKind.InternalKeyword))
                 )
             )
             .AddMember(InvokeInvocationMethod(method))
@@ -129,18 +129,15 @@ internal static partial class InvocationImposterGroupBuilder
             TokenList(Token(SyntaxKind.PrivateKeyword))
         );
 
-    private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMetadata method)
-    {
-        var queueType = WellKnownTypes.System.Collections.Concurrent.ConcurrentQueue(
-            method.CallbackDelegate.Syntax
+    private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMetadata method) =>
+        LazyCollectionSyntaxHelper.Field(
+            new FieldMetadata(
+                method.MethodInvocationImposter.CallbacksFieldName,
+                WellKnownTypes.Imposter.Abstractions.CallbackCollection(
+                    method.CallbackDelegate.Syntax
+                )
+            )
         );
-
-        return SinglePrivateReadonlyVariableField(
-            queueType,
-            method.MethodInvocationImposter.CallbacksFieldName,
-            queueType.New(ArgumentList())
-        );
-    }
 
     // Produces the result and runs the callbacks of one invocation.
     private static MethodDeclarationSyntax InvokeInvocationMethod(
@@ -242,7 +239,7 @@ internal static partial class InvocationImposterGroupBuilder
             : result.ToStatementSyntax();
     }
 
-    private static IfStatementSyntax InvokeCallbacks(
+    private static StatementSyntax InvokeCallbacks(
         in ImposterTargetMethodMetadata method,
         ArgumentListSyntax arguments
     )
@@ -254,7 +251,7 @@ internal static partial class InvocationImposterGroupBuilder
 
         return method.ReturnType.IsAwaitable
             ? InvokeCallbacksAwaitedByResult(method, callback, callbackCall)
-            : ConcurrentQueueSyntaxHelper.UnlessEmpty(
+            : LazyCollectionSyntaxHelper.UnlessNull(
                 ForEachStatement(
                     Var,
                     callback.Identifier,
@@ -287,7 +284,7 @@ internal static partial class InvocationImposterGroupBuilder
             );
 
         return IfStatement(
-            Not(CallbacksIdentifier(method).Dot(ConcurrentQueueSyntaxHelper.IsEmpty)),
+            CallbacksIdentifier(method).IsNotNull(),
             Block(
                 LocalVariableDeclarationSyntax(
                     WellKnownTypes
@@ -349,8 +346,9 @@ internal static partial class InvocationImposterGroupBuilder
             .AddParameter(ParameterSyntax(callback.CallbackParameter))
             .WithBody(
                 Block(
-                    CallbacksIdentifier(method)
-                        .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
+                    LazyCollectionSyntaxHelper
+                        .EnsureInitialized(method.MethodInvocationImposter.CallbacksFieldName)
+                        .Dot(IdentifierName("Add"))
                         .Call(callback.CallbackParameter.Name.ToArgument())
                         .ToStatementSyntax()
                 )

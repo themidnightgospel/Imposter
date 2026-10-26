@@ -331,9 +331,8 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 				private sealed class GetterInvocationImposter
 				{
 					private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
-					private readonly global::System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerReturnHandler> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerReturnHandler>();
+					private global::Imposter.Abstractions.ReturnValueSequence<IndexerIndexerReturnHandler?>? _returnValues;
 					private global::Imposter.Abstractions.CallbackCollection<IndexerIndexerGetterCallback>? _callbacks;
-					private volatile IndexerIndexerReturnHandler? _lastReturnValue;
 					private string _propertyDisplayName;
 					internal volatile bool HasConfiguredReturn;
 					internal IndexerIndexerArgumentsCriteria Criteria { get; private set; }
@@ -347,7 +346,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 					internal void AddReturnValue(IndexerIndexerReturnGenerator generator)
 					{
-						_returnValues.Enqueue((arguments, locator, baseImplementation) => generator(arguments, locator));
+						global::System.Threading.LazyInitializer.EnsureInitialized(ref _returnValues).Add((arguments, locator, baseImplementation) => generator(arguments, locator));
 						_defaultBehaviour.IsOn = false;
 						HasConfiguredReturn = true;
 					}
@@ -388,22 +387,8 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 					private IndexerIndexerReturnHandler? NextReturnValue()
 					{
-						if (_returnValues.IsEmpty)
-						{
-							return _lastReturnValue;
-						}
-
-						lock (_returnValues)
-						{
-							if (!_returnValues.TryPeek(out var returnValue))
-							{
-								return _lastReturnValue;
-							}
-
-							_lastReturnValue = returnValue;
-							_returnValues.TryDequeue(out _);
-							return returnValue;
-						}
+						var returnValues = global::System.Threading.Volatile.Read(ref _returnValues);
+						return returnValues != null ? returnValues.Next(null) : null;
 					}
 				}
 			}
@@ -900,9 +885,8 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 				private sealed class GetterInvocationImposter
 				{
 					private readonly DefaultIndexer_1IndexerBehaviour _defaultBehaviour;
-					private readonly global::System.Collections.Concurrent.ConcurrentQueue<Indexer_1IndexerReturnHandler> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<Indexer_1IndexerReturnHandler>();
+					private global::Imposter.Abstractions.ReturnValueSequence<Indexer_1IndexerReturnHandler?>? _returnValues;
 					private global::Imposter.Abstractions.CallbackCollection<Indexer_1IndexerGetterCallback>? _callbacks;
-					private volatile Indexer_1IndexerReturnHandler? _lastReturnValue;
 					private string _propertyDisplayName;
 					internal volatile bool HasConfiguredReturn;
 					internal Indexer_1IndexerArgumentsCriteria Criteria { get; private set; }
@@ -916,7 +900,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 					internal void AddReturnValue(Indexer_1IndexerReturnGenerator generator)
 					{
-						_returnValues.Enqueue((arguments, locator, baseImplementation) => generator(arguments, locator));
+						global::System.Threading.LazyInitializer.EnsureInitialized(ref _returnValues).Add((arguments, locator, baseImplementation) => generator(arguments, locator));
 						_defaultBehaviour.IsOn = false;
 						HasConfiguredReturn = true;
 					}
@@ -957,22 +941,8 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 					private Indexer_1IndexerReturnHandler? NextReturnValue()
 					{
-						if (_returnValues.IsEmpty)
-						{
-							return _lastReturnValue;
-						}
-
-						lock (_returnValues)
-						{
-							if (!_returnValues.TryPeek(out var returnValue))
-							{
-								return _lastReturnValue;
-							}
-
-							_lastReturnValue = returnValue;
-							_returnValues.TryDequeue(out _);
-							return returnValue;
-						}
+						var returnValues = global::System.Threading.Volatile.Read(ref _returnValues);
+						return returnValues != null ? returnValues.Next(null) : null;
 					}
 				}
 			}

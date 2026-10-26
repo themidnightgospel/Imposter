@@ -85,9 +85,6 @@ internal static class WellKnownTypes
                     IdentifierName("Concurrent")
                 );
 
-                internal static TypeSyntax ConcurrentQueue(TypeSyntax typeArgument) =>
-                    GenericType(Namespace, "ConcurrentQueue", typeArgument);
-
                 internal static TypeSyntax ConcurrentStack(TypeSyntax typeArgument) =>
                     GenericType(Namespace, "ConcurrentStack", typeArgument);
 
