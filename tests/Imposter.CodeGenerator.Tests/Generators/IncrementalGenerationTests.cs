@@ -158,6 +158,25 @@ public class IncrementalGenerationTests
         GeneratedSource(rerun, "IClock").ShouldNotBeSameAs(clockSource);
     }
 
+    // The cache drops the source of a removed registration, so adding it back builds the source again.
+    [Fact]
+    public async Task GivenRemovedRegistrationAddedBack_WhenGeneratorRunsAgain_ShouldRebuildOnlyItsSource()
+    {
+        var compilation = (await TestContextTask).Compilation;
+        var driver = RunTrackedGenerator(compilation);
+        var clockSource = GeneratedSource(driver, "IClock");
+        var serviceSource = GeneratedSource(driver, "Service");
+        var withoutClock = driver.RunGenerators(
+            WithSource(compilation, Source.Replace(ClockRegistration, ""))
+        );
+
+        var rerun = withoutClock.RunGenerators(compilation);
+
+        GeneratedSource(rerun, "IClock").ShouldNotBeSameAs(clockSource);
+        GeneratedSource(rerun, "IClock").ToString().ShouldBe(clockSource.ToString());
+        GeneratedSource(rerun, "Service").ShouldBeSameAs(serviceSource);
+    }
+
     private const string ClockRegistration =
         "[assembly: Imposter.Abstractions.GenerateImposter(typeof(Sample.Incremental.IClock))]";
 

@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Immutable;
+using System.Linq;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
 
@@ -12,7 +14,8 @@ namespace Imposter.CodeGenerator.CodeGenerator;
 /// </summary>
 /// <remarks>
 /// One cache serves one generator pipeline, so projects don't share it. Each hint name keeps only its latest source,
-/// which is the one the driver holds while the target is registered, so the cache adds memory only for removed targets.
+/// which is the one the driver holds while the target is registered, and loses it once no target generates under that
+/// name, so the cache holds only what the driver holds already.
 /// </remarks>
 internal sealed class ImposterSourceCache
 {
@@ -36,6 +39,15 @@ internal sealed class ImposterSourceCache
         LanguageVersion languageVersion,
         SourceText source
     ) => _entries[hintName] = new Entry(target, languageVersion, source);
+
+    // Drops the sources of hint names that are no longer generated, such as those of removed or renamed targets.
+    internal void KeepOnly(ImmutableArray<string> hintNames)
+    {
+        foreach (var staleHintName in _entries.Keys.Except(hintNames, StringComparer.Ordinal))
+        {
+            _entries.TryRemove(staleHintName, out _);
+        }
+    }
 
     private sealed record Entry(
         ImposterGenerationTarget Target,

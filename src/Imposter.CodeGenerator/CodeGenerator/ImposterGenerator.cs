@@ -99,6 +99,12 @@ public sealed class ImposterGenerator : IIncrementalGenerator
             (sourceProductionContext, inputs) =>
                 GenerateImposter(sourceProductionContext, inputs.Left, inputs.Right, sourceCache)
         );
+
+        // Runs again only when the hint names change, such as when a registration is added, removed or renamed.
+        context.RegisterSourceOutput(
+            targets.Select(static (target, _) => target.HintName).Collect(),
+            (_, hintNames) => sourceCache.KeepOnly(hintNames)
+        );
     }
 
     private static void ReportDeclarationDiagnostics(
