@@ -1,6 +1,7 @@
 using System;
 using Imposter.Abstractions;
 using Imposter.Tests.Features.EventImpersonation;
+using Imposter.Tests.Features.MethodImpersonation;
 using Shouldly;
 using Xunit;
 
@@ -162,6 +163,21 @@ namespace Imposter.Tests.Features.CallAllocations
             var instance = _sut.Instance();
 
             AllocatedBytesPerCall(() => instance.Echo("match")).ShouldBeLessThanOrEqualTo(120);
+        }
+
+        // The arguments used to find the setup (32 bytes) with their copy of the four-item span (40), the arguments the
+        // imposter keeps (32) with their own copy (40), the history entry (40) and its stack node (32). With the call's
+        // own type arguments, no adapter copies the span a third time.
+        [Fact]
+        public void GivenGenericMethodWithSpan_WhenCalledWithItsOwnTypeArgument_ShouldNotCopyTheSpanForAnAdapter()
+        {
+            var sut = new ISpanParameterSutImposter();
+            sut.Contains<int>(ReadOnlySpanArg<int>.Any(), Arg<int>.Any()).Returns(true);
+            var instance = sut.Instance();
+            var items = new[] { 1, 2, 3, 4 };
+
+            AllocatedBytesPerCall(() => instance.Contains<int>(items, 2))
+                .ShouldBeLessThanOrEqualTo(216);
         }
 
         // The arguments (24 bytes) and their history stack node (32).
