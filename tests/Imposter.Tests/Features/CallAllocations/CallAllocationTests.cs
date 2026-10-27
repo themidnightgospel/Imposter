@@ -106,18 +106,11 @@ namespace Imposter.Tests.Features.CallAllocations
         [Fact]
         public void GivenProperty_WhenConfiguringFirstReturns_ShouldUseLightweightSequenceStorage()
         {
-            var sut = new IPropertyAllocationSutImposter();
-            // Warm the delegate caches and sequence code separately from the measured imposter.
-            new IPropertyAllocationSutImposter()
-                .Value.Getter()
-                .Returns(1)
-                .Then()
-                .Returns(2);
-            var before = GC.GetAllocatedBytesForCurrentThread();
-            sut.Value.Getter().Returns(1).Then().Returns(2);
-            var allocated = GC.GetAllocatedBytesForCurrentThread() - before;
-
-            allocated.ShouldBeLessThanOrEqualTo(400);
+            AllocatedBytesPerSetup(
+                    () => new IPropertyAllocationSutImposter(),
+                    sut => sut.Value.Getter().Returns(1).Then().Returns(2)
+                )
+                .ShouldBeLessThanOrEqualTo(400);
         }
 
         [Fact]
@@ -334,18 +327,25 @@ namespace Imposter.Tests.Features.CallAllocations
                 .ShouldBeLessThanOrEqualTo(304);
         }
 
-        // The setup is warmed up on other imposters first, so static initialization doesn't count.
-        private static long AllocatedBytesPerSetup(Action<ICallAllocationSutImposter> setup)
+        private static long AllocatedBytesPerSetup(Action<ICallAllocationSutImposter> setup) =>
+            AllocatedBytesPerSetup(() => new ICallAllocationSutImposter(), setup);
+
+        // The setup is warmed up on other imposters first, so static initialization doesn't count. Averaging also
+        // spreads the one-off cost of rebuilding a reflection cache that a GC collected.
+        private static long AllocatedBytesPerSetup<TImposter>(
+            Func<TImposter> createImposter,
+            Action<TImposter> setup
+        )
         {
             for (var i = 0; i < Calls; i++)
             {
-                setup(new ICallAllocationSutImposter());
+                setup(createImposter());
             }
 
-            var suts = new ICallAllocationSutImposter[Calls];
+            var suts = new TImposter[Calls];
             for (var i = 0; i < Calls; i++)
             {
-                suts[i] = new ICallAllocationSutImposter();
+                suts[i] = createImposter();
             }
 
             var before = GC.GetAllocatedBytesForCurrentThread();
