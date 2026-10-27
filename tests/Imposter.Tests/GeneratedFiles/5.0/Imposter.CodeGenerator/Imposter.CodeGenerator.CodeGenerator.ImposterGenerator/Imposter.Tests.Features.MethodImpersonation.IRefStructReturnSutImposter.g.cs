@@ -186,12 +186,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_resultGenerator = resultGenerator;
 				}
 
-				internal void Throws(NextExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(NextDelegate resultGenerator)
 				{
-					_resultGenerator = (global::Imposter.Tests.Features.MethodImpersonation.Slot current) =>
-					{
-						throw exceptionGenerator(current);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static global::Imposter.Tests.Features.MethodImpersonation.Slot DefaultResultGenerator(global::Imposter.Tests.Features.MethodImpersonation.Slot current)
@@ -545,12 +542,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_resultGenerator = resultGenerator;
 				}
 
-				internal void Throws(RentExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(RentDelegate resultGenerator)
 				{
-					_resultGenerator = (int size) =>
-					{
-						throw exceptionGenerator(size);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static global::Imposter.Tests.Features.MethodImpersonation.Slot DefaultResultGenerator(int size)

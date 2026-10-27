@@ -234,12 +234,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(RentExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(RentDelegate resultGenerator)
 				{
-					_resultGenerator = (int size) =>
-					{
-						throw exceptionGenerator(size);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static global::System.Span<byte> DefaultResultGenerator(int size)
@@ -664,12 +661,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(RepeatExceptionGeneratorDelegate<T> exceptionGenerator)
+				internal void Throws(RepeatDelegate<T> resultGenerator)
 				{
-					_resultGenerator = (T item, int count) =>
-					{
-						throw exceptionGenerator(item, count);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static global::System.ReadOnlySpan<T> DefaultResultGenerator(T item, int count)
@@ -1101,12 +1095,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(TrimExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(TrimDelegate resultGenerator)
 				{
-					_resultGenerator = (global::System.ReadOnlySpan<char> text) =>
-					{
-						throw exceptionGenerator(text);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static global::System.ReadOnlySpan<char> DefaultResultGenerator(global::System.ReadOnlySpan<char> text)

@@ -187,12 +187,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(AdvanceExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(AdvanceDelegate resultGenerator)
 				{
-					_resultGenerator = (ref global::Imposter.Tests.Features.MethodImpersonation.Cursor cursor) =>
-					{
-						throw exceptionGenerator(ref cursor);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseDefaultResultGenerator()
@@ -551,12 +548,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(ReadExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(ReadDelegate resultGenerator)
 				{
-					_resultGenerator = (int id, global::Imposter.Tests.Features.MethodImpersonation.Cursor cursor) =>
-					{
-						throw exceptionGenerator(id, cursor);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(int id, global::Imposter.Tests.Features.MethodImpersonation.Cursor cursor)
@@ -901,12 +895,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(TryOpenExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(TryOpenDelegate resultGenerator)
 				{
-					_resultGenerator = (out global::Imposter.Tests.Features.MethodImpersonation.Cursor cursor) =>
-					{
-						throw exceptionGenerator(out cursor);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				private static void InitializeOutParametersWithDefaultValues(out global::Imposter.Tests.Features.MethodImpersonation.Cursor cursor)

@@ -245,12 +245,9 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					};
 				}
 
-				internal void Throws(GenericAllRefKindExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(GenericAllRefKindDelegate resultGenerator)
 				{
-					_resultGenerator = (out int o, ref string r, in double d, bool[] args) =>
-					{
-						throw exceptionGenerator(out o, ref r, in d, args);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				private static void InitializeOutParametersWithDefaultValues(out int o)
@@ -600,12 +597,9 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					};
 				}
 
-				internal void Throws(GetNumberExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(GetNumberDelegate resultGenerator)
 				{
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator()
@@ -977,12 +971,9 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					};
 				}
 
-				internal void Throws(IncrementExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(IncrementDelegate resultGenerator)
 				{
-					_resultGenerator = (int v) =>
-					{
-						throw exceptionGenerator(v);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(int v)

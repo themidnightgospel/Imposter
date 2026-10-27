@@ -217,13 +217,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_resultGenerator = resultGenerator;
 				}
 
-				internal void Throws(RentExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(RentDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (int size) =>
-					{
-						throw exceptionGenerator(size);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()

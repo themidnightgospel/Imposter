@@ -197,13 +197,10 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					};
 				}
 
-				internal void Throws(CountExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(CountDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()

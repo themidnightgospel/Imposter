@@ -228,12 +228,9 @@ namespace Imposter.Tests.Shared
 					};
 				}
 
-				internal void Throws(IndexerMethodExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(IndexerMethodDelegate resultGenerator)
 				{
-					_resultGenerator = (int name, string lastname, in global::System.Text.RegularExpressions.Regex dog) =>
-					{
-						throw exceptionGenerator(name, lastname, in dog);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static string DefaultResultGenerator(int name, string lastname, in global::System.Text.RegularExpressions.Regex dog)

@@ -246,13 +246,10 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 					};
 				}
 
-				internal void Throws(AddExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(AddDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (int a, int b) =>
-					{
-						throw exceptionGenerator(a, b);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()
@@ -649,13 +646,10 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 					};
 				}
 
-				internal void Throws(MightFailExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(MightFailDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (int v) =>
-					{
-						throw exceptionGenerator(v);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()
@@ -1056,13 +1050,10 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 					};
 				}
 
-				internal void Throws(ProcessAsyncExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(ProcessAsyncDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (string s) =>
-					{
-						throw exceptionGenerator(s);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void ThrowsAsync(global::System.Exception exception)

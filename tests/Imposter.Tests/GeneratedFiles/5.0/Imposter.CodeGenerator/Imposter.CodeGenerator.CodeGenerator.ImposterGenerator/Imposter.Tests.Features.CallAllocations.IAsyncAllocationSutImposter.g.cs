@@ -268,12 +268,9 @@ namespace Imposter.Tests.Features.CallAllocations
 					};
 				}
 
-				internal void Throws(GetAsyncExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(GetAsyncDelegate resultGenerator)
 				{
-					_resultGenerator = (int key) =>
-					{
-						throw exceptionGenerator(key);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void ThrowsAsync(global::System.Exception exception)
@@ -698,12 +695,9 @@ namespace Imposter.Tests.Features.CallAllocations
 					};
 				}
 
-				internal void Throws(GetByReferenceAsyncExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(GetByReferenceAsyncDelegate resultGenerator)
 				{
-					_resultGenerator = (ref int key, out int count, in int extra) =>
-					{
-						throw exceptionGenerator(ref key, out count, in extra);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void ThrowsAsync(global::System.Exception exception)
@@ -1100,12 +1094,9 @@ namespace Imposter.Tests.Features.CallAllocations
 					};
 				}
 
-				internal void Throws(GetDynamicAsyncExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(GetDynamicAsyncDelegate resultGenerator)
 				{
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void ThrowsAsync(global::System.Exception exception)
@@ -1519,12 +1510,9 @@ namespace Imposter.Tests.Features.CallAllocations
 					};
 				}
 
-				internal void Throws(PeekAsyncExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(PeekAsyncDelegate resultGenerator)
 				{
-					_resultGenerator = (int key) =>
-					{
-						throw exceptionGenerator(key);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void ThrowsAsync(global::System.Exception exception)
@@ -1901,12 +1889,9 @@ namespace Imposter.Tests.Features.CallAllocations
 					};
 				}
 
-				internal void Throws(RunAsyncExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(RunAsyncDelegate resultGenerator)
 				{
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void ThrowsAsync(global::System.Exception exception)
@@ -2272,12 +2257,9 @@ namespace Imposter.Tests.Features.CallAllocations
 					};
 				}
 
-				internal void Throws(RunValueAsyncExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(RunValueAsyncDelegate resultGenerator)
 				{
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void ThrowsAsync(global::System.Exception exception)

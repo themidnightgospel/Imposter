@@ -247,12 +247,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_resultGenerator = resultGenerator;
 				}
 
-				internal void Throws(CreateExceptionGeneratorDelegate<T> exceptionGenerator)
+				internal void Throws(CreateDelegate<T> resultGenerator)
 				{
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static T DefaultResultGenerator()
@@ -645,12 +642,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					_resultGenerator = resultGenerator;
 				}
 
-				internal void Throws(EchoExceptionGeneratorDelegate<T> exceptionGenerator)
+				internal void Throws(EchoDelegate<T> resultGenerator)
 				{
-					_resultGenerator = (T value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static T DefaultResultGenerator(T value)
@@ -1094,12 +1088,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(MeasureExceptionGeneratorDelegate<T> exceptionGenerator)
+				internal void Throws(MeasureDelegate<T> resultGenerator)
 				{
-					_resultGenerator = (T value, int scale) =>
-					{
-						throw exceptionGenerator(value, scale);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(T value, int scale)
@@ -1497,12 +1488,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(ResetExceptionGeneratorDelegate<T> exceptionGenerator)
+				internal void Throws(ResetDelegate<T> resultGenerator)
 				{
-					_resultGenerator = (ref T value) =>
-					{
-						throw exceptionGenerator(ref value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseDefaultResultGenerator()

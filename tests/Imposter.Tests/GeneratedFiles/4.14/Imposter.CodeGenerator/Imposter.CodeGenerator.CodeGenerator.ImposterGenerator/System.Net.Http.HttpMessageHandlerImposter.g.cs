@@ -224,13 +224,10 @@ namespace System.Net.Http
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(DisposeExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(DisposeDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (bool disposing) =>
-					{
-						throw exceptionGenerator(disposing);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()
@@ -618,13 +615,10 @@ namespace System.Net.Http
 					};
 				}
 
-				internal void Throws(SendExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(SendDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (global::System.Net.Http.HttpRequestMessage request, global::System.Threading.CancellationToken cancellationToken) =>
-					{
-						throw exceptionGenerator(request, cancellationToken);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()
@@ -1030,12 +1024,9 @@ namespace System.Net.Http
 					};
 				}
 
-				internal void Throws(SendAsyncExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(SendAsyncDelegate resultGenerator)
 				{
-					_resultGenerator = (global::System.Net.Http.HttpRequestMessage request, global::System.Threading.CancellationToken cancellationToken) =>
-					{
-						throw exceptionGenerator(request, cancellationToken);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void ThrowsAsync(global::System.Exception exception)

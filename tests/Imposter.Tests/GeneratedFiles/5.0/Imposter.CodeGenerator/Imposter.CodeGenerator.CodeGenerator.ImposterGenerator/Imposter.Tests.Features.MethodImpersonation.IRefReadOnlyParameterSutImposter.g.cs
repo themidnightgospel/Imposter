@@ -273,12 +273,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(AcceptsExceptionGeneratorDelegate<T> exceptionGenerator)
+				internal void Throws(AcceptsDelegate<T> resultGenerator)
 				{
-					_resultGenerator = (ref readonly T value) =>
-					{
-						throw exceptionGenerator(in value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static bool DefaultResultGenerator(ref readonly T value)
@@ -711,12 +708,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(ReadExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(ReadDelegate resultGenerator)
 				{
-					_resultGenerator = (ref readonly int key) =>
-					{
-						throw exceptionGenerator(in key);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(ref readonly int key)

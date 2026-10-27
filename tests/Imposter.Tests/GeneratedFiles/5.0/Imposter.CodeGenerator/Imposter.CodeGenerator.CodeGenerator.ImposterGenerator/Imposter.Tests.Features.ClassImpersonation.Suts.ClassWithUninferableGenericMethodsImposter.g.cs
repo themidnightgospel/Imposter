@@ -288,13 +288,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					};
 				}
 
-				internal void Throws(ConvertExceptionGeneratorDelegate<TInput, TResult> exceptionGenerator)
+				internal void Throws(ConvertDelegate<TInput, TResult> resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (TInput input) =>
-					{
-						throw exceptionGenerator(input);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()
@@ -751,13 +748,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					};
 				}
 
-				internal void Throws(DescribeExceptionGeneratorDelegate<T> exceptionGenerator)
+				internal void Throws(DescribeDelegate<T> resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()
@@ -1193,13 +1187,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(ExecuteExceptionGeneratorDelegate<T> exceptionGenerator)
+				internal void Throws(ExecuteDelegate<T> resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()

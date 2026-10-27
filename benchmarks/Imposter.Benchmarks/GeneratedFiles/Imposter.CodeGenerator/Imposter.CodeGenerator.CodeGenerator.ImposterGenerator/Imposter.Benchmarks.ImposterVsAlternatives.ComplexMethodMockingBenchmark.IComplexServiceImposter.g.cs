@@ -228,12 +228,9 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 					};
 				}
 
-				internal void Throws(ProcessExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(ProcessDelegate resultGenerator)
 				{
-					_resultGenerator = (string route, int severity, global::Imposter.Benchmarks.ImposterVsAlternatives.ComplexMethodMockingBenchmark.OperationContext context) =>
-					{
-						throw exceptionGenerator(route, severity, context);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static string DefaultResultGenerator(string route, int severity, global::Imposter.Benchmarks.ImposterVsAlternatives.ComplexMethodMockingBenchmark.OperationContext context)

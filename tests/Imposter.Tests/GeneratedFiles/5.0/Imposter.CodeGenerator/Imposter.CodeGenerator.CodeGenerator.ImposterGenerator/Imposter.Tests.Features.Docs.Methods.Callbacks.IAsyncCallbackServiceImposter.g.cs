@@ -233,12 +233,9 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					};
 				}
 
-				internal void Throws(SaveAsyncExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(SaveAsyncDelegate resultGenerator)
 				{
-					_resultGenerator = (string name) =>
-					{
-						throw exceptionGenerator(name);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void ThrowsAsync(global::System.Exception exception)

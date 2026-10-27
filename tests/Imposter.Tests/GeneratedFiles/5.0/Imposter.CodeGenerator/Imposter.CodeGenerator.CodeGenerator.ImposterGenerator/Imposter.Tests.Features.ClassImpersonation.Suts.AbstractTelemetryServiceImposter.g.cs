@@ -227,12 +227,9 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					};
 				}
 
-				internal void Throws(ComputeExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(ComputeDelegate resultGenerator)
 				{
-					_resultGenerator = (int value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(int value)
@@ -607,12 +604,9 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					};
 				}
 
-				internal void Throws(ComputeNullableExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(ComputeNullableDelegate resultGenerator)
 				{
-					_resultGenerator = (int value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int? DefaultResultGenerator(int value)

@@ -290,12 +290,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(AdaptOutExceptionGeneratorDelegate<T> exceptionGenerator)
+				internal void Throws(AdaptOutDelegate<T> resultGenerator)
 				{
-					_resultGenerator = (out int value, int valueAdapted) =>
-					{
-						throw exceptionGenerator(out value, valueAdapted);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				private static void InitializeOutParametersWithDefaultValues(out int value)
@@ -785,12 +782,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(AdaptRefExceptionGeneratorDelegate<T> exceptionGenerator)
+				internal void Throws(AdaptRefDelegate<T> resultGenerator)
 				{
-					_resultGenerator = (ref int value, int valueAdapted) =>
-					{
-						throw exceptionGenerator(ref value, valueAdapted);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static T DefaultResultGenerator(ref int value, int valueAdapted)
@@ -1240,13 +1234,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(InvokeExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(InvokeDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (int invocationBehavior, string methodDisplayName, int invocationImposter) =>
-					{
-						throw exceptionGenerator(invocationBehavior, methodDisplayName, invocationImposter);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()
@@ -1689,13 +1680,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(VerifyExceptionGeneratorDelegate<Called> exceptionGenerator)
+				internal void Throws(VerifyDelegate<Called> resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (Called value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()

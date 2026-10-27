@@ -304,12 +304,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					};
 				}
 
-				internal void Throws(CloneStructExceptionGeneratorDelegate<TArg> exceptionGenerator)
+				internal void Throws(CloneStructDelegate<TArg> resultGenerator)
 				{
-					_resultGenerator = (TArg value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static TArg DefaultResultGenerator(TArg value)
@@ -791,12 +788,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(CompareValuesExceptionGeneratorDelegate<TArg> exceptionGenerator)
+				internal void Throws(CompareValuesDelegate<TArg> resultGenerator)
 				{
-					_resultGenerator = (TArg left, TArg right) =>
-					{
-						throw exceptionGenerator(left, right);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseDefaultResultGenerator()
@@ -1229,12 +1223,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					};
 				}
 
-				internal void Throws(CreateInstanceExceptionGeneratorDelegate<TArg> exceptionGenerator)
+				internal void Throws(CreateInstanceDelegate<TArg> resultGenerator)
 				{
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static TArg DefaultResultGenerator()
@@ -1709,12 +1700,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(HandleReferenceExceptionGeneratorDelegate<TArg> exceptionGenerator)
+				internal void Throws(HandleReferenceDelegate<TArg> resultGenerator)
 				{
-					_resultGenerator = (TArg value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseDefaultResultGenerator()

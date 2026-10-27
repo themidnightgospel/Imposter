@@ -271,12 +271,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(AddItemExceptionGeneratorDelegate<TItem> exceptionGenerator)
+				internal void Throws(AddItemDelegate<TItem> resultGenerator)
 				{
-					_resultGenerator = (TItem item) =>
-					{
-						throw exceptionGenerator(item);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseDefaultResultGenerator()
@@ -697,12 +694,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					};
 				}
 
-				internal void Throws(GetValueExceptionGeneratorDelegate<TResult> exceptionGenerator)
+				internal void Throws(GetValueDelegate<TResult> resultGenerator)
 				{
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static TResult DefaultResultGenerator()
@@ -1190,12 +1184,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					};
 				}
 
-				internal void Throws(ProcessAsyncExceptionGeneratorDelegate<TItem> exceptionGenerator)
+				internal void Throws(ProcessAsyncDelegate<TItem> resultGenerator)
 				{
-					_resultGenerator = (global::System.Collections.Generic.IEnumerable<TItem> items) =>
-					{
-						throw exceptionGenerator(items);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void ThrowsAsync(global::System.Exception exception)
@@ -1715,12 +1706,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					};
 				}
 
-				internal void Throws(ProcessComplexAsyncExceptionGeneratorDelegate<TItem, TResult> exceptionGenerator)
+				internal void Throws(ProcessComplexAsyncDelegate<TItem, TResult> resultGenerator)
 				{
-					_resultGenerator = (global::System.Collections.Generic.IEnumerable<TItem> items) =>
-					{
-						throw exceptionGenerator(items);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void ThrowsAsync(global::System.Exception exception)

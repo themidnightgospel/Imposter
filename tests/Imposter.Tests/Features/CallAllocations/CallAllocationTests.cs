@@ -313,6 +313,27 @@ namespace Imposter.Tests.Features.CallAllocations
                 .ShouldBeLessThanOrEqualTo(736);
         }
 
+        // Like Returns, Throws keeps one closure over its argument. The step wrapped it in a second one, which took
+        // 88 bytes more.
+        [Fact]
+        public void GivenMethodThrowingException_WhenSetUp_ShouldWrapItOnce()
+        {
+            var exception = new InvalidOperationException();
+
+            AllocatedBytesPerSetup(sut => sut.Square(Arg<int>.Any()).Throws(exception))
+                .ShouldBeLessThanOrEqualTo(400);
+        }
+
+        // Throws<TException>() captures nothing, so its delegate is cached and the setup allocates no closure.
+        [Fact]
+        public void GivenMethodThrowingExceptionType_WhenSetUp_ShouldNotAllocateClosures()
+        {
+            AllocatedBytesPerSetup(sut =>
+                    sut.Square(Arg<int>.Any()).Throws<InvalidOperationException>()
+                )
+                .ShouldBeLessThanOrEqualTo(304);
+        }
+
         // The setup is warmed up on other imposters first, so static initialization doesn't count.
         private static long AllocatedBytesPerSetup(Action<ICallAllocationSutImposter> setup)
         {

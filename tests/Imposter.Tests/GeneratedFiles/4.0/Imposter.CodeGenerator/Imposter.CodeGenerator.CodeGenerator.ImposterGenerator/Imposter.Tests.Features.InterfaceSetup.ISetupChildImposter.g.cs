@@ -315,12 +315,9 @@ namespace Imposter.Tests.Features.InterfaceSetup
 					};
 				}
 
-				internal void Throws(EchoExceptionGeneratorDelegate<T> exceptionGenerator)
+				internal void Throws(EchoDelegate<T> resultGenerator)
 				{
-					_resultGenerator = (T value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static T DefaultResultGenerator(T value)
@@ -755,12 +752,9 @@ namespace Imposter.Tests.Features.InterfaceSetup
 					};
 				}
 
-				internal void Throws(ExecuteExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(ExecuteDelegate resultGenerator)
 				{
-					_resultGenerator = (int value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(int value)
@@ -1135,12 +1129,9 @@ namespace Imposter.Tests.Features.InterfaceSetup
 					};
 				}
 
-				internal void Throws(Execute_1ExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(Execute_1Delegate resultGenerator)
 				{
-					_resultGenerator = (int value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(int value)
@@ -1468,12 +1459,9 @@ namespace Imposter.Tests.Features.InterfaceSetup
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(NoOpExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(NoOpDelegate resultGenerator)
 				{
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseDefaultResultGenerator()
@@ -1816,12 +1804,9 @@ namespace Imposter.Tests.Features.InterfaceSetup
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(NotifyExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(NotifyDelegate resultGenerator)
 				{
-					_resultGenerator = (string value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseDefaultResultGenerator()
@@ -2167,12 +2152,9 @@ namespace Imposter.Tests.Features.InterfaceSetup
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(Notify_1ExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(Notify_1Delegate resultGenerator)
 				{
-					_resultGenerator = (int value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseDefaultResultGenerator()

@@ -356,12 +356,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(AsyncTaskIntNoParamsExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(AsyncTaskIntNoParamsDelegate resultGenerator)
 				{
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void ThrowsAsync(global::System.Exception exception)
@@ -744,12 +741,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(AsyncValueTaskIntNoParamsExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(AsyncValueTaskIntNoParamsDelegate resultGenerator)
 				{
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void ThrowsAsync(global::System.Exception exception)
@@ -1207,12 +1201,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(GenericAllRefKindExceptionGeneratorDelegate<TOut, TRef, TIn, TParams, TResult> exceptionGenerator)
+				internal void Throws(GenericAllRefKindDelegate<TOut, TRef, TIn, TParams, TResult> resultGenerator)
 				{
-					_resultGenerator = (out TOut outValue, ref TRef refValue, in TIn inValue, TParams[] paramsValues) =>
-					{
-						throw exceptionGenerator(out outValue, ref refValue, in inValue, paramsValues);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				private static void InitializeOutParametersWithDefaultValues(out TOut outValue)
@@ -1658,12 +1649,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(GenericInnerOutParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator)
+				internal void Throws(GenericInnerOutParamDelegate<TValue, TResult> resultGenerator)
 				{
-					_resultGenerator = (out global::System.Collections.Generic.List<TValue> value) =>
-					{
-						throw exceptionGenerator(out value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				private static void InitializeOutParametersWithDefaultValues(out global::System.Collections.Generic.List<TValue> value)
@@ -2146,12 +2134,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(GenericInnerParamsParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator)
+				internal void Throws(GenericInnerParamsParamDelegate<TValue, TResult> resultGenerator)
 				{
-					_resultGenerator = (global::System.Collections.Generic.List<TValue>[] value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static global::System.Collections.Generic.Stack<TResult> DefaultResultGenerator(global::System.Collections.Generic.List<TValue>[] value)
@@ -2629,12 +2614,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(GenericInnerRefParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator)
+				internal void Throws(GenericInnerRefParamDelegate<TValue, TResult> resultGenerator)
 				{
-					_resultGenerator = (ref global::System.Collections.Generic.List<TValue> value) =>
-					{
-						throw exceptionGenerator(ref value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static global::System.Collections.Generic.Stack<TResult> DefaultResultGenerator(ref global::System.Collections.Generic.List<TValue> value)
@@ -3098,12 +3080,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(GenericInnerSingleParamExceptionGeneratorDelegate<TValue> exceptionGenerator)
+				internal void Throws(GenericInnerSingleParamDelegate<TValue> resultGenerator)
 				{
-					_resultGenerator = (global::System.Collections.Generic.List<TValue> value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseDefaultResultGenerator()
@@ -3525,12 +3504,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(GenericOutParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator)
+				internal void Throws(GenericOutParamDelegate<TValue, TResult> resultGenerator)
 				{
-					_resultGenerator = (out TValue value) =>
-					{
-						throw exceptionGenerator(out value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				private static void InitializeOutParametersWithDefaultValues(out TValue value)
@@ -4013,12 +3989,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(GenericParamsParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator)
+				internal void Throws(GenericParamsParamDelegate<TValue, TResult> resultGenerator)
 				{
-					_resultGenerator = (TValue[] value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static TResult DefaultResultGenerator(TValue[] value)
@@ -4496,12 +4469,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(GenericRefParamExceptionGeneratorDelegate<TValue, TResult> exceptionGenerator)
+				internal void Throws(GenericRefParamDelegate<TValue, TResult> resultGenerator)
 				{
-					_resultGenerator = (ref TValue value) =>
-					{
-						throw exceptionGenerator(ref value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static TResult DefaultResultGenerator(ref TValue value)
@@ -4938,12 +4908,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(GenericReturnTypeExceptionGeneratorDelegate<TValue> exceptionGenerator)
+				internal void Throws(GenericReturnTypeDelegate<TValue> resultGenerator)
 				{
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static TValue DefaultResultGenerator()
@@ -5359,12 +5326,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(GenericSingleOutParamExceptionGeneratorDelegate<TValue> exceptionGenerator)
+				internal void Throws(GenericSingleOutParamDelegate<TValue> resultGenerator)
 				{
-					_resultGenerator = (out TValue value) =>
-					{
-						throw exceptionGenerator(out value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseDefaultResultGenerator()
@@ -5817,12 +5781,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(GenericSingleParamExceptionGeneratorDelegate<TValue> exceptionGenerator)
+				internal void Throws(GenericSingleParamDelegate<TValue> resultGenerator)
 				{
-					_resultGenerator = (TValue value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseDefaultResultGenerator()
@@ -6270,12 +6231,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(GenericSingleRefParamExceptionGeneratorDelegate<TValue> exceptionGenerator)
+				internal void Throws(GenericSingleRefParamDelegate<TValue> resultGenerator)
 				{
-					_resultGenerator = (ref TValue value) =>
-					{
-						throw exceptionGenerator(ref value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseDefaultResultGenerator()
@@ -6710,12 +6668,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(IntAllRefKindsExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(IntAllRefKindsDelegate resultGenerator)
 				{
-					_resultGenerator = (out int value, ref int refValue, in int inValue, string valueAsString, string[] paramsStrings) =>
-					{
-						throw exceptionGenerator(out value, ref refValue, in inValue, valueAsString, paramsStrings);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				private static void InitializeOutParametersWithDefaultValues(out int value)
@@ -7096,12 +7051,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(IntInParamExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(IntInParamDelegate resultGenerator)
 				{
-					_resultGenerator = (in string inStringValue) =>
-					{
-						throw exceptionGenerator(in inStringValue);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(in string inStringValue)
@@ -7445,12 +7397,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(IntNoParamsExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(IntNoParamsDelegate resultGenerator)
 				{
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator()
@@ -7792,12 +7741,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(IntOutParamExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(IntOutParamDelegate resultGenerator)
 				{
-					_resultGenerator = (out int outValue) =>
-					{
-						throw exceptionGenerator(out outValue);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				private static void InitializeOutParametersWithDefaultValues(out int outValue)
@@ -8183,12 +8129,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(IntParamsExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(IntParamsDelegate resultGenerator)
 				{
-					_resultGenerator = (int age, string name, global::System.Text.RegularExpressions.Regex regex) =>
-					{
-						throw exceptionGenerator(age, name, regex);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(int age, string name, global::System.Text.RegularExpressions.Regex regex)
@@ -8563,12 +8506,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(IntParamsParamExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(IntParamsParamDelegate resultGenerator)
 				{
-					_resultGenerator = (string[] paramsStrings) =>
-					{
-						throw exceptionGenerator(paramsStrings);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(string[] paramsStrings)
@@ -8943,12 +8883,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(IntRefParamExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(IntRefParamDelegate resultGenerator)
 				{
-					_resultGenerator = (ref int refValue) =>
-					{
-						throw exceptionGenerator(ref refValue);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(ref int refValue)
@@ -9323,12 +9260,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(IntSingleParamExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(IntSingleParamDelegate resultGenerator)
 				{
-					_resultGenerator = (int age) =>
-					{
-						throw exceptionGenerator(age);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(int age)
@@ -9656,12 +9590,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(VoidNoParamsExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(VoidNoParamsDelegate resultGenerator)
 				{
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseDefaultResultGenerator()

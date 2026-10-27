@@ -252,12 +252,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(NameExceptionGeneratorDelegate<T> exceptionGenerator)
+				internal void Throws(NameDelegate<T> resultGenerator)
 				{
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static string DefaultResultGenerator()
@@ -716,12 +713,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(PutExceptionGeneratorDelegate<T, TKey> exceptionGenerator)
+				internal void Throws(PutDelegate<T, TKey> resultGenerator)
 				{
-					_resultGenerator = (T value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseDefaultResultGenerator()
@@ -1126,12 +1120,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(RegisterExceptionGeneratorDelegate<T> exceptionGenerator)
+				internal void Throws(RegisterDelegate<T> resultGenerator)
 				{
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseDefaultResultGenerator()
@@ -1589,12 +1580,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(RelateExceptionGeneratorDelegate<T, TDerived> exceptionGenerator)
+				internal void Throws(RelateDelegate<T, TDerived> resultGenerator)
 				{
-					_resultGenerator = (TDerived value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseDefaultResultGenerator()
@@ -2045,12 +2033,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(TagExceptionGeneratorDelegate<T> exceptionGenerator)
+				internal void Throws(TagDelegate<T> resultGenerator)
 				{
-					_resultGenerator = (int value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseDefaultResultGenerator()

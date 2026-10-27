@@ -266,12 +266,9 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					};
 				}
 
-				internal void Throws(AddExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(AddDelegate resultGenerator)
 				{
-					_resultGenerator = (int a, int b) =>
-					{
-						throw exceptionGenerator(a, b);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(int a, int b)
@@ -650,12 +647,9 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					};
 				}
 
-				internal void Throws(FormatExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(FormatDelegate resultGenerator)
 				{
-					_resultGenerator = (string template, string value) =>
-					{
-						throw exceptionGenerator(template, value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static string DefaultResultGenerator(string template, string value)
@@ -1030,12 +1024,9 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					};
 				}
 
-				internal void Throws(InOnlyExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(InOnlyDelegate resultGenerator)
 				{
-					_resultGenerator = (in int input) =>
-					{
-						throw exceptionGenerator(in input);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(in int input)
@@ -1410,12 +1401,9 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					};
 				}
 
-				internal void Throws(IncrementExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(IncrementDelegate resultGenerator)
 				{
-					_resultGenerator = (int value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(int value)
@@ -1760,12 +1748,9 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					};
 				}
 
-				internal void Throws(OutOnlyExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(OutOnlyDelegate resultGenerator)
 				{
-					_resultGenerator = (out int result) =>
-					{
-						throw exceptionGenerator(out result);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				private static void InitializeOutParametersWithDefaultValues(out int result)
@@ -2143,12 +2128,9 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					};
 				}
 
-				internal void Throws(RefOnlyExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(RefOnlyDelegate resultGenerator)
 				{
-					_resultGenerator = (ref int state) =>
-					{
-						throw exceptionGenerator(ref state);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(ref int state)
@@ -2523,12 +2505,9 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					};
 				}
 
-				internal void Throws(SumExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(SumDelegate resultGenerator)
 				{
-					_resultGenerator = (int[] values) =>
-					{
-						throw exceptionGenerator(values);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(int[] values)

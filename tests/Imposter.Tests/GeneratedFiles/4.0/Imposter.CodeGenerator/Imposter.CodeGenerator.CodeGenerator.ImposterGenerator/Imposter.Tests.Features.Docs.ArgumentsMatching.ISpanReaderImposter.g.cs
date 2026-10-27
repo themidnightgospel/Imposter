@@ -190,12 +190,9 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					};
 				}
 
-				internal void Throws(TryReadExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(TryReadDelegate resultGenerator)
 				{
-					_resultGenerator = (out global::System.ReadOnlySpan<byte> data) =>
-					{
-						throw exceptionGenerator(out data);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				private static void InitializeOutParametersWithDefaultValues(out global::System.ReadOnlySpan<byte> data)

@@ -228,13 +228,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(DescribeExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(DescribeDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (dynamic value) =>
-					{
-						throw exceptionGenerator((object)value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()

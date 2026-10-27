@@ -235,13 +235,10 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					};
 				}
 
-				internal void Throws(DescribeExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(DescribeDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (T value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()
@@ -638,13 +635,10 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					};
 				}
 
-				internal void Throws(EchoExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(EchoDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (T value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()

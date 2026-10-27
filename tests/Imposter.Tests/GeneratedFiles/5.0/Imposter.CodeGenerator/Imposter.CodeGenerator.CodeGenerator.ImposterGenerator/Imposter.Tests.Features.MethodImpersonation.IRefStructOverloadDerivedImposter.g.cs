@@ -227,12 +227,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(Read_1ExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(Read_1Delegate resultGenerator)
 				{
-					_resultGenerator = (int id) =>
-					{
-						throw exceptionGenerator(id);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(int id)
@@ -607,12 +604,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(ReadExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(ReadDelegate resultGenerator)
 				{
-					_resultGenerator = (int id, global::Imposter.Tests.Features.MethodImpersonation.Cursor cursor) =>
-					{
-						throw exceptionGenerator(id, cursor);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(int id, global::Imposter.Tests.Features.MethodImpersonation.Cursor cursor)

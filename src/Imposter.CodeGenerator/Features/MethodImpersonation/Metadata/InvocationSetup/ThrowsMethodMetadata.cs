@@ -19,6 +19,9 @@ internal readonly struct ThrowsMethodMetadata
 
     internal readonly ParameterMetadata ExceptionGeneratorParameter;
 
+    // The invocation imposter's Throws takes the builder's throwing lambda as its result generator.
+    internal readonly ParameterMetadata ResultGeneratorParameter;
+
     internal readonly NameSyntax InterfaceSyntax;
 
     internal readonly string InterfaceExceptionParameterName;
@@ -28,6 +31,7 @@ internal readonly struct ThrowsMethodMetadata
     public ThrowsMethodMetadata(
         in ReservedParameterNames reservedParameterNames,
         NameSyntax exceptionGeneratorDelegateSyntax,
+        TypeSyntax resultGeneratorDelegateSyntax,
         NameSyntax interfaceTypeSyntax,
         NameSyntax continuationInterfaceSyntax,
         NameSet genericTypeParameterNameSet
@@ -48,6 +52,10 @@ internal readonly struct ThrowsMethodMetadata
         ExceptionGeneratorParameter = new ParameterMetadata(
             nameContext.Use(InterfaceExceptionGeneratorParameterName),
             exceptionGeneratorDelegateSyntax
+        );
+        ResultGeneratorParameter = new ParameterMetadata(
+            nameContext.Use("resultGenerator"),
+            resultGeneratorDelegateSyntax
         );
     }
 }

@@ -228,13 +228,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					};
 				}
 
-				internal void Throws(ComputeExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(ComputeDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (int value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()

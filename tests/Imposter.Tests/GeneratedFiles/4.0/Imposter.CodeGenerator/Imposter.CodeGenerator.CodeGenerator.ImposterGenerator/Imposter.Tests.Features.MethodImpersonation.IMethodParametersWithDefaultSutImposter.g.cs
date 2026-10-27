@@ -325,12 +325,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(BoolDefaultExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(BoolDefaultDelegate resultGenerator)
 				{
-					_resultGenerator = (bool flag) =>
-					{
-						throw exceptionGenerator(flag);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(bool flag)
@@ -705,12 +702,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(CharDefaultExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(CharDefaultDelegate resultGenerator)
 				{
-					_resultGenerator = (char value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(char value)
@@ -1085,12 +1079,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(DecimalDefaultExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(DecimalDefaultDelegate resultGenerator)
 				{
-					_resultGenerator = (decimal value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(decimal value)
@@ -1465,12 +1456,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(DoubleDefaultExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(DoubleDefaultDelegate resultGenerator)
 				{
-					_resultGenerator = (double value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(double value)
@@ -1845,12 +1833,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(EnumDefaultExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(EnumDefaultDelegate resultGenerator)
 				{
-					_resultGenerator = (global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum mode) =>
-					{
-						throw exceptionGenerator(mode);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(global::Imposter.Tests.Features.MethodImpersonation.Issue2Enum mode)
@@ -2225,12 +2210,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(FloatDefaultExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(FloatDefaultDelegate resultGenerator)
 				{
-					_resultGenerator = (float value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(float value)
@@ -2605,12 +2587,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(IntDefaultExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(IntDefaultDelegate resultGenerator)
 				{
-					_resultGenerator = (int value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(int value)
@@ -2993,12 +2972,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(MultipleOptionalsExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(MultipleOptionalsDelegate resultGenerator)
 				{
-					_resultGenerator = (string command, bool validate, int timeout) =>
-					{
-						throw exceptionGenerator(command, validate, timeout);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(string command, bool validate, int timeout)
@@ -3373,12 +3349,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(NameDefaultExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(NameDefaultDelegate resultGenerator)
 				{
-					_resultGenerator = (string name) =>
-					{
-						throw exceptionGenerator(name);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(string name)
@@ -3753,12 +3726,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(NullableDefaultExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(NullableDefaultDelegate resultGenerator)
 				{
-					_resultGenerator = (string? text) =>
-					{
-						throw exceptionGenerator(text);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(string? text)
@@ -4133,12 +4103,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(NullableInExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(NullableInDelegate resultGenerator)
 				{
-					_resultGenerator = (in string? text) =>
-					{
-						throw exceptionGenerator(in text);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(in string? text)
@@ -4483,12 +4450,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(NullableOutExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(NullableOutDelegate resultGenerator)
 				{
-					_resultGenerator = (out string? text) =>
-					{
-						throw exceptionGenerator(out text);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				private static void InitializeOutParametersWithDefaultValues(out string text)
@@ -4866,12 +4830,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(NullableParamsExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(NullableParamsDelegate resultGenerator)
 				{
-					_resultGenerator = (string? [] values) =>
-					{
-						throw exceptionGenerator(values);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(string? [] values)
@@ -5246,12 +5207,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(NullableRefExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(NullableRefDelegate resultGenerator)
 				{
-					_resultGenerator = (ref string? text) =>
-					{
-						throw exceptionGenerator(ref text);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(ref string? text)
@@ -5634,12 +5592,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(OptionalThenParamsExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(OptionalThenParamsDelegate resultGenerator)
 				{
-					_resultGenerator = (int value, string? option, int[] extras) =>
-					{
-						throw exceptionGenerator(value, option, extras);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(int value, string? option, int[] extras)
@@ -6018,12 +5973,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(RequiredThenOptionalExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(RequiredThenOptionalDelegate resultGenerator)
 				{
-					_resultGenerator = (string data, bool validate) =>
-					{
-						throw exceptionGenerator(data, validate);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(string data, bool validate)

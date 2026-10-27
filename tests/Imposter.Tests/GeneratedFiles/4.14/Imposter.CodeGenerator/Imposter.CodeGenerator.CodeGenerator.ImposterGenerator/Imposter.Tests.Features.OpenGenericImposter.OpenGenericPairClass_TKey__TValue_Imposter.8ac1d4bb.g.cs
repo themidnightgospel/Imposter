@@ -239,13 +239,10 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					};
 				}
 
-				internal void Throws(DescribePairExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(DescribePairDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (TKey key, TValue value) =>
-					{
-						throw exceptionGenerator(key, value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()
@@ -646,13 +643,10 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					};
 				}
 
-				internal void Throws(ResolveExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(ResolveDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (TKey key, TValue defaultValue) =>
-					{
-						throw exceptionGenerator(key, defaultValue);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()

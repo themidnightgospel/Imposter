@@ -89,6 +89,7 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
         ThrowsMethod = new ThrowsMethodMetadata(
             method.ReservedParameterNames,
             method.ExceptionGeneratorDelegate.Syntax,
+            method.Delegate.Syntax,
             Interface.Syntax,
             ContinuationInterface.Syntax,
             method.GenericTypeParameterNameSet

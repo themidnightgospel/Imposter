@@ -227,12 +227,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(EchoExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(EchoDelegate resultGenerator)
 				{
-					_resultGenerator = (dynamic value) =>
-					{
-						throw exceptionGenerator((object)value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static dynamic DefaultResultGenerator(dynamic value)
@@ -641,12 +638,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(UseExceptionGeneratorDelegate<T> exceptionGenerator)
+				internal void Throws(UseDelegate<T> resultGenerator)
 				{
-					_resultGenerator = (T first, dynamic second) =>
-					{
-						throw exceptionGenerator(first, (object)second);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseDefaultResultGenerator()

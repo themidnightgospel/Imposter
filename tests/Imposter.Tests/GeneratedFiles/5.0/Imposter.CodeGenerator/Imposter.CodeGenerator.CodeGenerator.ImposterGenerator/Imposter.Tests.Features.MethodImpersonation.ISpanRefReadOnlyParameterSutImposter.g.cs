@@ -220,12 +220,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(CountExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(CountDelegate resultGenerator)
 				{
-					_resultGenerator = (ref readonly global::System.ReadOnlySpan<byte> data) =>
-					{
-						throw exceptionGenerator(in data);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(ref readonly global::System.ReadOnlySpan<byte> data)

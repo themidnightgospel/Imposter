@@ -220,12 +220,9 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					};
 				}
 
-				internal void Throws(ParseExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(ParseDelegate resultGenerator)
 				{
-					_resultGenerator = (global::System.ReadOnlySpan<char> text) =>
-					{
-						throw exceptionGenerator(text);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(global::System.ReadOnlySpan<char> text)

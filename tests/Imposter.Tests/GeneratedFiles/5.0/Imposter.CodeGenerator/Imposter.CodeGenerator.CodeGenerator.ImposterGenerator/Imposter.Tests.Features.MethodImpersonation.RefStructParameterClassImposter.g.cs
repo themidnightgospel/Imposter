@@ -197,13 +197,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(ReadExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(ReadDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (global::Imposter.Tests.Features.MethodImpersonation.Cursor cursor) =>
-					{
-						throw exceptionGenerator(cursor);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()

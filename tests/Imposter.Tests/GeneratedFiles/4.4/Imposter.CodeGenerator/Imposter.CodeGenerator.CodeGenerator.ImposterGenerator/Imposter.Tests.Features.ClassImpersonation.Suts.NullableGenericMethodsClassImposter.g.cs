@@ -282,13 +282,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					};
 				}
 
-				internal void Throws(EchoMaybeDefaultExceptionGeneratorDelegate<T> exceptionGenerator)
+				internal void Throws(EchoMaybeDefaultDelegate<T> resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (T? value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()
@@ -801,13 +798,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					};
 				}
 
-				internal void Throws(EchoNullableReferenceExceptionGeneratorDelegate<T> exceptionGenerator)
+				internal void Throws(EchoNullableReferenceDelegate<T> resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (T value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()

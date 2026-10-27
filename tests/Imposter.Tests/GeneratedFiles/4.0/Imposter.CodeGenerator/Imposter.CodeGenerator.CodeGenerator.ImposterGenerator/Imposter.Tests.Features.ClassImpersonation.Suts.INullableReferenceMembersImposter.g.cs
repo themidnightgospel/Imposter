@@ -227,12 +227,9 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					};
 				}
 
-				internal void Throws(FindExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(FindDelegate resultGenerator)
 				{
-					_resultGenerator = (string? key) =>
-					{
-						throw exceptionGenerator(key);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static string? DefaultResultGenerator(string? key)
@@ -620,12 +617,9 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					};
 				}
 
-				internal void Throws(FindAsyncExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(FindAsyncDelegate resultGenerator)
 				{
-					_resultGenerator = (string? key) =>
-					{
-						throw exceptionGenerator(key);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void ThrowsAsync(global::System.Exception exception)

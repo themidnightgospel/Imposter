@@ -224,12 +224,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(CalculateExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(CalculateDelegate resultGenerator)
 				{
-					_resultGenerator = (global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.InvoiceItem>? invoicItems, global::System.Collections.Generic.IDictionary<global::Imposter.Tests.Features.MethodImpersonation.Product, global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.History>>? purchaceHistory) =>
-					{
-						throw exceptionGenerator(invoicItems, purchaceHistory);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static decimal DefaultResultGenerator(global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.InvoiceItem>? invoicItems, global::System.Collections.Generic.IDictionary<global::Imposter.Tests.Features.MethodImpersonation.Product, global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.History>>? purchaceHistory)

@@ -196,12 +196,9 @@ namespace Imposter.Tests.Features.InterfaceSetup
 					};
 				}
 
-				internal void Throws(ReadExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(ReadDelegate resultGenerator)
 				{
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator()
@@ -542,12 +539,9 @@ namespace Imposter.Tests.Features.InterfaceSetup
 					};
 				}
 
-				internal void Throws(Read_1ExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(Read_1Delegate resultGenerator)
 				{
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static string DefaultResultGenerator()

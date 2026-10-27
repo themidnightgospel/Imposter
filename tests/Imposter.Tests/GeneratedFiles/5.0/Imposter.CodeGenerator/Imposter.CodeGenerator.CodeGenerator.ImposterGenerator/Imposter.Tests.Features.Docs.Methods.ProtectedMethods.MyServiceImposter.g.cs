@@ -235,13 +235,10 @@ namespace Imposter.Tests.Features.Docs.Methods.ProtectedMethods
 					};
 				}
 
-				internal void Throws(InvokeProtectedExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(InvokeProtectedDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (int value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()
@@ -638,13 +635,10 @@ namespace Imposter.Tests.Features.Docs.Methods.ProtectedMethods
 					};
 				}
 
-				internal void Throws(ProtectedAddExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(ProtectedAddDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (int value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()

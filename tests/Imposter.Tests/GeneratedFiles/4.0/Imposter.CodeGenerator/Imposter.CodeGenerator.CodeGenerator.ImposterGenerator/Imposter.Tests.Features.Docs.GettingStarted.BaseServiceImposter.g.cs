@@ -197,13 +197,10 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
 					};
 				}
 
-				internal void Throws(GetNumberExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(GetNumberDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()

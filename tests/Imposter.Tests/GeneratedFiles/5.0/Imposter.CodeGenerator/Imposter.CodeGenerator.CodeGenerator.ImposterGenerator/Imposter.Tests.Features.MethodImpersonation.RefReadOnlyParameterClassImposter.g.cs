@@ -235,13 +235,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(ProtectedReadExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(ProtectedReadDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (ref readonly int key) =>
-					{
-						throw exceptionGenerator(in key);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()
@@ -638,13 +635,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(ReadExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(ReadDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (ref readonly int key) =>
-					{
-						throw exceptionGenerator(in key);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()

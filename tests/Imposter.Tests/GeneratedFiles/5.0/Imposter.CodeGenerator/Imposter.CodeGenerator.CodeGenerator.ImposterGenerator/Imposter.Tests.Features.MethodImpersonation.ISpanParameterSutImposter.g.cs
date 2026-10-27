@@ -298,12 +298,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(ContainsExceptionGeneratorDelegate<T> exceptionGenerator)
+				internal void Throws(ContainsDelegate<T> resultGenerator)
 				{
-					_resultGenerator = (global::System.ReadOnlySpan<T> items, T item) =>
-					{
-						throw exceptionGenerator(items, item);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static bool DefaultResultGenerator(global::System.ReadOnlySpan<T> items, T item)
@@ -748,12 +745,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(CountAsyncExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(CountAsyncDelegate resultGenerator)
 				{
-					_resultGenerator = (global::System.ReadOnlySpan<byte> data) =>
-					{
-						throw exceptionGenerator(data);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void ThrowsAsync(global::System.Exception exception)
@@ -1195,12 +1189,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(FillExceptionGeneratorDelegate<T> exceptionGenerator)
+				internal void Throws(FillDelegate<T> resultGenerator)
 				{
-					_resultGenerator = (global::System.Span<byte> buffer, T value) =>
-					{
-						throw exceptionGenerator(buffer, value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseDefaultResultGenerator()
@@ -1622,12 +1613,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(ParseExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(ParseDelegate resultGenerator)
 				{
-					_resultGenerator = (global::System.ReadOnlySpan<char> text, int start) =>
-					{
-						throw exceptionGenerator(text, start);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(global::System.ReadOnlySpan<char> text, int start)
@@ -1986,12 +1974,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(WriteExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(WriteDelegate resultGenerator)
 				{
-					_resultGenerator = (global::System.Span<byte> buffer) =>
-					{
-						throw exceptionGenerator(buffer);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseDefaultResultGenerator()

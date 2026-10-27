@@ -227,12 +227,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(Write_1ExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(Write_1Delegate resultGenerator)
 				{
-					_resultGenerator = (global::System.ReadOnlySpan<byte> data) =>
-					{
-						throw exceptionGenerator(data);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(global::System.ReadOnlySpan<byte> data)
@@ -607,12 +604,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(WriteExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(WriteDelegate resultGenerator)
 				{
-					_resultGenerator = (global::System.Span<byte> buffer) =>
-					{
-						throw exceptionGenerator(buffer);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(global::System.Span<byte> buffer)

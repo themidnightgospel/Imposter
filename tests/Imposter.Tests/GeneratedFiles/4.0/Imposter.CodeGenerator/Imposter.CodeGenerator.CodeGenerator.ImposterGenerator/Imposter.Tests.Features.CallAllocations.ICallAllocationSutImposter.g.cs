@@ -280,12 +280,9 @@ namespace Imposter.Tests.Features.CallAllocations
 					};
 				}
 
-				internal void Throws(EchoExceptionGeneratorDelegate<T> exceptionGenerator)
+				internal void Throws(EchoDelegate<T> resultGenerator)
 				{
-					_resultGenerator = (T value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static T DefaultResultGenerator(T value)
@@ -701,12 +698,9 @@ namespace Imposter.Tests.Features.CallAllocations
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(LogExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(LogDelegate resultGenerator)
 				{
-					_resultGenerator = (string message) =>
-					{
-						throw exceptionGenerator(message);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseDefaultResultGenerator()
@@ -1068,12 +1062,9 @@ namespace Imposter.Tests.Features.CallAllocations
 					};
 				}
 
-				internal void Throws(SquareExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(SquareDelegate resultGenerator)
 				{
-					_resultGenerator = (int value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(int value)

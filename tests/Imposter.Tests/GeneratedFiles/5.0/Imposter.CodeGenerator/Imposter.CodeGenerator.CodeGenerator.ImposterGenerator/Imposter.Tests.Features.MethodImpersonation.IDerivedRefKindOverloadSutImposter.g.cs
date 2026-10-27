@@ -227,12 +227,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(Count_1ExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(Count_1Delegate resultGenerator)
 				{
-					_resultGenerator = (int value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(int value)
@@ -607,12 +604,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(CountExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(CountDelegate resultGenerator)
 				{
-					_resultGenerator = (in int value) =>
-					{
-						throw exceptionGenerator(in value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(in int value)

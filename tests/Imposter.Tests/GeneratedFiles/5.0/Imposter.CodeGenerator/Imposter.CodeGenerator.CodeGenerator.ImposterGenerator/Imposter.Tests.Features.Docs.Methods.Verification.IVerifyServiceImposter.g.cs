@@ -231,12 +231,9 @@ namespace Imposter.Tests.Features.Docs.Methods.Verification
 					};
 				}
 
-				internal void Throws(CombineExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(CombineDelegate resultGenerator)
 				{
-					_resultGenerator = (int a, int b) =>
-					{
-						throw exceptionGenerator(a, b);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(int a, int b)
@@ -595,12 +592,9 @@ namespace Imposter.Tests.Features.Docs.Methods.Verification
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(IncrementExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(IncrementDelegate resultGenerator)
 				{
-					_resultGenerator = (int v) =>
-					{
-						throw exceptionGenerator(v);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseDefaultResultGenerator()

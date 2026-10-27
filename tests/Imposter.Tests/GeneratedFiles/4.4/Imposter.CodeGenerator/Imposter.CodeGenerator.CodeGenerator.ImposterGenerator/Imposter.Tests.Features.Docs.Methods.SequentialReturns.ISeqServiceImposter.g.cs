@@ -196,12 +196,9 @@ namespace Imposter.Tests.Features.Docs.Methods.SequentialReturns
 					};
 				}
 
-				internal void Throws(GetNumberExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(GetNumberDelegate resultGenerator)
 				{
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator()
@@ -555,12 +552,9 @@ namespace Imposter.Tests.Features.Docs.Methods.SequentialReturns
 					};
 				}
 
-				internal void Throws(GetNumberAsyncExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(GetNumberAsyncDelegate resultGenerator)
 				{
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void ThrowsAsync(global::System.Exception exception)

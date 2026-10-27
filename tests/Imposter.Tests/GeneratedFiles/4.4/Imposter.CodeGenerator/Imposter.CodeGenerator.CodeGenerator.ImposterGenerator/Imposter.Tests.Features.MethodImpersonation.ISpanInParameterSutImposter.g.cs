@@ -227,12 +227,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(CountExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(CountDelegate resultGenerator)
 				{
-					_resultGenerator = (in global::System.ReadOnlySpan<byte> data) =>
-					{
-						throw exceptionGenerator(in data);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(in global::System.ReadOnlySpan<byte> data)
@@ -653,12 +650,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(SumExceptionGeneratorDelegate<T> exceptionGenerator)
+				internal void Throws(SumDelegate<T> resultGenerator)
 				{
-					_resultGenerator = (in global::System.ReadOnlySpan<T> items) =>
-					{
-						throw exceptionGenerator(in items);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(in global::System.ReadOnlySpan<T> items)

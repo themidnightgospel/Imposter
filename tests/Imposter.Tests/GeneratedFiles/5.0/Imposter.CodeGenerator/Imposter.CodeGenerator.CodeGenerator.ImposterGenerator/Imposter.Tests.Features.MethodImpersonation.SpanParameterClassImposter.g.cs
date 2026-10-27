@@ -228,13 +228,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(CountExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(CountDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (global::System.ReadOnlySpan<char> text) =>
-					{
-						throw exceptionGenerator(text);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()

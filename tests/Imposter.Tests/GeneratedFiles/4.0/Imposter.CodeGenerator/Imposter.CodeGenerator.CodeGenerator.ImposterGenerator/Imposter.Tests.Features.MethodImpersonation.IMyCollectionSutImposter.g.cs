@@ -218,12 +218,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(AddExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(AddDelegate resultGenerator)
 				{
-					_resultGenerator = (string item) =>
-					{
-						throw exceptionGenerator(item);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseDefaultResultGenerator()
@@ -554,12 +551,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(GetEnumerator_1ExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(GetEnumerator_1Delegate resultGenerator)
 				{
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static global::System.Collections.IEnumerator DefaultResultGenerator()
@@ -900,12 +894,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(GetEnumeratorExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(GetEnumeratorDelegate resultGenerator)
 				{
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static global::System.Collections.Generic.IEnumerator<string> DefaultResultGenerator()

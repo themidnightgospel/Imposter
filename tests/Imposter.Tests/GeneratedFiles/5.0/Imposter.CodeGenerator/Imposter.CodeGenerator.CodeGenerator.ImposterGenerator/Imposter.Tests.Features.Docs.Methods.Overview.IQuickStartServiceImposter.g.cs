@@ -259,12 +259,9 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 					};
 				}
 
-				internal void Throws(CombineExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(CombineDelegate resultGenerator)
 				{
-					_resultGenerator = (int a, int b) =>
-					{
-						throw exceptionGenerator(a, b);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(int a, int b)
@@ -612,12 +609,9 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 					};
 				}
 
-				internal void Throws(DoWorkAsyncExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(DoWorkAsyncDelegate resultGenerator)
 				{
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void ThrowsAsync(global::System.Exception exception)
@@ -979,12 +973,9 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 					};
 				}
 
-				internal void Throws(GetNumberExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(GetNumberDelegate resultGenerator)
 				{
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator()
@@ -1338,12 +1329,9 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 					};
 				}
 
-				internal void Throws(GetNumberAsyncExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(GetNumberAsyncDelegate resultGenerator)
 				{
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void ThrowsAsync(global::System.Exception exception)
@@ -1744,12 +1732,9 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 					};
 				}
 
-				internal void Throws(IncrementExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(IncrementDelegate resultGenerator)
 				{
-					_resultGenerator = (int v) =>
-					{
-						throw exceptionGenerator(v);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(int v)
@@ -2124,12 +2109,9 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 					};
 				}
 
-				internal void Throws(VirtualComputeExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(VirtualComputeDelegate resultGenerator)
 				{
-					_resultGenerator = (int v) =>
-					{
-						throw exceptionGenerator(v);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(int v)

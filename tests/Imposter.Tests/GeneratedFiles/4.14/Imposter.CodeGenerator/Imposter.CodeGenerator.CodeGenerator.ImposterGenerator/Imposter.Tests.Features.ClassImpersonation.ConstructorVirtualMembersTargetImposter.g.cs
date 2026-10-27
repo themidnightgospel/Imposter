@@ -225,13 +225,10 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					};
 				}
 
-				internal void Throws(ReadAsyncExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(ReadAsyncDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void ThrowsAsync(global::System.Exception exception)
@@ -606,13 +603,10 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(TouchExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(TouchDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()
@@ -1046,13 +1040,10 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					};
 				}
 
-				internal void Throws(TransformExceptionGeneratorDelegate<T> exceptionGenerator)
+				internal void Throws(TransformDelegate<T> resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (ref int input, out T output, T expected) =>
-					{
-						throw exceptionGenerator(ref input, out output, expected);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()

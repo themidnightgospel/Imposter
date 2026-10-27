@@ -270,13 +270,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					};
 				}
 
-				internal void Throws(InvokeProtectedMethodExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(InvokeProtectedMethodDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (int value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()
@@ -673,13 +670,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					};
 				}
 
-				internal void Throws(ProtectedVirtualMethodExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(ProtectedVirtualMethodDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (int value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()
@@ -1045,13 +1039,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					};
 				}
 
-				internal void Throws(ReadProtectedPropertyExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(ReadProtectedPropertyDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()
@@ -1445,13 +1436,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					};
 				}
 
-				internal void Throws(ReadProtectedValueExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(ReadProtectedValueDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (int index) =>
-					{
-						throw exceptionGenerator(index);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()
@@ -1830,13 +1818,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(SubscribeToProtectedEventExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(SubscribeToProtectedEventDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (global::System.EventHandler handler) =>
-					{
-						throw exceptionGenerator(handler);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()
@@ -2202,13 +2187,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(WriteProtectedPropertyExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(WriteProtectedPropertyDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (string value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()
@@ -2578,13 +2560,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(WriteProtectedValueExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(WriteProtectedValueDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (int index, int value) =>
-					{
-						throw exceptionGenerator(index, value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()

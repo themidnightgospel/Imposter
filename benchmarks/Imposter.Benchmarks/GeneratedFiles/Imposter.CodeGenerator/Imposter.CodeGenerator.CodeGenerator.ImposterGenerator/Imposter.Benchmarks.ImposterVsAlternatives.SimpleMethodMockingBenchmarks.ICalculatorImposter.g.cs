@@ -220,12 +220,9 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 					};
 				}
 
-				internal void Throws(SquareExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(SquareDelegate resultGenerator)
 				{
-					_resultGenerator = (int input) =>
-					{
-						throw exceptionGenerator(input);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(int input)

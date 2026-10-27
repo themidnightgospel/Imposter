@@ -391,18 +391,12 @@ internal static partial class InvocationImposterGroupBuilder
     private static MethodDeclarationSyntax ThrowsMethod(in ImposterTargetMethodMetadata method)
     {
         var throws = method.MethodInvocationImposterGroup.ThrowsMethod;
-        var throwGeneratedException = Block(
-            ThrowStatement(
-                IdentifierName(throws.ExceptionGeneratorParameter.Name)
-                    .Call(ArgumentListSyntax(method.Parameters.AllParameters))
-            )
-        );
 
         return ResultGeneratorSetter(
             method,
             throws.Name,
-            throws.ExceptionGeneratorParameter,
-            Lambda(method.Parameters.ParameterListSyntaxIncludingNullable, throwGeneratedException)
+            throws.ResultGeneratorParameter,
+            IdentifierName(throws.ResultGeneratorParameter.Name)
         );
     }
 

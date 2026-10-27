@@ -241,12 +241,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(AdvanceExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(AdvanceDelegate resultGenerator)
 				{
-					_resultGenerator = (ref global::System.ReadOnlySpan<byte> buffer) =>
-					{
-						throw exceptionGenerator(ref buffer);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(ref global::System.ReadOnlySpan<byte> buffer)
@@ -605,12 +602,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(FillExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(FillDelegate resultGenerator)
 				{
-					_resultGenerator = (ref global::System.Span<byte> buffer) =>
-					{
-						throw exceptionGenerator(ref buffer);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseDefaultResultGenerator()
@@ -976,12 +970,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(TryGetExceptionGeneratorDelegate<T> exceptionGenerator)
+				internal void Throws(TryGetDelegate<T> resultGenerator)
 				{
-					_resultGenerator = (out global::System.ReadOnlySpan<T> items) =>
-					{
-						throw exceptionGenerator(out items);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				private static void InitializeOutParametersWithDefaultValues(out global::System.ReadOnlySpan<T> items)
@@ -1388,12 +1379,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(TryReadExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(TryReadDelegate resultGenerator)
 				{
-					_resultGenerator = (out global::System.ReadOnlySpan<byte> data) =>
-					{
-						throw exceptionGenerator(out data);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				private static void InitializeOutParametersWithDefaultValues(out global::System.ReadOnlySpan<byte> data)

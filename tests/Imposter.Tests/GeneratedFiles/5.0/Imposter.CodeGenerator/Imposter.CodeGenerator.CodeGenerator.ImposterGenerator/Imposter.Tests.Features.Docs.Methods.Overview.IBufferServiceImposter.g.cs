@@ -220,12 +220,9 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 					};
 				}
 
-				internal void Throws(RentExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(RentDelegate resultGenerator)
 				{
-					_resultGenerator = (int size) =>
-					{
-						throw exceptionGenerator(size);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static global::System.Span<byte> DefaultResultGenerator(int size)

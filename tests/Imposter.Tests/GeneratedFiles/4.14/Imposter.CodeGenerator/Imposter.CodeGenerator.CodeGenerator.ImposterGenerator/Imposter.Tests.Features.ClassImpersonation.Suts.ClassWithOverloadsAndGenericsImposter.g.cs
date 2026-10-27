@@ -309,13 +309,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					};
 				}
 
-				internal void Throws(EchoExceptionGeneratorDelegate<T> exceptionGenerator)
+				internal void Throws(EchoDelegate<T> resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (T item) =>
-					{
-						throw exceptionGenerator(item);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()
@@ -772,13 +769,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					};
 				}
 
-				internal void Throws(FormatExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(FormatDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (int value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()
@@ -1179,13 +1173,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					};
 				}
 
-				internal void Throws(Format_1ExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(Format_1Delegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (string value, int padding) =>
-					{
-						throw exceptionGenerator(value, padding);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()
@@ -1632,13 +1623,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					};
 				}
 
-				internal void Throws(SelectFirstExceptionGeneratorDelegate<TFirst, TSecond> exceptionGenerator)
+				internal void Throws(SelectFirstDelegate<TFirst, TSecond> resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (TFirst first, TSecond second) =>
-					{
-						throw exceptionGenerator(first, second);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()

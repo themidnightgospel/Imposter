@@ -204,13 +204,10 @@ namespace Imposter.Tests.Docs.Properties
 					};
 				}
 
-				internal void Throws(ReadProtectedExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(ReadProtectedDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()
@@ -586,13 +583,10 @@ namespace Imposter.Tests.Docs.Properties
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(WriteProtectedExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(WriteProtectedDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (int value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()

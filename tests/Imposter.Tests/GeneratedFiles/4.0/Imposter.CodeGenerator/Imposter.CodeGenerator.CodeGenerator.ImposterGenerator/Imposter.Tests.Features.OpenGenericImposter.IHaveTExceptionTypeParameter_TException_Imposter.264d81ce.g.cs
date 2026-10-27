@@ -189,12 +189,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					};
 				}
 
-				internal void Throws(GetExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(GetDelegate resultGenerator)
 				{
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static TException DefaultResultGenerator()

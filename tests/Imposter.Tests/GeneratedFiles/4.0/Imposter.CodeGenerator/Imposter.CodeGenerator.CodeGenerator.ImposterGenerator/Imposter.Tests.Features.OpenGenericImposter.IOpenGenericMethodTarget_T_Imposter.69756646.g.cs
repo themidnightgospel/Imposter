@@ -243,12 +243,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(AddExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(AddDelegate resultGenerator)
 				{
-					_resultGenerator = (T item, int index) =>
-					{
-						throw exceptionGenerator(item, index);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseDefaultResultGenerator()
@@ -610,12 +607,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					};
 				}
 
-				internal void Throws(CountForExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(CountForDelegate resultGenerator)
 				{
-					_resultGenerator = (T item) =>
-					{
-						throw exceptionGenerator(item);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(T item)
@@ -959,12 +953,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					};
 				}
 
-				internal void Throws(GetNextExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(GetNextDelegate resultGenerator)
 				{
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static T DefaultResultGenerator()
@@ -1328,12 +1319,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(PublishExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(PublishDelegate resultGenerator)
 				{
-					_resultGenerator = (T payload, string category, int priority) =>
-					{
-						throw exceptionGenerator(payload, category, priority);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseDefaultResultGenerator()
@@ -1664,12 +1652,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					};
 				}
 
-				internal void Throws(ResilientFetchExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(ResilientFetchDelegate resultGenerator)
 				{
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static T DefaultResultGenerator()
@@ -2041,12 +2026,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					};
 				}
 
-				internal void Throws(TryAddExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(TryAddDelegate resultGenerator)
 				{
-					_resultGenerator = (T value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static bool DefaultResultGenerator(T value)

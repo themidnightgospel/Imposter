@@ -220,12 +220,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(GenericMethodExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(GenericMethodDelegate resultGenerator)
 				{
-					_resultGenerator = (TInput age) =>
-					{
-						throw exceptionGenerator(age);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static TOutput DefaultResultGenerator(TInput age)

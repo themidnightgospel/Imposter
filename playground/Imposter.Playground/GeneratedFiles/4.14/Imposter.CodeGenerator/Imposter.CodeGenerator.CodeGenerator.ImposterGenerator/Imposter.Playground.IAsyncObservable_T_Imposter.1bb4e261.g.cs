@@ -204,12 +204,9 @@ namespace Imposter.Playground
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
-				internal void Throws(OnNextExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(OnNextDelegate resultGenerator)
 				{
-					_resultGenerator = (T item) =>
-					{
-						throw exceptionGenerator(item);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseDefaultResultGenerator()

@@ -220,12 +220,9 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					};
 				}
 
-				internal void Throws(DoubleExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(DoubleDelegate resultGenerator)
 				{
-					_resultGenerator = (ref readonly int value) =>
-					{
-						throw exceptionGenerator(in value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(ref readonly int value)

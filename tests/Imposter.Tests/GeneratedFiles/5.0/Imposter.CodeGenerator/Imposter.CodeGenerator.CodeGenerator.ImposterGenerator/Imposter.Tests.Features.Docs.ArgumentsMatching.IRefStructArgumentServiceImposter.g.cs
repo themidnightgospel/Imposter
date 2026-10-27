@@ -220,12 +220,9 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					};
 				}
 
-				internal void Throws(ReadExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(ReadDelegate resultGenerator)
 				{
-					_resultGenerator = (int id, global::Imposter.Tests.Features.Docs.ArgumentsMatching.Cursor cursor) =>
-					{
-						throw exceptionGenerator(id, cursor);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(int id, global::Imposter.Tests.Features.Docs.ArgumentsMatching.Cursor cursor)

@@ -261,12 +261,9 @@ namespace Imposter.Benchmarks
 					};
 				}
 
-				internal void Throws(ReturnTaskExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(ReturnTaskDelegate resultGenerator)
 				{
-					_resultGenerator = (int key) =>
-					{
-						throw exceptionGenerator(key);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void ThrowsAsync(global::System.Exception exception)
@@ -683,12 +680,9 @@ namespace Imposter.Benchmarks
 					};
 				}
 
-				internal void Throws(ReturnValueTaskExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(ReturnValueTaskDelegate resultGenerator)
 				{
-					_resultGenerator = (int key) =>
-					{
-						throw exceptionGenerator(key);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void ThrowsAsync(global::System.Exception exception)
@@ -1092,12 +1086,9 @@ namespace Imposter.Benchmarks
 					};
 				}
 
-				internal void Throws(ThrowExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(ThrowDelegate resultGenerator)
 				{
-					_resultGenerator = (int key) =>
-					{
-						throw exceptionGenerator(key);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(int key)
@@ -1485,12 +1476,9 @@ namespace Imposter.Benchmarks
 					};
 				}
 
-				internal void Throws(ThrowTaskExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(ThrowTaskDelegate resultGenerator)
 				{
-					_resultGenerator = (int key) =>
-					{
-						throw exceptionGenerator(key);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void ThrowsAsync(global::System.Exception exception)
@@ -1907,12 +1895,9 @@ namespace Imposter.Benchmarks
 					};
 				}
 
-				internal void Throws(ThrowValueTaskExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(ThrowValueTaskDelegate resultGenerator)
 				{
-					_resultGenerator = (int key) =>
-					{
-						throw exceptionGenerator(key);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void ThrowsAsync(global::System.Exception exception)

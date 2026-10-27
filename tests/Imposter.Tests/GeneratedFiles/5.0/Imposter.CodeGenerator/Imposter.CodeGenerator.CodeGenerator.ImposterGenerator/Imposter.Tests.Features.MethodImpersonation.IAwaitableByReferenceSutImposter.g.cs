@@ -218,12 +218,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(GetAsyncExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(GetAsyncDelegate resultGenerator)
 				{
-					_resultGenerator = (out int count) =>
-					{
-						throw exceptionGenerator(out count);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void ThrowsAsync(global::System.Exception exception)
@@ -648,12 +645,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(NextAsyncExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(NextAsyncDelegate resultGenerator)
 				{
-					_resultGenerator = (ref int position) =>
-					{
-						throw exceptionGenerator(ref position);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void ThrowsAsync(global::System.Exception exception)
@@ -1074,12 +1068,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(PeekAsyncExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(PeekAsyncDelegate resultGenerator)
 				{
-					_resultGenerator = (in int key) =>
-					{
-						throw exceptionGenerator(in key);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void ThrowsAsync(global::System.Exception exception)

@@ -196,12 +196,9 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
 					};
 				}
 
-				internal void Throws(GetNumberExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(GetNumberDelegate resultGenerator)
 				{
-					_resultGenerator = () =>
-					{
-						throw exceptionGenerator();
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator()
@@ -573,12 +570,9 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
 					};
 				}
 
-				internal void Throws(IncrementExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(IncrementDelegate resultGenerator)
 				{
-					_resultGenerator = (int value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(int value)

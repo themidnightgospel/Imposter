@@ -245,12 +245,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(CopyExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(CopyDelegate resultGenerator)
 				{
-					_resultGenerator = (ref global::System.Span<byte> target, scoped global::System.ReadOnlySpan<byte> source) =>
-					{
-						throw exceptionGenerator(ref target, source);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static int DefaultResultGenerator(ref global::System.Span<byte> target, scoped global::System.ReadOnlySpan<byte> source)
@@ -625,12 +622,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(FirstExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(FirstDelegate resultGenerator)
 				{
-					_resultGenerator = (scoped global::System.ReadOnlySpan<int> values) =>
-					{
-						throw exceptionGenerator(values);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static global::System.ReadOnlySpan<int> DefaultResultGenerator(scoped global::System.ReadOnlySpan<int> values)
@@ -1005,12 +999,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(NameExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(NameDelegate resultGenerator)
 				{
-					_resultGenerator = (scoped global::System.ReadOnlySpan<char> text) =>
-					{
-						throw exceptionGenerator(text);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static global::System.ReadOnlySpan<char> DefaultResultGenerator(scoped global::System.ReadOnlySpan<char> text)
@@ -1385,12 +1376,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					};
 				}
 
-				internal void Throws(SliceExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(SliceDelegate resultGenerator)
 				{
-					_resultGenerator = (scoped ref int start) =>
-					{
-						throw exceptionGenerator(ref start);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal static global::System.Span<int> DefaultResultGenerator(scoped ref int start)
