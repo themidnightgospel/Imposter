@@ -17,9 +17,6 @@ internal static partial class SyntaxFactoryHelper
     internal static ArgumentSyntax RefArgument(ExpressionSyntax variable) =>
         Argument(null, Token(SyntaxKind.RefKeyword), variable);
 
-    internal static ArgumentSyntax OutDiscardArgument() =>
-        Argument(null, Token(SyntaxKind.OutKeyword), IdentifierName("_"));
-
     internal static ArgumentSyntax OutVarArgument(string name) =>
         Argument(
             null,
