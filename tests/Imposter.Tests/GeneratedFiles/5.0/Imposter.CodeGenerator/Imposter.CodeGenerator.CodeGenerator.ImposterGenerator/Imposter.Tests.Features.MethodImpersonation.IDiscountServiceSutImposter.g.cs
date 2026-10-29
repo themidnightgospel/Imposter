@@ -57,7 +57,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public bool Matches(CalculateArguments arguments)
 			{
-				return invoicItems.Matches(arguments.invoicItems) && purchaceHistory.Matches(arguments.purchaceHistory);
+				return MatchesCaptured(arguments.invoicItems, arguments.purchaceHistory);
+			}
+
+			internal bool MatchesCaptured(in global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.InvoiceItem>? invoicItems, in global::System.Collections.Generic.IDictionary<global::Imposter.Tests.Features.MethodImpersonation.Product, global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.History>>? purchaceHistory)
+			{
+				return this.invoicItems.Matches(invoicItems) && this.purchaceHistory.Matches(purchaceHistory);
 			}
 		}
 
@@ -68,26 +73,28 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class CalculateMethodInvocationHistory : ICalculateMethodInvocationHistory
+		internal class CalculateMethodInvocationHistory : CalculateMethodInvocationHistoryCollection.Node, ICalculateMethodInvocationHistory
 		{
-			internal CalculateArguments Arguments;
-			internal decimal? Result;
-			internal global::System.Exception? Exception;
-			public CalculateMethodInvocationHistory(CalculateArguments Arguments, decimal? Result, global::System.Exception? Exception)
+			internal readonly global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.InvoiceItem>? capturedinvoicItems;
+			internal readonly global::System.Collections.Generic.IDictionary<global::Imposter.Tests.Features.MethodImpersonation.Product, global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.History>>? capturedpurchaceHistory;
+			internal readonly decimal? Result;
+			internal readonly global::System.Exception? Exception;
+			public CalculateMethodInvocationHistory(global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.InvoiceItem>? capturedinvoicItems, global::System.Collections.Generic.IDictionary<global::Imposter.Tests.Features.MethodImpersonation.Product, global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.History>>? capturedpurchaceHistory, decimal? Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedinvoicItems = capturedinvoicItems;
+				this.capturedpurchaceHistory = capturedpurchaceHistory;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(CalculateArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(capturedinvoicItems, capturedpurchaceHistory);
 			}
 
 			public override string ToString()
 			{
-				return "Calculate(" + global::System.String.Join(", ", new[] { "invoicItems: " + FormatValue(Arguments.invoicItems), "purchaceHistory: " + FormatValue(Arguments.purchaceHistory) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Calculate(" + global::System.String.Join(", ", new[] { "invoicItems: " + FormatValue(capturedinvoicItems), "purchaceHistory: " + FormatValue(capturedpurchaceHistory) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -99,13 +106,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class CalculateMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ICalculateMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<ICalculateMethodInvocationHistory>();
-			internal void Add(ICalculateMethodInvocationHistory invocationHistory)
+			private CalculateMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal CalculateMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(ICalculateMethodInvocationHistory invocationHistory)
+			internal void Add(CalculateMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				CalculateMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(CalculateMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -113,12 +132,29 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			internal int Count(CalculateArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((ICalculateMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -283,11 +319,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private CalculateMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(CalculateArguments arguments)
+			private CalculateMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.InvoiceItem>? invoicItems, in global::System.Collections.Generic.IDictionary<global::Imposter.Tests.Features.MethodImpersonation.Product, global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.History>>? purchaceHistory)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(invoicItems, purchaceHistory))
 						return invocationImposterGroup;
 				}
 
@@ -296,8 +332,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public decimal Invoke(global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.InvoiceItem>? invoicItems, global::System.Collections.Generic.IDictionary<global::Imposter.Tests.Features.MethodImpersonation.Product, global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.History>>? purchaceHistory)
 			{
-				var arguments = new CalculateArguments(invoicItems, purchaceHistory);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.InvoiceItem>? capturedinvoicItems = invoicItems;
+				global::System.Collections.Generic.IDictionary<global::Imposter.Tests.Features.MethodImpersonation.Product, global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.History>>? capturedpurchaceHistory = purchaceHistory;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedinvoicItems, capturedpurchaceHistory);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -311,10 +348,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "decimal IDiscountServiceSut.Calculate(IEnumerable<InvoiceItem>? invoicItems, IDictionary<Product, IEnumerable<History>>? purchaceHistory)", invoicItems, purchaceHistory);
-					_calculateMethodInvocationHistoryCollection.Add(new CalculateMethodInvocationHistory(arguments, result, default));
+					_calculateMethodInvocationHistoryCollection.Add(new CalculateMethodInvocationHistory(capturedinvoicItems, capturedpurchaceHistory, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_calculateMethodInvocationHistoryCollection.RecordFailure(new CalculateMethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_calculateMethodInvocationHistoryCollection.RecordFailure(new CalculateMethodInvocationHistory(capturedinvoicItems, capturedpurchaceHistory, default !, ex)))
 				{
 					throw;
 				}

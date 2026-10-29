@@ -38,10 +38,10 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class TryReadMethodInvocationHistory : ITryReadMethodInvocationHistory
+		internal class TryReadMethodInvocationHistory : TryReadMethodInvocationHistoryCollection.Node, ITryReadMethodInvocationHistory
 		{
-			internal bool? Result;
-			internal global::System.Exception? Exception;
+			internal readonly bool? Result;
+			internal readonly global::System.Exception? Exception;
 			public TryReadMethodInvocationHistory(bool? Result, global::System.Exception? Exception)
 			{
 				this.Result = Result;
@@ -67,13 +67,25 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class TryReadMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ITryReadMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<ITryReadMethodInvocationHistory>();
-			internal void Add(ITryReadMethodInvocationHistory invocationHistory)
+			private TryReadMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal TryReadMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(ITryReadMethodInvocationHistory invocationHistory)
+			internal void Add(TryReadMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				TryReadMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(TryReadMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -81,12 +93,29 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			internal int Count()
 			{
-				return _invocationHistory.Count(it => it.Matches());
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((ITryReadMethodInvocationHistory)invocation).Matches())
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 

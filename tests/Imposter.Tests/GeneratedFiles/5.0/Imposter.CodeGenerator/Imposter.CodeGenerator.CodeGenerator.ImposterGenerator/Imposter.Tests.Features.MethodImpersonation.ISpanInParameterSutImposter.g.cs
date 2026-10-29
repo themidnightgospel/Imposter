@@ -60,7 +60,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public bool Matches(CountArguments arguments)
 			{
-				return data.Matches(arguments.data);
+				return MatchesCaptured(arguments.data);
+			}
+
+			internal bool MatchesCaptured(in byte[] data)
+			{
+				return this.data.Matches(data);
 			}
 		}
 
@@ -71,26 +76,26 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class CountMethodInvocationHistory : ICountMethodInvocationHistory
+		internal class CountMethodInvocationHistory : CountMethodInvocationHistoryCollection.Node, ICountMethodInvocationHistory
 		{
-			internal CountArguments Arguments;
-			internal int? Result;
-			internal global::System.Exception? Exception;
-			public CountMethodInvocationHistory(CountArguments Arguments, int? Result, global::System.Exception? Exception)
+			internal readonly byte[] captureddata;
+			internal readonly int? Result;
+			internal readonly global::System.Exception? Exception;
+			public CountMethodInvocationHistory(byte[] captureddata, int? Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.captureddata = captureddata;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(CountArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(captureddata);
 			}
 
 			public override string ToString()
 			{
-				return "Count(" + global::System.String.Join(", ", new[] { "data: " + FormatValue(Arguments.data) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Count(" + global::System.String.Join(", ", new[] { "data: " + FormatValue(captureddata) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -102,13 +107,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class CountMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ICountMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<ICountMethodInvocationHistory>();
-			internal void Add(ICountMethodInvocationHistory invocationHistory)
+			private CountMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal CountMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(ICountMethodInvocationHistory invocationHistory)
+			internal void Add(CountMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				CountMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(CountMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -116,12 +133,29 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			internal int Count(CountArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((ICountMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -286,11 +320,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private CountMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(CountArguments arguments)
+			private CountMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in byte[] data)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(data))
 						return invocationImposterGroup;
 				}
 
@@ -299,8 +333,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public int Invoke(in global::System.ReadOnlySpan<byte> data)
 			{
-				var arguments = new CountArguments(data);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				byte[] captureddata = data.ToArray();
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(captureddata);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -314,10 +348,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "int ISpanInParameterSut.Count(in ReadOnlySpan<byte> data)", in data);
-					_countMethodInvocationHistoryCollection.Add(new CountMethodInvocationHistory(arguments, result, default));
+					_countMethodInvocationHistoryCollection.Add(new CountMethodInvocationHistory(captureddata, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_countMethodInvocationHistoryCollection.RecordFailure(new CountMethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_countMethodInvocationHistoryCollection.RecordFailure(new CountMethodInvocationHistory(captureddata, default !, ex)))
 				{
 					throw;
 				}
@@ -442,7 +476,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public bool Matches(SumArguments<T> arguments)
 			{
-				return items.Matches(arguments.items);
+				return MatchesCaptured(arguments.items);
+			}
+
+			internal bool MatchesCaptured(in T[] items)
+			{
+				return this.items.Matches(items);
 			}
 
 			public SumArgumentsCriteria<TTarget> As<TTarget>()
@@ -460,26 +499,26 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class SumMethodInvocationHistory<T> : ISumMethodInvocationHistory
+		internal class SumMethodInvocationHistory<T> : SumMethodInvocationHistoryCollection.Node, ISumMethodInvocationHistory
 		{
-			internal SumArguments<T> Arguments;
-			internal int? Result;
-			internal global::System.Exception? Exception;
-			public SumMethodInvocationHistory(SumArguments<T> Arguments, int? Result, global::System.Exception? Exception)
+			internal readonly T[] captureditems;
+			internal readonly int? Result;
+			internal readonly global::System.Exception? Exception;
+			public SumMethodInvocationHistory(T[] captureditems, int? Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.captureditems = captureditems;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches<TTarget>(SumArgumentsCriteria<TTarget> criteria)
 			{
-				return (typeof(TTarget) == typeof(T)) && criteria.As<T>().Matches(Arguments);
+				return (typeof(TTarget) == typeof(T)) && ((SumArgumentsCriteria<T>)(object)criteria).MatchesCaptured(captureditems);
 			}
 
 			public override string ToString()
 			{
-				return "Sum(" + global::System.String.Join(", ", new[] { "items: " + FormatValue(Arguments.items) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Sum(" + global::System.String.Join(", ", new[] { "items: " + FormatValue(captureditems) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -491,13 +530,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class SumMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ISumMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<ISumMethodInvocationHistory>();
-			internal void Add(ISumMethodInvocationHistory invocationHistory)
+			private SumMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal SumMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(ISumMethodInvocationHistory invocationHistory)
+			internal void Add(SumMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				SumMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(SumMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -505,12 +556,29 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			internal int Count<T>(SumArgumentsCriteria<T> argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches<T>(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((ISumMethodInvocationHistory)invocation).Matches<T>(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -535,12 +603,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				return imposter;
 			}
 
-			internal ISumMethodImposter<T> GetImposterWithMatchingInvocationImposterGroup<T>(SumArguments<T> arguments)
+			internal ISumMethodImposter<T> GetImposterWithMatchingInvocationImposterGroup<T>(T[] items)
 			{
 				foreach (var storedImposter in _imposters)
 				{
 					var typedImposter = storedImposter.As<T>();
-					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments))
+					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(items))
 						return typedImposter;
 				}
 
@@ -695,7 +763,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		internal interface ISumMethodImposter<T> : ISumMethodImposter
 		{
 			int Invoke(in global::System.ReadOnlySpan<T> items);
-			bool HasMatchingInvocationImposterGroup(SumArguments<T> arguments);
+			bool HasMatchingInvocationImposterGroup(in T[] items);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -749,9 +817,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					return global::Imposter.Abstractions.TypeCaster.Cast<int, int>(result);
 				}
 
-				public bool HasMatchingInvocationImposterGroup(SumArguments<TTarget> arguments)
+				public bool HasMatchingInvocationImposterGroup(in TTarget[] items)
 				{
-					return _target.HasMatchingInvocationImposterGroup(arguments.As<T>());
+					return _target.HasMatchingInvocationImposterGroup(((global::System.ReadOnlySpan<T>)global::Imposter.Abstractions.TypeCaster.Cast<TTarget[], T[]>(items)).ToArray());
 				}
 
 				ISumMethodImposter<TTarget1>? ISumMethodImposter.As<TTarget1>()
@@ -760,16 +828,16 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 			}
 
-			public bool HasMatchingInvocationImposterGroup(SumArguments<T> arguments)
+			public bool HasMatchingInvocationImposterGroup(in T[] items)
 			{
-				return FindMatchingInvocationImposterGroup(arguments) != null;
+				return FindMatchingInvocationImposterGroup(items) != null;
 			}
 
-			private SumMethodInvocationImposterGroup<T>? FindMatchingInvocationImposterGroup(SumArguments<T> arguments)
+			private SumMethodInvocationImposterGroup<T>? FindMatchingInvocationImposterGroup(in T[] items)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(items))
 						return invocationImposterGroup;
 				}
 
@@ -778,8 +846,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public int Invoke(in global::System.ReadOnlySpan<T> items)
 			{
-				var arguments = new SumArguments<T>(items);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				T[] captureditems = items.ToArray();
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(captureditems);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -793,10 +861,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "int ISpanInParameterSut.Sum<T>(in ReadOnlySpan<T> items)", in items);
-					_sumMethodInvocationHistoryCollection.Add(new SumMethodInvocationHistory<T>(arguments, result, default));
+					_sumMethodInvocationHistoryCollection.Add(new SumMethodInvocationHistory<T>(captureditems, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_sumMethodInvocationHistoryCollection.RecordFailure(new SumMethodInvocationHistory<T>(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_sumMethodInvocationHistoryCollection.RecordFailure(new SumMethodInvocationHistory<T>(captureditems, default !, ex)))
 				{
 					throw;
 				}
@@ -937,7 +1005,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public int Sum<T>(in global::System.ReadOnlySpan<T> items)
 			{
-				return _imposter._sumMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<T>(new SumArguments<T>(items)).Invoke(in items);
+				return _imposter._sumMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<T>(items.ToArray()).Invoke(in items);
 			}
 		}
 	}

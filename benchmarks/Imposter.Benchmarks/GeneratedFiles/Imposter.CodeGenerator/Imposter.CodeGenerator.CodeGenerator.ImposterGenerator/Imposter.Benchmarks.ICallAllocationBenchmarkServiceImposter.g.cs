@@ -81,7 +81,12 @@ namespace Imposter.Benchmarks
 
 			public bool Matches(ReturnTaskArguments arguments)
 			{
-				return key.Matches(arguments.key);
+				return MatchesCaptured(arguments.key);
+			}
+
+			internal bool MatchesCaptured(in int key)
+			{
+				return this.key.Matches(key);
 			}
 		}
 
@@ -92,26 +97,26 @@ namespace Imposter.Benchmarks
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class ReturnTaskMethodInvocationHistory : IReturnTaskMethodInvocationHistory
+		internal class ReturnTaskMethodInvocationHistory : ReturnTaskMethodInvocationHistoryCollection.Node, IReturnTaskMethodInvocationHistory
 		{
-			internal ReturnTaskArguments Arguments;
-			internal global::System.Threading.Tasks.Task<int> Result;
-			internal global::System.Exception? Exception;
-			public ReturnTaskMethodInvocationHistory(ReturnTaskArguments Arguments, global::System.Threading.Tasks.Task<int> Result, global::System.Exception? Exception)
+			internal readonly int capturedkey;
+			internal readonly global::System.Threading.Tasks.Task<int> Result;
+			internal readonly global::System.Exception? Exception;
+			public ReturnTaskMethodInvocationHistory(int capturedkey, global::System.Threading.Tasks.Task<int> Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedkey = capturedkey;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(ReturnTaskArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(capturedkey);
 			}
 
 			public override string ToString()
 			{
-				return "ReturnTask(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(Arguments.key) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "ReturnTask(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(capturedkey) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -123,13 +128,25 @@ namespace Imposter.Benchmarks
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ReturnTaskMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IReturnTaskMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IReturnTaskMethodInvocationHistory>();
-			internal void Add(IReturnTaskMethodInvocationHistory invocationHistory)
+			private ReturnTaskMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal ReturnTaskMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IReturnTaskMethodInvocationHistory invocationHistory)
+			internal void Add(ReturnTaskMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				ReturnTaskMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(ReturnTaskMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -137,12 +154,29 @@ namespace Imposter.Benchmarks
 
 			internal int Count(ReturnTaskArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IReturnTaskMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -335,11 +369,11 @@ namespace Imposter.Benchmarks
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private ReturnTaskMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(ReturnTaskArguments arguments)
+			private ReturnTaskMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in int key)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(key))
 						return invocationImposterGroup;
 				}
 
@@ -348,8 +382,8 @@ namespace Imposter.Benchmarks
 
 			public global::System.Threading.Tasks.Task<int> Invoke(int key)
 			{
-				var arguments = new ReturnTaskArguments(key);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				int capturedkey = key;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedkey);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -363,10 +397,10 @@ namespace Imposter.Benchmarks
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "Task<int> ICallAllocationBenchmarkService.ReturnTask(int key)", key);
-					_returnTaskMethodInvocationHistoryCollection.Add(new ReturnTaskMethodInvocationHistory(arguments, result, default));
+					_returnTaskMethodInvocationHistoryCollection.Add(new ReturnTaskMethodInvocationHistory(capturedkey, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_returnTaskMethodInvocationHistoryCollection.RecordFailure(new ReturnTaskMethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_returnTaskMethodInvocationHistoryCollection.RecordFailure(new ReturnTaskMethodInvocationHistory(capturedkey, default !, ex)))
 				{
 					throw;
 				}
@@ -500,7 +534,12 @@ namespace Imposter.Benchmarks
 
 			public bool Matches(ReturnValueTaskArguments arguments)
 			{
-				return key.Matches(arguments.key);
+				return MatchesCaptured(arguments.key);
+			}
+
+			internal bool MatchesCaptured(in int key)
+			{
+				return this.key.Matches(key);
 			}
 		}
 
@@ -511,26 +550,26 @@ namespace Imposter.Benchmarks
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class ReturnValueTaskMethodInvocationHistory : IReturnValueTaskMethodInvocationHistory
+		internal class ReturnValueTaskMethodInvocationHistory : ReturnValueTaskMethodInvocationHistoryCollection.Node, IReturnValueTaskMethodInvocationHistory
 		{
-			internal ReturnValueTaskArguments Arguments;
-			internal global::System.Threading.Tasks.ValueTask<int> Result;
-			internal global::System.Exception? Exception;
-			public ReturnValueTaskMethodInvocationHistory(ReturnValueTaskArguments Arguments, global::System.Threading.Tasks.ValueTask<int> Result, global::System.Exception? Exception)
+			internal readonly int capturedkey;
+			internal readonly global::System.Threading.Tasks.ValueTask<int> Result;
+			internal readonly global::System.Exception? Exception;
+			public ReturnValueTaskMethodInvocationHistory(int capturedkey, global::System.Threading.Tasks.ValueTask<int> Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedkey = capturedkey;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(ReturnValueTaskArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(capturedkey);
 			}
 
 			public override string ToString()
 			{
-				return "ReturnValueTask(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(Arguments.key) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "ReturnValueTask(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(capturedkey) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -542,13 +581,25 @@ namespace Imposter.Benchmarks
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ReturnValueTaskMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IReturnValueTaskMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IReturnValueTaskMethodInvocationHistory>();
-			internal void Add(IReturnValueTaskMethodInvocationHistory invocationHistory)
+			private ReturnValueTaskMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal ReturnValueTaskMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IReturnValueTaskMethodInvocationHistory invocationHistory)
+			internal void Add(ReturnValueTaskMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				ReturnValueTaskMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(ReturnValueTaskMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -556,12 +607,29 @@ namespace Imposter.Benchmarks
 
 			internal int Count(ReturnValueTaskArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IReturnValueTaskMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -754,11 +822,11 @@ namespace Imposter.Benchmarks
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private ReturnValueTaskMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(ReturnValueTaskArguments arguments)
+			private ReturnValueTaskMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in int key)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(key))
 						return invocationImposterGroup;
 				}
 
@@ -767,8 +835,8 @@ namespace Imposter.Benchmarks
 
 			public global::System.Threading.Tasks.ValueTask<int> Invoke(int key)
 			{
-				var arguments = new ReturnValueTaskArguments(key);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				int capturedkey = key;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedkey);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -782,10 +850,10 @@ namespace Imposter.Benchmarks
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "ValueTask<int> ICallAllocationBenchmarkService.ReturnValueTask(int key)", key);
-					_returnValueTaskMethodInvocationHistoryCollection.Add(new ReturnValueTaskMethodInvocationHistory(arguments, result, default));
+					_returnValueTaskMethodInvocationHistoryCollection.Add(new ReturnValueTaskMethodInvocationHistory(capturedkey, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_returnValueTaskMethodInvocationHistoryCollection.RecordFailure(new ReturnValueTaskMethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_returnValueTaskMethodInvocationHistoryCollection.RecordFailure(new ReturnValueTaskMethodInvocationHistory(capturedkey, default !, ex)))
 				{
 					throw;
 				}
@@ -919,7 +987,12 @@ namespace Imposter.Benchmarks
 
 			public bool Matches(ThrowArguments arguments)
 			{
-				return key.Matches(arguments.key);
+				return MatchesCaptured(arguments.key);
+			}
+
+			internal bool MatchesCaptured(in int key)
+			{
+				return this.key.Matches(key);
 			}
 		}
 
@@ -930,26 +1003,26 @@ namespace Imposter.Benchmarks
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class ThrowMethodInvocationHistory : IThrowMethodInvocationHistory
+		internal class ThrowMethodInvocationHistory : ThrowMethodInvocationHistoryCollection.Node, IThrowMethodInvocationHistory
 		{
-			internal ThrowArguments Arguments;
-			internal int? Result;
-			internal global::System.Exception? Exception;
-			public ThrowMethodInvocationHistory(ThrowArguments Arguments, int? Result, global::System.Exception? Exception)
+			internal readonly int capturedkey;
+			internal readonly int? Result;
+			internal readonly global::System.Exception? Exception;
+			public ThrowMethodInvocationHistory(int capturedkey, int? Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedkey = capturedkey;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(ThrowArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(capturedkey);
 			}
 
 			public override string ToString()
 			{
-				return "Throw(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(Arguments.key) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Throw(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(capturedkey) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -961,13 +1034,25 @@ namespace Imposter.Benchmarks
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ThrowMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IThrowMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IThrowMethodInvocationHistory>();
-			internal void Add(IThrowMethodInvocationHistory invocationHistory)
+			private ThrowMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal ThrowMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IThrowMethodInvocationHistory invocationHistory)
+			internal void Add(ThrowMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				ThrowMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(ThrowMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -975,12 +1060,29 @@ namespace Imposter.Benchmarks
 
 			internal int Count(ThrowArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IThrowMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -1145,11 +1247,11 @@ namespace Imposter.Benchmarks
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private ThrowMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(ThrowArguments arguments)
+			private ThrowMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in int key)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(key))
 						return invocationImposterGroup;
 				}
 
@@ -1158,8 +1260,8 @@ namespace Imposter.Benchmarks
 
 			public int Invoke(int key)
 			{
-				var arguments = new ThrowArguments(key);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				int capturedkey = key;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedkey);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -1173,10 +1275,10 @@ namespace Imposter.Benchmarks
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "int ICallAllocationBenchmarkService.Throw(int key)", key);
-					_throwMethodInvocationHistoryCollection.Add(new ThrowMethodInvocationHistory(arguments, result, default));
+					_throwMethodInvocationHistoryCollection.Add(new ThrowMethodInvocationHistory(capturedkey, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_throwMethodInvocationHistoryCollection.RecordFailure(new ThrowMethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_throwMethodInvocationHistoryCollection.RecordFailure(new ThrowMethodInvocationHistory(capturedkey, default !, ex)))
 				{
 					throw;
 				}
@@ -1296,7 +1398,12 @@ namespace Imposter.Benchmarks
 
 			public bool Matches(ThrowTaskArguments arguments)
 			{
-				return key.Matches(arguments.key);
+				return MatchesCaptured(arguments.key);
+			}
+
+			internal bool MatchesCaptured(in int key)
+			{
+				return this.key.Matches(key);
 			}
 		}
 
@@ -1307,26 +1414,26 @@ namespace Imposter.Benchmarks
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class ThrowTaskMethodInvocationHistory : IThrowTaskMethodInvocationHistory
+		internal class ThrowTaskMethodInvocationHistory : ThrowTaskMethodInvocationHistoryCollection.Node, IThrowTaskMethodInvocationHistory
 		{
-			internal ThrowTaskArguments Arguments;
-			internal global::System.Threading.Tasks.Task<int> Result;
-			internal global::System.Exception? Exception;
-			public ThrowTaskMethodInvocationHistory(ThrowTaskArguments Arguments, global::System.Threading.Tasks.Task<int> Result, global::System.Exception? Exception)
+			internal readonly int capturedkey;
+			internal readonly global::System.Threading.Tasks.Task<int> Result;
+			internal readonly global::System.Exception? Exception;
+			public ThrowTaskMethodInvocationHistory(int capturedkey, global::System.Threading.Tasks.Task<int> Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedkey = capturedkey;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(ThrowTaskArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(capturedkey);
 			}
 
 			public override string ToString()
 			{
-				return "ThrowTask(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(Arguments.key) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "ThrowTask(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(capturedkey) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -1338,13 +1445,25 @@ namespace Imposter.Benchmarks
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ThrowTaskMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IThrowTaskMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IThrowTaskMethodInvocationHistory>();
-			internal void Add(IThrowTaskMethodInvocationHistory invocationHistory)
+			private ThrowTaskMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal ThrowTaskMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IThrowTaskMethodInvocationHistory invocationHistory)
+			internal void Add(ThrowTaskMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				ThrowTaskMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(ThrowTaskMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -1352,12 +1471,29 @@ namespace Imposter.Benchmarks
 
 			internal int Count(ThrowTaskArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IThrowTaskMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -1550,11 +1686,11 @@ namespace Imposter.Benchmarks
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private ThrowTaskMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(ThrowTaskArguments arguments)
+			private ThrowTaskMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in int key)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(key))
 						return invocationImposterGroup;
 				}
 
@@ -1563,8 +1699,8 @@ namespace Imposter.Benchmarks
 
 			public global::System.Threading.Tasks.Task<int> Invoke(int key)
 			{
-				var arguments = new ThrowTaskArguments(key);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				int capturedkey = key;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedkey);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -1578,10 +1714,10 @@ namespace Imposter.Benchmarks
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "Task<int> ICallAllocationBenchmarkService.ThrowTask(int key)", key);
-					_throwTaskMethodInvocationHistoryCollection.Add(new ThrowTaskMethodInvocationHistory(arguments, result, default));
+					_throwTaskMethodInvocationHistoryCollection.Add(new ThrowTaskMethodInvocationHistory(capturedkey, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_throwTaskMethodInvocationHistoryCollection.RecordFailure(new ThrowTaskMethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_throwTaskMethodInvocationHistoryCollection.RecordFailure(new ThrowTaskMethodInvocationHistory(capturedkey, default !, ex)))
 				{
 					throw;
 				}
@@ -1715,7 +1851,12 @@ namespace Imposter.Benchmarks
 
 			public bool Matches(ThrowValueTaskArguments arguments)
 			{
-				return key.Matches(arguments.key);
+				return MatchesCaptured(arguments.key);
+			}
+
+			internal bool MatchesCaptured(in int key)
+			{
+				return this.key.Matches(key);
 			}
 		}
 
@@ -1726,26 +1867,26 @@ namespace Imposter.Benchmarks
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class ThrowValueTaskMethodInvocationHistory : IThrowValueTaskMethodInvocationHistory
+		internal class ThrowValueTaskMethodInvocationHistory : ThrowValueTaskMethodInvocationHistoryCollection.Node, IThrowValueTaskMethodInvocationHistory
 		{
-			internal ThrowValueTaskArguments Arguments;
-			internal global::System.Threading.Tasks.ValueTask<int> Result;
-			internal global::System.Exception? Exception;
-			public ThrowValueTaskMethodInvocationHistory(ThrowValueTaskArguments Arguments, global::System.Threading.Tasks.ValueTask<int> Result, global::System.Exception? Exception)
+			internal readonly int capturedkey;
+			internal readonly global::System.Threading.Tasks.ValueTask<int> Result;
+			internal readonly global::System.Exception? Exception;
+			public ThrowValueTaskMethodInvocationHistory(int capturedkey, global::System.Threading.Tasks.ValueTask<int> Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedkey = capturedkey;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(ThrowValueTaskArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(capturedkey);
 			}
 
 			public override string ToString()
 			{
-				return "ThrowValueTask(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(Arguments.key) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "ThrowValueTask(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(capturedkey) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -1757,13 +1898,25 @@ namespace Imposter.Benchmarks
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ThrowValueTaskMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IThrowValueTaskMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IThrowValueTaskMethodInvocationHistory>();
-			internal void Add(IThrowValueTaskMethodInvocationHistory invocationHistory)
+			private ThrowValueTaskMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal ThrowValueTaskMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IThrowValueTaskMethodInvocationHistory invocationHistory)
+			internal void Add(ThrowValueTaskMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				ThrowValueTaskMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(ThrowValueTaskMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -1771,12 +1924,29 @@ namespace Imposter.Benchmarks
 
 			internal int Count(ThrowValueTaskArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IThrowValueTaskMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -1969,11 +2139,11 @@ namespace Imposter.Benchmarks
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private ThrowValueTaskMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(ThrowValueTaskArguments arguments)
+			private ThrowValueTaskMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in int key)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(key))
 						return invocationImposterGroup;
 				}
 
@@ -1982,8 +2152,8 @@ namespace Imposter.Benchmarks
 
 			public global::System.Threading.Tasks.ValueTask<int> Invoke(int key)
 			{
-				var arguments = new ThrowValueTaskArguments(key);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				int capturedkey = key;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedkey);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -1997,10 +2167,10 @@ namespace Imposter.Benchmarks
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "ValueTask<int> ICallAllocationBenchmarkService.ThrowValueTask(int key)", key);
-					_throwValueTaskMethodInvocationHistoryCollection.Add(new ThrowValueTaskMethodInvocationHistory(arguments, result, default));
+					_throwValueTaskMethodInvocationHistoryCollection.Add(new ThrowValueTaskMethodInvocationHistory(capturedkey, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_throwValueTaskMethodInvocationHistoryCollection.RecordFailure(new ThrowValueTaskMethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_throwValueTaskMethodInvocationHistoryCollection.RecordFailure(new ThrowValueTaskMethodInvocationHistory(capturedkey, default !, ex)))
 				{
 					throw;
 				}

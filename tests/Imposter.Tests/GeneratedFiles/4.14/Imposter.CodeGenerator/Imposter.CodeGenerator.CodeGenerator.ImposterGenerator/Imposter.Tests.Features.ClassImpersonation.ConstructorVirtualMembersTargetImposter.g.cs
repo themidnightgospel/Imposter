@@ -52,10 +52,10 @@ namespace Imposter.Tests.Features.ClassImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class ReadAsyncMethodInvocationHistory : IReadAsyncMethodInvocationHistory
+		internal class ReadAsyncMethodInvocationHistory : ReadAsyncMethodInvocationHistoryCollection.Node, IReadAsyncMethodInvocationHistory
 		{
-			internal global::System.Threading.Tasks.Task<int> Result;
-			internal global::System.Exception? Exception;
+			internal readonly global::System.Threading.Tasks.Task<int> Result;
+			internal readonly global::System.Exception? Exception;
 			public ReadAsyncMethodInvocationHistory(global::System.Threading.Tasks.Task<int> Result, global::System.Exception? Exception)
 			{
 				this.Result = Result;
@@ -81,13 +81,25 @@ namespace Imposter.Tests.Features.ClassImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ReadAsyncMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IReadAsyncMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IReadAsyncMethodInvocationHistory>();
-			internal void Add(IReadAsyncMethodInvocationHistory invocationHistory)
+			private ReadAsyncMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal ReadAsyncMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IReadAsyncMethodInvocationHistory invocationHistory)
+			internal void Add(ReadAsyncMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				ReadAsyncMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(ReadAsyncMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -95,12 +107,29 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			internal int Count()
 			{
-				return _invocationHistory.Count(it => it.Matches());
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IReadAsyncMethodInvocationHistory)invocation).Matches())
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -462,9 +491,9 @@ namespace Imposter.Tests.Features.ClassImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class TouchMethodInvocationHistory : ITouchMethodInvocationHistory
+		internal class TouchMethodInvocationHistory : TouchMethodInvocationHistoryCollection.Node, ITouchMethodInvocationHistory
 		{
-			internal global::System.Exception? Exception;
+			internal readonly global::System.Exception? Exception;
 			public TouchMethodInvocationHistory(global::System.Exception? Exception)
 			{
 				this.Exception = Exception;
@@ -489,13 +518,25 @@ namespace Imposter.Tests.Features.ClassImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class TouchMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ITouchMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<ITouchMethodInvocationHistory>();
-			internal void Add(ITouchMethodInvocationHistory invocationHistory)
+			private TouchMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal TouchMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(ITouchMethodInvocationHistory invocationHistory)
+			internal void Add(TouchMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				TouchMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(TouchMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -503,12 +544,29 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			internal int Count()
 			{
-				return _invocationHistory.Count(it => it.Matches());
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((ITouchMethodInvocationHistory)invocation).Matches())
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -823,7 +881,12 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			public bool Matches(TransformArguments<T> arguments)
 			{
-				return input.Matches(arguments.input) && expected.Matches(arguments.expected);
+				return MatchesCaptured(arguments.input, arguments.expected);
+			}
+
+			internal bool MatchesCaptured(in int input, in T expected)
+			{
+				return this.input.Matches(input) && this.expected.Matches(expected);
 			}
 
 			public TransformArgumentsCriteria<TTarget> As<TTarget>()
@@ -841,26 +904,28 @@ namespace Imposter.Tests.Features.ClassImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class TransformMethodInvocationHistory<T> : ITransformMethodInvocationHistory
+		internal class TransformMethodInvocationHistory<T> : TransformMethodInvocationHistoryCollection.Node, ITransformMethodInvocationHistory
 		{
-			internal TransformArguments<T> Arguments;
-			internal string? Result;
-			internal global::System.Exception? Exception;
-			public TransformMethodInvocationHistory(TransformArguments<T> Arguments, string? Result, global::System.Exception? Exception)
+			internal readonly int capturedinput;
+			internal readonly T capturedexpected;
+			internal readonly string? Result;
+			internal readonly global::System.Exception? Exception;
+			public TransformMethodInvocationHistory(int capturedinput, T capturedexpected, string? Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedinput = capturedinput;
+				this.capturedexpected = capturedexpected;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches<TTarget>(TransformArgumentsCriteria<TTarget> criteria)
 			{
-				return (typeof(TTarget) == typeof(T)) && criteria.As<T>().Matches(Arguments);
+				return (typeof(TTarget) == typeof(T)) && ((TransformArgumentsCriteria<T>)(object)criteria).MatchesCaptured(capturedinput, capturedexpected);
 			}
 
 			public override string ToString()
 			{
-				return "Transform(" + global::System.String.Join(", ", new[] { "input: " + FormatValue(Arguments.input), "expected: " + FormatValue(Arguments.expected) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Transform(" + global::System.String.Join(", ", new[] { "input: " + FormatValue(capturedinput), "expected: " + FormatValue(capturedexpected) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -872,13 +937,25 @@ namespace Imposter.Tests.Features.ClassImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class TransformMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ITransformMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<ITransformMethodInvocationHistory>();
-			internal void Add(ITransformMethodInvocationHistory invocationHistory)
+			private TransformMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal TransformMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(ITransformMethodInvocationHistory invocationHistory)
+			internal void Add(TransformMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				TransformMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(TransformMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -886,12 +963,29 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			internal int Count<T>(TransformArgumentsCriteria<T> argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches<T>(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((ITransformMethodInvocationHistory)invocation).Matches<T>(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -916,12 +1010,12 @@ namespace Imposter.Tests.Features.ClassImpersonation
 				return imposter;
 			}
 
-			internal ITransformMethodImposter<T> GetImposterWithMatchingInvocationImposterGroup<T>(TransformArguments<T> arguments)
+			internal ITransformMethodImposter<T> GetImposterWithMatchingInvocationImposterGroup<T>(int input, T expected)
 			{
 				foreach (var storedImposter in _imposters)
 				{
 					var typedImposter = storedImposter.As<T>();
-					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments))
+					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(input, expected))
 						return typedImposter;
 				}
 
@@ -1099,7 +1193,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 		internal interface ITransformMethodImposter<T> : ITransformMethodImposter
 		{
 			string Invoke(ref int input, out T output, T expected, TransformDelegate<T>? baseImplementation = null);
-			bool HasMatchingInvocationImposterGroup(TransformArguments<T> arguments);
+			bool HasMatchingInvocationImposterGroup(in int input, in T expected);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1157,9 +1251,9 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					return global::Imposter.Abstractions.TypeCaster.Cast<string, string>(result);
 				}
 
-				public bool HasMatchingInvocationImposterGroup(TransformArguments<TTarget> arguments)
+				public bool HasMatchingInvocationImposterGroup(in int input, in TTarget expected)
 				{
-					return _target.HasMatchingInvocationImposterGroup(arguments.As<T>());
+					return _target.HasMatchingInvocationImposterGroup(global::Imposter.Abstractions.TypeCaster.Cast<int, int>(input), global::Imposter.Abstractions.TypeCaster.Cast<TTarget, T>(expected));
 				}
 
 				ITransformMethodImposter<TTarget1>? ITransformMethodImposter.As<TTarget1>()
@@ -1168,16 +1262,16 @@ namespace Imposter.Tests.Features.ClassImpersonation
 				}
 			}
 
-			public bool HasMatchingInvocationImposterGroup(TransformArguments<T> arguments)
+			public bool HasMatchingInvocationImposterGroup(in int input, in T expected)
 			{
-				return FindMatchingInvocationImposterGroup(arguments) != null;
+				return FindMatchingInvocationImposterGroup(input, expected) != null;
 			}
 
-			private TransformMethodInvocationImposterGroup<T>? FindMatchingInvocationImposterGroup(TransformArguments<T> arguments)
+			private TransformMethodInvocationImposterGroup<T>? FindMatchingInvocationImposterGroup(in int input, in T expected)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(input, expected))
 						return invocationImposterGroup;
 				}
 
@@ -1186,8 +1280,9 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			public string Invoke(ref int input, out T output, T expected, TransformDelegate<T>? baseImplementation = null)
 			{
-				var arguments = new TransformArguments<T>(input, expected);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				int capturedinput = input;
+				T capturedexpected = expected;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedinput, capturedexpected);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -1201,10 +1296,10 @@ namespace Imposter.Tests.Features.ClassImpersonation
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual string ConstructorVirtualMembersTarget.Transform<T>(ref int input, out T output, T expected)", ref input, out output, expected, baseImplementation);
-					_transformMethodInvocationHistoryCollection.Add(new TransformMethodInvocationHistory<T>(arguments, result, default));
+					_transformMethodInvocationHistoryCollection.Add(new TransformMethodInvocationHistory<T>(capturedinput, capturedexpected, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_transformMethodInvocationHistoryCollection.RecordFailure(new TransformMethodInvocationHistory<T>(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_transformMethodInvocationHistoryCollection.RecordFailure(new TransformMethodInvocationHistory<T>(capturedinput, capturedexpected, default !, ex)))
 				{
 					throw;
 				}
@@ -2533,7 +2628,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					return base.Transform<T>(ref input, out output, expected);
 				}
 
-				return _imposter._transformMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<T>(new TransformArguments<T>(input, expected)).Invoke(ref input, out output, expected, base.Transform<T>);
+				return _imposter._transformMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<T>(input, expected).Invoke(ref input, out output, expected, base.Transform<T>);
 			}
 
 			public override global::System.Threading.Tasks.Task<int> ReadAsync()

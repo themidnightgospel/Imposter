@@ -53,7 +53,12 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 
 			public bool Matches(SquareArguments arguments)
 			{
-				return input.Matches(arguments.input);
+				return MatchesCaptured(arguments.input);
+			}
+
+			internal bool MatchesCaptured(in int input)
+			{
+				return this.input.Matches(input);
 			}
 		}
 
@@ -64,26 +69,26 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class SquareMethodInvocationHistory : ISquareMethodInvocationHistory
+		internal class SquareMethodInvocationHistory : SquareMethodInvocationHistoryCollection.Node, ISquareMethodInvocationHistory
 		{
-			internal SquareArguments Arguments;
-			internal int? Result;
-			internal global::System.Exception? Exception;
-			public SquareMethodInvocationHistory(SquareArguments Arguments, int? Result, global::System.Exception? Exception)
+			internal readonly int capturedinput;
+			internal readonly int? Result;
+			internal readonly global::System.Exception? Exception;
+			public SquareMethodInvocationHistory(int capturedinput, int? Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedinput = capturedinput;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(SquareArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(capturedinput);
 			}
 
 			public override string ToString()
 			{
-				return "Square(" + global::System.String.Join(", ", new[] { "input: " + FormatValue(Arguments.input) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Square(" + global::System.String.Join(", ", new[] { "input: " + FormatValue(capturedinput) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -95,13 +100,25 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class SquareMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ISquareMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<ISquareMethodInvocationHistory>();
-			internal void Add(ISquareMethodInvocationHistory invocationHistory)
+			private SquareMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal SquareMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(ISquareMethodInvocationHistory invocationHistory)
+			internal void Add(SquareMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				SquareMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(SquareMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -109,12 +126,29 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 
 			internal int Count(SquareArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((ISquareMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -279,11 +313,11 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private SquareMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(SquareArguments arguments)
+			private SquareMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in int input)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(input))
 						return invocationImposterGroup;
 				}
 
@@ -292,8 +326,8 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 
 			public int Invoke(int input)
 			{
-				var arguments = new SquareArguments(input);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				int capturedinput = input;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedinput);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -307,10 +341,10 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "int SimpleMethodMockingBenchmarks.ICalculator.Square(int input)", input);
-					_squareMethodInvocationHistoryCollection.Add(new SquareMethodInvocationHistory(arguments, result, default));
+					_squareMethodInvocationHistoryCollection.Add(new SquareMethodInvocationHistory(capturedinput, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_squareMethodInvocationHistoryCollection.RecordFailure(new SquareMethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_squareMethodInvocationHistoryCollection.RecordFailure(new SquareMethodInvocationHistory(capturedinput, default !, ex)))
 				{
 					throw;
 				}

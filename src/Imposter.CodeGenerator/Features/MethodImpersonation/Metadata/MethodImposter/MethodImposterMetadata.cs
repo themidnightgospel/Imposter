@@ -70,7 +70,7 @@ internal readonly struct MethodImposterMetadata
                 method.MemberNames
             );
         HasMatchingInvocationImposterGroupMethod =
-            new HasMatchingInvocationImposterGroupMethodMetadata(method.ReservedParameterNames);
+            new HasMatchingInvocationImposterGroupMethodMetadata();
         InvocationImposterGroupsField = new InvocationImposterGroupsFieldMetadata(
             method.MemberNames
         );

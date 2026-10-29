@@ -1,5 +1,5 @@
-﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
-using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Shared;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -18,46 +18,18 @@ internal static partial class MethodImposterBuilder
 
         return new MethodDeclarationBuilder(hasMatchingMethod.ReturnType, hasMatchingMethod.Name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddParameter(GetHasMatchingInvocationImposterGroupParameter(method, hasMatchingMethod))
+            .WithParameterList(CapturedArgumentsBuilder.Parameters(method))
             .WithBody(
                 Block(
                     ReturnStatement(
                         IdentifierName(
                                 method.MethodImposter.FindMatchingInvocationImposterGroupMethod.Name
                             )
-                            .Call(
-                                GetFindMatchingInvocationImposterGroupArguments(
-                                    method,
-                                    hasMatchingMethod
-                                )
-                            )
+                            .Call(CapturedArgumentsBuilder.Arguments(method))
                             .IsNotNull()
                     )
                 )
             )
             .Build();
-
-        static ParameterSyntax? GetHasMatchingInvocationImposterGroupParameter(
-            in ImposterTargetMethodMetadata method,
-            in HasMatchingInvocationImposterGroupMethodMetadata hasMatchingMethod
-        )
-        {
-            return method.Parameters.HasInputParameters
-                ? SyntaxFactoryHelper.ParameterSyntax(
-                    method.Arguments.Syntax,
-                    hasMatchingMethod.ArgumentsParameterName
-                )
-                : null;
-        }
-
-        static ArgumentListSyntax GetFindMatchingInvocationImposterGroupArguments(
-            in ImposterTargetMethodMetadata method,
-            in HasMatchingInvocationImposterGroupMethodMetadata hasMatchingMethod
-        )
-        {
-            return method.Parameters.HasInputParameters
-                ? IdentifierName(hasMatchingMethod.ArgumentsParameterName).ToSingleArgumentList()
-                : SyntaxFactoryHelper.EmptyArgumentListSyntax;
-        }
     }
 }

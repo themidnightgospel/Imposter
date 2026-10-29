@@ -15,13 +15,13 @@ internal static partial class InvocationHistoryBuilder
     {
         var fields = new List<FieldDeclarationSyntax>();
 
-        if (method.Parameters.InputParameters.Count > 0)
+        foreach (var parameter in method.Parameters.InputParameterMetadata)
         {
             fields.Add(
                 SingleVariableField(
-                    method.Arguments.Syntax,
-                    InvocationHistoryTypeMetadata.ArgumentsFieldName,
-                    TokenList(Token(SyntaxKind.InternalKeyword))
+                    parameter.NullableAwareKeptTypeSyntax,
+                    method.InvocationHistory.ArgumentFields[parameter.Name],
+                    TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.ReadOnlyKeyword))
                 )
             );
         }
@@ -32,7 +32,7 @@ internal static partial class InvocationHistoryBuilder
                 SingleVariableField(
                     method.ReturnType.KeptTypeSyntax,
                     InvocationHistoryTypeMetadata.ResultFieldName,
-                    TokenList(Token(SyntaxKind.InternalKeyword))
+                    TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.ReadOnlyKeyword))
                 )
             );
         }
@@ -41,7 +41,7 @@ internal static partial class InvocationHistoryBuilder
             SingleVariableField(
                 WellKnownTypes.System.Exception.ToNullableType(),
                 InvocationHistoryTypeMetadata.ExceptionFieldName,
-                TokenList(Token(SyntaxKind.InternalKeyword))
+                TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.ReadOnlyKeyword))
             )
         );
 

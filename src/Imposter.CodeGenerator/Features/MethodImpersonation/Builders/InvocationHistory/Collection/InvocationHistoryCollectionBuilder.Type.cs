@@ -13,18 +13,29 @@ internal static partial class InvocationHistoryCollectionBuilder
 {
     internal static MemberDeclarationSyntax Build(in ImposterTargetMethodMetadata method)
     {
-        var historyType = WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(
-            method.InvocationHistory.Interface.Syntax
-        );
+        var historyType = method.InvocationHistory.NodeSyntax.ToNullableType();
 
         return new ClassDeclarationBuilder(method.InvocationHistory.Collection.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddMember(
-                SinglePrivateReadonlyVariableField(
+                SingleVariableField(
                     historyType,
                     InvocationHistoryCollectionMetadata.InvocationHistoryCollectionFieldName,
-                    historyType.New()
+                    TokenList(Token(SyntaxKind.PrivateKeyword))
                 )
+            )
+            .AddMember(
+                new ClassDeclarationBuilder(InvocationHistoryTypeMetadata.NodeTypeName)
+                    .AddModifier(Token(SyntaxKind.InternalKeyword))
+                    .AddModifier(Token(SyntaxKind.AbstractKeyword))
+                    .AddMember(
+                        SingleVariableField(
+                            historyType,
+                            InvocationHistoryTypeMetadata.NextFieldName,
+                            TokenList(Token(SyntaxKind.InternalKeyword))
+                        )
+                    )
+                    .Build()
             )
             .AddMember(BuildAddMethod(method))
             .AddMember(BuildRecordFailureMethod(method))
@@ -39,25 +50,53 @@ internal static partial class InvocationHistoryCollectionBuilder
             .AddModifier(Token(SyntaxKind.OverrideKeyword))
             .WithBody(
                 Block(
-                    ReturnStatement(
-                        JoinWithNewLines(
-                            IdentifierName(
-                                    InvocationHistoryCollectionMetadata.InvocationHistoryCollectionFieldName
-                                )
-                                .Dot(IdentifierName("Select"))
+                    LocalVariableDeclarationSyntax(
+                        Var,
+                        "descriptions",
+                        WellKnownTypes
+                            .System.Collections.Generic.List(WellKnownTypes.String.ToNullableType())
+                            .New()
+                    ),
+                    LocalVariableDeclarationSyntax(Var, "invocation", ReadHead()),
+                    WhileStatement(
+                        IdentifierName("invocation").IsNotNull(),
+                        Block(
+                            IdentifierName("descriptions")
+                                .Dot(IdentifierName("Add"))
                                 .Call(
                                     Argument(
-                                        SimpleLambdaExpression(
-                                            Parameter(Identifier("invocation")),
-                                            IdentifierName("invocation")
-                                                .Dot(IdentifierName("ToString"))
-                                                .Call()
-                                        )
+                                        IdentifierName("invocation")
+                                            .Dot(IdentifierName("ToString"))
+                                            .Call()
                                     )
                                 )
+                                .ToStatementSyntax(),
+                            IdentifierName("invocation")
+                                .Assign(
+                                    IdentifierName("invocation")
+                                        .Dot(
+                                            IdentifierName(
+                                                InvocationHistoryTypeMetadata.NextFieldName
+                                            )
+                                        )
+                                )
+                                .ToStatementSyntax()
                         )
-                    )
+                    ),
+                    ReturnStatement(JoinWithNewLines(IdentifierName("descriptions")))
                 )
             )
             .Build();
+
+    private static InvocationExpressionSyntax ReadHead() =>
+        WellKnownTypes
+            .System.Threading.Volatile.Dot(IdentifierName("Read"))
+            .Call(
+                Argument(
+                        IdentifierName(
+                            InvocationHistoryCollectionMetadata.InvocationHistoryCollectionFieldName
+                        )
+                    )
+                    .WithRefOrOutKeyword(Token(SyntaxKind.RefKeyword))
+            );
 }

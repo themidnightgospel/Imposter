@@ -19,6 +19,8 @@ internal readonly record struct ArgumentCriteriaTypeMetadata
 
     internal readonly MatchesMethodMetadata MatchesMethod;
 
+    internal readonly string MatchesCapturedMethodName;
+
     public ArgumentCriteriaTypeMetadata(in ImposterTargetMethodMetadata method)
     {
         // The class keeps each parameter in a field named after it, which can't share the class's name.
@@ -40,6 +42,7 @@ internal readonly record struct ArgumentCriteriaTypeMetadata
         );
         MatchesMethod = new MatchesMethodMetadata(nameContext);
         AsMethod = new AsMethodMetadata(nameContext, method.ReservedParameterNames);
+        MatchesCapturedMethodName = nameContext.Use("MatchesCaptured");
     }
 
     // A generic method's criteria convert themselves to the target type arguments with this method.

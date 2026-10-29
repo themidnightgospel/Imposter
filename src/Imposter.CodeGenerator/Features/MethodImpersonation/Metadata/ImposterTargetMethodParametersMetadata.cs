@@ -33,8 +33,6 @@ internal readonly record struct ImposterTargetMethodParametersMetadata
 
     internal readonly ArgumentListSyntax ArgAnyArgumentListSyntax;
 
-    internal readonly ArgumentListSyntax InputParametersAsArgumentListSyntaxWithoutRef;
-
     internal bool HasInputParameters => InputParameters.Count > 0;
 
     internal readonly bool HasOutputParameters;
@@ -83,11 +81,6 @@ internal readonly record struct ImposterTargetMethodParametersMetadata
             MatchedParameterMetadata.Select(parameter =>
                 Argument(parameter.ArgTypeSyntax.Dot(IdentifierName("Any")).Call())
             )
-        );
-
-        InputParametersAsArgumentListSyntaxWithoutRef = SyntaxFactoryHelper.ArgumentListSyntax(
-            InputParameters,
-            includeRefKind: false
         );
     }
 }

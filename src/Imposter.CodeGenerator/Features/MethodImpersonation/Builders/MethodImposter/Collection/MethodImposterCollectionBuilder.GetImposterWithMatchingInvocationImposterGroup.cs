@@ -1,4 +1,5 @@
-﻿using System.Linq;
+using System.Linq;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Shared;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
 using Imposter.CodeGenerator.Helpers;
@@ -18,12 +19,11 @@ internal static partial class MethodImposterCollectionBuilder
     )
     {
         var hasMatchingMethod = method.MethodImposter.HasMatchingInvocationImposterGroupMethod;
-        var parameterName = hasMatchingMethod.ArgumentsParameterName;
 
         var localNames = new NameSet(
             method
                 .Model.TypeParameters.Select(typeParameter => typeParameter.Name)
-                .Append(parameterName)
+                .Concat(method.Parameters.InputParameterMetadata.Select(p => p.Name))
         );
         var storedImposterIdentifier = Identifier(localNames.Use("storedImposter"));
         var typedImposterName = IdentifierName(localNames.Use("typedImposter"));
@@ -32,7 +32,9 @@ internal static partial class MethodImposterCollectionBuilder
             method.MethodImposter.GenericInterface.Syntax,
             MethodImposterCollectionMetadata.GetImposterWithMatchingInvocationImposterGroupMethodName
         )
-            .AddParameter(GetParameter(method, parameterName))
+            // Own the lookup snapshot. In particular, a predicate may mutate the caller's ref/in storage while
+            // candidates are inspected; subsequent candidates must still see the originally supplied values.
+            .WithParameterList(CapturedArgumentsBuilder.Parameters(method, byReference: false))
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithTypeParameters(method.GenericTypeParameterListSyntax)
             .AddConstraintClauses(method.GenericTypeConstraintClauses)
@@ -61,12 +63,7 @@ internal static partial class MethodImposterCollectionBuilder
                                     .And(
                                         typedImposterName
                                             .Dot(IdentifierName(hasMatchingMethod.Name))
-                                            .Call(
-                                                method.Parameters.HasInputParameters
-                                                    ? IdentifierName(parameterName)
-                                                        .ToSingleArgumentList()
-                                                    : EmptyArgumentListSyntax
-                                            )
+                                            .Call(CapturedArgumentsBuilder.Arguments(method))
                                     ),
                                 ReturnStatement(typedImposterName)
                             )
@@ -79,13 +76,5 @@ internal static partial class MethodImposterCollectionBuilder
             );
 
         return methodBuilder.Build();
-
-        static ParameterSyntax? GetParameter(
-            in ImposterTargetMethodMetadata method,
-            string parameterName
-        ) =>
-            method.Parameters.HasInputParameters
-                ? ParameterSyntax(method.Arguments.Syntax, parameterName)
-                : null;
     }
 }

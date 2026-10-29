@@ -53,7 +53,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public bool Matches(NameArguments arguments)
 			{
-				return text.Matches(arguments.text);
+				return MatchesCaptured(arguments.text);
+			}
+
+			internal bool MatchesCaptured(in char[] text)
+			{
+				return this.text.Matches(text);
 			}
 		}
 
@@ -64,26 +69,26 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class NameMethodInvocationHistory : INameMethodInvocationHistory
+		internal class NameMethodInvocationHistory : NameMethodInvocationHistoryCollection.Node, INameMethodInvocationHistory
 		{
-			internal NameArguments Arguments;
-			internal char[]? Result;
-			internal global::System.Exception? Exception;
-			public NameMethodInvocationHistory(NameArguments Arguments, char[]? Result, global::System.Exception? Exception)
+			internal readonly char[] capturedtext;
+			internal readonly char[]? Result;
+			internal readonly global::System.Exception? Exception;
+			public NameMethodInvocationHistory(char[] capturedtext, char[]? Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedtext = capturedtext;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(NameArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(capturedtext);
 			}
 
 			public override string ToString()
 			{
-				return "Name(" + global::System.String.Join(", ", new[] { "text: " + FormatValue(Arguments.text) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Name(" + global::System.String.Join(", ", new[] { "text: " + FormatValue(capturedtext) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -95,13 +100,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class NameMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<INameMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<INameMethodInvocationHistory>();
-			internal void Add(INameMethodInvocationHistory invocationHistory)
+			private NameMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal NameMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(INameMethodInvocationHistory invocationHistory)
+			internal void Add(NameMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				NameMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(NameMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -109,12 +126,29 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			internal int Count(NameArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((INameMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -295,11 +329,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private NameMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(NameArguments arguments)
+			private NameMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in char[] text)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(text))
 						return invocationImposterGroup;
 				}
 
@@ -308,8 +342,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public global::System.ReadOnlySpan<char> Invoke(scoped global::System.ReadOnlySpan<char> text, NameDelegate? baseImplementation = null)
 			{
-				var arguments = new NameArguments(text);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				char[] capturedtext = text.ToArray();
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedtext);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -323,10 +357,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual ReadOnlySpan<char> ScopedParameterClass.Name(scoped ReadOnlySpan<char> text)", text, baseImplementation);
-					_nameMethodInvocationHistoryCollection.Add(new NameMethodInvocationHistory(arguments, result.ToArray(), default));
+					_nameMethodInvocationHistoryCollection.Add(new NameMethodInvocationHistory(capturedtext, result.ToArray(), default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_nameMethodInvocationHistoryCollection.RecordFailure(new NameMethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_nameMethodInvocationHistoryCollection.RecordFailure(new NameMethodInvocationHistory(capturedtext, default !, ex)))
 				{
 					throw;
 				}

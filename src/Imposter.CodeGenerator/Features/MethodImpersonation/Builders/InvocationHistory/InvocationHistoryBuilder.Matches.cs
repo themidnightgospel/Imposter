@@ -45,20 +45,20 @@ internal static partial class InvocationHistoryBuilder
                     return genericArgumentsMatchCriteria;
                 }
 
-                var argumentsMatchCriteria = IdentifierName(
-                        InvocationHistoryMatchesMethodMetadata.ArgumentsCriteriaParameterName
-                    )
-                    .Dot(
-                        GenericName(
-                            Identifier(method.ArgumentsCriteria.AsMethod.Name),
-                            TypeArguments(method.GenericTypeArguments)
+                // Equality of every type argument proves this cast; no criteria adapters or lambdas are needed.
+                var argumentsMatchCriteria = ParenthesizedExpression(
+                        CastExpression(
+                            method.ArgumentsCriteria.Syntax,
+                            CastExpression(
+                                WellKnownTypes.Object,
+                                IdentifierName(
+                                    InvocationHistoryMatchesMethodMetadata.ArgumentsCriteriaParameterName
+                                )
+                            )
                         )
                     )
-                    .Call()
-                    .Dot(IdentifierName(method.ArgumentsCriteria.MatchesMethod.Name))
-                    .Call(
-                        Argument(IdentifierName(InvocationHistoryTypeMetadata.ArgumentsFieldName))
-                    );
+                    .Dot(IdentifierName(method.ArgumentsCriteria.MatchesCapturedMethodName))
+                    .Call(CapturedArgumentsBuilder.Fields(method));
 
                 return genericArgumentsMatchCriteria.And(argumentsMatchCriteria);
             }
@@ -71,8 +71,8 @@ internal static partial class InvocationHistoryBuilder
             return IdentifierName(
                     InvocationHistoryMatchesMethodMetadata.ArgumentsCriteriaParameterName
                 )
-                .Dot(IdentifierName(method.ArgumentsCriteria.MatchesMethod.Name))
-                .Call(Argument(IdentifierName(InvocationHistoryTypeMetadata.ArgumentsFieldName)));
+                .Dot(IdentifierName(method.ArgumentsCriteria.MatchesCapturedMethodName))
+                .Call(CapturedArgumentsBuilder.Fields(method));
         }
     }
 }

@@ -132,28 +132,28 @@ namespace Imposter.Tests.Features.CallAllocations
             AllocatedBytesPerCall(() => instance.Value = 1).ShouldBeLessThanOrEqualTo(32);
         }
 
-        // The arguments (24 bytes), the history entry (40) and its stack node (32).
+        // One entry keeps the argument, result, exception and next link (48 bytes).
         [Fact]
         public void GivenMethodWithoutCallbacks_WhenCalled_ShouldOnlyAllocateItsArgumentsAndHistory()
         {
             _sut.Square(Arg<int>.Any()).Returns(4);
             var instance = _sut.Instance();
 
-            AllocatedBytesPerCall(() => instance.Square(2)).ShouldBeLessThanOrEqualTo(96);
+            AllocatedBytesPerCall(() => instance.Square(2)).ShouldBeLessThanOrEqualTo(48);
         }
 
-        // The arguments (24 bytes), the void history entry (32) and its stack node (32).
+        // One entry keeps the argument, exception and next link (40 bytes).
         [Fact]
         public void GivenVoidMethodWithoutCallbacks_WhenCalled_ShouldOnlyAllocateItsArgumentsAndHistory()
         {
             _sut.Log(Arg<string>.Any());
             var instance = _sut.Instance();
 
-            AllocatedBytesPerCall(() => instance.Log("value")).ShouldBeLessThanOrEqualTo(88);
+            AllocatedBytesPerCall(() => instance.Log("value")).ShouldBeLessThanOrEqualTo(40);
         }
 
-        // The arguments used to find the setup (24 bytes), the arguments the imposter keeps (24), the history entry (40)
-        // and its stack node (32). Setups with the call's own type arguments need no adapter or converted arguments.
+        // The entry keeps the argument, result, exception and next link (48 bytes).
+        // Setups with the call's own type arguments need no adapter or converted arguments.
         // Checking candidate setups must not allocate enumerators, even when the newest setup does not match.
         [Fact]
         public void GivenGenericMethodWithoutCallbacks_WhenCalled_ShouldOnlyAllocateItsArgumentsAndHistory()
@@ -162,12 +162,11 @@ namespace Imposter.Tests.Features.CallAllocations
             _sut.Echo<string>("miss").Returns("other");
             var instance = _sut.Instance();
 
-            AllocatedBytesPerCall(() => instance.Echo("match")).ShouldBeLessThanOrEqualTo(120);
+            AllocatedBytesPerCall(() => instance.Echo("match")).ShouldBeLessThanOrEqualTo(48);
         }
 
-        // The arguments used to find the setup (32 bytes) with their copy of the four-item span (40), the arguments the
-        // imposter keeps (32) with their own copy (40), the history entry (40) and its stack node (32). With the call's
-        // own type arguments, no adapter copies the span a third time.
+        // The history entry and two four-item span snapshots: one for generic lookup and one captured before
+        // the outcome. No arguments objects, stack nodes or adapter copy. The budget includes both arrays.
         [Fact]
         public void GivenGenericMethodWithSpan_WhenCalledWithItsOwnTypeArgument_ShouldNotCopyTheSpanForAnAdapter()
         {
@@ -177,7 +176,7 @@ namespace Imposter.Tests.Features.CallAllocations
             var items = new[] { 1, 2, 3, 4 };
 
             AllocatedBytesPerCall(() => instance.Contains<int>(items, 2))
-                .ShouldBeLessThanOrEqualTo(216);
+                .ShouldBeLessThanOrEqualTo(136);
         }
 
         // The arguments (24 bytes) and their history stack node (32).
@@ -219,8 +218,8 @@ namespace Imposter.Tests.Features.CallAllocations
             }
             var instance = sut.Instance();
             // Do not await faults here: exception dispatch is runtime work, not generator allocation.
-            AllocatedBytesPerCall(() => _ = instance.GetAsync(1)).ShouldBeLessThanOrEqualTo(96);
-            AllocatedBytesPerCall(() => _ = instance.PeekAsync(1)).ShouldBeLessThanOrEqualTo(104);
+            AllocatedBytesPerCall(() => _ = instance.GetAsync(1)).ShouldBeLessThanOrEqualTo(48);
+            AllocatedBytesPerCall(() => _ = instance.PeekAsync(1)).ShouldBeLessThanOrEqualTo(56);
         }
 
         [Fact]
@@ -233,7 +232,7 @@ namespace Imposter.Tests.Features.CallAllocations
             var key = 7;
             var extra = 9;
             AllocatedBytesPerCall(() => _ = instance.GetByReferenceAsync(ref key, out _, in extra))
-                .ShouldBeLessThanOrEqualTo(104);
+                .ShouldBeLessThanOrEqualTo(48);
         }
 
         [Fact]
@@ -282,14 +281,15 @@ namespace Imposter.Tests.Features.CallAllocations
             var instance = _sut.Instance();
 
             instance.Echo(1);
-            var withOneCall = AllocatedBytesPerCall(() => verification.Called(Count.AtLeastOnce()));
+            var count = Count.AtLeastOnce();
+            var withOneCall = AllocatedBytesPerCall(() => verification.Called(count));
+            withOneCall.ShouldBe(0);
             for (var i = 0; i < 1000; i++)
             {
                 instance.Echo(i);
             }
 
-            AllocatedBytesPerCall(() => verification.Called(Count.AtLeastOnce()))
-                .ShouldBe(withOneCall);
+            AllocatedBytesPerCall(() => verification.Called(count)).ShouldBe(withOneCall);
         }
 
         // The arguments (24 bytes), the history entry (40) and its stack node (32): running the callbacks allocates
@@ -300,7 +300,7 @@ namespace Imposter.Tests.Features.CallAllocations
             _sut.Square(Arg<int>.Any()).Returns(4).Callback(_ => { });
             var instance = _sut.Instance();
 
-            AllocatedBytesPerCall(() => instance.Square(2)).ShouldBeLessThanOrEqualTo(96);
+            AllocatedBytesPerCall(() => instance.Square(2)).ShouldBeLessThanOrEqualTo(48);
         }
 
         // A setup keeps its builder, group, step and Returns closure, and the steps' sequence. A queue for the steps

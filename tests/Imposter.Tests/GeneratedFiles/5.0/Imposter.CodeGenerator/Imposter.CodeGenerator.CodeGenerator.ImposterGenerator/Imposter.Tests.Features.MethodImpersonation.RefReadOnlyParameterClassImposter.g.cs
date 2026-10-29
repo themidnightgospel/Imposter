@@ -60,7 +60,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public bool Matches(ProtectedReadArguments arguments)
 			{
-				return key.Matches(arguments.key);
+				return MatchesCaptured(arguments.key);
+			}
+
+			internal bool MatchesCaptured(in int key)
+			{
+				return this.key.Matches(key);
 			}
 		}
 
@@ -71,26 +76,26 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class ProtectedReadMethodInvocationHistory : IProtectedReadMethodInvocationHistory
+		internal class ProtectedReadMethodInvocationHistory : ProtectedReadMethodInvocationHistoryCollection.Node, IProtectedReadMethodInvocationHistory
 		{
-			internal ProtectedReadArguments Arguments;
-			internal int? Result;
-			internal global::System.Exception? Exception;
-			public ProtectedReadMethodInvocationHistory(ProtectedReadArguments Arguments, int? Result, global::System.Exception? Exception)
+			internal readonly int capturedkey;
+			internal readonly int? Result;
+			internal readonly global::System.Exception? Exception;
+			public ProtectedReadMethodInvocationHistory(int capturedkey, int? Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedkey = capturedkey;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(ProtectedReadArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(capturedkey);
 			}
 
 			public override string ToString()
 			{
-				return "ProtectedRead(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(Arguments.key) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "ProtectedRead(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(capturedkey) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -102,13 +107,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ProtectedReadMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IProtectedReadMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IProtectedReadMethodInvocationHistory>();
-			internal void Add(IProtectedReadMethodInvocationHistory invocationHistory)
+			private ProtectedReadMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal ProtectedReadMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IProtectedReadMethodInvocationHistory invocationHistory)
+			internal void Add(ProtectedReadMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				ProtectedReadMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(ProtectedReadMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -116,12 +133,29 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			internal int Count(ProtectedReadArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IProtectedReadMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -302,11 +336,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private ProtectedReadMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(ProtectedReadArguments arguments)
+			private ProtectedReadMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in int key)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(key))
 						return invocationImposterGroup;
 				}
 
@@ -315,8 +349,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public int Invoke(ref readonly int key, ProtectedReadDelegate? baseImplementation = null)
 			{
-				var arguments = new ProtectedReadArguments(key);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				int capturedkey = key;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedkey);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -330,10 +364,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual int RefReadOnlyParameterClass.ProtectedRead(ref readonly int key)", in key, baseImplementation);
-					_protectedReadMethodInvocationHistoryCollection.Add(new ProtectedReadMethodInvocationHistory(arguments, result, default));
+					_protectedReadMethodInvocationHistoryCollection.Add(new ProtectedReadMethodInvocationHistory(capturedkey, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_protectedReadMethodInvocationHistoryCollection.RecordFailure(new ProtectedReadMethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_protectedReadMethodInvocationHistoryCollection.RecordFailure(new ProtectedReadMethodInvocationHistory(capturedkey, default !, ex)))
 				{
 					throw;
 				}
@@ -460,7 +494,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public bool Matches(ReadArguments arguments)
 			{
-				return key.Matches(arguments.key);
+				return MatchesCaptured(arguments.key);
+			}
+
+			internal bool MatchesCaptured(in int key)
+			{
+				return this.key.Matches(key);
 			}
 		}
 
@@ -471,26 +510,26 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class ReadMethodInvocationHistory : IReadMethodInvocationHistory
+		internal class ReadMethodInvocationHistory : ReadMethodInvocationHistoryCollection.Node, IReadMethodInvocationHistory
 		{
-			internal ReadArguments Arguments;
-			internal int? Result;
-			internal global::System.Exception? Exception;
-			public ReadMethodInvocationHistory(ReadArguments Arguments, int? Result, global::System.Exception? Exception)
+			internal readonly int capturedkey;
+			internal readonly int? Result;
+			internal readonly global::System.Exception? Exception;
+			public ReadMethodInvocationHistory(int capturedkey, int? Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedkey = capturedkey;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(ReadArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(capturedkey);
 			}
 
 			public override string ToString()
 			{
-				return "Read(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(Arguments.key) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Read(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(capturedkey) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -502,13 +541,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ReadMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IReadMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IReadMethodInvocationHistory>();
-			internal void Add(IReadMethodInvocationHistory invocationHistory)
+			private ReadMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal ReadMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IReadMethodInvocationHistory invocationHistory)
+			internal void Add(ReadMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				ReadMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(ReadMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -516,12 +567,29 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			internal int Count(ReadArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IReadMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -702,11 +770,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private ReadMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(ReadArguments arguments)
+			private ReadMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in int key)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(key))
 						return invocationImposterGroup;
 				}
 
@@ -715,8 +783,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public int Invoke(ref readonly int key, ReadDelegate? baseImplementation = null)
 			{
-				var arguments = new ReadArguments(key);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				int capturedkey = key;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedkey);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -730,10 +798,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual int RefReadOnlyParameterClass.Read(ref readonly int key)", in key, baseImplementation);
-					_readMethodInvocationHistoryCollection.Add(new ReadMethodInvocationHistory(arguments, result, default));
+					_readMethodInvocationHistoryCollection.Add(new ReadMethodInvocationHistory(capturedkey, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_readMethodInvocationHistoryCollection.RecordFailure(new ReadMethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_readMethodInvocationHistoryCollection.RecordFailure(new ReadMethodInvocationHistory(capturedkey, default !, ex)))
 				{
 					throw;
 				}

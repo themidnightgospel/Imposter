@@ -53,7 +53,12 @@ namespace Imposter.Playground
 
 			public bool Matches(OnNextArguments arguments)
 			{
-				return item.Matches(arguments.item);
+				return MatchesCaptured(arguments.item);
+			}
+
+			internal bool MatchesCaptured(in T item)
+			{
+				return this.item.Matches(item);
 			}
 		}
 
@@ -64,24 +69,24 @@ namespace Imposter.Playground
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class OnNextMethodInvocationHistory : IOnNextMethodInvocationHistory
+		internal class OnNextMethodInvocationHistory : OnNextMethodInvocationHistoryCollection.Node, IOnNextMethodInvocationHistory
 		{
-			internal OnNextArguments Arguments;
-			internal global::System.Exception? Exception;
-			public OnNextMethodInvocationHistory(OnNextArguments Arguments, global::System.Exception? Exception)
+			internal readonly T captureditem;
+			internal readonly global::System.Exception? Exception;
+			public OnNextMethodInvocationHistory(T captureditem, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.captureditem = captureditem;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(OnNextArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(captureditem);
 			}
 
 			public override string ToString()
 			{
-				return "OnNext(" + global::System.String.Join(", ", new[] { "item: " + FormatValue(Arguments.item) }) + ")" + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "OnNext(" + global::System.String.Join(", ", new[] { "item: " + FormatValue(captureditem) }) + ")" + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -93,13 +98,25 @@ namespace Imposter.Playground
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class OnNextMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IOnNextMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IOnNextMethodInvocationHistory>();
-			internal void Add(IOnNextMethodInvocationHistory invocationHistory)
+			private OnNextMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal OnNextMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IOnNextMethodInvocationHistory invocationHistory)
+			internal void Add(OnNextMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				OnNextMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(OnNextMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -107,12 +124,29 @@ namespace Imposter.Playground
 
 			internal int Count(OnNextArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IOnNextMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -265,11 +299,11 @@ namespace Imposter.Playground
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private OnNextMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(OnNextArguments arguments)
+			private OnNextMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in T item)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(item))
 						return invocationImposterGroup;
 				}
 
@@ -278,8 +312,8 @@ namespace Imposter.Playground
 
 			public void Invoke(T item)
 			{
-				var arguments = new OnNextArguments(item);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				T captureditem = item;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(captureditem);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -293,9 +327,9 @@ namespace Imposter.Playground
 				try
 				{
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void IAsyncObservable<T>.OnNext(T item)", item);
-					_onNextMethodInvocationHistoryCollection.Add(new OnNextMethodInvocationHistory(arguments, default));
+					_onNextMethodInvocationHistoryCollection.Add(new OnNextMethodInvocationHistory(captureditem, default));
 				}
-				catch (global::System.Exception ex) when (_onNextMethodInvocationHistoryCollection.RecordFailure(new OnNextMethodInvocationHistory(arguments, ex)))
+				catch (global::System.Exception ex) when (_onNextMethodInvocationHistoryCollection.RecordFailure(new OnNextMethodInvocationHistory(captureditem, ex)))
 				{
 					throw;
 				}

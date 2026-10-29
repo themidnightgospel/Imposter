@@ -38,9 +38,9 @@ namespace Imposter.Tests.Features.ClassImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class RunMethodInvocationHistory : IRunMethodInvocationHistory
+		internal class RunMethodInvocationHistory : RunMethodInvocationHistoryCollection.Node, IRunMethodInvocationHistory
 		{
-			internal global::System.Exception? Exception;
+			internal readonly global::System.Exception? Exception;
 			public RunMethodInvocationHistory(global::System.Exception? Exception)
 			{
 				this.Exception = Exception;
@@ -65,13 +65,25 @@ namespace Imposter.Tests.Features.ClassImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class RunMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IRunMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IRunMethodInvocationHistory>();
-			internal void Add(IRunMethodInvocationHistory invocationHistory)
+			private RunMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal RunMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IRunMethodInvocationHistory invocationHistory)
+			internal void Add(RunMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				RunMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(RunMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -79,12 +91,29 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			internal int Count()
 			{
-				return _invocationHistory.Count(it => it.Matches());
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IRunMethodInvocationHistory)invocation).Matches())
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 

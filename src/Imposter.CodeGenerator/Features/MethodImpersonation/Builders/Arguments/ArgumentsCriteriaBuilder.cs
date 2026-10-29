@@ -29,7 +29,8 @@ public static class ArgumentsCriteriaBuilder
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddMembers(method.Parameters.MatchedParameterMetadata.Select(ArgProperty))
             .AddMember(BuildConstructor(method))
-            .AddMember(MatchesMethod(method));
+            .AddMember(MatchesMethod(method))
+            .AddMember(MatchesCapturedMethod(method));
 
         if (method.Model.IsGenericMethod)
         {
@@ -178,31 +179,55 @@ public static class ArgumentsCriteriaBuilder
 
     private static MethodDeclarationSyntax MatchesMethod(in ImposterTargetMethodMetadata method)
     {
-        var matchesParameterName = method.ArgumentsCriteria.MatchesMethod.ParameterName;
-        var matchesParameterExpression = IdentifierName(matchesParameterName);
-
+        var arguments = IdentifierName(method.ArgumentsCriteria.MatchesMethod.ParameterName);
         return new MethodDeclarationBuilder(
             WellKnownTypes.Bool,
             method.ArgumentsCriteria.MatchesMethod.Name
         )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddParameter(ParameterSyntax(method.Arguments.Syntax, matchesParameterName))
+            .AddParameter(ParameterSyntax(method.Arguments.Syntax, arguments.Identifier.Text))
+            .WithBody(
+                Block(
+                    ReturnStatement(
+                        IdentifierName(method.ArgumentsCriteria.MatchesCapturedMethodName)
+                            .Call(
+                                ArgumentList(
+                                    SeparatedList(
+                                        method.Parameters.InputParameterMetadata.Select(p =>
+                                            Argument(arguments.Dot(IdentifierName(p.Name)))
+                                        )
+                                    )
+                                )
+                            )
+                    )
+                )
+            )
+            .Build();
+    }
+
+    private static MethodDeclarationSyntax MatchesCapturedMethod(
+        in ImposterTargetMethodMetadata method
+    ) =>
+        new MethodDeclarationBuilder(
+            WellKnownTypes.Bool,
+            method.ArgumentsCriteria.MatchesCapturedMethodName
+        )
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .WithParameterList(CapturedArgumentsBuilder.Parameters(method))
             .WithBody(
                 Block(
                     ReturnStatement(
                         method
-                            .Parameters.InputParameterMetadata.Select(it =>
-                                (ExpressionSyntax)InvokeMatches(it)
+                            .Parameters.InputParameterMetadata.Select(p =>
+                                (ExpressionSyntax)
+                                    ThisExpression()
+                                        .Dot(IdentifierName(p.Name))
+                                        .Dot(IdentifierName("Matches"))
+                                        .Call(Argument(IdentifierName(p.Name)))
                             )
                             .Aggregate((left, right) => left.And(right))
                     )
                 )
             )
             .Build();
-
-        InvocationExpressionSyntax InvokeMatches(MethodParameterMetadata p) =>
-            IdentifierName(p.Name)
-                .Dot(IdentifierName("Matches"))
-                .Call(Argument(matchesParameterExpression.Dot(IdentifierName(p.Name))));
-    }
 }

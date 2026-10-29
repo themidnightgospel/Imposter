@@ -61,7 +61,12 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 
 			public bool Matches(ProcessArguments arguments)
 			{
-				return (route.Matches(arguments.route) && severity.Matches(arguments.severity)) && context.Matches(arguments.context);
+				return MatchesCaptured(arguments.route, arguments.severity, arguments.context);
+			}
+
+			internal bool MatchesCaptured(in string route, in int severity, in global::Imposter.Benchmarks.ImposterVsAlternatives.ComplexMethodMockingBenchmark.OperationContext context)
+			{
+				return (this.route.Matches(route) && this.severity.Matches(severity)) && this.context.Matches(context);
 			}
 		}
 
@@ -72,26 +77,30 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class ProcessMethodInvocationHistory : IProcessMethodInvocationHistory
+		internal class ProcessMethodInvocationHistory : ProcessMethodInvocationHistoryCollection.Node, IProcessMethodInvocationHistory
 		{
-			internal ProcessArguments Arguments;
-			internal string? Result;
-			internal global::System.Exception? Exception;
-			public ProcessMethodInvocationHistory(ProcessArguments Arguments, string? Result, global::System.Exception? Exception)
+			internal readonly string capturedroute;
+			internal readonly int capturedseverity;
+			internal readonly global::Imposter.Benchmarks.ImposterVsAlternatives.ComplexMethodMockingBenchmark.OperationContext capturedcontext;
+			internal readonly string? Result;
+			internal readonly global::System.Exception? Exception;
+			public ProcessMethodInvocationHistory(string capturedroute, int capturedseverity, global::Imposter.Benchmarks.ImposterVsAlternatives.ComplexMethodMockingBenchmark.OperationContext capturedcontext, string? Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedroute = capturedroute;
+				this.capturedseverity = capturedseverity;
+				this.capturedcontext = capturedcontext;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(ProcessArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(capturedroute, capturedseverity, capturedcontext);
 			}
 
 			public override string ToString()
 			{
-				return "Process(" + global::System.String.Join(", ", new[] { "route: " + FormatValue(Arguments.route), "severity: " + FormatValue(Arguments.severity), "context: " + FormatValue(Arguments.context) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Process(" + global::System.String.Join(", ", new[] { "route: " + FormatValue(capturedroute), "severity: " + FormatValue(capturedseverity), "context: " + FormatValue(capturedcontext) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -103,13 +112,25 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ProcessMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IProcessMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IProcessMethodInvocationHistory>();
-			internal void Add(IProcessMethodInvocationHistory invocationHistory)
+			private ProcessMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal ProcessMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IProcessMethodInvocationHistory invocationHistory)
+			internal void Add(ProcessMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				ProcessMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(ProcessMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -117,12 +138,29 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 
 			internal int Count(ProcessArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IProcessMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -287,11 +325,11 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private ProcessMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(ProcessArguments arguments)
+			private ProcessMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in string route, in int severity, in global::Imposter.Benchmarks.ImposterVsAlternatives.ComplexMethodMockingBenchmark.OperationContext context)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(route, severity, context))
 						return invocationImposterGroup;
 				}
 
@@ -300,8 +338,10 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 
 			public string Invoke(string route, int severity, global::Imposter.Benchmarks.ImposterVsAlternatives.ComplexMethodMockingBenchmark.OperationContext context)
 			{
-				var arguments = new ProcessArguments(route, severity, context);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				string capturedroute = route;
+				int capturedseverity = severity;
+				global::Imposter.Benchmarks.ImposterVsAlternatives.ComplexMethodMockingBenchmark.OperationContext capturedcontext = context;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedroute, capturedseverity, capturedcontext);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -315,10 +355,10 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "string ComplexMethodMockingBenchmark.IComplexService.Process(string route, int severity, ComplexMethodMockingBenchmark.OperationContext context)", route, severity, context);
-					_processMethodInvocationHistoryCollection.Add(new ProcessMethodInvocationHistory(arguments, result, default));
+					_processMethodInvocationHistoryCollection.Add(new ProcessMethodInvocationHistory(capturedroute, capturedseverity, capturedcontext, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_processMethodInvocationHistoryCollection.RecordFailure(new ProcessMethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_processMethodInvocationHistoryCollection.RecordFailure(new ProcessMethodInvocationHistory(capturedroute, capturedseverity, capturedcontext, default !, ex)))
 				{
 					throw;
 				}

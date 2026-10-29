@@ -53,7 +53,12 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			public bool Matches(ParseArguments arguments)
 			{
-				return text.Matches(arguments.text);
+				return MatchesCaptured(arguments.text);
+			}
+
+			internal bool MatchesCaptured(in char[] text)
+			{
+				return this.text.Matches(text);
 			}
 		}
 
@@ -64,26 +69,26 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class ParseMethodInvocationHistory : IParseMethodInvocationHistory
+		internal class ParseMethodInvocationHistory : ParseMethodInvocationHistoryCollection.Node, IParseMethodInvocationHistory
 		{
-			internal ParseArguments Arguments;
-			internal int? Result;
-			internal global::System.Exception? Exception;
-			public ParseMethodInvocationHistory(ParseArguments Arguments, int? Result, global::System.Exception? Exception)
+			internal readonly char[] capturedtext;
+			internal readonly int? Result;
+			internal readonly global::System.Exception? Exception;
+			public ParseMethodInvocationHistory(char[] capturedtext, int? Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedtext = capturedtext;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(ParseArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(capturedtext);
 			}
 
 			public override string ToString()
 			{
-				return "Parse(" + global::System.String.Join(", ", new[] { "text: " + FormatValue(Arguments.text) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Parse(" + global::System.String.Join(", ", new[] { "text: " + FormatValue(capturedtext) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -95,13 +100,25 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ParseMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IParseMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IParseMethodInvocationHistory>();
-			internal void Add(IParseMethodInvocationHistory invocationHistory)
+			private ParseMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal ParseMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IParseMethodInvocationHistory invocationHistory)
+			internal void Add(ParseMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				ParseMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(ParseMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -109,12 +126,29 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			internal int Count(ParseArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IParseMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -279,11 +313,11 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private ParseMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(ParseArguments arguments)
+			private ParseMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in char[] text)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(text))
 						return invocationImposterGroup;
 				}
 
@@ -292,8 +326,8 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			public int Invoke(global::System.ReadOnlySpan<char> text)
 			{
-				var arguments = new ParseArguments(text);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				char[] capturedtext = text.ToArray();
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedtext);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -307,10 +341,10 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "int ISpanArgumentMatchingService.Parse(ReadOnlySpan<char> text)", text);
-					_parseMethodInvocationHistoryCollection.Add(new ParseMethodInvocationHistory(arguments, result, default));
+					_parseMethodInvocationHistoryCollection.Add(new ParseMethodInvocationHistory(capturedtext, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_parseMethodInvocationHistoryCollection.RecordFailure(new ParseMethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_parseMethodInvocationHistoryCollection.RecordFailure(new ParseMethodInvocationHistory(capturedtext, default !, ex)))
 				{
 					throw;
 				}

@@ -52,10 +52,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class GetAsyncMethodInvocationHistory : IGetAsyncMethodInvocationHistory
+		internal class GetAsyncMethodInvocationHistory : GetAsyncMethodInvocationHistoryCollection.Node, IGetAsyncMethodInvocationHistory
 		{
-			internal global::System.Threading.Tasks.Task<int> Result;
-			internal global::System.Exception? Exception;
+			internal readonly global::System.Threading.Tasks.Task<int> Result;
+			internal readonly global::System.Exception? Exception;
 			public GetAsyncMethodInvocationHistory(global::System.Threading.Tasks.Task<int> Result, global::System.Exception? Exception)
 			{
 				this.Result = Result;
@@ -81,13 +81,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class GetAsyncMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IGetAsyncMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IGetAsyncMethodInvocationHistory>();
-			internal void Add(IGetAsyncMethodInvocationHistory invocationHistory)
+			private GetAsyncMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal GetAsyncMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IGetAsyncMethodInvocationHistory invocationHistory)
+			internal void Add(GetAsyncMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				GetAsyncMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(GetAsyncMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -95,12 +107,29 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			internal int Count()
 			{
-				return _invocationHistory.Count(it => it.Matches());
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IGetAsyncMethodInvocationHistory)invocation).Matches())
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -465,7 +494,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public bool Matches(NextAsyncArguments arguments)
 			{
-				return position.Matches(arguments.position);
+				return MatchesCaptured(arguments.position);
+			}
+
+			internal bool MatchesCaptured(in int position)
+			{
+				return this.position.Matches(position);
 			}
 		}
 
@@ -476,26 +510,26 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class NextAsyncMethodInvocationHistory : INextAsyncMethodInvocationHistory
+		internal class NextAsyncMethodInvocationHistory : NextAsyncMethodInvocationHistoryCollection.Node, INextAsyncMethodInvocationHistory
 		{
-			internal NextAsyncArguments Arguments;
-			internal global::System.Threading.Tasks.Task<int> Result;
-			internal global::System.Exception? Exception;
-			public NextAsyncMethodInvocationHistory(NextAsyncArguments Arguments, global::System.Threading.Tasks.Task<int> Result, global::System.Exception? Exception)
+			internal readonly int capturedposition;
+			internal readonly global::System.Threading.Tasks.Task<int> Result;
+			internal readonly global::System.Exception? Exception;
+			public NextAsyncMethodInvocationHistory(int capturedposition, global::System.Threading.Tasks.Task<int> Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedposition = capturedposition;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(NextAsyncArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(capturedposition);
 			}
 
 			public override string ToString()
 			{
-				return "NextAsync(" + global::System.String.Join(", ", new[] { "position: " + FormatValue(Arguments.position) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "NextAsync(" + global::System.String.Join(", ", new[] { "position: " + FormatValue(capturedposition) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -507,13 +541,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class NextAsyncMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<INextAsyncMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<INextAsyncMethodInvocationHistory>();
-			internal void Add(INextAsyncMethodInvocationHistory invocationHistory)
+			private NextAsyncMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal NextAsyncMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(INextAsyncMethodInvocationHistory invocationHistory)
+			internal void Add(NextAsyncMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				NextAsyncMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(NextAsyncMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -521,12 +567,29 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			internal int Count(NextAsyncArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((INextAsyncMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -723,11 +786,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private NextAsyncMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(NextAsyncArguments arguments)
+			private NextAsyncMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in int position)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(position))
 						return invocationImposterGroup;
 				}
 
@@ -736,8 +799,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public global::System.Threading.Tasks.Task<int> Invoke(ref int position)
 			{
-				var arguments = new NextAsyncArguments(position);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				int capturedposition = position;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedposition);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -751,10 +814,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "Task<int> IAwaitableByReferenceSut.NextAsync(ref int position)", ref position);
-					_nextAsyncMethodInvocationHistoryCollection.Add(new NextAsyncMethodInvocationHistory(arguments, result, default));
+					_nextAsyncMethodInvocationHistoryCollection.Add(new NextAsyncMethodInvocationHistory(capturedposition, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_nextAsyncMethodInvocationHistoryCollection.RecordFailure(new NextAsyncMethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_nextAsyncMethodInvocationHistoryCollection.RecordFailure(new NextAsyncMethodInvocationHistory(capturedposition, default !, ex)))
 				{
 					throw;
 				}
@@ -888,7 +951,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public bool Matches(PeekAsyncArguments arguments)
 			{
-				return key.Matches(arguments.key);
+				return MatchesCaptured(arguments.key);
+			}
+
+			internal bool MatchesCaptured(in int key)
+			{
+				return this.key.Matches(key);
 			}
 		}
 
@@ -899,26 +967,26 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class PeekAsyncMethodInvocationHistory : IPeekAsyncMethodInvocationHistory
+		internal class PeekAsyncMethodInvocationHistory : PeekAsyncMethodInvocationHistoryCollection.Node, IPeekAsyncMethodInvocationHistory
 		{
-			internal PeekAsyncArguments Arguments;
-			internal global::System.Threading.Tasks.ValueTask<int> Result;
-			internal global::System.Exception? Exception;
-			public PeekAsyncMethodInvocationHistory(PeekAsyncArguments Arguments, global::System.Threading.Tasks.ValueTask<int> Result, global::System.Exception? Exception)
+			internal readonly int capturedkey;
+			internal readonly global::System.Threading.Tasks.ValueTask<int> Result;
+			internal readonly global::System.Exception? Exception;
+			public PeekAsyncMethodInvocationHistory(int capturedkey, global::System.Threading.Tasks.ValueTask<int> Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedkey = capturedkey;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(PeekAsyncArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(capturedkey);
 			}
 
 			public override string ToString()
 			{
-				return "PeekAsync(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(Arguments.key) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "PeekAsync(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(capturedkey) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -930,13 +998,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class PeekAsyncMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IPeekAsyncMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IPeekAsyncMethodInvocationHistory>();
-			internal void Add(IPeekAsyncMethodInvocationHistory invocationHistory)
+			private PeekAsyncMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal PeekAsyncMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IPeekAsyncMethodInvocationHistory invocationHistory)
+			internal void Add(PeekAsyncMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				PeekAsyncMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(PeekAsyncMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -944,12 +1024,29 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			internal int Count(PeekAsyncArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IPeekAsyncMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -1146,11 +1243,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private PeekAsyncMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(PeekAsyncArguments arguments)
+			private PeekAsyncMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in int key)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(key))
 						return invocationImposterGroup;
 				}
 
@@ -1159,8 +1256,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public global::System.Threading.Tasks.ValueTask<int> Invoke(in int key)
 			{
-				var arguments = new PeekAsyncArguments(key);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				int capturedkey = key;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedkey);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -1174,10 +1271,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "ValueTask<int> IAwaitableByReferenceSut.PeekAsync(in int key)", in key);
-					_peekAsyncMethodInvocationHistoryCollection.Add(new PeekAsyncMethodInvocationHistory(arguments, result, default));
+					_peekAsyncMethodInvocationHistoryCollection.Add(new PeekAsyncMethodInvocationHistory(capturedkey, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_peekAsyncMethodInvocationHistoryCollection.RecordFailure(new PeekAsyncMethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_peekAsyncMethodInvocationHistoryCollection.RecordFailure(new PeekAsyncMethodInvocationHistory(capturedkey, default !, ex)))
 				{
 					throw;
 				}

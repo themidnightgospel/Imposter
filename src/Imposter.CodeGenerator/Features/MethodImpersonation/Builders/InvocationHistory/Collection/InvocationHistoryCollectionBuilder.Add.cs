@@ -11,25 +11,59 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Invocatio
 
 internal static partial class InvocationHistoryCollectionBuilder
 {
-    internal static MethodDeclarationSyntax BuildAddMethod(
-        in ImposterTargetMethodMetadata method
-    ) =>
-        new MethodDeclarationBuilder(WellKnownTypes.Void, "Add")
+    // Only this writer owns the entry until CompareExchange publishes it. Retry by replacing its Next link,
+    // without allocating another node. Published entries and links never change, so readers keep a stable snapshot.
+    internal static MethodDeclarationSyntax BuildAddMethod(in ImposterTargetMethodMetadata method)
+    {
+        var head = IdentifierName("head");
+        var entry = IdentifierName("invocationHistory");
+        var field = IdentifierName(
+            InvocationHistoryCollectionMetadata.InvocationHistoryCollectionFieldName
+        );
+        return new MethodDeclarationBuilder(WellKnownTypes.Void, "Add")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddParameter(
-                ParameterSyntax(method.InvocationHistory.Interface.Syntax, "invocationHistory")
-            )
+            .AddParameter(ParameterSyntax(method.InvocationHistory.NodeSyntax, "invocationHistory"))
             .WithBody(
                 Block(
-                    IdentifierName(
-                            InvocationHistoryCollectionMetadata.InvocationHistoryCollectionFieldName
+                    LocalVariableDeclarationSyntax(
+                        method.InvocationHistory.NodeSyntax.ToNullableType(),
+                        "head",
+                        null
+                    ),
+                    DoStatement(
+                        Block(
+                            head.Assign(ReadHead()).ToStatementSyntax(),
+                            entry
+                                .Dot(IdentifierName(InvocationHistoryTypeMetadata.NextFieldName))
+                                .Assign(head)
+                                .ToStatementSyntax()
+                        ),
+                        BinaryExpression(
+                            SyntaxKind.NotEqualsExpression,
+                            WellKnownTypes
+                                .System.Threading.Interlocked.Dot(IdentifierName("CompareExchange"))
+                                .Call(
+                                    ArgumentList(
+                                        SeparatedList(
+                                            new[]
+                                            {
+                                                Argument(field)
+                                                    .WithRefOrOutKeyword(
+                                                        Token(SyntaxKind.RefKeyword)
+                                                    ),
+                                                Argument(entry),
+                                                Argument(head),
+                                            }
+                                        )
+                                    )
+                                ),
+                            head
                         )
-                        .Dot(ConcurrentStackSyntaxHelper.Push)
-                        .Call(Argument(IdentifierName("invocationHistory")))
-                        .ToStatementSyntax()
+                    )
                 )
             )
             .Build();
+    }
 
     // Filters run before stack unwinding: the history is visible to finally blocks in user delegates.
     // Always decline to handle the exception, so its original dispatch continues without a rethrow.
@@ -41,9 +75,7 @@ internal static partial class InvocationHistoryCollectionBuilder
             InvocationHistoryCollectionMetadata.RecordFailureMethodName
         )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddParameter(
-                ParameterSyntax(method.InvocationHistory.Interface.Syntax, "invocationHistory")
-            )
+            .AddParameter(ParameterSyntax(method.InvocationHistory.NodeSyntax, "invocationHistory"))
             .WithBody(
                 Block(
                     IdentifierName("Add")

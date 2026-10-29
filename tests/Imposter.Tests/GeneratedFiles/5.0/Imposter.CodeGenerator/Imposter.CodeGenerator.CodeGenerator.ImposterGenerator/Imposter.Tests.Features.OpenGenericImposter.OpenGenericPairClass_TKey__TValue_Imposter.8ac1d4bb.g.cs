@@ -64,7 +64,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public bool Matches(DescribePairArguments arguments)
 			{
-				return key.Matches(arguments.key) && value.Matches(arguments.value);
+				return MatchesCaptured(arguments.key, arguments.value);
+			}
+
+			internal bool MatchesCaptured(in TKey key, in TValue value)
+			{
+				return this.key.Matches(key) && this.value.Matches(value);
 			}
 		}
 
@@ -75,26 +80,28 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class DescribePairMethodInvocationHistory : IDescribePairMethodInvocationHistory
+		internal class DescribePairMethodInvocationHistory : DescribePairMethodInvocationHistoryCollection.Node, IDescribePairMethodInvocationHistory
 		{
-			internal DescribePairArguments Arguments;
-			internal string? Result;
-			internal global::System.Exception? Exception;
-			public DescribePairMethodInvocationHistory(DescribePairArguments Arguments, string? Result, global::System.Exception? Exception)
+			internal readonly TKey capturedkey;
+			internal readonly TValue capturedvalue;
+			internal readonly string? Result;
+			internal readonly global::System.Exception? Exception;
+			public DescribePairMethodInvocationHistory(TKey capturedkey, TValue capturedvalue, string? Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedkey = capturedkey;
+				this.capturedvalue = capturedvalue;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(DescribePairArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(capturedkey, capturedvalue);
 			}
 
 			public override string ToString()
 			{
-				return "DescribePair(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(Arguments.key), "value: " + FormatValue(Arguments.value) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "DescribePair(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(capturedkey), "value: " + FormatValue(capturedvalue) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -106,13 +113,25 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class DescribePairMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IDescribePairMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IDescribePairMethodInvocationHistory>();
-			internal void Add(IDescribePairMethodInvocationHistory invocationHistory)
+			private DescribePairMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal DescribePairMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IDescribePairMethodInvocationHistory invocationHistory)
+			internal void Add(DescribePairMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				DescribePairMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(DescribePairMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -120,12 +139,29 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			internal int Count(DescribePairArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IDescribePairMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -306,11 +342,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private DescribePairMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(DescribePairArguments arguments)
+			private DescribePairMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in TKey key, in TValue value)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(key, value))
 						return invocationImposterGroup;
 				}
 
@@ -319,8 +355,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public string Invoke(TKey key, TValue value, DescribePairDelegate? baseImplementation = null)
 			{
-				var arguments = new DescribePairArguments(key, value);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				TKey capturedkey = key;
+				TValue capturedvalue = value;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedkey, capturedvalue);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -334,10 +371,10 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual string OpenGenericPairClass<TKey, TValue>.DescribePair(TKey key, TValue value)", key, value, baseImplementation);
-					_describePairMethodInvocationHistoryCollection.Add(new DescribePairMethodInvocationHistory(arguments, result, default));
+					_describePairMethodInvocationHistoryCollection.Add(new DescribePairMethodInvocationHistory(capturedkey, capturedvalue, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_describePairMethodInvocationHistoryCollection.RecordFailure(new DescribePairMethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_describePairMethodInvocationHistoryCollection.RecordFailure(new DescribePairMethodInvocationHistory(capturedkey, capturedvalue, default !, ex)))
 				{
 					throw;
 				}
@@ -468,7 +505,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public bool Matches(ResolveArguments arguments)
 			{
-				return key.Matches(arguments.key) && defaultValue.Matches(arguments.defaultValue);
+				return MatchesCaptured(arguments.key, arguments.defaultValue);
+			}
+
+			internal bool MatchesCaptured(in TKey key, in TValue defaultValue)
+			{
+				return this.key.Matches(key) && this.defaultValue.Matches(defaultValue);
 			}
 		}
 
@@ -479,26 +521,28 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class ResolveMethodInvocationHistory : IResolveMethodInvocationHistory
+		internal class ResolveMethodInvocationHistory : ResolveMethodInvocationHistoryCollection.Node, IResolveMethodInvocationHistory
 		{
-			internal ResolveArguments Arguments;
-			internal TValue? Result;
-			internal global::System.Exception? Exception;
-			public ResolveMethodInvocationHistory(ResolveArguments Arguments, TValue? Result, global::System.Exception? Exception)
+			internal readonly TKey capturedkey;
+			internal readonly TValue captureddefaultValue;
+			internal readonly TValue? Result;
+			internal readonly global::System.Exception? Exception;
+			public ResolveMethodInvocationHistory(TKey capturedkey, TValue captureddefaultValue, TValue? Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedkey = capturedkey;
+				this.captureddefaultValue = captureddefaultValue;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(ResolveArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(capturedkey, captureddefaultValue);
 			}
 
 			public override string ToString()
 			{
-				return "Resolve(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(Arguments.key), "defaultValue: " + FormatValue(Arguments.defaultValue) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Resolve(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(capturedkey), "defaultValue: " + FormatValue(captureddefaultValue) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -510,13 +554,25 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ResolveMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IResolveMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IResolveMethodInvocationHistory>();
-			internal void Add(IResolveMethodInvocationHistory invocationHistory)
+			private ResolveMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal ResolveMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IResolveMethodInvocationHistory invocationHistory)
+			internal void Add(ResolveMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				ResolveMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(ResolveMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -524,12 +580,29 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			internal int Count(ResolveArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IResolveMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -710,11 +783,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private ResolveMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(ResolveArguments arguments)
+			private ResolveMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in TKey key, in TValue defaultValue)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(key, defaultValue))
 						return invocationImposterGroup;
 				}
 
@@ -723,8 +796,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public TValue Invoke(TKey key, TValue defaultValue, ResolveDelegate? baseImplementation = null)
 			{
-				var arguments = new ResolveArguments(key, defaultValue);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				TKey capturedkey = key;
+				TValue captureddefaultValue = defaultValue;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedkey, captureddefaultValue);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -738,10 +812,10 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual TValue OpenGenericPairClass<TKey, TValue>.Resolve(TKey key, TValue defaultValue)", key, defaultValue, baseImplementation);
-					_resolveMethodInvocationHistoryCollection.Add(new ResolveMethodInvocationHistory(arguments, result, default));
+					_resolveMethodInvocationHistoryCollection.Add(new ResolveMethodInvocationHistory(capturedkey, captureddefaultValue, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_resolveMethodInvocationHistoryCollection.RecordFailure(new ResolveMethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_resolveMethodInvocationHistoryCollection.RecordFailure(new ResolveMethodInvocationHistory(capturedkey, captureddefaultValue, default !, ex)))
 				{
 					throw;
 				}

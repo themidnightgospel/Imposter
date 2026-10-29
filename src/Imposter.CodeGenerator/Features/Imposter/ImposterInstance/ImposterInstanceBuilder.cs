@@ -674,15 +674,13 @@ internal readonly ref struct ImposterInstanceBuilder
             {
                 if (method.Parameters.HasInputParameters)
                 {
-                    return Argument(
-                            method.Arguments.Syntax.New(
-                                ArgumentListSyntax(
-                                    method.Parameters.InputParameters,
-                                    includeRefKind: false
-                                )
+                    return ArgumentList(
+                        SeparatedList(
+                            method.Parameters.InputParameterMetadata.Select(p =>
+                                Argument(p.KeptValue)
                             )
                         )
-                        .ToSingleArgumentList();
+                    );
                 }
 
                 return default;

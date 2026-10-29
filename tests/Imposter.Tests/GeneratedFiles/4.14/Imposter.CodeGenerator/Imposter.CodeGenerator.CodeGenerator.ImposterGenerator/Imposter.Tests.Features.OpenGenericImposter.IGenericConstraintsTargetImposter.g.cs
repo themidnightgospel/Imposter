@@ -89,7 +89,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public bool Matches(CloneStructArguments<TArg> arguments)
 			{
-				return value.Matches(arguments.value);
+				return MatchesCaptured(arguments.value);
+			}
+
+			internal bool MatchesCaptured(in TArg value)
+			{
+				return this.value.Matches(value);
 			}
 
 			public CloneStructArgumentsCriteria<TArgTarget> As<TArgTarget>()
@@ -109,14 +114,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class CloneStructMethodInvocationHistory<TArg> : ICloneStructMethodInvocationHistory where TArg : struct
+		internal class CloneStructMethodInvocationHistory<TArg> : CloneStructMethodInvocationHistoryCollection.Node, ICloneStructMethodInvocationHistory where TArg : struct
 		{
-			internal CloneStructArguments<TArg> Arguments;
-			internal TArg? Result;
-			internal global::System.Exception? Exception;
-			public CloneStructMethodInvocationHistory(CloneStructArguments<TArg> Arguments, TArg? Result, global::System.Exception? Exception)
+			internal readonly TArg capturedvalue;
+			internal readonly TArg? Result;
+			internal readonly global::System.Exception? Exception;
+			public CloneStructMethodInvocationHistory(TArg capturedvalue, TArg? Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedvalue = capturedvalue;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
@@ -124,12 +129,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			public bool Matches<TArgTarget>(CloneStructArgumentsCriteria<TArgTarget> criteria)
 				where TArgTarget : struct
 			{
-				return (typeof(TArgTarget) == typeof(TArg)) && criteria.As<TArg>().Matches(Arguments);
+				return (typeof(TArgTarget) == typeof(TArg)) && ((CloneStructArgumentsCriteria<TArg>)(object)criteria).MatchesCaptured(capturedvalue);
 			}
 
 			public override string ToString()
 			{
-				return "CloneStruct(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "CloneStruct(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(capturedvalue) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -141,13 +146,25 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class CloneStructMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ICloneStructMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<ICloneStructMethodInvocationHistory>();
-			internal void Add(ICloneStructMethodInvocationHistory invocationHistory)
+			private CloneStructMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal CloneStructMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(ICloneStructMethodInvocationHistory invocationHistory)
+			internal void Add(CloneStructMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				CloneStructMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(CloneStructMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -156,12 +173,29 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal int Count<TArg>(CloneStructArgumentsCriteria<TArg> argumentsCriteria)
 				where TArg : struct
 			{
-				return _invocationHistory.Count(it => it.Matches<TArg>(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((ICloneStructMethodInvocationHistory)invocation).Matches<TArg>(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -187,13 +221,13 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				return imposter;
 			}
 
-			internal ICloneStructMethodImposter<TArg> GetImposterWithMatchingInvocationImposterGroup<TArg>(CloneStructArguments<TArg> arguments)
+			internal ICloneStructMethodImposter<TArg> GetImposterWithMatchingInvocationImposterGroup<TArg>(TArg value)
 				where TArg : struct
 			{
 				foreach (var storedImposter in _imposters)
 				{
 					var typedImposter = storedImposter.As<TArg>();
-					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments))
+					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(value))
 						return typedImposter;
 				}
 
@@ -351,7 +385,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		internal interface ICloneStructMethodImposter<TArg> : ICloneStructMethodImposter where TArg : struct
 		{
 			TArg Invoke(TArg value);
-			bool HasMatchingInvocationImposterGroup(CloneStructArguments<TArg> arguments);
+			bool HasMatchingInvocationImposterGroup(in TArg value);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -406,9 +440,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					return global::Imposter.Abstractions.TypeCaster.Cast<TArg, TArgTarget>(result);
 				}
 
-				public bool HasMatchingInvocationImposterGroup(CloneStructArguments<TArgTarget> arguments)
+				public bool HasMatchingInvocationImposterGroup(in TArgTarget value)
 				{
-					return _target.HasMatchingInvocationImposterGroup(arguments.As<TArg>());
+					return _target.HasMatchingInvocationImposterGroup(global::Imposter.Abstractions.TypeCaster.Cast<TArgTarget, TArg>(value));
 				}
 
 				ICloneStructMethodImposter<TArgTarget1>? ICloneStructMethodImposter.As<TArgTarget1>()
@@ -417,16 +451,16 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				}
 			}
 
-			public bool HasMatchingInvocationImposterGroup(CloneStructArguments<TArg> arguments)
+			public bool HasMatchingInvocationImposterGroup(in TArg value)
 			{
-				return FindMatchingInvocationImposterGroup(arguments) != null;
+				return FindMatchingInvocationImposterGroup(value) != null;
 			}
 
-			private CloneStructMethodInvocationImposterGroup<TArg>? FindMatchingInvocationImposterGroup(CloneStructArguments<TArg> arguments)
+			private CloneStructMethodInvocationImposterGroup<TArg>? FindMatchingInvocationImposterGroup(in TArg value)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(value))
 						return invocationImposterGroup;
 				}
 
@@ -435,8 +469,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public TArg Invoke(TArg value)
 			{
-				var arguments = new CloneStructArguments<TArg>(value);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				TArg capturedvalue = value;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedvalue);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -450,10 +484,10 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "TArg IGenericConstraintsTarget.CloneStruct<TArg>(TArg value)", value);
-					_cloneStructMethodInvocationHistoryCollection.Add(new CloneStructMethodInvocationHistory<TArg>(arguments, result, default));
+					_cloneStructMethodInvocationHistoryCollection.Add(new CloneStructMethodInvocationHistory<TArg>(capturedvalue, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_cloneStructMethodInvocationHistoryCollection.RecordFailure(new CloneStructMethodInvocationHistory<TArg>(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_cloneStructMethodInvocationHistoryCollection.RecordFailure(new CloneStructMethodInvocationHistory<TArg>(capturedvalue, default !, ex)))
 				{
 					throw;
 				}
@@ -589,7 +623,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public bool Matches(CompareValuesArguments<TArg> arguments)
 			{
-				return left.Matches(arguments.left) && right.Matches(arguments.right);
+				return MatchesCaptured(arguments.left, arguments.right);
+			}
+
+			internal bool MatchesCaptured(in TArg left, in TArg right)
+			{
+				return this.left.Matches(left) && this.right.Matches(right);
 			}
 
 			public CompareValuesArgumentsCriteria<TArgTarget> As<TArgTarget>()
@@ -609,25 +648,27 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class CompareValuesMethodInvocationHistory<TArg> : ICompareValuesMethodInvocationHistory where TArg : global::System.IComparable<TArg>
+		internal class CompareValuesMethodInvocationHistory<TArg> : CompareValuesMethodInvocationHistoryCollection.Node, ICompareValuesMethodInvocationHistory where TArg : global::System.IComparable<TArg>
 		{
-			internal CompareValuesArguments<TArg> Arguments;
-			internal global::System.Exception? Exception;
-			public CompareValuesMethodInvocationHistory(CompareValuesArguments<TArg> Arguments, global::System.Exception? Exception)
+			internal readonly TArg capturedleft;
+			internal readonly TArg capturedright;
+			internal readonly global::System.Exception? Exception;
+			public CompareValuesMethodInvocationHistory(TArg capturedleft, TArg capturedright, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedleft = capturedleft;
+				this.capturedright = capturedright;
 				this.Exception = Exception;
 			}
 
 			public bool Matches<TArgTarget>(CompareValuesArgumentsCriteria<TArgTarget> criteria)
 				where TArgTarget : global::System.IComparable<TArgTarget>
 			{
-				return (typeof(TArgTarget) == typeof(TArg)) && criteria.As<TArg>().Matches(Arguments);
+				return (typeof(TArgTarget) == typeof(TArg)) && ((CompareValuesArgumentsCriteria<TArg>)(object)criteria).MatchesCaptured(capturedleft, capturedright);
 			}
 
 			public override string ToString()
 			{
-				return "CompareValues(" + global::System.String.Join(", ", new[] { "left: " + FormatValue(Arguments.left), "right: " + FormatValue(Arguments.right) }) + ")" + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "CompareValues(" + global::System.String.Join(", ", new[] { "left: " + FormatValue(capturedleft), "right: " + FormatValue(capturedright) }) + ")" + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -639,13 +680,25 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class CompareValuesMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ICompareValuesMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<ICompareValuesMethodInvocationHistory>();
-			internal void Add(ICompareValuesMethodInvocationHistory invocationHistory)
+			private CompareValuesMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal CompareValuesMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(ICompareValuesMethodInvocationHistory invocationHistory)
+			internal void Add(CompareValuesMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				CompareValuesMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(CompareValuesMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -654,12 +707,29 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal int Count<TArg>(CompareValuesArgumentsCriteria<TArg> argumentsCriteria)
 				where TArg : global::System.IComparable<TArg>
 			{
-				return _invocationHistory.Count(it => it.Matches<TArg>(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((ICompareValuesMethodInvocationHistory)invocation).Matches<TArg>(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -685,13 +755,13 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				return imposter;
 			}
 
-			internal ICompareValuesMethodImposter<TArg> GetImposterWithMatchingInvocationImposterGroup<TArg>(CompareValuesArguments<TArg> arguments)
+			internal ICompareValuesMethodImposter<TArg> GetImposterWithMatchingInvocationImposterGroup<TArg>(TArg left, TArg right)
 				where TArg : global::System.IComparable<TArg>
 			{
 				foreach (var storedImposter in _imposters)
 				{
 					var typedImposter = storedImposter.As<TArg>();
-					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments))
+					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(left, right))
 						return typedImposter;
 				}
 
@@ -837,7 +907,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		internal interface ICompareValuesMethodImposter<TArg> : ICompareValuesMethodImposter where TArg : global::System.IComparable<TArg>
 		{
 			void Invoke(TArg left, TArg right);
-			bool HasMatchingInvocationImposterGroup(CompareValuesArguments<TArg> arguments);
+			bool HasMatchingInvocationImposterGroup(in TArg left, in TArg right);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -891,9 +961,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					_target.Invoke(global::Imposter.Abstractions.TypeCaster.Cast<TArgTarget, TArg>(left), global::Imposter.Abstractions.TypeCaster.Cast<TArgTarget, TArg>(right));
 				}
 
-				public bool HasMatchingInvocationImposterGroup(CompareValuesArguments<TArgTarget> arguments)
+				public bool HasMatchingInvocationImposterGroup(in TArgTarget left, in TArgTarget right)
 				{
-					return _target.HasMatchingInvocationImposterGroup(arguments.As<TArg>());
+					return _target.HasMatchingInvocationImposterGroup(global::Imposter.Abstractions.TypeCaster.Cast<TArgTarget, TArg>(left), global::Imposter.Abstractions.TypeCaster.Cast<TArgTarget, TArg>(right));
 				}
 
 				ICompareValuesMethodImposter<TArgTarget1>? ICompareValuesMethodImposter.As<TArgTarget1>()
@@ -902,16 +972,16 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				}
 			}
 
-			public bool HasMatchingInvocationImposterGroup(CompareValuesArguments<TArg> arguments)
+			public bool HasMatchingInvocationImposterGroup(in TArg left, in TArg right)
 			{
-				return FindMatchingInvocationImposterGroup(arguments) != null;
+				return FindMatchingInvocationImposterGroup(left, right) != null;
 			}
 
-			private CompareValuesMethodInvocationImposterGroup<TArg>? FindMatchingInvocationImposterGroup(CompareValuesArguments<TArg> arguments)
+			private CompareValuesMethodInvocationImposterGroup<TArg>? FindMatchingInvocationImposterGroup(in TArg left, in TArg right)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(left, right))
 						return invocationImposterGroup;
 				}
 
@@ -920,8 +990,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public void Invoke(TArg left, TArg right)
 			{
-				var arguments = new CompareValuesArguments<TArg>(left, right);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				TArg capturedleft = left;
+				TArg capturedright = right;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedleft, capturedright);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -935,9 +1006,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				try
 				{
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void IGenericConstraintsTarget.CompareValues<TArg>(TArg left, TArg right)", left, right);
-					_compareValuesMethodInvocationHistoryCollection.Add(new CompareValuesMethodInvocationHistory<TArg>(arguments, default));
+					_compareValuesMethodInvocationHistoryCollection.Add(new CompareValuesMethodInvocationHistory<TArg>(capturedleft, capturedright, default));
 				}
-				catch (global::System.Exception ex) when (_compareValuesMethodInvocationHistoryCollection.RecordFailure(new CompareValuesMethodInvocationHistory<TArg>(arguments, ex)))
+				catch (global::System.Exception ex) when (_compareValuesMethodInvocationHistoryCollection.RecordFailure(new CompareValuesMethodInvocationHistory<TArg>(capturedleft, capturedright, ex)))
 				{
 					throw;
 				}
@@ -1033,10 +1104,10 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class CreateInstanceMethodInvocationHistory<TArg> : ICreateInstanceMethodInvocationHistory where TArg : new()
+		internal class CreateInstanceMethodInvocationHistory<TArg> : CreateInstanceMethodInvocationHistoryCollection.Node, ICreateInstanceMethodInvocationHistory where TArg : new()
 		{
-			internal TArg? Result;
-			internal global::System.Exception? Exception;
+			internal readonly TArg? Result;
+			internal readonly global::System.Exception? Exception;
 			public CreateInstanceMethodInvocationHistory(TArg? Result, global::System.Exception? Exception)
 			{
 				this.Result = Result;
@@ -1063,13 +1134,25 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class CreateInstanceMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ICreateInstanceMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<ICreateInstanceMethodInvocationHistory>();
-			internal void Add(ICreateInstanceMethodInvocationHistory invocationHistory)
+			private CreateInstanceMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal CreateInstanceMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(ICreateInstanceMethodInvocationHistory invocationHistory)
+			internal void Add(CreateInstanceMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				CreateInstanceMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(CreateInstanceMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -1078,12 +1161,29 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal int Count<TArg>()
 				where TArg : new()
 			{
-				return _invocationHistory.Count(it => it.Matches<TArg>());
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((ICreateInstanceMethodInvocationHistory)invocation).Matches<TArg>())
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -1501,7 +1601,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public bool Matches(HandleReferenceArguments<TArg> arguments)
 			{
-				return value.Matches(arguments.value);
+				return MatchesCaptured(arguments.value);
+			}
+
+			internal bool MatchesCaptured(in TArg value)
+			{
+				return this.value.Matches(value);
 			}
 
 			public HandleReferenceArgumentsCriteria<TArgTarget> As<TArgTarget>()
@@ -1521,25 +1626,25 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class HandleReferenceMethodInvocationHistory<TArg> : IHandleReferenceMethodInvocationHistory where TArg : class, new()
+		internal class HandleReferenceMethodInvocationHistory<TArg> : HandleReferenceMethodInvocationHistoryCollection.Node, IHandleReferenceMethodInvocationHistory where TArg : class, new()
 		{
-			internal HandleReferenceArguments<TArg> Arguments;
-			internal global::System.Exception? Exception;
-			public HandleReferenceMethodInvocationHistory(HandleReferenceArguments<TArg> Arguments, global::System.Exception? Exception)
+			internal readonly TArg capturedvalue;
+			internal readonly global::System.Exception? Exception;
+			public HandleReferenceMethodInvocationHistory(TArg capturedvalue, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedvalue = capturedvalue;
 				this.Exception = Exception;
 			}
 
 			public bool Matches<TArgTarget>(HandleReferenceArgumentsCriteria<TArgTarget> criteria)
 				where TArgTarget : class, new()
 			{
-				return (typeof(TArgTarget) == typeof(TArg)) && criteria.As<TArg>().Matches(Arguments);
+				return (typeof(TArgTarget) == typeof(TArg)) && ((HandleReferenceArgumentsCriteria<TArg>)(object)criteria).MatchesCaptured(capturedvalue);
 			}
 
 			public override string ToString()
 			{
-				return "HandleReference(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value) }) + ")" + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "HandleReference(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(capturedvalue) }) + ")" + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -1551,13 +1656,25 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class HandleReferenceMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IHandleReferenceMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IHandleReferenceMethodInvocationHistory>();
-			internal void Add(IHandleReferenceMethodInvocationHistory invocationHistory)
+			private HandleReferenceMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal HandleReferenceMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IHandleReferenceMethodInvocationHistory invocationHistory)
+			internal void Add(HandleReferenceMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				HandleReferenceMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(HandleReferenceMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -1566,12 +1683,29 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal int Count<TArg>(HandleReferenceArgumentsCriteria<TArg> argumentsCriteria)
 				where TArg : class, new()
 			{
-				return _invocationHistory.Count(it => it.Matches<TArg>(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IHandleReferenceMethodInvocationHistory)invocation).Matches<TArg>(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -1597,13 +1731,13 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				return imposter;
 			}
 
-			internal IHandleReferenceMethodImposter<TArg> GetImposterWithMatchingInvocationImposterGroup<TArg>(HandleReferenceArguments<TArg> arguments)
+			internal IHandleReferenceMethodImposter<TArg> GetImposterWithMatchingInvocationImposterGroup<TArg>(TArg value)
 				where TArg : class, new()
 			{
 				foreach (var storedImposter in _imposters)
 				{
 					var typedImposter = storedImposter.As<TArg>();
-					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments))
+					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(value))
 						return typedImposter;
 				}
 
@@ -1749,7 +1883,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		internal interface IHandleReferenceMethodImposter<TArg> : IHandleReferenceMethodImposter where TArg : class, new()
 		{
 			void Invoke(TArg value);
-			bool HasMatchingInvocationImposterGroup(HandleReferenceArguments<TArg> arguments);
+			bool HasMatchingInvocationImposterGroup(in TArg value);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1803,9 +1937,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					_target.Invoke(global::Imposter.Abstractions.TypeCaster.Cast<TArgTarget, TArg>(value));
 				}
 
-				public bool HasMatchingInvocationImposterGroup(HandleReferenceArguments<TArgTarget> arguments)
+				public bool HasMatchingInvocationImposterGroup(in TArgTarget value)
 				{
-					return _target.HasMatchingInvocationImposterGroup(arguments.As<TArg>());
+					return _target.HasMatchingInvocationImposterGroup(global::Imposter.Abstractions.TypeCaster.Cast<TArgTarget, TArg>(value));
 				}
 
 				IHandleReferenceMethodImposter<TArgTarget1>? IHandleReferenceMethodImposter.As<TArgTarget1>()
@@ -1814,16 +1948,16 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				}
 			}
 
-			public bool HasMatchingInvocationImposterGroup(HandleReferenceArguments<TArg> arguments)
+			public bool HasMatchingInvocationImposterGroup(in TArg value)
 			{
-				return FindMatchingInvocationImposterGroup(arguments) != null;
+				return FindMatchingInvocationImposterGroup(value) != null;
 			}
 
-			private HandleReferenceMethodInvocationImposterGroup<TArg>? FindMatchingInvocationImposterGroup(HandleReferenceArguments<TArg> arguments)
+			private HandleReferenceMethodInvocationImposterGroup<TArg>? FindMatchingInvocationImposterGroup(in TArg value)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(value))
 						return invocationImposterGroup;
 				}
 
@@ -1832,8 +1966,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public void Invoke(TArg value)
 			{
-				var arguments = new HandleReferenceArguments<TArg>(value);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				TArg capturedvalue = value;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedvalue);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -1847,9 +1981,9 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				try
 				{
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void IGenericConstraintsTarget.HandleReference<TArg>(TArg value)", value);
-					_handleReferenceMethodInvocationHistoryCollection.Add(new HandleReferenceMethodInvocationHistory<TArg>(arguments, default));
+					_handleReferenceMethodInvocationHistoryCollection.Add(new HandleReferenceMethodInvocationHistory<TArg>(capturedvalue, default));
 				}
-				catch (global::System.Exception ex) when (_handleReferenceMethodInvocationHistoryCollection.RecordFailure(new HandleReferenceMethodInvocationHistory<TArg>(arguments, ex)))
+				catch (global::System.Exception ex) when (_handleReferenceMethodInvocationHistoryCollection.RecordFailure(new HandleReferenceMethodInvocationHistory<TArg>(capturedvalue, ex)))
 				{
 					throw;
 				}
@@ -1992,19 +2126,19 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			public void HandleReference<TArg>(TArg value)
 				where TArg : class, new()
 			{
-				_imposter._handleReferenceMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<TArg>(new HandleReferenceArguments<TArg>(value)).Invoke(value);
+				_imposter._handleReferenceMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<TArg>(value).Invoke(value);
 			}
 
 			public TArg CloneStruct<TArg>(TArg value)
 				where TArg : struct
 			{
-				return _imposter._cloneStructMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<TArg>(new CloneStructArguments<TArg>(value)).Invoke(value);
+				return _imposter._cloneStructMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<TArg>(value).Invoke(value);
 			}
 
 			public void CompareValues<TArg>(TArg left, TArg right)
 				where TArg : global::System.IComparable<TArg>
 			{
-				_imposter._compareValuesMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<TArg>(new CompareValuesArguments<TArg>(left, right)).Invoke(left, right);
+				_imposter._compareValuesMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<TArg>(left, right).Invoke(left, right);
 			}
 
 			public TArg CreateInstance<TArg>()

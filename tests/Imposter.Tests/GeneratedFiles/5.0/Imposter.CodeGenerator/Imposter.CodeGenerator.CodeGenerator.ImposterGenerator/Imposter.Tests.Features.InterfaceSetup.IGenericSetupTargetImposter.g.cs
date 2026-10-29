@@ -45,10 +45,10 @@ namespace Imposter.Tests.Features.InterfaceSetup
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class ReadMethodInvocationHistory : IReadMethodInvocationHistory
+		internal class ReadMethodInvocationHistory : ReadMethodInvocationHistoryCollection.Node, IReadMethodInvocationHistory
 		{
-			internal int? Result;
-			internal global::System.Exception? Exception;
+			internal readonly int? Result;
+			internal readonly global::System.Exception? Exception;
 			public ReadMethodInvocationHistory(int? Result, global::System.Exception? Exception)
 			{
 				this.Result = Result;
@@ -74,13 +74,25 @@ namespace Imposter.Tests.Features.InterfaceSetup
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ReadMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IReadMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IReadMethodInvocationHistory>();
-			internal void Add(IReadMethodInvocationHistory invocationHistory)
+			private ReadMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal ReadMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IReadMethodInvocationHistory invocationHistory)
+			internal void Add(ReadMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				ReadMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(ReadMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -88,12 +100,29 @@ namespace Imposter.Tests.Features.InterfaceSetup
 
 			internal int Count()
 			{
-				return _invocationHistory.Count(it => it.Matches());
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IReadMethodInvocationHistory)invocation).Matches())
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -388,10 +417,10 @@ namespace Imposter.Tests.Features.InterfaceSetup
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class Read_1MethodInvocationHistory : IRead_1MethodInvocationHistory
+		internal class Read_1MethodInvocationHistory : Read_1MethodInvocationHistoryCollection.Node, IRead_1MethodInvocationHistory
 		{
-			internal string? Result;
-			internal global::System.Exception? Exception;
+			internal readonly string? Result;
+			internal readonly global::System.Exception? Exception;
 			public Read_1MethodInvocationHistory(string? Result, global::System.Exception? Exception)
 			{
 				this.Result = Result;
@@ -417,13 +446,25 @@ namespace Imposter.Tests.Features.InterfaceSetup
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class Read_1MethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IRead_1MethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IRead_1MethodInvocationHistory>();
-			internal void Add(IRead_1MethodInvocationHistory invocationHistory)
+			private Read_1MethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal Read_1MethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IRead_1MethodInvocationHistory invocationHistory)
+			internal void Add(Read_1MethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				Read_1MethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(Read_1MethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -431,12 +472,29 @@ namespace Imposter.Tests.Features.InterfaceSetup
 
 			internal int Count()
 			{
-				return _invocationHistory.Count(it => it.Matches());
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IRead_1MethodInvocationHistory)invocation).Matches())
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Shared;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationHistory;
@@ -24,7 +25,7 @@ internal partial class MethodImposterBuilder
             .WithParameterList(InvokeSignatureBuilder.MethodImposterParameters(method))
             .WithBody(
                 new BlockBuilder()
-                    .AddStatement(DeclareAndInitializeArgumentsVariable(method))
+                    .AddStatements(DeclareCapturedArguments(method))
                     .AddStatement(DeclareMatchingInvocationImposterGroupVariable(method))
                     .AddStatement(EnsureMatchingInvocationImposterGroup(method))
                     .AddStatement(
@@ -69,18 +70,19 @@ internal partial class MethodImposterBuilder
             : null;
     }
 
-    private static LocalDeclarationStatementSyntax? DeclareAndInitializeArgumentsVariable(
+    private static IEnumerable<StatementSyntax> DeclareCapturedArguments(
         in ImposterTargetMethodMetadata method
-    ) =>
-        method.Parameters.HasInputParameters
-            ? LocalVariableDeclarationSyntax(
-                typeSyntax: Var,
-                name: method.MethodImposter.InvokeMethod.ArgumentsVariableName,
-                initializer: method.Arguments.Syntax.New(
-                    method.Parameters.InputParametersAsArgumentListSyntaxWithoutRef
-                )
+    )
+    {
+        var names = method.InvocationHistory.ArgumentFields;
+        return method.Parameters.InputParameterMetadata.Select(p =>
+            LocalVariableDeclarationSyntax(
+                p.NullableAwareKeptTypeSyntax,
+                names[p.Name],
+                p.KeptValue
             )
-            : null;
+        );
+    }
 
     private static ExpressionStatementSyntax AddToInvocationHistoryCollection(
         in ImposterTargetMethodMetadata method,
@@ -111,12 +113,7 @@ internal partial class MethodImposterBuilder
         {
             List<ArgumentSyntax> arguments = [];
 
-            if (method.Parameters.HasInputParameters)
-            {
-                arguments.Add(
-                    method.MethodImposter.InvokeMethod.ArgumentsVariableName.ToArgument()
-                );
-            }
+            arguments.AddRange(CapturedArgumentsBuilder.Fields(method).Arguments);
 
             if (method.KeepsResult)
             {
@@ -178,16 +175,7 @@ internal partial class MethodImposterBuilder
             Var,
             method.MethodImposter.InvokeMethod.MatchingInvocationImposterGroupVariableName,
             IdentifierName(method.MethodImposter.FindMatchingInvocationImposterGroupMethod.Name)
-                .Call(
-                    method.Parameters.HasInputParameters
-                        ? Argument(
-                                IdentifierName(
-                                    method.MethodImposter.InvokeMethod.ArgumentsVariableName
-                                )
-                            )
-                            .ToSingleArgumentList()
-                        : ArgumentList()
-                )
+                .Call(CapturedArgumentsBuilder.Fields(method))
         );
 
     private static IfStatementSyntax EnsureMatchingInvocationImposterGroup(

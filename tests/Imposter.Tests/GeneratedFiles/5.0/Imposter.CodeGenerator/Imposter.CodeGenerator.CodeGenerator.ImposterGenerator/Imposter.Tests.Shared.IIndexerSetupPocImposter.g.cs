@@ -61,7 +61,12 @@ namespace Imposter.Tests.Shared
 
 			public bool Matches(IndexerMethodArguments arguments)
 			{
-				return (name.Matches(arguments.name) && lastname.Matches(arguments.lastname)) && dog.Matches(arguments.dog);
+				return MatchesCaptured(arguments.name, arguments.lastname, arguments.dog);
+			}
+
+			internal bool MatchesCaptured(in int name, in string lastname, in global::System.Text.RegularExpressions.Regex dog)
+			{
+				return (this.name.Matches(name) && this.lastname.Matches(lastname)) && this.dog.Matches(dog);
 			}
 		}
 
@@ -72,26 +77,30 @@ namespace Imposter.Tests.Shared
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class IndexerMethodMethodInvocationHistory : IIndexerMethodMethodInvocationHistory
+		internal class IndexerMethodMethodInvocationHistory : IndexerMethodMethodInvocationHistoryCollection.Node, IIndexerMethodMethodInvocationHistory
 		{
-			internal IndexerMethodArguments Arguments;
-			internal string? Result;
-			internal global::System.Exception? Exception;
-			public IndexerMethodMethodInvocationHistory(IndexerMethodArguments Arguments, string? Result, global::System.Exception? Exception)
+			internal readonly int capturedname;
+			internal readonly string capturedlastname;
+			internal readonly global::System.Text.RegularExpressions.Regex captureddog;
+			internal readonly string? Result;
+			internal readonly global::System.Exception? Exception;
+			public IndexerMethodMethodInvocationHistory(int capturedname, string capturedlastname, global::System.Text.RegularExpressions.Regex captureddog, string? Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedname = capturedname;
+				this.capturedlastname = capturedlastname;
+				this.captureddog = captureddog;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(IndexerMethodArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(capturedname, capturedlastname, captureddog);
 			}
 
 			public override string ToString()
 			{
-				return "IndexerMethod(" + global::System.String.Join(", ", new[] { "name: " + FormatValue(Arguments.name), "lastname: " + FormatValue(Arguments.lastname), "dog: " + FormatValue(Arguments.dog) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "IndexerMethod(" + global::System.String.Join(", ", new[] { "name: " + FormatValue(capturedname), "lastname: " + FormatValue(capturedlastname), "dog: " + FormatValue(captureddog) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -103,13 +112,25 @@ namespace Imposter.Tests.Shared
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class IndexerMethodMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IIndexerMethodMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IIndexerMethodMethodInvocationHistory>();
-			internal void Add(IIndexerMethodMethodInvocationHistory invocationHistory)
+			private IndexerMethodMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal IndexerMethodMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IIndexerMethodMethodInvocationHistory invocationHistory)
+			internal void Add(IndexerMethodMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				IndexerMethodMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(IndexerMethodMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -117,12 +138,29 @@ namespace Imposter.Tests.Shared
 
 			internal int Count(IndexerMethodArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IIndexerMethodMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -287,11 +325,11 @@ namespace Imposter.Tests.Shared
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private IndexerMethodMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(IndexerMethodArguments arguments)
+			private IndexerMethodMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in int name, in string lastname, in global::System.Text.RegularExpressions.Regex dog)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(name, lastname, dog))
 						return invocationImposterGroup;
 				}
 
@@ -300,8 +338,10 @@ namespace Imposter.Tests.Shared
 
 			public string Invoke(int name, string lastname, in global::System.Text.RegularExpressions.Regex dog)
 			{
-				var arguments = new IndexerMethodArguments(name, lastname, dog);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				int capturedname = name;
+				string capturedlastname = lastname;
+				global::System.Text.RegularExpressions.Regex captureddog = dog;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedname, capturedlastname, captureddog);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -315,10 +355,10 @@ namespace Imposter.Tests.Shared
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "string IIndexerSetupPoc.IndexerMethod(int name, string lastname, in Regex dog)", name, lastname, in dog);
-					_indexerMethodMethodInvocationHistoryCollection.Add(new IndexerMethodMethodInvocationHistory(arguments, result, default));
+					_indexerMethodMethodInvocationHistoryCollection.Add(new IndexerMethodMethodInvocationHistory(capturedname, capturedlastname, captureddog, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_indexerMethodMethodInvocationHistoryCollection.RecordFailure(new IndexerMethodMethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_indexerMethodMethodInvocationHistoryCollection.RecordFailure(new IndexerMethodMethodInvocationHistory(capturedname, capturedlastname, captureddog, default !, ex)))
 				{
 					throw;
 				}

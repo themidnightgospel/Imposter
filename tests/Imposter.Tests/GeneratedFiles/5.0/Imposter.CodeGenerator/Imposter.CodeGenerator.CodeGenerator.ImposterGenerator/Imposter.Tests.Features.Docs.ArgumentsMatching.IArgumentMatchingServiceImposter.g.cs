@@ -99,7 +99,12 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			public bool Matches(AddArguments arguments)
 			{
-				return a.Matches(arguments.a) && b.Matches(arguments.b);
+				return MatchesCaptured(arguments.a, arguments.b);
+			}
+
+			internal bool MatchesCaptured(in int a, in int b)
+			{
+				return this.a.Matches(a) && this.b.Matches(b);
 			}
 		}
 
@@ -110,26 +115,28 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class AddMethodInvocationHistory : IAddMethodInvocationHistory
+		internal class AddMethodInvocationHistory : AddMethodInvocationHistoryCollection.Node, IAddMethodInvocationHistory
 		{
-			internal AddArguments Arguments;
-			internal int? Result;
-			internal global::System.Exception? Exception;
-			public AddMethodInvocationHistory(AddArguments Arguments, int? Result, global::System.Exception? Exception)
+			internal readonly int captureda;
+			internal readonly int capturedb;
+			internal readonly int? Result;
+			internal readonly global::System.Exception? Exception;
+			public AddMethodInvocationHistory(int captureda, int capturedb, int? Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.captureda = captureda;
+				this.capturedb = capturedb;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(AddArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(captureda, capturedb);
 			}
 
 			public override string ToString()
 			{
-				return "Add(" + global::System.String.Join(", ", new[] { "a: " + FormatValue(Arguments.a), "b: " + FormatValue(Arguments.b) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Add(" + global::System.String.Join(", ", new[] { "a: " + FormatValue(captureda), "b: " + FormatValue(capturedb) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -141,13 +148,25 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class AddMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IAddMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IAddMethodInvocationHistory>();
-			internal void Add(IAddMethodInvocationHistory invocationHistory)
+			private AddMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal AddMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IAddMethodInvocationHistory invocationHistory)
+			internal void Add(AddMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				AddMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(AddMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -155,12 +174,29 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			internal int Count(AddArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IAddMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -325,11 +361,11 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private AddMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(AddArguments arguments)
+			private AddMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in int a, in int b)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(a, b))
 						return invocationImposterGroup;
 				}
 
@@ -338,8 +374,9 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			public int Invoke(int a, int b)
 			{
-				var arguments = new AddArguments(a, b);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				int captureda = a;
+				int capturedb = b;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(captureda, capturedb);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -353,10 +390,10 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "int IArgumentMatchingService.Add(int a, int b)", a, b);
-					_addMethodInvocationHistoryCollection.Add(new AddMethodInvocationHistory(arguments, result, default));
+					_addMethodInvocationHistoryCollection.Add(new AddMethodInvocationHistory(captureda, capturedb, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_addMethodInvocationHistoryCollection.RecordFailure(new AddMethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_addMethodInvocationHistoryCollection.RecordFailure(new AddMethodInvocationHistory(captureda, capturedb, default !, ex)))
 				{
 					throw;
 				}
@@ -480,7 +517,12 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			public bool Matches(FormatArguments arguments)
 			{
-				return template.Matches(arguments.template) && value.Matches(arguments.value);
+				return MatchesCaptured(arguments.template, arguments.value);
+			}
+
+			internal bool MatchesCaptured(in string template, in string value)
+			{
+				return this.template.Matches(template) && this.value.Matches(value);
 			}
 		}
 
@@ -491,26 +533,28 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class FormatMethodInvocationHistory : IFormatMethodInvocationHistory
+		internal class FormatMethodInvocationHistory : FormatMethodInvocationHistoryCollection.Node, IFormatMethodInvocationHistory
 		{
-			internal FormatArguments Arguments;
-			internal string? Result;
-			internal global::System.Exception? Exception;
-			public FormatMethodInvocationHistory(FormatArguments Arguments, string? Result, global::System.Exception? Exception)
+			internal readonly string capturedtemplate;
+			internal readonly string capturedvalue;
+			internal readonly string? Result;
+			internal readonly global::System.Exception? Exception;
+			public FormatMethodInvocationHistory(string capturedtemplate, string capturedvalue, string? Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedtemplate = capturedtemplate;
+				this.capturedvalue = capturedvalue;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(FormatArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(capturedtemplate, capturedvalue);
 			}
 
 			public override string ToString()
 			{
-				return "Format(" + global::System.String.Join(", ", new[] { "template: " + FormatValue(Arguments.template), "value: " + FormatValue(Arguments.value) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Format(" + global::System.String.Join(", ", new[] { "template: " + FormatValue(capturedtemplate), "value: " + FormatValue(capturedvalue) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -522,13 +566,25 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class FormatMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IFormatMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IFormatMethodInvocationHistory>();
-			internal void Add(IFormatMethodInvocationHistory invocationHistory)
+			private FormatMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal FormatMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IFormatMethodInvocationHistory invocationHistory)
+			internal void Add(FormatMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				FormatMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(FormatMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -536,12 +592,29 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			internal int Count(FormatArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IFormatMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -706,11 +779,11 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private FormatMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(FormatArguments arguments)
+			private FormatMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in string template, in string value)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(template, value))
 						return invocationImposterGroup;
 				}
 
@@ -719,8 +792,9 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			public string Invoke(string template, string value)
 			{
-				var arguments = new FormatArguments(template, value);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				string capturedtemplate = template;
+				string capturedvalue = value;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedtemplate, capturedvalue);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -734,10 +808,10 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "string IArgumentMatchingService.Format(string template, string value)", template, value);
-					_formatMethodInvocationHistoryCollection.Add(new FormatMethodInvocationHistory(arguments, result, default));
+					_formatMethodInvocationHistoryCollection.Add(new FormatMethodInvocationHistory(capturedtemplate, capturedvalue, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_formatMethodInvocationHistoryCollection.RecordFailure(new FormatMethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_formatMethodInvocationHistoryCollection.RecordFailure(new FormatMethodInvocationHistory(capturedtemplate, capturedvalue, default !, ex)))
 				{
 					throw;
 				}
@@ -857,7 +931,12 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			public bool Matches(InOnlyArguments arguments)
 			{
-				return input.Matches(arguments.input);
+				return MatchesCaptured(arguments.input);
+			}
+
+			internal bool MatchesCaptured(in int input)
+			{
+				return this.input.Matches(input);
 			}
 		}
 
@@ -868,26 +947,26 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class InOnlyMethodInvocationHistory : IInOnlyMethodInvocationHistory
+		internal class InOnlyMethodInvocationHistory : InOnlyMethodInvocationHistoryCollection.Node, IInOnlyMethodInvocationHistory
 		{
-			internal InOnlyArguments Arguments;
-			internal int? Result;
-			internal global::System.Exception? Exception;
-			public InOnlyMethodInvocationHistory(InOnlyArguments Arguments, int? Result, global::System.Exception? Exception)
+			internal readonly int capturedinput;
+			internal readonly int? Result;
+			internal readonly global::System.Exception? Exception;
+			public InOnlyMethodInvocationHistory(int capturedinput, int? Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedinput = capturedinput;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(InOnlyArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(capturedinput);
 			}
 
 			public override string ToString()
 			{
-				return "InOnly(" + global::System.String.Join(", ", new[] { "input: " + FormatValue(Arguments.input) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "InOnly(" + global::System.String.Join(", ", new[] { "input: " + FormatValue(capturedinput) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -899,13 +978,25 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class InOnlyMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IInOnlyMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IInOnlyMethodInvocationHistory>();
-			internal void Add(IInOnlyMethodInvocationHistory invocationHistory)
+			private InOnlyMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal InOnlyMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IInOnlyMethodInvocationHistory invocationHistory)
+			internal void Add(InOnlyMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				InOnlyMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(InOnlyMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -913,12 +1004,29 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			internal int Count(InOnlyArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IInOnlyMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -1083,11 +1191,11 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private InOnlyMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(InOnlyArguments arguments)
+			private InOnlyMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in int input)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(input))
 						return invocationImposterGroup;
 				}
 
@@ -1096,8 +1204,8 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			public int Invoke(in int input)
 			{
-				var arguments = new InOnlyArguments(input);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				int capturedinput = input;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedinput);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -1111,10 +1219,10 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "int IArgumentMatchingService.InOnly(in int input)", in input);
-					_inOnlyMethodInvocationHistoryCollection.Add(new InOnlyMethodInvocationHistory(arguments, result, default));
+					_inOnlyMethodInvocationHistoryCollection.Add(new InOnlyMethodInvocationHistory(capturedinput, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_inOnlyMethodInvocationHistoryCollection.RecordFailure(new InOnlyMethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_inOnlyMethodInvocationHistoryCollection.RecordFailure(new InOnlyMethodInvocationHistory(capturedinput, default !, ex)))
 				{
 					throw;
 				}
@@ -1234,7 +1342,12 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			public bool Matches(IncrementArguments arguments)
 			{
-				return value.Matches(arguments.value);
+				return MatchesCaptured(arguments.value);
+			}
+
+			internal bool MatchesCaptured(in int value)
+			{
+				return this.value.Matches(value);
 			}
 		}
 
@@ -1245,26 +1358,26 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class IncrementMethodInvocationHistory : IIncrementMethodInvocationHistory
+		internal class IncrementMethodInvocationHistory : IncrementMethodInvocationHistoryCollection.Node, IIncrementMethodInvocationHistory
 		{
-			internal IncrementArguments Arguments;
-			internal int? Result;
-			internal global::System.Exception? Exception;
-			public IncrementMethodInvocationHistory(IncrementArguments Arguments, int? Result, global::System.Exception? Exception)
+			internal readonly int capturedvalue;
+			internal readonly int? Result;
+			internal readonly global::System.Exception? Exception;
+			public IncrementMethodInvocationHistory(int capturedvalue, int? Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedvalue = capturedvalue;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(IncrementArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(capturedvalue);
 			}
 
 			public override string ToString()
 			{
-				return "Increment(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Increment(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(capturedvalue) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -1276,13 +1389,25 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class IncrementMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IIncrementMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IIncrementMethodInvocationHistory>();
-			internal void Add(IIncrementMethodInvocationHistory invocationHistory)
+			private IncrementMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal IncrementMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IIncrementMethodInvocationHistory invocationHistory)
+			internal void Add(IncrementMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				IncrementMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(IncrementMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -1290,12 +1415,29 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			internal int Count(IncrementArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IIncrementMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -1460,11 +1602,11 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private IncrementMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(IncrementArguments arguments)
+			private IncrementMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in int value)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(value))
 						return invocationImposterGroup;
 				}
 
@@ -1473,8 +1615,8 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			public int Invoke(int value)
 			{
-				var arguments = new IncrementArguments(value);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				int capturedvalue = value;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedvalue);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -1488,10 +1630,10 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "int IArgumentMatchingService.Increment(int value)", value);
-					_incrementMethodInvocationHistoryCollection.Add(new IncrementMethodInvocationHistory(arguments, result, default));
+					_incrementMethodInvocationHistoryCollection.Add(new IncrementMethodInvocationHistory(capturedvalue, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_incrementMethodInvocationHistoryCollection.RecordFailure(new IncrementMethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_incrementMethodInvocationHistoryCollection.RecordFailure(new IncrementMethodInvocationHistory(capturedvalue, default !, ex)))
 				{
 					throw;
 				}
@@ -1596,10 +1738,10 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class OutOnlyMethodInvocationHistory : IOutOnlyMethodInvocationHistory
+		internal class OutOnlyMethodInvocationHistory : OutOnlyMethodInvocationHistoryCollection.Node, IOutOnlyMethodInvocationHistory
 		{
-			internal int? Result;
-			internal global::System.Exception? Exception;
+			internal readonly int? Result;
+			internal readonly global::System.Exception? Exception;
 			public OutOnlyMethodInvocationHistory(int? Result, global::System.Exception? Exception)
 			{
 				this.Result = Result;
@@ -1625,13 +1767,25 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class OutOnlyMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IOutOnlyMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IOutOnlyMethodInvocationHistory>();
-			internal void Add(IOutOnlyMethodInvocationHistory invocationHistory)
+			private OutOnlyMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal OutOnlyMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IOutOnlyMethodInvocationHistory invocationHistory)
+			internal void Add(OutOnlyMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				OutOnlyMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(OutOnlyMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -1639,12 +1793,29 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			internal int Count()
 			{
-				return _invocationHistory.Count(it => it.Matches());
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IOutOnlyMethodInvocationHistory)invocation).Matches())
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -1961,7 +2132,12 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			public bool Matches(RefOnlyArguments arguments)
 			{
-				return state.Matches(arguments.state);
+				return MatchesCaptured(arguments.state);
+			}
+
+			internal bool MatchesCaptured(in int state)
+			{
+				return this.state.Matches(state);
 			}
 		}
 
@@ -1972,26 +2148,26 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class RefOnlyMethodInvocationHistory : IRefOnlyMethodInvocationHistory
+		internal class RefOnlyMethodInvocationHistory : RefOnlyMethodInvocationHistoryCollection.Node, IRefOnlyMethodInvocationHistory
 		{
-			internal RefOnlyArguments Arguments;
-			internal int? Result;
-			internal global::System.Exception? Exception;
-			public RefOnlyMethodInvocationHistory(RefOnlyArguments Arguments, int? Result, global::System.Exception? Exception)
+			internal readonly int capturedstate;
+			internal readonly int? Result;
+			internal readonly global::System.Exception? Exception;
+			public RefOnlyMethodInvocationHistory(int capturedstate, int? Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedstate = capturedstate;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(RefOnlyArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(capturedstate);
 			}
 
 			public override string ToString()
 			{
-				return "RefOnly(" + global::System.String.Join(", ", new[] { "state: " + FormatValue(Arguments.state) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "RefOnly(" + global::System.String.Join(", ", new[] { "state: " + FormatValue(capturedstate) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -2003,13 +2179,25 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class RefOnlyMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IRefOnlyMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IRefOnlyMethodInvocationHistory>();
-			internal void Add(IRefOnlyMethodInvocationHistory invocationHistory)
+			private RefOnlyMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal RefOnlyMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IRefOnlyMethodInvocationHistory invocationHistory)
+			internal void Add(RefOnlyMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				RefOnlyMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(RefOnlyMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -2017,12 +2205,29 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			internal int Count(RefOnlyArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IRefOnlyMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -2187,11 +2392,11 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private RefOnlyMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(RefOnlyArguments arguments)
+			private RefOnlyMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in int state)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(state))
 						return invocationImposterGroup;
 				}
 
@@ -2200,8 +2405,8 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			public int Invoke(ref int state)
 			{
-				var arguments = new RefOnlyArguments(state);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				int capturedstate = state;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedstate);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -2215,10 +2420,10 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "int IArgumentMatchingService.RefOnly(ref int state)", ref state);
-					_refOnlyMethodInvocationHistoryCollection.Add(new RefOnlyMethodInvocationHistory(arguments, result, default));
+					_refOnlyMethodInvocationHistoryCollection.Add(new RefOnlyMethodInvocationHistory(capturedstate, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_refOnlyMethodInvocationHistoryCollection.RecordFailure(new RefOnlyMethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_refOnlyMethodInvocationHistoryCollection.RecordFailure(new RefOnlyMethodInvocationHistory(capturedstate, default !, ex)))
 				{
 					throw;
 				}
@@ -2338,7 +2543,12 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			public bool Matches(SumArguments arguments)
 			{
-				return values.Matches(arguments.values);
+				return MatchesCaptured(arguments.values);
+			}
+
+			internal bool MatchesCaptured(in int[] values)
+			{
+				return this.values.Matches(values);
 			}
 		}
 
@@ -2349,26 +2559,26 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class SumMethodInvocationHistory : ISumMethodInvocationHistory
+		internal class SumMethodInvocationHistory : SumMethodInvocationHistoryCollection.Node, ISumMethodInvocationHistory
 		{
-			internal SumArguments Arguments;
-			internal int? Result;
-			internal global::System.Exception? Exception;
-			public SumMethodInvocationHistory(SumArguments Arguments, int? Result, global::System.Exception? Exception)
+			internal readonly int[] capturedvalues;
+			internal readonly int? Result;
+			internal readonly global::System.Exception? Exception;
+			public SumMethodInvocationHistory(int[] capturedvalues, int? Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedvalues = capturedvalues;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(SumArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(capturedvalues);
 			}
 
 			public override string ToString()
 			{
-				return "Sum(" + global::System.String.Join(", ", new[] { "values: " + FormatValue(Arguments.values) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Sum(" + global::System.String.Join(", ", new[] { "values: " + FormatValue(capturedvalues) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -2380,13 +2590,25 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class SumMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ISumMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<ISumMethodInvocationHistory>();
-			internal void Add(ISumMethodInvocationHistory invocationHistory)
+			private SumMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal SumMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(ISumMethodInvocationHistory invocationHistory)
+			internal void Add(SumMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				SumMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(SumMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -2394,12 +2616,29 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			internal int Count(SumArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((ISumMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -2564,11 +2803,11 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private SumMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(SumArguments arguments)
+			private SumMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in int[] values)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(values))
 						return invocationImposterGroup;
 				}
 
@@ -2577,8 +2816,8 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			public int Invoke(int[] values)
 			{
-				var arguments = new SumArguments(values);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				int[] capturedvalues = values;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedvalues);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -2592,10 +2831,10 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "int IArgumentMatchingService.Sum(params int[] values)", values);
-					_sumMethodInvocationHistoryCollection.Add(new SumMethodInvocationHistory(arguments, result, default));
+					_sumMethodInvocationHistoryCollection.Add(new SumMethodInvocationHistory(capturedvalues, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_sumMethodInvocationHistoryCollection.RecordFailure(new SumMethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_sumMethodInvocationHistoryCollection.RecordFailure(new SumMethodInvocationHistory(capturedvalues, default !, ex)))
 				{
 					throw;
 				}

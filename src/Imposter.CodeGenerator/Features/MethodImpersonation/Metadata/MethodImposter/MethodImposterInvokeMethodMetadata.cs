@@ -13,8 +13,6 @@ internal readonly struct MethodImposterInvokeMethodMetadata
 
     internal readonly string MatchingInvocationImposterGroupVariableName;
 
-    internal readonly string ArgumentsVariableName;
-
     internal readonly ParameterMetadata BaseInvocationParameter;
 
     internal readonly string CallbackIterationVariableName;
@@ -39,7 +37,6 @@ internal readonly struct MethodImposterInvokeMethodMetadata
         MatchingInvocationImposterGroupVariableName = parameterNameContext.Use(
             "matchingInvocationImposterGroup"
         );
-        ArgumentsVariableName = parameterNameContext.Use("arguments");
         BaseInvocationParameter = new ParameterMetadata(
             parameterNameContext.Use("baseImplementation"),
             delegateSyntax.ToNullableType(),

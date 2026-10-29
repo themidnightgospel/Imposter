@@ -53,7 +53,12 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			public bool Matches(TrimArguments arguments)
 			{
-				return text.Matches(arguments.text);
+				return MatchesCaptured(arguments.text);
+			}
+
+			internal bool MatchesCaptured(in char[] text)
+			{
+				return this.text.Matches(text);
 			}
 		}
 
@@ -64,26 +69,26 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class TrimMethodInvocationHistory : ITrimMethodInvocationHistory
+		internal class TrimMethodInvocationHistory : TrimMethodInvocationHistoryCollection.Node, ITrimMethodInvocationHistory
 		{
-			internal TrimArguments Arguments;
-			internal char[]? Result;
-			internal global::System.Exception? Exception;
-			public TrimMethodInvocationHistory(TrimArguments Arguments, char[]? Result, global::System.Exception? Exception)
+			internal readonly char[] capturedtext;
+			internal readonly char[]? Result;
+			internal readonly global::System.Exception? Exception;
+			public TrimMethodInvocationHistory(char[] capturedtext, char[]? Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedtext = capturedtext;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(TrimArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(capturedtext);
 			}
 
 			public override string ToString()
 			{
-				return "Trim(" + global::System.String.Join(", ", new[] { "text: " + FormatValue(Arguments.text) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Trim(" + global::System.String.Join(", ", new[] { "text: " + FormatValue(capturedtext) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -95,13 +100,25 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class TrimMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ITrimMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<ITrimMethodInvocationHistory>();
-			internal void Add(ITrimMethodInvocationHistory invocationHistory)
+			private TrimMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal TrimMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(ITrimMethodInvocationHistory invocationHistory)
+			internal void Add(TrimMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				TrimMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(TrimMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -109,12 +126,29 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			internal int Count(TrimArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((ITrimMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -279,11 +313,11 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private TrimMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(TrimArguments arguments)
+			private TrimMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in char[] text)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(text))
 						return invocationImposterGroup;
 				}
 
@@ -292,8 +326,8 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			public global::System.ReadOnlySpan<char> Invoke(scoped global::System.ReadOnlySpan<char> text)
 			{
-				var arguments = new TrimArguments(text);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				char[] capturedtext = text.ToArray();
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedtext);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -307,10 +341,10 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "ReadOnlySpan<char> IScopedSpanReader.Trim(scoped ReadOnlySpan<char> text)", text);
-					_trimMethodInvocationHistoryCollection.Add(new TrimMethodInvocationHistory(arguments, result.ToArray(), default));
+					_trimMethodInvocationHistoryCollection.Add(new TrimMethodInvocationHistory(capturedtext, result.ToArray(), default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_trimMethodInvocationHistoryCollection.RecordFailure(new TrimMethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_trimMethodInvocationHistoryCollection.RecordFailure(new TrimMethodInvocationHistory(capturedtext, default !, ex)))
 				{
 					throw;
 				}

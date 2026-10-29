@@ -24,6 +24,7 @@ internal static partial class InvocationHistoryBuilder
         )
             .WithTypeParameterConstraintClauses(method.GenericTypeConstraintClauses)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddBaseType(SimpleBaseType(method.InvocationHistory.NodeSyntax))
             .AddBaseType(SimpleBaseType(method.InvocationHistory.Interface.Syntax))
             .AddMembers(fields)
             .AddMember(
@@ -79,14 +80,14 @@ internal static partial class InvocationHistoryBuilder
         in ImposterTargetMethodMetadata method
     )
     {
-        var argumentsIdentifier = IdentifierName(InvocationHistoryTypeMetadata.ArgumentsFieldName);
+        var argumentFields = method.InvocationHistory.ArgumentFields;
 
         var argumentDescriptions = method
             .Parameters.InputParameterMetadata.Select(
                 ExpressionSyntax (parameter) =>
                     $"{parameter.Model.Name}: "
                         .StringLiteral()
-                        .Add(Invocation(argumentsIdentifier.Dot(IdentifierName(parameter.Name))))
+                        .Add(Invocation(IdentifierName(argumentFields[parameter.Name])))
             )
             .ToArray();
 

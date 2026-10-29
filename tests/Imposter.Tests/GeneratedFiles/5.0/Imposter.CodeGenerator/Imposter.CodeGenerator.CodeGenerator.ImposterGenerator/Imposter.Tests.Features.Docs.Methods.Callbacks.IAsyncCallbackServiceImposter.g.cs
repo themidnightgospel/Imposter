@@ -53,7 +53,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 
 			public bool Matches(SaveAsyncArguments arguments)
 			{
-				return name.Matches(arguments.name);
+				return MatchesCaptured(arguments.name);
+			}
+
+			internal bool MatchesCaptured(in string name)
+			{
+				return this.name.Matches(name);
 			}
 		}
 
@@ -64,26 +69,26 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class SaveAsyncMethodInvocationHistory : ISaveAsyncMethodInvocationHistory
+		internal class SaveAsyncMethodInvocationHistory : SaveAsyncMethodInvocationHistoryCollection.Node, ISaveAsyncMethodInvocationHistory
 		{
-			internal SaveAsyncArguments Arguments;
-			internal global::System.Threading.Tasks.Task<int> Result;
-			internal global::System.Exception? Exception;
-			public SaveAsyncMethodInvocationHistory(SaveAsyncArguments Arguments, global::System.Threading.Tasks.Task<int> Result, global::System.Exception? Exception)
+			internal readonly string capturedname;
+			internal readonly global::System.Threading.Tasks.Task<int> Result;
+			internal readonly global::System.Exception? Exception;
+			public SaveAsyncMethodInvocationHistory(string capturedname, global::System.Threading.Tasks.Task<int> Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedname = capturedname;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(SaveAsyncArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(capturedname);
 			}
 
 			public override string ToString()
 			{
-				return "SaveAsync(" + global::System.String.Join(", ", new[] { "name: " + FormatValue(Arguments.name) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "SaveAsync(" + global::System.String.Join(", ", new[] { "name: " + FormatValue(capturedname) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -95,13 +100,25 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class SaveAsyncMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ISaveAsyncMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<ISaveAsyncMethodInvocationHistory>();
-			internal void Add(ISaveAsyncMethodInvocationHistory invocationHistory)
+			private SaveAsyncMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal SaveAsyncMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(ISaveAsyncMethodInvocationHistory invocationHistory)
+			internal void Add(SaveAsyncMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				SaveAsyncMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(SaveAsyncMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -109,12 +126,29 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 
 			internal int Count(SaveAsyncArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((ISaveAsyncMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -307,11 +341,11 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private SaveAsyncMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(SaveAsyncArguments arguments)
+			private SaveAsyncMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in string name)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(name))
 						return invocationImposterGroup;
 				}
 
@@ -320,8 +354,8 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 
 			public global::System.Threading.Tasks.Task<int> Invoke(string name)
 			{
-				var arguments = new SaveAsyncArguments(name);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				string capturedname = name;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedname);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -335,10 +369,10 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "Task<int> IAsyncCallbackService.SaveAsync(string name)", name);
-					_saveAsyncMethodInvocationHistoryCollection.Add(new SaveAsyncMethodInvocationHistory(arguments, result, default));
+					_saveAsyncMethodInvocationHistoryCollection.Add(new SaveAsyncMethodInvocationHistory(capturedname, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_saveAsyncMethodInvocationHistoryCollection.RecordFailure(new SaveAsyncMethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_saveAsyncMethodInvocationHistoryCollection.RecordFailure(new SaveAsyncMethodInvocationHistory(capturedname, default !, ex)))
 				{
 					throw;
 				}

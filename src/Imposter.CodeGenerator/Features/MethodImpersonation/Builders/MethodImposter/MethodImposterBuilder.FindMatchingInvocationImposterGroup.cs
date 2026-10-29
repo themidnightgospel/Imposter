@@ -1,3 +1,4 @@
+using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Shared;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationSetup;
 using Imposter.CodeGenerator.SyntaxHelpers;
@@ -32,8 +33,8 @@ internal partial class MethodImposterBuilder
                             MethodInvocationImposterGroupMetadata.ArgumentsCriteriaPropertyName
                         )
                     )
-                    .Dot(IdentifierName(method.ArgumentsCriteria.MatchesMethod.Name))
-                    .Call(Argument(IdentifierName("arguments")))
+                    .Dot(IdentifierName(method.ArgumentsCriteria.MatchesCapturedMethodName))
+                    .Call(CapturedArgumentsBuilder.Arguments(method))
             );
         }
 
@@ -42,11 +43,7 @@ internal partial class MethodImposterBuilder
             lookup.Name
         )
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
-            .AddParameter(
-                method.Parameters.HasInputParameters
-                    ? ParameterSyntax(method.Arguments.Syntax, "arguments")
-                    : null
-            )
+            .WithParameterList(CapturedArgumentsBuilder.Parameters(method))
             .WithBody(
                 Block(
                     ForEachStatement(

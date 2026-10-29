@@ -182,6 +182,89 @@ not a universal throughput guarantee. `baseline-property-runtime.csv` and
 `properties-property-runtime.csv` retain sample counts, standard deviations and confidence
 margins, including cases where BDN removed outliers.
 
+## Issue #406: method history runtime benchmarks
+
+Method history now retains one entry containing the captured input fields, result, exception,
+and next link. A compare-and-swap push publishes that same entry without allocating a stack
+node, including on retries. Verification captures the head once and walks immutable published
+links in newest-first order without a LINQ closure, delegate, or enumerator.
+
+Each lookup/invocation stage captures inputs before evaluating its predicates or callbacks.
+Generic lookup takes one value copy so a predicate changing the caller's `ref`/`in` storage
+cannot change the values seen by later candidates. History retains values captured before
+invocation callbacks, and span parameters retain array snapshots. Internal matching accepts
+kept values by readonly reference, avoiding another large-struct copy at each lookup boundary.
+Generic history checks exact type arguments before casting criteria to their original type.
+Cross-type generic adapters still copy span arrays: a predicate may mutate its copy, which
+must not change the snapshot seen by another candidate. Same-type calls bypass adapters.
+
+The public arguments classes, history interfaces, criteria properties, `Matches(Arguments)`,
+and `As<T>()` remain source-compatible. The existing `Matches` method forwards to an internal
+`MatchesCaptured` method, avoiding a new public overload that could make null calls ambiguous.
+This change addresses method history allocations; properties/indexers and the size of emitted
+source are separate work. Public plumbing remains emitted, and the new internal node and
+lookup code can increase source size. Span snapshots, cross-type adapters, setup construction,
+and unconfigured generic fallback work can still allocate in addition to the retained entry.
+
+Validation covers all four Roslyn snapshot sets, native .NET 8 and .NET 10 behavior suites,
+generator compilation and naming-collision suites, and the packed-consumer smoke test. There
+are 6,144 passing test executions across the final matrix. New checks cover concurrent writers
+and readers, snapshot isolation, original ref/in/span values after callbacks (including thrown
+exceptions), diagnostics order, compatibility of explicitly named public types, and allocation
+limits. Ten strengthened allocation checks fail against baseline master `9f2ff3af` and pass
+with the fix. The cross-type span mutation test passes on master, fails if the adapter copy is
+removed, and passes with the final implementation. Ref/in lookup tests likewise pass on
+master and the fix, and fail if generic lookup borrows the caller's storage instead of taking
+a value snapshot.
+
+The runtime cases live in the sibling `Imposter.Benchmarks` project. Copy
+`MethodHistoryBenchmarks.cs` to the baseline checkout before running the same command there
+and in the modified checkout, with separate artifact directories:
+
+```sh
+IMPOSTER_BENCHMARK_JOB=short HUSKY=0 dotnet run \
+  --project benchmarks/Imposter.Benchmarks -c Release -p:ROSLYN_VERSION=5.0 \
+  -- --filter '*MethodHistory*Benchmarks*' --warmupCount 5 --iterationCount 10 \
+  --artifacts /tmp/imposter-method-history
+```
+
+Call benchmarks create a new imposter for each 1,000-call batch, bounding retained history.
+Their per-operation figures include amortized construction/setup costs. The large `in`
+parameter is a 128-byte struct tested against eight candidate setups. Verification benchmarks
+reuse both the builder and `Count` instance; they measure traversal rather than registering a
+new verification setup, and cover histories of one and 1,000 calls.
+
+Both revisions use .NET 10.0.11 (SDK 10.0.400), Roslyn 5.0, and Apple M3 Pro ARM64 on macOS
+26.6.2, in Release. BenchmarkDotNet uses one launch, five warmups, and ten measured iterations;
+outlier removal can reduce the retained sample count. These runs are sequential, without the
+test matrix running alongside them. Raw mean, standard deviation, 99.9% confidence margin,
+retained sample count, and allocated bytes per operation are in
+[`results/issue-406`](results/issue-406). Timing results are machine-specific; unit allocation
+limits are checked separately without charging construction/setup to each invocation.
+
+Measured calls (setup costs amortized over 1,000 calls):
+
+| Method | Before mean (ns) | After mean (ns) | Bytes/op, before / after |
+| --- | ---: | ---: | ---: |
+| NonGeneric | 16.84 | 8.66 | 97 / 49 |
+| Generic | 26.67 | 15.23 | 121 / 41 |
+| Span | 22.09 | 12.85 | 137 / 89 |
+| LargeInWithEightCandidates | 72.00 | 40.47 | 229 / 181 |
+
+Measured verification with 1,000 recorded calls (existing builder and Count):
+
+| Method | Before mean (µs) | After mean (µs) | Bytes/op, before / after |
+| --- | ---: | ---: | ---: |
+| NonGeneric | 8.067 | 1.352 | 72 / 0 |
+| Generic | 9.370 | 3.353 | 72 / 0 |
+| Span | 7.416 | 1.168 | 72 / 0 |
+
+All measured means and allocation counts improve in this run. Verification allocates zero
+bytes at both history lengths. The baseline large-struct and span-verification timing samples
+are relatively noisy, so consult their confidence margins in the CSVs rather than treating
+these means as universal speedups. The generic call benchmark uses `int`; the separate generic
+allocation test uses `string`, whose retained entry has a different size.
+
 ## Baseline with async methods
 
 Master `af8b195e`, the first workload with async methods (#374). Windows 11 x64, Intel Core

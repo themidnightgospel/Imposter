@@ -1,4 +1,4 @@
-﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationHistory;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -13,6 +13,7 @@ internal static partial class InvocationHistoryCollectionBuilder
 {
     internal static MethodDeclarationSyntax BuildCountMethod(in ImposterTargetMethodMetadata method)
     {
+        var names = new InvocationHistoryCollectionCountMethodMetadata(method);
         return new MethodDeclarationBuilder(
             WellKnownTypes.Int,
             InvocationHistoryCollectionCountMethodMetadata.Name
@@ -23,27 +24,49 @@ internal static partial class InvocationHistoryCollectionBuilder
             .AddParameter(GetParameter(method))
             .WithBody(
                 Block(
-                    ReturnStatement(
-                        IdentifierName(
-                                InvocationHistoryCollectionMetadata.InvocationHistoryCollectionFieldName
-                            )
-                            .Dot(IdentifierName("Count"))
-                            .Call(
-                                Parameter(Identifier("it"))
-                                    .Lambda(
-                                        It.Dot(
-                                                method.WithGenericArguments(
-                                                    InvocationHistoryMatchesMethodMetadata.Name
-                                                )
-                                            )
-                                            .Call(
-                                                GetMatchesMethodArguments(method)
-                                                    ?.ToSingleArgumentList()
-                                            )
+                    LocalVariableDeclarationSyntax(
+                        Var,
+                        names.CountVariableName,
+                        LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))
+                    ),
+                    LocalVariableDeclarationSyntax(Var, names.InvocationVariableName, ReadHead()),
+                    WhileStatement(
+                        IdentifierName(names.InvocationVariableName).IsNotNull(),
+                        Block(
+                            IfStatement(
+                                ParenthesizedExpression(
+                                        CastExpression(
+                                            method.InvocationHistory.Interface.Syntax,
+                                            IdentifierName(names.InvocationVariableName)
+                                        )
                                     )
-                                    .ToSingleArgumentList()
-                            )
-                    )
+                                    .Dot(
+                                        method.WithGenericArguments(
+                                            InvocationHistoryMatchesMethodMetadata.Name
+                                        )
+                                    )
+                                    .Call(
+                                        GetMatchesMethodArguments(method)?.ToSingleArgumentList()
+                                    ),
+                                PostfixUnaryExpression(
+                                        SyntaxKind.PostIncrementExpression,
+                                        IdentifierName(names.CountVariableName)
+                                    )
+                                    .ToStatementSyntax()
+                            ),
+                            IdentifierName(names.InvocationVariableName)
+                                .Assign(
+                                    IdentifierName(names.InvocationVariableName)
+                                        .Dot(
+                                            IdentifierName(
+                                                InvocationHistoryTypeMetadata.NextFieldName
+                                            )
+                                        )
+                                )
+                                .ToStatementSyntax()
+                        )
+                    ),
+                    ReturnStatement(IdentifierName(names.CountVariableName))
                 )
             )
             .Build();

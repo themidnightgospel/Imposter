@@ -86,7 +86,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			public bool Matches(EchoArguments<T> arguments)
 			{
-				return item.Matches(arguments.item);
+				return MatchesCaptured(arguments.item);
+			}
+
+			internal bool MatchesCaptured(in T item)
+			{
+				return this.item.Matches(item);
 			}
 
 			public EchoArgumentsCriteria<TTarget> As<TTarget>()
@@ -106,14 +111,14 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class EchoMethodInvocationHistory<T> : IEchoMethodInvocationHistory where T : class
+		internal class EchoMethodInvocationHistory<T> : EchoMethodInvocationHistoryCollection.Node, IEchoMethodInvocationHistory where T : class
 		{
-			internal EchoArguments<T> Arguments;
-			internal T? Result;
-			internal global::System.Exception? Exception;
-			public EchoMethodInvocationHistory(EchoArguments<T> Arguments, T? Result, global::System.Exception? Exception)
+			internal readonly T captureditem;
+			internal readonly T? Result;
+			internal readonly global::System.Exception? Exception;
+			public EchoMethodInvocationHistory(T captureditem, T? Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.captureditem = captureditem;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
@@ -121,12 +126,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			public bool Matches<TTarget>(EchoArgumentsCriteria<TTarget> criteria)
 				where TTarget : class
 			{
-				return (typeof(TTarget) == typeof(T)) && criteria.As<T>().Matches(Arguments);
+				return (typeof(TTarget) == typeof(T)) && ((EchoArgumentsCriteria<T>)(object)criteria).MatchesCaptured(captureditem);
 			}
 
 			public override string ToString()
 			{
-				return "Echo(" + global::System.String.Join(", ", new[] { "item: " + FormatValue(Arguments.item) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Echo(" + global::System.String.Join(", ", new[] { "item: " + FormatValue(captureditem) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -138,13 +143,25 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class EchoMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IEchoMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IEchoMethodInvocationHistory>();
-			internal void Add(IEchoMethodInvocationHistory invocationHistory)
+			private EchoMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal EchoMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IEchoMethodInvocationHistory invocationHistory)
+			internal void Add(EchoMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				EchoMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(EchoMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -153,12 +170,29 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			internal int Count<T>(EchoArgumentsCriteria<T> argumentsCriteria)
 				where T : class
 			{
-				return _invocationHistory.Count(it => it.Matches<T>(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IEchoMethodInvocationHistory)invocation).Matches<T>(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -184,13 +218,13 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				return imposter;
 			}
 
-			internal IEchoMethodImposter<T> GetImposterWithMatchingInvocationImposterGroup<T>(EchoArguments<T> arguments)
+			internal IEchoMethodImposter<T> GetImposterWithMatchingInvocationImposterGroup<T>(T item)
 				where T : class
 			{
 				foreach (var storedImposter in _imposters)
 				{
 					var typedImposter = storedImposter.As<T>();
-					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments))
+					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(item))
 						return typedImposter;
 				}
 
@@ -364,7 +398,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		internal interface IEchoMethodImposter<T> : IEchoMethodImposter where T : class
 		{
 			T Invoke(T item, EchoDelegate<T>? baseImplementation = null);
-			bool HasMatchingInvocationImposterGroup(EchoArguments<T> arguments);
+			bool HasMatchingInvocationImposterGroup(in T item);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -419,9 +453,9 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					return global::Imposter.Abstractions.TypeCaster.Cast<T, TTarget>(result);
 				}
 
-				public bool HasMatchingInvocationImposterGroup(EchoArguments<TTarget> arguments)
+				public bool HasMatchingInvocationImposterGroup(in TTarget item)
 				{
-					return _target.HasMatchingInvocationImposterGroup(arguments.As<T>());
+					return _target.HasMatchingInvocationImposterGroup(global::Imposter.Abstractions.TypeCaster.Cast<TTarget, T>(item));
 				}
 
 				IEchoMethodImposter<TTarget1>? IEchoMethodImposter.As<TTarget1>()
@@ -430,16 +464,16 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				}
 			}
 
-			public bool HasMatchingInvocationImposterGroup(EchoArguments<T> arguments)
+			public bool HasMatchingInvocationImposterGroup(in T item)
 			{
-				return FindMatchingInvocationImposterGroup(arguments) != null;
+				return FindMatchingInvocationImposterGroup(item) != null;
 			}
 
-			private EchoMethodInvocationImposterGroup<T>? FindMatchingInvocationImposterGroup(EchoArguments<T> arguments)
+			private EchoMethodInvocationImposterGroup<T>? FindMatchingInvocationImposterGroup(in T item)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(item))
 						return invocationImposterGroup;
 				}
 
@@ -448,8 +482,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			public T Invoke(T item, EchoDelegate<T>? baseImplementation = null)
 			{
-				var arguments = new EchoArguments<T>(item);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				T captureditem = item;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(captureditem);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -463,10 +497,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual T ClassWithOverloadsAndGenerics.Echo<T>(T item)", item, baseImplementation);
-					_echoMethodInvocationHistoryCollection.Add(new EchoMethodInvocationHistory<T>(arguments, result, default));
+					_echoMethodInvocationHistoryCollection.Add(new EchoMethodInvocationHistory<T>(captureditem, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_echoMethodInvocationHistoryCollection.RecordFailure(new EchoMethodInvocationHistory<T>(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_echoMethodInvocationHistoryCollection.RecordFailure(new EchoMethodInvocationHistory<T>(captureditem, default !, ex)))
 				{
 					throw;
 				}
@@ -594,7 +628,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			public bool Matches(FormatArguments arguments)
 			{
-				return value.Matches(arguments.value);
+				return MatchesCaptured(arguments.value);
+			}
+
+			internal bool MatchesCaptured(in int value)
+			{
+				return this.value.Matches(value);
 			}
 		}
 
@@ -605,26 +644,26 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class FormatMethodInvocationHistory : IFormatMethodInvocationHistory
+		internal class FormatMethodInvocationHistory : FormatMethodInvocationHistoryCollection.Node, IFormatMethodInvocationHistory
 		{
-			internal FormatArguments Arguments;
-			internal string? Result;
-			internal global::System.Exception? Exception;
-			public FormatMethodInvocationHistory(FormatArguments Arguments, string? Result, global::System.Exception? Exception)
+			internal readonly int capturedvalue;
+			internal readonly string? Result;
+			internal readonly global::System.Exception? Exception;
+			public FormatMethodInvocationHistory(int capturedvalue, string? Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedvalue = capturedvalue;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(FormatArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(capturedvalue);
 			}
 
 			public override string ToString()
 			{
-				return "Format(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Format(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(capturedvalue) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -636,13 +675,25 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class FormatMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IFormatMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IFormatMethodInvocationHistory>();
-			internal void Add(IFormatMethodInvocationHistory invocationHistory)
+			private FormatMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal FormatMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IFormatMethodInvocationHistory invocationHistory)
+			internal void Add(FormatMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				FormatMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(FormatMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -650,12 +701,29 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			internal int Count(FormatArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IFormatMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -836,11 +904,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private FormatMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(FormatArguments arguments)
+			private FormatMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in int value)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(value))
 						return invocationImposterGroup;
 				}
 
@@ -849,8 +917,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			public string Invoke(int value, FormatDelegate? baseImplementation = null)
 			{
-				var arguments = new FormatArguments(value);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				int capturedvalue = value;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedvalue);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -864,10 +932,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual string ClassWithOverloadsAndGenerics.Format(int value)", value, baseImplementation);
-					_formatMethodInvocationHistoryCollection.Add(new FormatMethodInvocationHistory(arguments, result, default));
+					_formatMethodInvocationHistoryCollection.Add(new FormatMethodInvocationHistory(capturedvalue, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_formatMethodInvocationHistoryCollection.RecordFailure(new FormatMethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_formatMethodInvocationHistoryCollection.RecordFailure(new FormatMethodInvocationHistory(capturedvalue, default !, ex)))
 				{
 					throw;
 				}
@@ -998,7 +1066,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			public bool Matches(Format_1Arguments arguments)
 			{
-				return value.Matches(arguments.value) && padding.Matches(arguments.padding);
+				return MatchesCaptured(arguments.value, arguments.padding);
+			}
+
+			internal bool MatchesCaptured(in string value, in int padding)
+			{
+				return this.value.Matches(value) && this.padding.Matches(padding);
 			}
 		}
 
@@ -1009,26 +1082,28 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class Format_1MethodInvocationHistory : IFormat_1MethodInvocationHistory
+		internal class Format_1MethodInvocationHistory : Format_1MethodInvocationHistoryCollection.Node, IFormat_1MethodInvocationHistory
 		{
-			internal Format_1Arguments Arguments;
-			internal string? Result;
-			internal global::System.Exception? Exception;
-			public Format_1MethodInvocationHistory(Format_1Arguments Arguments, string? Result, global::System.Exception? Exception)
+			internal readonly string capturedvalue;
+			internal readonly int capturedpadding;
+			internal readonly string? Result;
+			internal readonly global::System.Exception? Exception;
+			public Format_1MethodInvocationHistory(string capturedvalue, int capturedpadding, string? Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedvalue = capturedvalue;
+				this.capturedpadding = capturedpadding;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(Format_1ArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(capturedvalue, capturedpadding);
 			}
 
 			public override string ToString()
 			{
-				return "Format(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value), "padding: " + FormatValue(Arguments.padding) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Format(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(capturedvalue), "padding: " + FormatValue(capturedpadding) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -1040,13 +1115,25 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class Format_1MethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IFormat_1MethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IFormat_1MethodInvocationHistory>();
-			internal void Add(IFormat_1MethodInvocationHistory invocationHistory)
+			private Format_1MethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal Format_1MethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IFormat_1MethodInvocationHistory invocationHistory)
+			internal void Add(Format_1MethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				Format_1MethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(Format_1MethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -1054,12 +1141,29 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			internal int Count(Format_1ArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IFormat_1MethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -1240,11 +1344,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private Format_1MethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(Format_1Arguments arguments)
+			private Format_1MethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in string value, in int padding)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(value, padding))
 						return invocationImposterGroup;
 				}
 
@@ -1253,8 +1357,9 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			public string Invoke(string value, int padding, Format_1Delegate? baseImplementation = null)
 			{
-				var arguments = new Format_1Arguments(value, padding);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				string capturedvalue = value;
+				int capturedpadding = padding;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedvalue, capturedpadding);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -1268,10 +1373,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual string ClassWithOverloadsAndGenerics.Format(string value, int padding)", value, padding, baseImplementation);
-					_format_1MethodInvocationHistoryCollection.Add(new Format_1MethodInvocationHistory(arguments, result, default));
+					_format_1MethodInvocationHistoryCollection.Add(new Format_1MethodInvocationHistory(capturedvalue, capturedpadding, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_format_1MethodInvocationHistoryCollection.RecordFailure(new Format_1MethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_format_1MethodInvocationHistoryCollection.RecordFailure(new Format_1MethodInvocationHistory(capturedvalue, capturedpadding, default !, ex)))
 				{
 					throw;
 				}
@@ -1407,7 +1512,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			public bool Matches(SelectFirstArguments<TFirst, TSecond> arguments)
 			{
-				return first.Matches(arguments.first) && second.Matches(arguments.second);
+				return MatchesCaptured(arguments.first, arguments.second);
+			}
+
+			internal bool MatchesCaptured(in TFirst first, in TSecond second)
+			{
+				return this.first.Matches(first) && this.second.Matches(second);
 			}
 
 			public SelectFirstArgumentsCriteria<TFirstTarget, TSecondTarget> As<TFirstTarget, TSecondTarget>()
@@ -1425,26 +1535,28 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class SelectFirstMethodInvocationHistory<TFirst, TSecond> : ISelectFirstMethodInvocationHistory
+		internal class SelectFirstMethodInvocationHistory<TFirst, TSecond> : SelectFirstMethodInvocationHistoryCollection.Node, ISelectFirstMethodInvocationHistory
 		{
-			internal SelectFirstArguments<TFirst, TSecond> Arguments;
-			internal TFirst? Result;
-			internal global::System.Exception? Exception;
-			public SelectFirstMethodInvocationHistory(SelectFirstArguments<TFirst, TSecond> Arguments, TFirst? Result, global::System.Exception? Exception)
+			internal readonly TFirst capturedfirst;
+			internal readonly TSecond capturedsecond;
+			internal readonly TFirst? Result;
+			internal readonly global::System.Exception? Exception;
+			public SelectFirstMethodInvocationHistory(TFirst capturedfirst, TSecond capturedsecond, TFirst? Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedfirst = capturedfirst;
+				this.capturedsecond = capturedsecond;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches<TFirstTarget, TSecondTarget>(SelectFirstArgumentsCriteria<TFirstTarget, TSecondTarget> criteria)
 			{
-				return ((typeof(TFirstTarget) == typeof(TFirst)) && (typeof(TSecondTarget) == typeof(TSecond))) && criteria.As<TFirst, TSecond>().Matches(Arguments);
+				return ((typeof(TFirstTarget) == typeof(TFirst)) && (typeof(TSecondTarget) == typeof(TSecond))) && ((SelectFirstArgumentsCriteria<TFirst, TSecond>)(object)criteria).MatchesCaptured(capturedfirst, capturedsecond);
 			}
 
 			public override string ToString()
 			{
-				return "SelectFirst(" + global::System.String.Join(", ", new[] { "first: " + FormatValue(Arguments.first), "second: " + FormatValue(Arguments.second) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "SelectFirst(" + global::System.String.Join(", ", new[] { "first: " + FormatValue(capturedfirst), "second: " + FormatValue(capturedsecond) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -1456,13 +1568,25 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class SelectFirstMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ISelectFirstMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<ISelectFirstMethodInvocationHistory>();
-			internal void Add(ISelectFirstMethodInvocationHistory invocationHistory)
+			private SelectFirstMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal SelectFirstMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(ISelectFirstMethodInvocationHistory invocationHistory)
+			internal void Add(SelectFirstMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				SelectFirstMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(SelectFirstMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -1470,12 +1594,29 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			internal int Count<TFirst, TSecond>(SelectFirstArgumentsCriteria<TFirst, TSecond> argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches<TFirst, TSecond>(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((ISelectFirstMethodInvocationHistory)invocation).Matches<TFirst, TSecond>(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -1500,12 +1641,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				return imposter;
 			}
 
-			internal ISelectFirstMethodImposter<TFirst, TSecond> GetImposterWithMatchingInvocationImposterGroup<TFirst, TSecond>(SelectFirstArguments<TFirst, TSecond> arguments)
+			internal ISelectFirstMethodImposter<TFirst, TSecond> GetImposterWithMatchingInvocationImposterGroup<TFirst, TSecond>(TFirst first, TSecond second)
 			{
 				foreach (var storedImposter in _imposters)
 				{
 					var typedImposter = storedImposter.As<TFirst, TSecond>();
-					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments))
+					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(first, second))
 						return typedImposter;
 				}
 
@@ -1676,7 +1817,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		internal interface ISelectFirstMethodImposter<TFirst, TSecond> : ISelectFirstMethodImposter
 		{
 			TFirst Invoke(TFirst first, TSecond second, SelectFirstDelegate<TFirst, TSecond>? baseImplementation = null);
-			bool HasMatchingInvocationImposterGroup(SelectFirstArguments<TFirst, TSecond> arguments);
+			bool HasMatchingInvocationImposterGroup(in TFirst first, in TSecond second);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1730,9 +1871,9 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					return global::Imposter.Abstractions.TypeCaster.Cast<TFirst, TFirstTarget>(result);
 				}
 
-				public bool HasMatchingInvocationImposterGroup(SelectFirstArguments<TFirstTarget, TSecondTarget> arguments)
+				public bool HasMatchingInvocationImposterGroup(in TFirstTarget first, in TSecondTarget second)
 				{
-					return _target.HasMatchingInvocationImposterGroup(arguments.As<TFirst, TSecond>());
+					return _target.HasMatchingInvocationImposterGroup(global::Imposter.Abstractions.TypeCaster.Cast<TFirstTarget, TFirst>(first), global::Imposter.Abstractions.TypeCaster.Cast<TSecondTarget, TSecond>(second));
 				}
 
 				ISelectFirstMethodImposter<TFirstTarget1, TSecondTarget1>? ISelectFirstMethodImposter.As<TFirstTarget1, TSecondTarget1>()
@@ -1741,16 +1882,16 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				}
 			}
 
-			public bool HasMatchingInvocationImposterGroup(SelectFirstArguments<TFirst, TSecond> arguments)
+			public bool HasMatchingInvocationImposterGroup(in TFirst first, in TSecond second)
 			{
-				return FindMatchingInvocationImposterGroup(arguments) != null;
+				return FindMatchingInvocationImposterGroup(first, second) != null;
 			}
 
-			private SelectFirstMethodInvocationImposterGroup<TFirst, TSecond>? FindMatchingInvocationImposterGroup(SelectFirstArguments<TFirst, TSecond> arguments)
+			private SelectFirstMethodInvocationImposterGroup<TFirst, TSecond>? FindMatchingInvocationImposterGroup(in TFirst first, in TSecond second)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(first, second))
 						return invocationImposterGroup;
 				}
 
@@ -1759,8 +1900,9 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			public TFirst Invoke(TFirst first, TSecond second, SelectFirstDelegate<TFirst, TSecond>? baseImplementation = null)
 			{
-				var arguments = new SelectFirstArguments<TFirst, TSecond>(first, second);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				TFirst capturedfirst = first;
+				TSecond capturedsecond = second;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedfirst, capturedsecond);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -1774,10 +1916,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual TFirst ClassWithOverloadsAndGenerics.SelectFirst<TFirst, TSecond>(TFirst first, TSecond second)", first, second, baseImplementation);
-					_selectFirstMethodInvocationHistoryCollection.Add(new SelectFirstMethodInvocationHistory<TFirst, TSecond>(arguments, result, default));
+					_selectFirstMethodInvocationHistoryCollection.Add(new SelectFirstMethodInvocationHistory<TFirst, TSecond>(capturedfirst, capturedsecond, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_selectFirstMethodInvocationHistoryCollection.RecordFailure(new SelectFirstMethodInvocationHistory<TFirst, TSecond>(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_selectFirstMethodInvocationHistoryCollection.RecordFailure(new SelectFirstMethodInvocationHistory<TFirst, TSecond>(capturedfirst, capturedsecond, default !, ex)))
 				{
 					throw;
 				}
@@ -1926,7 +2068,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					return base.Echo<T>(item);
 				}
 
-				return _imposter._echoMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<T>(new EchoArguments<T>(item)).Invoke(item, base.Echo<T>);
+				return _imposter._echoMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<T>(item).Invoke(item, base.Echo<T>);
 			}
 
 			public override TFirst SelectFirst<TFirst, TSecond>(TFirst first, TSecond second)
@@ -1936,7 +2078,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					return base.SelectFirst<TFirst, TSecond>(first, second);
 				}
 
-				return _imposter._selectFirstMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<TFirst, TSecond>(new SelectFirstArguments<TFirst, TSecond>(first, second)).Invoke(first, second, base.SelectFirst<TFirst, TSecond>);
+				return _imposter._selectFirstMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<TFirst, TSecond>(first, second).Invoke(first, second, base.SelectFirst<TFirst, TSecond>);
 			}
 		}
 	}

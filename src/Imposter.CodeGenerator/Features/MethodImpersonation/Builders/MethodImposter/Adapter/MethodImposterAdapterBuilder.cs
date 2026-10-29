@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Shared;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
@@ -301,36 +302,38 @@ internal static class MethodImposterAdapterBuilder
             method.TargetGenericTypeArguments
         );
         var hasMatchingMethod = method.MethodImposter.HasMatchingInvocationImposterGroupMethod;
-        var argumentsTypeWithTarget = (TypeSyntax)typeParamRenamer.Visit(method.Arguments.Syntax);
-        var argumentsParameterName =
-            adapterNames.HasMatchingInvocationImposterGroupArgumentsParameterName;
-
+        var parameters = (ParameterListSyntax)
+            typeParamRenamer.Visit(CapturedArgumentsBuilder.Parameters(method));
+        var arguments = method.Parameters.InputParameterMetadata.Select(p =>
+        {
+            var converted = p.Model.Type.IsDynamic
+                ? AsObject(IdentifierName(p.Name), p.Model.Type)
+                : TypeCasterSyntaxHelper.CastExpression(
+                    p.Name,
+                    (TypeSyntax)typeParamRenamer.Visit(p.NullableAwareKeptTypeSyntax),
+                    p.NullableAwareKeptTypeSyntax
+                );
+            // A differently typed setup gets its own span snapshot, just as Arguments.As did. A predicate may mutate
+            // that array; its writes must not affect the snapshot passed to the next candidate setup.
+            return Argument(
+                p.IsSpan
+                    ? SpanElementsCopy(
+                        ParenthesizedExpression(
+                            CastExpression(p.NullableAwareTypeSyntax, converted)
+                        )
+                    )
+                    : converted
+            );
+        });
         return new MethodDeclarationBuilder(hasMatchingMethod.ReturnType, hasMatchingMethod.Name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddParameterIf(
-                method.Parameters.HasInputParameters,
-                () => ParameterSyntax(argumentsTypeWithTarget, argumentsParameterName)
-            )
+            .WithParameterList(parameters)
             .WithBody(
                 Block(
                     ReturnStatement(
                         IdentifierName(adapterNames.TargetFieldName)
                             .Dot(IdentifierName(hasMatchingMethod.Name))
-                            .Call(
-                                method.Parameters.HasInputParameters
-                                    ? Argument(
-                                            IdentifierName(argumentsParameterName)
-                                                .Dot(
-                                                    GenericName(
-                                                        Identifier(method.ArgumentsAsMethodName),
-                                                        TypeArguments(method.GenericTypeArguments)
-                                                    )
-                                                )
-                                                .Call()
-                                        )
-                                        .ToSingleArgumentList()
-                                    : ArgumentList()
-                            )
+                            .Call(ArgumentList(SeparatedList(arguments)))
                     )
                 )
             )
@@ -364,7 +367,6 @@ internal static class MethodImposterAdapterBuilder
         internal readonly string TargetFieldName;
         internal readonly string TargetConstructorParameterName;
         internal readonly string InvokeResultVariableName;
-        internal readonly string HasMatchingInvocationImposterGroupArgumentsParameterName;
         internal readonly Dictionary<string, string> AdaptedParameterNames;
 
         internal AdapterNames(in ImposterTargetMethodMetadata method)
@@ -373,7 +375,6 @@ internal static class MethodImposterAdapterBuilder
             TargetFieldName = nameContext.Use("_target");
             TargetConstructorParameterName = nameContext.Use("target");
             InvokeResultVariableName = nameContext.Use("result");
-            HasMatchingInvocationImposterGroupArgumentsParameterName = nameContext.Use("arguments");
             AdaptedParameterNames = method
                 .Parameters.AllParameterMetadata.Where(parameter =>
                     parameter.Model.RefKind

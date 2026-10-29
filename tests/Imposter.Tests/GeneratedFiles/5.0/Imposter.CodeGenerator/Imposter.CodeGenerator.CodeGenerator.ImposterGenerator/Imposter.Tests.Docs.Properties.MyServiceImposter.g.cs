@@ -45,10 +45,10 @@ namespace Imposter.Tests.Docs.Properties
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class ReadProtectedMethodInvocationHistory : IReadProtectedMethodInvocationHistory
+		internal class ReadProtectedMethodInvocationHistory : ReadProtectedMethodInvocationHistoryCollection.Node, IReadProtectedMethodInvocationHistory
 		{
-			internal int? Result;
-			internal global::System.Exception? Exception;
+			internal readonly int? Result;
+			internal readonly global::System.Exception? Exception;
 			public ReadProtectedMethodInvocationHistory(int? Result, global::System.Exception? Exception)
 			{
 				this.Result = Result;
@@ -74,13 +74,25 @@ namespace Imposter.Tests.Docs.Properties
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ReadProtectedMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IReadProtectedMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IReadProtectedMethodInvocationHistory>();
-			internal void Add(IReadProtectedMethodInvocationHistory invocationHistory)
+			private ReadProtectedMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal ReadProtectedMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IReadProtectedMethodInvocationHistory invocationHistory)
+			internal void Add(ReadProtectedMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				ReadProtectedMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(ReadProtectedMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -88,12 +100,29 @@ namespace Imposter.Tests.Docs.Properties
 
 			internal int Count()
 			{
-				return _invocationHistory.Count(it => it.Matches());
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IReadProtectedMethodInvocationHistory)invocation).Matches())
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -426,7 +455,12 @@ namespace Imposter.Tests.Docs.Properties
 
 			public bool Matches(WriteProtectedArguments arguments)
 			{
-				return value.Matches(arguments.value);
+				return MatchesCaptured(arguments.value);
+			}
+
+			internal bool MatchesCaptured(in int value)
+			{
+				return this.value.Matches(value);
 			}
 		}
 
@@ -437,24 +471,24 @@ namespace Imposter.Tests.Docs.Properties
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class WriteProtectedMethodInvocationHistory : IWriteProtectedMethodInvocationHistory
+		internal class WriteProtectedMethodInvocationHistory : WriteProtectedMethodInvocationHistoryCollection.Node, IWriteProtectedMethodInvocationHistory
 		{
-			internal WriteProtectedArguments Arguments;
-			internal global::System.Exception? Exception;
-			public WriteProtectedMethodInvocationHistory(WriteProtectedArguments Arguments, global::System.Exception? Exception)
+			internal readonly int capturedvalue;
+			internal readonly global::System.Exception? Exception;
+			public WriteProtectedMethodInvocationHistory(int capturedvalue, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedvalue = capturedvalue;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(WriteProtectedArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(capturedvalue);
 			}
 
 			public override string ToString()
 			{
-				return "WriteProtected(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value) }) + ")" + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "WriteProtected(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(capturedvalue) }) + ")" + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -466,13 +500,25 @@ namespace Imposter.Tests.Docs.Properties
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class WriteProtectedMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IWriteProtectedMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IWriteProtectedMethodInvocationHistory>();
-			internal void Add(IWriteProtectedMethodInvocationHistory invocationHistory)
+			private WriteProtectedMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal WriteProtectedMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IWriteProtectedMethodInvocationHistory invocationHistory)
+			internal void Add(WriteProtectedMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				WriteProtectedMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(WriteProtectedMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -480,12 +526,29 @@ namespace Imposter.Tests.Docs.Properties
 
 			internal int Count(WriteProtectedArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IWriteProtectedMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -652,11 +715,11 @@ namespace Imposter.Tests.Docs.Properties
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private WriteProtectedMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(WriteProtectedArguments arguments)
+			private WriteProtectedMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in int value)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(value))
 						return invocationImposterGroup;
 				}
 
@@ -665,8 +728,8 @@ namespace Imposter.Tests.Docs.Properties
 
 			public void Invoke(int value, WriteProtectedDelegate? baseImplementation = null)
 			{
-				var arguments = new WriteProtectedArguments(value);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				int capturedvalue = value;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedvalue);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -680,9 +743,9 @@ namespace Imposter.Tests.Docs.Properties
 				try
 				{
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual void MyService.WriteProtected(int value)", value, baseImplementation);
-					_writeProtectedMethodInvocationHistoryCollection.Add(new WriteProtectedMethodInvocationHistory(arguments, default));
+					_writeProtectedMethodInvocationHistoryCollection.Add(new WriteProtectedMethodInvocationHistory(capturedvalue, default));
 				}
-				catch (global::System.Exception ex) when (_writeProtectedMethodInvocationHistoryCollection.RecordFailure(new WriteProtectedMethodInvocationHistory(arguments, ex)))
+				catch (global::System.Exception ex) when (_writeProtectedMethodInvocationHistoryCollection.RecordFailure(new WriteProtectedMethodInvocationHistory(capturedvalue, ex)))
 				{
 					throw;
 				}

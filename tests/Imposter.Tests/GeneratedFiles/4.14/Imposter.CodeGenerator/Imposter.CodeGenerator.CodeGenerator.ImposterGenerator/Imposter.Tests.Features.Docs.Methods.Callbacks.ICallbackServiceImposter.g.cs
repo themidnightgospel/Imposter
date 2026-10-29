@@ -77,7 +77,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 
 			public bool Matches(GenericAllRefKindArguments arguments)
 			{
-				return (r.Matches(arguments.r) && d.Matches(arguments.d)) && args.Matches(arguments.args);
+				return MatchesCaptured(arguments.r, arguments.d, arguments.args);
+			}
+
+			internal bool MatchesCaptured(in string r, in double d, in bool[] args)
+			{
+				return (this.r.Matches(r) && this.d.Matches(d)) && this.args.Matches(args);
 			}
 		}
 
@@ -88,26 +93,30 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class GenericAllRefKindMethodInvocationHistory : IGenericAllRefKindMethodInvocationHistory
+		internal class GenericAllRefKindMethodInvocationHistory : GenericAllRefKindMethodInvocationHistoryCollection.Node, IGenericAllRefKindMethodInvocationHistory
 		{
-			internal GenericAllRefKindArguments Arguments;
-			internal int? Result;
-			internal global::System.Exception? Exception;
-			public GenericAllRefKindMethodInvocationHistory(GenericAllRefKindArguments Arguments, int? Result, global::System.Exception? Exception)
+			internal readonly string capturedr;
+			internal readonly double capturedd;
+			internal readonly bool[] capturedargs;
+			internal readonly int? Result;
+			internal readonly global::System.Exception? Exception;
+			public GenericAllRefKindMethodInvocationHistory(string capturedr, double capturedd, bool[] capturedargs, int? Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedr = capturedr;
+				this.capturedd = capturedd;
+				this.capturedargs = capturedargs;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(GenericAllRefKindArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(capturedr, capturedd, capturedargs);
 			}
 
 			public override string ToString()
 			{
-				return "GenericAllRefKind(" + global::System.String.Join(", ", new[] { "r: " + FormatValue(Arguments.r), "d: " + FormatValue(Arguments.d), "args: " + FormatValue(Arguments.args) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "GenericAllRefKind(" + global::System.String.Join(", ", new[] { "r: " + FormatValue(capturedr), "d: " + FormatValue(capturedd), "args: " + FormatValue(capturedargs) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -119,13 +128,25 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class GenericAllRefKindMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IGenericAllRefKindMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IGenericAllRefKindMethodInvocationHistory>();
-			internal void Add(IGenericAllRefKindMethodInvocationHistory invocationHistory)
+			private GenericAllRefKindMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal GenericAllRefKindMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IGenericAllRefKindMethodInvocationHistory invocationHistory)
+			internal void Add(GenericAllRefKindMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				GenericAllRefKindMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(GenericAllRefKindMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -133,12 +154,29 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 
 			internal int Count(GenericAllRefKindArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IGenericAllRefKindMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -310,11 +348,11 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private GenericAllRefKindMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(GenericAllRefKindArguments arguments)
+			private GenericAllRefKindMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in string r, in double d, in bool[] args)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(r, d, args))
 						return invocationImposterGroup;
 				}
 
@@ -323,8 +361,10 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 
 			public int Invoke(out int o, ref string r, in double d, bool[] args)
 			{
-				var arguments = new GenericAllRefKindArguments(r, d, args);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				string capturedr = r;
+				double capturedd = d;
+				bool[] capturedargs = args;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedr, capturedd, capturedargs);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -338,10 +378,10 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "int ICallbackService.GenericAllRefKind(out int o, ref string r, in double d, bool[] args)", out o, ref r, in d, args);
-					_genericAllRefKindMethodInvocationHistoryCollection.Add(new GenericAllRefKindMethodInvocationHistory(arguments, result, default));
+					_genericAllRefKindMethodInvocationHistoryCollection.Add(new GenericAllRefKindMethodInvocationHistory(capturedr, capturedd, capturedargs, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_genericAllRefKindMethodInvocationHistoryCollection.RecordFailure(new GenericAllRefKindMethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_genericAllRefKindMethodInvocationHistoryCollection.RecordFailure(new GenericAllRefKindMethodInvocationHistory(capturedr, capturedd, capturedargs, default !, ex)))
 				{
 					throw;
 				}
@@ -446,10 +486,10 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class GetNumberMethodInvocationHistory : IGetNumberMethodInvocationHistory
+		internal class GetNumberMethodInvocationHistory : GetNumberMethodInvocationHistoryCollection.Node, IGetNumberMethodInvocationHistory
 		{
-			internal int? Result;
-			internal global::System.Exception? Exception;
+			internal readonly int? Result;
+			internal readonly global::System.Exception? Exception;
 			public GetNumberMethodInvocationHistory(int? Result, global::System.Exception? Exception)
 			{
 				this.Result = Result;
@@ -475,13 +515,25 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class GetNumberMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IGetNumberMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IGetNumberMethodInvocationHistory>();
-			internal void Add(IGetNumberMethodInvocationHistory invocationHistory)
+			private GetNumberMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal GetNumberMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IGetNumberMethodInvocationHistory invocationHistory)
+			internal void Add(GetNumberMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				GetNumberMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(GetNumberMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -489,12 +541,29 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 
 			internal int Count()
 			{
-				return _invocationHistory.Count(it => it.Matches());
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IGetNumberMethodInvocationHistory)invocation).Matches())
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -804,7 +873,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 
 			public bool Matches(IncrementArguments arguments)
 			{
-				return v.Matches(arguments.v);
+				return MatchesCaptured(arguments.v);
+			}
+
+			internal bool MatchesCaptured(in int v)
+			{
+				return this.v.Matches(v);
 			}
 		}
 
@@ -815,26 +889,26 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class IncrementMethodInvocationHistory : IIncrementMethodInvocationHistory
+		internal class IncrementMethodInvocationHistory : IncrementMethodInvocationHistoryCollection.Node, IIncrementMethodInvocationHistory
 		{
-			internal IncrementArguments Arguments;
-			internal int? Result;
-			internal global::System.Exception? Exception;
-			public IncrementMethodInvocationHistory(IncrementArguments Arguments, int? Result, global::System.Exception? Exception)
+			internal readonly int capturedv;
+			internal readonly int? Result;
+			internal readonly global::System.Exception? Exception;
+			public IncrementMethodInvocationHistory(int capturedv, int? Result, global::System.Exception? Exception)
 			{
-				this.Arguments = Arguments;
+				this.capturedv = capturedv;
 				this.Result = Result;
 				this.Exception = Exception;
 			}
 
 			public bool Matches(IncrementArgumentsCriteria criteria)
 			{
-				return criteria.Matches(Arguments);
+				return criteria.MatchesCaptured(capturedv);
 			}
 
 			public override string ToString()
 			{
-				return "Increment(" + global::System.String.Join(", ", new[] { "v: " + FormatValue(Arguments.v) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Increment(" + global::System.String.Join(", ", new[] { "v: " + FormatValue(capturedv) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -846,13 +920,25 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class IncrementMethodInvocationHistoryCollection
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IIncrementMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IIncrementMethodInvocationHistory>();
-			internal void Add(IIncrementMethodInvocationHistory invocationHistory)
+			private IncrementMethodInvocationHistoryCollection.Node? _invocationHistory;
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal abstract class Node
 			{
-				_invocationHistory.Push(invocationHistory);
+				internal IncrementMethodInvocationHistoryCollection.Node? Next;
 			}
 
-			internal bool RecordFailure(IIncrementMethodInvocationHistory invocationHistory)
+			internal void Add(IncrementMethodInvocationHistoryCollection.Node invocationHistory)
+			{
+				IncrementMethodInvocationHistoryCollection.Node? head;
+				do
+				{
+					head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+					invocationHistory.Next = head;
+				}
+				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal bool RecordFailure(IncrementMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
 				return false;
@@ -860,12 +946,29 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 
 			internal int Count(IncrementArgumentsCriteria argumentsCriteria)
 			{
-				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+				var count = 0;
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					if (((IIncrementMethodInvocationHistory)invocation).Matches(argumentsCriteria))
+						count++;
+					invocation = invocation.Next;
+				}
+
+				return count;
 			}
 
 			public override string ToString()
 			{
-				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+				var descriptions = new global::System.Collections.Generic.List<string?>();
+				var invocation = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (invocation != null)
+				{
+					descriptions.Add(invocation.ToString());
+					invocation = invocation.Next;
+				}
+
+				return string.Join(global::System.Environment.NewLine, descriptions);
 			}
 		}
 
@@ -1030,11 +1133,11 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private IncrementMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(IncrementArguments arguments)
+			private IncrementMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(in int v)
 			{
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
-					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+					if (invocationImposterGroup.HasConfiguredOutcome && invocationImposterGroup.ArgumentsCriteria.MatchesCaptured(v))
 						return invocationImposterGroup;
 				}
 
@@ -1043,8 +1146,8 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 
 			public int Invoke(int v)
 			{
-				var arguments = new IncrementArguments(v);
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				int capturedv = v;
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedv);
 				if (matchingInvocationImposterGroup == default)
 				{
 					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -1058,10 +1161,10 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 				try
 				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "int ICallbackService.Increment(int v)", v);
-					_incrementMethodInvocationHistoryCollection.Add(new IncrementMethodInvocationHistory(arguments, result, default));
+					_incrementMethodInvocationHistoryCollection.Add(new IncrementMethodInvocationHistory(capturedv, result, default));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_incrementMethodInvocationHistoryCollection.RecordFailure(new IncrementMethodInvocationHistory(arguments, default !, ex)))
+				catch (global::System.Exception ex) when (_incrementMethodInvocationHistoryCollection.RecordFailure(new IncrementMethodInvocationHistory(capturedv, default !, ex)))
 				{
 					throw;
 				}
