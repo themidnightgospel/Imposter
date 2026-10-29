@@ -20,7 +20,6 @@ internal static partial class InvocationImposterGroupBuilder
                 method.Parameters.HasInputParameters ? ArgumentsCriteriaProperty(method) : null
             )
             .AddMember(InvocationImpostersFieldDeclaration(method))
-            .AddMember(LastInvocationImposterFieldDeclaration(method))
             .AddMember(
                 SyntaxFactoryHelper.SingleVariableField(
                     WellKnownTypes.Bool,
@@ -29,8 +28,8 @@ internal static partial class InvocationImposterGroupBuilder
                 )
             )
             .AddMember(Constructor(method))
+            .AddMember(CreateInvocationImposterMethod(method))
             .AddMember(AddInvocationImposterMethod(method))
-            .AddMember(GetInvocationImposterMethod(method))
             .AddMember(InvokeMethodDeclarationSyntax(method))
             .AddMember(MethodInvocationImposterType(method))
             .Build()

@@ -14,10 +14,6 @@ internal readonly struct ImposterGenerationContext
 
     internal readonly string? ImposterNamespaceName;
 
-    // Derived from the target, and from whether another target's differs from it only in letter case, so it does not
-    // depend on the order in which targets are processed.
-    internal readonly string HintName;
-
     internal readonly SupportedCSharpFeatures SupportedCSharpFeatures;
 
     // The static class of the target's Imposter() extensions. It ends in the target's arity when a same-named target of
@@ -45,12 +41,6 @@ internal readonly struct ImposterGenerationContext
             Target.IdentityName,
             Target.ContainingNamespace
         );
-        HintName = GetHintName(
-            Target.IdentityName,
-            putInTheSameNamespace,
-            generationTarget.HintNameIncludesHash
-        );
-
         SupportedCSharpFeatures = supportedCSharpFeatures;
     }
 

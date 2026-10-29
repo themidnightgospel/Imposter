@@ -25,6 +25,11 @@ internal static class SetterImposterBuilder
             return null;
         }
 
+        if (property.Core.UsesSharedRuntime)
+        {
+            return SharedPropertyBuilder.BuildSetter(property);
+        }
+
         return new ClassDeclarationBuilder(property.SetterImposter.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddMember(

@@ -24,20 +24,8 @@ internal static partial class IndexerGetterBuilder
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddModifier(Token(SyntaxKind.SealedKeyword))
             .AddMember(SinglePrivateReadonlyVariableField(invocation.DefaultBehaviourField))
-            .AddMember(
-                SinglePrivateReadonlyVariableField(
-                    invocation.ReturnValuesField,
-                    invocation.ReturnValuesField.Type.New()
-                )
-            )
+            .AddMember(LazyCollectionSyntaxHelper.Field(invocation.ReturnValuesField))
             .AddMember(LazyCollectionSyntaxHelper.Field(invocation.CallbacksField))
-            .AddMember(
-                SingleVariableField(
-                    invocation.LastReturnValueField.Type,
-                    invocation.LastReturnValueField.Name,
-                    TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.VolatileKeyword))
-                )
-            )
             .AddMember(
                 SingleVariableField(invocation.PropertyDisplayNameField, SyntaxKind.PrivateKeyword)
             )
@@ -129,8 +117,7 @@ internal static partial class IndexerGetterBuilder
             .Build();
     }
 
-    // A setup is eligible for lookup only after the handler has been enqueued. Keep readiness separate from queue
-    // emptiness because consumers transfer the final handler to LastReturnValue while calls are in flight.
+    // A setup is eligible for lookup only once its handler is in the sequence and the default behaviour is off.
     private static MethodDeclarationSyntax BuildGetterInvocationAddReturnValueMethod(
         in ImposterIndexerMetadata indexer
     )
@@ -156,10 +143,7 @@ internal static partial class IndexerGetterBuilder
             .AddParameter(generator)
             .WithBody(
                 Block(
-                    IdentifierName(invocation.ReturnValuesField.Name)
-                        .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
-                        .Call(Argument(handler))
-                        .ToStatementSyntax(),
+                    AddToReturnValues(invocation, handler),
                     TurnDefaultBehaviourOff(indexer),
                     IdentifierName(
                             IndexerGetterImposterMetadata
@@ -324,13 +308,19 @@ internal static partial class IndexerGetterBuilder
         )
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .WithBody(
-                NextOutcomeSyntaxHelper.TakeNextOutcomeBody(
-                    IdentifierName(invocation.ReturnValuesField.Name),
-                    IdentifierName(invocation.LastReturnValueField.Name),
-                    IdentifierName("returnValue")
-                )
+                NextOutcomeSyntaxHelper.TakeNextOutcomeBody(invocation.ReturnValuesField.Name, Null)
             )
             .Build();
+
+    private static ExpressionStatementSyntax AddToReturnValues(
+        in IndexerGetterImposterMetadata.GetterInvocationMetadata invocation,
+        ExpressionSyntax handler
+    ) =>
+        LazyCollectionSyntaxHelper
+            .EnsureInitialized(invocation.ReturnValuesField.Name)
+            .Dot(IdentifierName("Add"))
+            .Call(Argument(handler))
+            .ToStatementSyntax();
 
     private static MethodDeclarationSyntax BuildGetterInvocationUseBaseImplementationMethod(
         in ImposterIndexerMetadata indexer
@@ -342,10 +332,7 @@ internal static partial class IndexerGetterBuilder
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(
                 Block(
-                    IdentifierName(invocation.ReturnValuesField.Name)
-                        .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
-                        .Call(Argument(BaseImplementationHandler(indexer)))
-                        .ToStatementSyntax(),
+                    AddToReturnValues(invocation, BaseImplementationHandler(indexer)),
                     TurnDefaultBehaviourOff(indexer),
                     IdentifierName(
                             IndexerGetterImposterMetadata

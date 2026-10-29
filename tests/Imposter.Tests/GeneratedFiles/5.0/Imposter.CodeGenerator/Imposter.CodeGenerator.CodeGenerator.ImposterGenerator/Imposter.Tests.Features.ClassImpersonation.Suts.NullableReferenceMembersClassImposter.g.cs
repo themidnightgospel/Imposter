@@ -124,49 +124,34 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			internal static DescribeMethodInvocationImposterGroup Default = new DescribeMethodInvocationImposterGroup(new DescribeArgumentsCriteria(global::Imposter.Abstractions.Arg<string?>.Any()));
 			internal DescribeArgumentsCriteria ArgumentsCriteria { get; }
 
-			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private volatile MethodInvocationImposter? _latestInvocationImposter;
+			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
 			internal volatile bool HasConfiguredOutcome;
 			public DescribeMethodInvocationImposterGroup(DescribeArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
 			}
 
-			internal MethodInvocationImposter AddInvocationImposter()
+			internal MethodInvocationImposter CreateInvocationImposter()
 			{
 				MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
-				_invocationImposters.Enqueue(invocationImposter);
 				return invocationImposter;
 			}
 
-			private MethodInvocationImposter? GetInvocationImposter()
+			internal void AddInvocationImposter(MethodInvocationImposter invocationImposter)
 			{
-				if (_invocationImposters.IsEmpty)
+				if (invocationImposter.IsConfigured)
 				{
-					return _latestInvocationImposter;
+					return;
 				}
 
-				lock (_invocationImposters)
-				{
-					if (!_invocationImposters.TryPeek(out var invocationImposter))
-					{
-						return _latestInvocationImposter;
-					}
-
-					if (!invocationImposter.IsConfigured)
-					{
-						return _latestInvocationImposter;
-					}
-
-					_latestInvocationImposter = invocationImposter;
-					_invocationImposters.TryDequeue(out _);
-					return invocationImposter;
-				}
+				invocationImposter.IsConfigured = true;
+				_invocationImposters.Add(invocationImposter);
+				HasConfiguredOutcome = true;
 			}
 
 			public string? Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, string? value, DescribeDelegate? baseImplementation = null)
 			{
-				var invocationImposter = GetInvocationImposter();
+				var invocationImposter = this._invocationImposters.Next(null);
 				if (invocationImposter == null)
 				{
 					if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
@@ -191,9 +176,9 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				}
 
 				private DescribeDelegate? _resultGenerator;
-				private readonly global::System.Collections.Concurrent.ConcurrentQueue<DescribeCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<DescribeCallbackDelegate>();
+				private global::Imposter.Abstractions.CallbackCollection<DescribeCallbackDelegate>? _callbacks;
 				private bool _useBaseImplementation;
-				internal volatile bool IsConfigured;
+				internal bool IsConfigured;
 				public string? Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, string? value, DescribeDelegate? baseImplementation = null)
 				{
 					if (_useBaseImplementation)
@@ -212,7 +197,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					}
 
 					string? result = _resultGenerator.Invoke(value);
-					if (!_callbacks.IsEmpty)
+					if (_callbacks != null)
 					{
 						foreach (var callback in _callbacks)
 						{
@@ -225,7 +210,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 				internal void Callback(DescribeCallbackDelegate callback)
 				{
-					_callbacks.Enqueue(callback);
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 				}
 
 				internal void Returns(DescribeDelegate resultGenerator)
@@ -243,13 +228,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					};
 				}
 
-				internal void Throws(DescribeExceptionGeneratorDelegate exceptionGenerator)
+				internal void Throws(DescribeDelegate resultGenerator)
 				{
 					_useBaseImplementation = false;
-					_resultGenerator = (string? value) =>
-					{
-						throw exceptionGenerator(value);
-					};
+					_resultGenerator = resultGenerator;
 				}
 
 				internal void UseBaseImplementation()
@@ -362,7 +344,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					this._describeMethodInvocationHistoryCollection = _describeMethodInvocationHistoryCollection;
 					this._argumentsCriteria = _argumentsCriteria;
 					this._invocationImposterGroup = new DescribeMethodInvocationImposterGroup(_argumentsCriteria);
-					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+					this._currentInvocationImposter = this._invocationImposterGroup.CreateInvocationImposter();
 					imposter._invocationImposters.Push(_invocationImposterGroup);
 				}
 
@@ -372,8 +354,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw new TException();
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
@@ -383,8 +364,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw exception;
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
@@ -394,46 +374,41 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw exceptionGenerator.Invoke(value);
 					});
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				IDescribeMethodInvocationImposterGroupContinuation IDescribeMethodInvocationImposterGroupCallback.Callback(DescribeCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				IDescribeMethodInvocationImposterGroupContinuation IDescribeMethodInvocationImposterGroup.Returns(DescribeDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				IDescribeMethodInvocationImposterGroupContinuation IDescribeMethodInvocationImposterGroup.Returns(string? value_1)
 				{
 					_currentInvocationImposter.Returns(value_1);
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				IDescribeMethodInvocationImposterGroupContinuation IDescribeMethodInvocationImposterGroup.UseBaseImplementation()
 				{
 					_currentInvocationImposter.UseBaseImplementation();
-					_currentInvocationImposter.IsConfigured = true;
-					_invocationImposterGroup.HasConfiguredOutcome = true;
+					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
 
 				IDescribeMethodInvocationImposterGroup IDescribeMethodInvocationImposterGroupContinuation.Then()
 				{
-					this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+					this._currentInvocationImposter = _invocationImposterGroup.CreateInvocationImposter();
 					return this;
 				}
 
@@ -547,85 +522,58 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class NamePropertyBuilder : INamePropertyBuilder
 		{
-			private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
+			private readonly global::Imposter.Abstractions.PropertyValue<string?> _defaultPropertyBehaviour;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			internal SetterImposter _setterImposter;
 			internal GetterImposterBuilder _getterImposterBuilder;
 			internal NamePropertyBuilder(global::Imposter.Abstractions.ImposterMode invocationBehavior)
 			{
-				_defaultPropertyBehaviour = new DefaultPropertyBehaviour();
+				_defaultPropertyBehaviour = new global::Imposter.Abstractions.PropertyValue<string?>();
 				_invocationBehavior = invocationBehavior;
 				_getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImpersonation.Suts.NullableReferenceMembersClass.Name");
 				_setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImpersonation.Suts.NullableReferenceMembersClass.Name");
 			}
 
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal class DefaultPropertyBehaviour
+			internal class GetterImposterBuilder : global::Imposter.Abstractions.PropertyGetter<string?>, INamePropertyGetterBuilder, INamePropertyGetterFluentBuilder, INamePropertyGetterUseBaseImplementationBuilder
 			{
-				internal volatile bool IsOn = true;
-				internal volatile bool HasValueSet = false;
-				internal string? BackingField = default !;
-			}
-
-			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal class GetterImposterBuilder : INamePropertyGetterBuilder, INamePropertyGetterFluentBuilder, INamePropertyGetterUseBaseImplementationBuilder
-			{
-				private global::Imposter.Abstractions.ReturnValueSequence<global::System.Func<global::System.Func<string?>?, string?>>? _returnValues;
-				private global::Imposter.Abstractions.CallbackCollection<global::System.Action>? _callbacks;
-				private volatile global::System.Func<global::System.Func<string?>?, string?> _lastReturnValue = _ => default !;
-				private int _invocationCount;
-				private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
-				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
-				private readonly string _propertyDisplayName;
-				private bool _hasConfiguredReturn;
-				internal GetterImposterBuilder(DefaultPropertyBehaviour _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName)
+				internal GetterImposterBuilder(global::Imposter.Abstractions.PropertyValue<string?> _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName) : base(_defaultPropertyBehaviour, invocationBehavior, propertyDisplayName)
 				{
-					this._defaultPropertyBehaviour = _defaultPropertyBehaviour;
-					this._invocationBehavior = invocationBehavior;
-					this._propertyDisplayName = propertyDisplayName;
-				}
-
-				private void AddReturnValue(global::System.Func<global::System.Func<string?>?, string?> valueGenerator)
-				{
-					_defaultPropertyBehaviour.IsOn = false;
-					global::System.Threading.LazyInitializer.EnsureInitialized(ref _returnValues).Add(valueGenerator);
-					_hasConfiguredReturn = true;
 				}
 
 				INamePropertyGetterContinuationBuilder INamePropertyGetterOutcomeBuilder.Returns(string? value)
 				{
-					AddReturnValue((_) => value);
+					base.Returns(value);
 					return this;
 				}
 
 				INamePropertyGetterContinuationBuilder INamePropertyGetterOutcomeBuilder.Returns(global::System.Func<string?> valueGenerator)
 				{
-					AddReturnValue((_) => valueGenerator());
+					base.Returns(valueGenerator);
 					return this;
 				}
 
 				INamePropertyGetterContinuationBuilder INamePropertyGetterOutcomeBuilder.Throws(global::System.Exception exception)
 				{
-					AddReturnValue((_) => throw exception);
+					base.Throws(exception);
 					return this;
 				}
 
 				INamePropertyGetterContinuationBuilder INamePropertyGetterOutcomeBuilder.Throws<TException>()
 				{
-					AddReturnValue((_) => throw new TException());
+					base.Throws<TException>();
 					return this;
 				}
 
 				INamePropertyGetterContinuationBuilder INamePropertyGetterCallbackBuilder.Callback(global::System.Action callback)
 				{
-					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
+					base.Callback(callback);
 					return this;
 				}
 
 				void INamePropertyGetterVerifier.Called(global::Imposter.Abstractions.Count count)
 				{
-					if (!count.Matches(_invocationCount))
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, _invocationCount);
+					base.Called(count);
 				}
 
 				INamePropertyGetterFluentBuilder INamePropertyGetterContinuationBuilder.Then()
@@ -636,17 +584,6 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				INamePropertyGetterUseBaseImplementationBuilder INamePropertyGetterBuilder.Then()
 				{
 					return this;
-				}
-
-				internal void EnableBaseImplementation()
-				{
-					AddReturnValue((global::System.Func<string?>? baseImplementation) =>
-					{
-						if (baseImplementation != null)
-							return baseImplementation();
-						else
-							throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
-					});
 				}
 
 				INamePropertyGetterFluentBuilder INamePropertyGetterUseBaseImplementationBuilder.UseBaseImplementation()
@@ -660,133 +597,13 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					EnableBaseImplementation();
 					return this;
 				}
-
-				internal string? Get(global::System.Func<string?>? baseImplementation = null)
-				{
-					EnsureGetterConfigured();
-					global::System.Threading.Interlocked.Increment(ref _invocationCount);
-					if (_callbacks != null)
-					{
-						foreach (var getterCallback in _callbacks)
-						{
-							getterCallback();
-						}
-					}
-
-					if (_defaultPropertyBehaviour.IsOn)
-					{
-						if (((_invocationCount == 1) && (baseImplementation != null)) && !_defaultPropertyBehaviour.HasValueSet)
-						{
-							_defaultPropertyBehaviour.BackingField = baseImplementation();
-						}
-
-						return _defaultPropertyBehaviour.BackingField;
-					}
-
-					var nextReturnValue = NextReturnValue();
-					return nextReturnValue(baseImplementation);
-				}
-
-				private global::System.Func<global::System.Func<string?>?, string?> NextReturnValue()
-				{
-					var returnValues = global::System.Threading.Volatile.Read(ref _returnValues);
-					return returnValues != null ? returnValues.Next(_lastReturnValue) : _lastReturnValue;
-				}
-
-				private void EnsureGetterConfigured()
-				{
-					if ((_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit) && !_hasConfiguredReturn)
-						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
-				}
 			}
 
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal class SetterImposter
+			internal class SetterImposter : global::Imposter.Abstractions.PropertySetter<string?>
 			{
-				private global::Imposter.Abstractions.CallbackCollection<global::System.Tuple<global::Imposter.Abstractions.Arg<string?>, global::System.Action<string?>>>? _callbacks;
-				private global::System.Collections.Concurrent.ConcurrentStack<string?>? _invocationHistory;
-				private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
-				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
-				private readonly string _propertyDisplayName;
-				private bool _hasConfiguredSetter;
-				private bool _useBaseImplementation;
-				internal SetterImposter(DefaultPropertyBehaviour _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName)
+				internal SetterImposter(global::Imposter.Abstractions.PropertyValue<string?> _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName) : base(_defaultPropertyBehaviour, invocationBehavior, propertyDisplayName)
 				{
-					this._defaultPropertyBehaviour = _defaultPropertyBehaviour;
-					this._invocationBehavior = invocationBehavior;
-					this._propertyDisplayName = propertyDisplayName;
-				}
-
-				internal void Callback(global::Imposter.Abstractions.Arg<string?> criteria, global::System.Action<string?> callback)
-				{
-					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(new global::System.Tuple<global::Imposter.Abstractions.Arg<string?>, global::System.Action<string?>>(criteria, callback));
-					_hasConfiguredSetter = true;
-				}
-
-				void Called(global::Imposter.Abstractions.Arg<string?> criteria, global::Imposter.Abstractions.Count count)
-				{
-					var invocationCount = _invocationHistory != null ? _invocationHistory.Count(criteria.Matches) : 0;
-					if (!count.Matches(invocationCount))
-					{
-						var performedInvocations = new global::System.Collections.Generic.List<string>();
-						if (_invocationHistory != null)
-						{
-							foreach (var value in _invocationHistory)
-							{
-								performedInvocations.Add("set " + _propertyDisplayName + " = " + FormatValue(value));
-							}
-						}
-
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations));
-					}
-				}
-
-				internal void UseBaseImplementation()
-				{
-					_hasConfiguredSetter = true;
-					_useBaseImplementation = true;
-				}
-
-				internal void Set(string? value, global::System.Action<string?>? baseImplementation = null)
-				{
-					EnsureSetterConfigured();
-					global::System.Threading.LazyInitializer.EnsureInitialized(ref _invocationHistory).Push(value);
-					if (_callbacks != null)
-					{
-						foreach (var(criteria, setterCallback)in _callbacks)
-						{
-							if (criteria.Matches(value))
-								setterCallback(value);
-						}
-					}
-
-					if (_useBaseImplementation)
-					{
-						if (baseImplementation != null)
-						{
-							baseImplementation(value);
-							return;
-						}
-						else
-							throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
-					}
-
-					if (_defaultPropertyBehaviour.IsOn)
-					{
-						_defaultPropertyBehaviour.BackingField = value;
-						_defaultPropertyBehaviour.HasValueSet = true;
-					}
-				}
-
-				private void EnsureSetterConfigured()
-				{
-					if ((_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit) && !_hasConfiguredSetter)
-						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
-				}
-
-				private static string FormatValue(object? value)
-				{
-					return "<" + (value?.ToString() ?? "null") + ">";
 				}
 
 				[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1154,9 +971,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				private sealed class GetterInvocationImposter
 				{
 					private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
-					private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<string?>?, string?>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<string?>?, string?>>();
+					private global::Imposter.Abstractions.ReturnValueSequence<global::System.Func<IndexerIndexerArguments, global::System.Func<string?>?, string?>?>? _returnValues;
 					private global::Imposter.Abstractions.CallbackCollection<IndexerIndexerGetterCallback>? _callbacks;
-					private volatile global::System.Func<IndexerIndexerArguments, global::System.Func<string?>?, string?>? _lastReturnValue;
 					private string _propertyDisplayName;
 					internal volatile bool HasConfiguredReturn;
 					internal IndexerIndexerArgumentsCriteria Criteria { get; private set; }
@@ -1170,7 +986,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 					internal void AddReturnValue(global::System.Func<IndexerIndexerArguments, string?> generator)
 					{
-						_returnValues.Enqueue((arguments, baseImplementation) => generator(arguments));
+						global::System.Threading.LazyInitializer.EnsureInitialized(ref _returnValues).Add((arguments, baseImplementation) => generator(arguments));
 						_defaultBehaviour.IsOn = false;
 						HasConfiguredReturn = true;
 					}
@@ -1211,27 +1027,13 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 					private global::System.Func<IndexerIndexerArguments, global::System.Func<string?>?, string?>? NextReturnValue()
 					{
-						if (_returnValues.IsEmpty)
-						{
-							return _lastReturnValue;
-						}
-
-						lock (_returnValues)
-						{
-							if (!_returnValues.TryPeek(out var returnValue))
-							{
-								return _lastReturnValue;
-							}
-
-							_lastReturnValue = returnValue;
-							_returnValues.TryDequeue(out _);
-							return returnValue;
-						}
+						var returnValues = global::System.Threading.Volatile.Read(ref _returnValues);
+						return returnValues != null ? returnValues.Next(null) : null;
 					}
 
 					internal void UseBaseImplementation()
 					{
-						_returnValues.Enqueue((arguments, baseImplementation) =>
+						global::System.Threading.LazyInitializer.EnsureInitialized(ref _returnValues).Add((arguments, baseImplementation) =>
 						{
 							if (baseImplementation == null)
 							{

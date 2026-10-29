@@ -1,0 +1,7 @@
+Method,Samples,MeanNanoseconds,StandardDeviationNanoseconds,ConfidenceMarginNanoseconds,BytesPerOperation
+DefaultGetter,15,1.358,0.170,0.182,0
+ConfiguredGetter,13,1.472,0.090,0.108,0
+ConfiguredReferenceGetter,15,1.468,0.046,0.049,0
+GetterWithCallback,14,1.925,0.039,0.044,0
+Setter,14,6.488,0.330,0.372,32
+SetterWithCallback,13,7.536,0.181,0.217,33

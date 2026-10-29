@@ -46,7 +46,7 @@ internal static class PropertyImposterBuilder
             )
             .AddMember(BuildConstructor(property))
             .AddMember(
-                property.Core.KeepsValue
+                property.Core.KeepsValue && !property.Core.UsesSharedRuntime
                     ? DefaultPropertyBehaviourBuilder.Build(property.DefaultPropertyBehaviour)
                     : null
             )

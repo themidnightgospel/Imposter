@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using System.Reflection.Metadata;
+using System.Reflection.PortableExecutable;
 using System.Runtime.InteropServices;
 using System.Text;
 using Imposter.Abstractions;
@@ -33,7 +35,12 @@ Console.WriteLine(
 Console.WriteLine(
     $"Roslyn {typeof(CSharpCompilation).Assembly.GetName().Version}; 3 warmups, median of 15 runs; MB = 1,000,000 bytes"
 );
+Console.WriteLine("Parse and bind+emit: 1 warmup, median of 5 runs, Release optimization");
 var measurements = new List<string> { "Scenario,MedianBytes,MedianMilliseconds" };
+var compilationMeasurements = new List<string>
+{
+    "Scenario,GeneratedCharacters,GeneratedLines,MedianParseMilliseconds,MedianBindEmitMilliseconds,AssemblyBytes,MethodILBytes",
+};
 
 foreach (var generic in new[] { false, true })
 {
@@ -49,7 +56,10 @@ foreach (var generic in new[] { false, true })
             "Benchmark",
             [targets, unrelated],
             references,
-            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
+            new CSharpCompilationOptions(
+                OutputKind.DynamicallyLinkedLibrary,
+                optimizationLevel: OptimizationLevel.Release
+            )
         );
 
     Measure(
@@ -65,6 +75,8 @@ foreach (var generic in new[] { false, true })
     var current = CreateCompilation();
     var driver = NewDriver().RunGenerators(current);
     SaveSources(name, driver, current);
+    MeasureCompilation(name, driver, current);
+    MeasureCompilation($"{name}-without-generated", driver, current, includeGenerated: false);
     var edit = 0;
     Measure(
         $"{name}-edit",
@@ -83,19 +95,52 @@ foreach (var generic in new[] { false, true })
     SaveSources($"{name}-edited", driver, current);
 }
 
+foreach (
+    var (name, members) in new[]
+    {
+        ("single-property", "int Value { get; set; }"),
+        ("single-method", "int Square(int value);"),
+    }
+)
+{
+    var compilation = CSharpCompilation.Create(
+        name,
+        [
+            CSharpSyntaxTree.ParseText(
+                "using Imposter.Abstractions; [assembly: GenerateImposter(typeof(ITarget))] public interface ITarget { "
+                    + members
+                    + " }",
+                parseOptions
+            ),
+        ],
+        references,
+        new CSharpCompilationOptions(
+            OutputKind.DynamicallyLinkedLibrary,
+            optimizationLevel: OptimizationLevel.Release
+        )
+    );
+    var driver = NewDriver().RunGenerators(compilation);
+    SaveSources(name, driver, compilation);
+    MeasureCompilation(name, driver, compilation);
+}
+
 foreach (var probe in RenameProbes.All)
 {
     var compilation = CSharpCompilation.Create(
         probe.Name,
         [CSharpSyntaxTree.ParseText(probe.Source, parseOptions, "Probe.cs")],
         references,
-        new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
+        new CSharpCompilationOptions(
+            OutputKind.DynamicallyLinkedLibrary,
+            optimizationLevel: OptimizationLevel.Release
+        )
     );
     SaveSources(probe.Name, NewDriver().RunGenerators(compilation), compilation);
     Console.WriteLine($"Output probe: {probe.Name}");
 }
 
 File.WriteAllLines(Path.Combine(output, "measurements.csv"), measurements);
+File.WriteAllLines(Path.Combine(output, "compilation.csv"), compilationMeasurements);
 return 0;
 
 GeneratorDriver NewDriver() =>
@@ -157,6 +202,72 @@ void SaveSources(string name, GeneratorDriver driver, Compilation compilation)
             source.SourceText.ToString(),
             new UTF8Encoding(false)
         );
+}
+
+// Reparse output text and create a fresh compilation for each sample: generator syntax trees and
+// SaveSources' bound compilations must not warm the parse or binding measurements.
+void MeasureCompilation(
+    string name,
+    GeneratorDriver driver,
+    Compilation compilation,
+    bool includeGenerated = true
+)
+{
+    var sources = driver.GetRunResult().Results.Single().GeneratedSources;
+    var texts = includeGenerated
+        ? sources.Select(source => source.SourceText.ToString()).ToArray()
+        : [];
+    var parseTimes = new List<double>();
+    var emitTimes = new List<double>();
+    long assemblyBytes = 0;
+    long ilBytes = 0;
+    for (var run = -1; run < 5; run++)
+    {
+        var start = Stopwatch.GetTimestamp();
+        var trees = texts.Select(text => CSharpSyntaxTree.ParseText(text, parseOptions)).ToArray();
+        var parseTime = Stopwatch.GetElapsedTime(start).TotalMilliseconds;
+        var fresh = CSharpCompilation.Create(
+            compilation.AssemblyName!,
+            compilation.SyntaxTrees.Concat(trees),
+            references,
+            (CSharpCompilationOptions)compilation.Options
+        );
+        using var stream = new MemoryStream();
+        start = Stopwatch.GetTimestamp();
+        var result = fresh.Emit(stream);
+        var emitTime = Stopwatch.GetElapsedTime(start).TotalMilliseconds;
+        if (!result.Success)
+            throw new InvalidOperationException(
+                string.Join(Environment.NewLine, result.Diagnostics)
+            );
+        assemblyBytes = stream.Length;
+        stream.Position = 0;
+        using var pe = new PEReader(stream);
+        var metadata = pe.GetMetadataReader();
+        ilBytes = metadata
+            .MethodDefinitions.Select(handle =>
+                metadata.GetMethodDefinition(handle).RelativeVirtualAddress
+            )
+            .Where(address => address != 0)
+            .Sum(address => (long)pe.GetMethodBody(address).GetILBytes()!.Length);
+        if (run >= 0)
+        {
+            parseTimes.Add(parseTime);
+            emitTimes.Add(emitTime);
+        }
+    }
+    parseTimes.Sort();
+    emitTimes.Sort();
+    var characters = texts.Sum(text => (long)text.Length);
+    var lines = includeGenerated ? sources.Sum(source => (long)source.SourceText.Lines.Count) : 0;
+    compilationMeasurements.Add(
+        FormattableString.Invariant(
+            $"{name},{characters},{lines},{parseTimes[2]:F3},{emitTimes[2]:F3},{assemblyBytes},{ilBytes}"
+        )
+    );
+    Console.WriteLine(
+        $"{name}: {lines} lines, {characters} chars, parse {parseTimes[2]:F2} ms, bind+emit {emitTimes[2]:F2} ms, PE {assemblyBytes} bytes, method IL {ilBytes} bytes"
+    );
 }
 
 static void AssertSuccess(GeneratorDriver driver)

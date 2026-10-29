@@ -1,5 +1,6 @@
 using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Shared;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationSetup;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -26,8 +27,15 @@ internal static partial class InvocationImposterGroupBuilder
         var invocationImposterAssignment = LocalVariableDeclarationSyntax(
             Var,
             method.MethodImposter.InvokeMethod.InvocationImposterVariableName,
-            IdentifierName(method.MethodInvocationImposterGroup.GetInvocationImposterMethodName)
-                .Call()
+            // Invoke takes the method's parameters, so qualify the field in case one shares its name.
+            ThisExpression()
+                .Dot(
+                    IdentifierName(
+                        MethodInvocationImposterGroupMetadata.InvocationImpostersFieldName
+                    )
+                )
+                .Dot(IdentifierName("Next"))
+                .Call(Argument(Null))
         );
 
         var guardMissingImposter = IfStatement(

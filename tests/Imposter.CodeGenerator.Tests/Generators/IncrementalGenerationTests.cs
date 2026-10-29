@@ -68,22 +68,22 @@ public class IncrementalGenerationTests
     {
         var compilation = (await TestContextTask).Compilation;
         var driver = RunTrackedGenerator(compilation);
-        var sourceTree = compilation.SyntaxTrees.First();
-        var editedCompilation = compilation.ReplaceSyntaxTree(
-            sourceTree,
-            sourceTree.WithChangedText(
-                SourceText.From(
-                    Source.Replace(
-                        "int Now(int offset);",
-                        "int Now(int offset);\n        int Later(int offset);"
-                    )
+        var clockSource = GeneratedSource(driver, "IClock");
+        var serviceSource = GeneratedSource(driver, "Service");
+
+        var rerun = driver.RunGenerators(
+            WithSource(
+                compilation,
+                Source.Replace(
+                    "int Now(int offset);",
+                    "int Now(int offset);\n        int Later(int offset);"
                 )
             )
         );
 
-        var rerun = driver.RunGenerators(editedCompilation).GetRunResult().Results.Single();
-
         rerun
+            .GetRunResult()
+            .Results.Single()
             .TrackedSteps["ImposterTargets"]
             .SelectMany(it => it.Outputs)
             .Select(it => it.Reason)
@@ -91,7 +91,111 @@ public class IncrementalGenerationTests
                 [IncrementalStepRunReason.Modified, IncrementalStepRunReason.Unchanged],
                 ignoreOrder: true
             );
+        GeneratedSource(rerun, "IClock").ShouldNotBeSameAs(clockSource);
+        GeneratedSource(rerun, "IClock").ToString().ShouldContain("Later");
+        GeneratedSource(rerun, "Service").ShouldBeSameAs(serviceSource);
     }
+
+    // Removing a registration moves the ones after it, so the driver gives them to the source output again.
+    [Fact]
+    public async Task GivenFirstRegistrationRemoved_WhenGeneratorRunsAgain_ShouldReuseTheSourceOfTheOthers()
+    {
+        var compilation = (await TestContextTask).Compilation;
+        var driver = RunTrackedGenerator(compilation);
+        var serviceSource = GeneratedSource(driver, "Service");
+
+        var rerun = driver.RunGenerators(
+            WithSource(compilation, Source.Replace(ClockRegistration, ""))
+        );
+
+        GeneratedSource(rerun, "Service").ShouldBeSameAs(serviceSource);
+    }
+
+    [Fact]
+    public async Task GivenRegistrationInsertedFirst_WhenGeneratorRunsAgain_ShouldReuseTheSourceOfTheOthers()
+    {
+        var compilation = (await TestContextTask).Compilation;
+        var driver = RunTrackedGenerator(compilation);
+        var clockSource = GeneratedSource(driver, "IClock");
+        var serviceSource = GeneratedSource(driver, "Service");
+
+        var rerun = driver.RunGenerators(
+            WithSource(
+                compilation,
+                Source.Replace(
+                    ClockRegistration,
+                    "[assembly: Imposter.Abstractions.GenerateImposter(typeof(System.IDisposable))]"
+                        + ClockRegistration
+                )
+            )
+        );
+
+        GeneratedSource(rerun, "IDisposable").ToString().ShouldContain("IDisposableImposter");
+        GeneratedSource(rerun, "IClock").ShouldBeSameAs(clockSource);
+        GeneratedSource(rerun, "Service").ShouldBeSameAs(serviceSource);
+    }
+
+    [Fact]
+    public async Task GivenLanguageVersionChange_WhenGeneratorRunsAgain_ShouldRebuildEveryImposterSource()
+    {
+        var compilation = (await TestContextTask).Compilation;
+        var driver = RunTrackedGenerator(compilation);
+        var clockSource = GeneratedSource(driver, "IClock");
+        var csharp10 = (
+            (CSharpParseOptions)compilation.SyntaxTrees.First().Options
+        ).WithLanguageVersion(LanguageVersion.CSharp10);
+
+        var rerun = driver.RunGenerators(
+            compilation
+                .RemoveAllSyntaxTrees()
+                .AddSyntaxTrees(
+                    compilation.SyntaxTrees.Select(it =>
+                        it.WithRootAndOptions(it.GetRoot(), csharp10)
+                    )
+                )
+        );
+
+        GeneratedSource(rerun, "IClock").ShouldNotBeSameAs(clockSource);
+    }
+
+    // The cache drops the source of a removed registration, so adding it back builds the source again.
+    [Fact]
+    public async Task GivenRemovedRegistrationAddedBack_WhenGeneratorRunsAgain_ShouldRebuildOnlyItsSource()
+    {
+        var compilation = (await TestContextTask).Compilation;
+        var driver = RunTrackedGenerator(compilation);
+        var clockSource = GeneratedSource(driver, "IClock");
+        var serviceSource = GeneratedSource(driver, "Service");
+        var withoutClock = driver.RunGenerators(
+            WithSource(compilation, Source.Replace(ClockRegistration, ""))
+        );
+
+        var rerun = withoutClock.RunGenerators(compilation);
+
+        GeneratedSource(rerun, "IClock").ShouldNotBeSameAs(clockSource);
+        GeneratedSource(rerun, "IClock").ToString().ShouldBe(clockSource.ToString());
+        GeneratedSource(rerun, "Service").ShouldBeSameAs(serviceSource);
+    }
+
+    private const string ClockRegistration =
+        "[assembly: Imposter.Abstractions.GenerateImposter(typeof(Sample.Incremental.IClock))]";
+
+    private static Compilation WithSource(Compilation compilation, string source)
+    {
+        var sourceTree = compilation.SyntaxTrees.First();
+
+        return compilation.ReplaceSyntaxTree(
+            sourceTree,
+            sourceTree.WithChangedText(SourceText.From(source))
+        );
+    }
+
+    private static SourceText GeneratedSource(GeneratorDriver driver, string targetName) =>
+        driver
+            .GetRunResult()
+            .Results.Single()
+            .GeneratedSources.Single(it => it.HintName.Contains(targetName))
+            .SourceText;
 
     private static GeneratorDriver RunTrackedGenerator(Compilation compilation) =>
         CSharpGeneratorDriver

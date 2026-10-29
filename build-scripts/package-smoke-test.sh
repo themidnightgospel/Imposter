@@ -3,7 +3,7 @@
 set -Eeuo pipefail
 
 # Packs the generator, checks that release notes convert to plain text and survive unchanged, builds a small consumer project with
-# IMPOSTER_LOG=true, and checks that the generator log reaches the build output.
+# IMPOSTER_LOG=true, checks the generator log, and executes property setups from the packed runtime.
 # This exercises what a NuGet consumer gets, which the in-repo tests (project references) do not.
 
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
@@ -72,7 +72,10 @@ PY
 cat > "${work_dir}/consumer/Consumer.csproj" <<EOF
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
+    <!-- CI installs the .NET 10 SDK; prefer .NET 8 when present, otherwise use an installed newer runtime. -->
+    <RollForward>Major</RollForward>
     <LangVersion>latest</LangVersion>
     <RestoreSources>../feed;https://api.nuget.org/v3/index.json</RestoreSources>
     <RestorePackagesPath>../packages</RestorePackagesPath>
@@ -87,12 +90,94 @@ cat > "${work_dir}/consumer/Clock.cs" <<'EOF'
 using Imposter.Abstractions;
 
 [assembly: GenerateImposter(typeof(Consumer.IClock))]
+[assembly: GenerateImposter(typeof(Consumer.BaseClock))]
+[assembly: GenerateImposter(typeof(Consumer.IValue<>))]
 
 namespace Consumer;
 
 public interface IClock
 {
     int Now();
+    int Offset { get; set; }
+}
+
+public interface IValue<T>
+{
+    T Value { get; set; }
+}
+
+public class BaseClock
+{
+    public virtual int Offset { get; set; }
+}
+EOF
+
+# Execute code against the package reference, not the repository's project references. A successful build alone
+# cannot catch a missing runtime assembly or a forwarding method that throws when it is first JIT-compiled.
+cat > "${work_dir}/consumer/Program.cs" <<'EOF'
+using System;
+using System.Collections.Generic;
+using Consumer;
+using Imposter.Abstractions;
+
+var imposter = new IClockImposter();
+var clock = imposter.Instance();
+clock.Offset = 7;
+Require(clock.Offset == 7, "auto-property value");
+var calls = 0;
+imposter.Offset.Getter().Returns(10).Then().Returns(20).Callback(() => calls++);
+Require(clock.Offset == 10 && clock.Offset == 20 && clock.Offset == 20, "outcome sequence");
+Require(calls == 3, "getter callbacks");
+imposter.Offset.Getter().Called(Count.Exactly(4));
+imposter.Offset.Setter(Arg<int>.Is(7)).Called(Count.Once());
+
+var strict = new IClockImposter(ImposterMode.Explicit);
+try
+{
+    _ = strict.Instance().Offset;
+    throw new Exception("An unconfigured strict getter was accepted.");
+}
+catch (MissingImposterException) { }
+strict.Offset.Getter().Returns(42);
+Require(strict.Instance().Offset == 42, "strict getter");
+
+var baseImposter = new BaseClockImposter();
+baseImposter.Offset.UseBaseImplementation();
+baseImposter.Instance().Offset = 23;
+Require(baseImposter.Instance().Offset == 23, "base accessor dispatch");
+
+ExerciseValue<string>(null);
+ExerciseValue("reference");
+ExerciseValue<decimal?>(null);
+ExerciseValue(1.234m);
+ExerciseValue(Guid.NewGuid());
+ExerciseValue<Func<int>>(() => 42);
+
+Console.WriteLine($"Packed property runtime passed on .NET {Environment.Version}.");
+
+static void ExerciseValue<T>(T value)
+{
+    var imposter = new IValueImposter<T>();
+    var instance = imposter.Instance();
+    instance.Value = value;
+    Require(EqualityComparer<T>.Default.Equals(instance.Value, value), "generic auto-property");
+    imposter.Value.Getter().Returns(() => value).Then().Throws<InvalidOperationException>().Then().Returns(value);
+    Require(EqualityComparer<T>.Default.Equals(instance.Value, value), "generic factory");
+    try
+    {
+        _ = instance.Value;
+        throw new Exception("A configured exception was not thrown.");
+    }
+    catch (InvalidOperationException) { }
+    Require(EqualityComparer<T>.Default.Equals(instance.Value, value), "generic outcome after exception");
+    imposter.Value.Getter().Called(Count.Exactly(4));
+    imposter.Value.Setter(Arg<T>.Is(value)).Called(Count.Once());
+}
+
+static void Require(bool condition, string scenario)
+{
+    if (!condition)
+        throw new Exception("Packed property runtime failed: " + scenario);
 }
 EOF
 
@@ -111,3 +196,5 @@ fi
 
 echo "IMPOSTER_LOG reaches the generator from the package:"
 grep -o "IMPLOG001: .*" "${build_log}" | sort -u
+
+dotnet run --project "${work_dir}/consumer/Consumer.csproj" -c Release --no-build --no-restore

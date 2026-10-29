@@ -1,0 +1,5 @@
+Scenario,MedianBytes,MedianMilliseconds
+plain-cold,411273320,540.524
+plain-edit,3880128,5.647
+generic-cold,413042808,597.388
+generic-edit,4257432,12.729

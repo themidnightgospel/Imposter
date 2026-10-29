@@ -1,0 +1,9 @@
+Benchmark,Parameters,Samples,MeanNanoseconds,StandardDeviationNanoseconds,ConfidenceMarginNanoseconds,BytesPerOperation
+ComplexMethodMockingBenchmark,Iteration=1,3,222.139,7.530,137.372,1504
+ComplexMethodMockingBenchmark,Iteration=10,3,2167.769,37.591,685.804,15040
+ComplexMethodMockingBenchmark,Iteration=100,3,21192.904,45.869,836.824,150400
+ComplexMethodMockingBenchmark,Iteration=1000,3,209167.016,5407.081,98645.285,1504000
+SimpleMethodMockingBenchmarks,Iteration=1,3,101.907,9.193,167.709,696
+SimpleMethodMockingBenchmarks,Iteration=10,3,918.938,43.732,797.836,5376
+SimpleMethodMockingBenchmarks,Iteration=100,3,17999.455,400.782,7311.763,52176
+SimpleMethodMockingBenchmarks,Iteration=1000,3,1545116.346,3318.479,60541.416,520176

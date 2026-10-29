@@ -8,11 +8,11 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.Invocatio
 
 internal readonly record struct MethodInvocationImposterGroupMetadata
 {
+    internal const string CreateInvocationImposterMethodName = "CreateInvocationImposter";
+
     internal const string AddInvocationImposterMethodName = "AddInvocationImposter";
 
     internal const string InvocationImpostersFieldName = "_invocationImposters";
-
-    internal const string LatestInvocationImposterFieldName = "_latestInvocationImposter";
 
     internal const string ArgumentsCriteriaPropertyName = "ArgumentsCriteria";
 
@@ -21,8 +21,6 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
     internal readonly string Name;
 
     internal readonly string MethodInvocationImposterTypeName;
-
-    internal readonly string GetInvocationImposterMethodName;
 
     internal readonly TypeMetadata Interface;
 
@@ -68,7 +66,6 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
         Syntax = SyntaxFactoryHelper.WithMethodGenericArguments(method.GenericTypeArguments, Name);
         // The group's Invoke takes the method's parameters and refers to these members by name.
         MethodInvocationImposterTypeName = method.MemberNames.Use("MethodInvocationImposter");
-        GetInvocationImposterMethodName = method.MemberNames.Use("GetInvocationImposter");
         MethodInvocationImposterSyntax = SyntaxFactory.QualifiedName(
             Syntax,
             SyntaxFactory.IdentifierName(MethodInvocationImposterTypeName)
@@ -92,6 +89,7 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
         ThrowsMethod = new ThrowsMethodMetadata(
             method.ReservedParameterNames,
             method.ExceptionGeneratorDelegate.Syntax,
+            method.Delegate.Syntax,
             Interface.Syntax,
             ContinuationInterface.Syntax,
             method.GenericTypeParameterNameSet

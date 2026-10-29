@@ -1,6 +1,7 @@
 using System;
 using Imposter.Abstractions;
 using Imposter.Tests.Features.EventImpersonation;
+using Imposter.Tests.Features.MethodImpersonation;
 using Shouldly;
 using Xunit;
 
@@ -106,18 +107,11 @@ namespace Imposter.Tests.Features.CallAllocations
         [Fact]
         public void GivenProperty_WhenConfiguringFirstReturns_ShouldUseLightweightSequenceStorage()
         {
-            var sut = new IPropertyAllocationSutImposter();
-            // Warm the delegate caches and sequence code separately from the measured imposter.
-            new IPropertyAllocationSutImposter()
-                .Value.Getter()
-                .Returns(1)
-                .Then()
-                .Returns(2);
-            var before = GC.GetAllocatedBytesForCurrentThread();
-            sut.Value.Getter().Returns(1).Then().Returns(2);
-            var allocated = GC.GetAllocatedBytesForCurrentThread() - before;
-
-            allocated.ShouldBeLessThanOrEqualTo(400);
+            AllocatedBytesPerSetup(
+                    () => new IPropertyAllocationSutImposter(),
+                    sut => sut.Value.Getter().Returns(1).Then().Returns(2)
+                )
+                .ShouldBeLessThanOrEqualTo(400);
         }
 
         [Fact]
@@ -169,6 +163,21 @@ namespace Imposter.Tests.Features.CallAllocations
             var instance = _sut.Instance();
 
             AllocatedBytesPerCall(() => instance.Echo("match")).ShouldBeLessThanOrEqualTo(120);
+        }
+
+        // The arguments used to find the setup (32 bytes) with their copy of the four-item span (40), the arguments the
+        // imposter keeps (32) with their own copy (40), the history entry (40) and its stack node (32). With the call's
+        // own type arguments, no adapter copies the span a third time.
+        [Fact]
+        public void GivenGenericMethodWithSpan_WhenCalledWithItsOwnTypeArgument_ShouldNotCopyTheSpanForAnAdapter()
+        {
+            var sut = new ISpanParameterSutImposter();
+            sut.Contains<int>(ReadOnlySpanArg<int>.Any(), Arg<int>.Any()).Returns(true);
+            var instance = sut.Instance();
+            var items = new[] { 1, 2, 3, 4 };
+
+            AllocatedBytesPerCall(() => instance.Contains<int>(items, 2))
+                .ShouldBeLessThanOrEqualTo(216);
         }
 
         // The arguments (24 bytes) and their history stack node (32).
@@ -281,6 +290,87 @@ namespace Imposter.Tests.Features.CallAllocations
 
             AllocatedBytesPerCall(() => verification.Called(Count.AtLeastOnce()))
                 .ShouldBe(withOneCall);
+        }
+
+        // The arguments (24 bytes), the history entry (40) and its stack node (32): running the callbacks allocates
+        // nothing.
+        [Fact]
+        public void GivenMethodWithCallback_WhenCalled_ShouldOnlyAllocateItsArgumentsAndHistory()
+        {
+            _sut.Square(Arg<int>.Any()).Returns(4).Callback(_ => { });
+            var instance = _sut.Instance();
+
+            AllocatedBytesPerCall(() => instance.Square(2)).ShouldBeLessThanOrEqualTo(96);
+        }
+
+        // A setup keeps its builder, group, step and Returns closure, and the steps' sequence. A queue for the steps
+        // and one for each step's callbacks took 832 bytes each.
+        [Fact]
+        public void GivenMethod_WhenSetUp_ShouldNotAllocateQueues()
+        {
+            AllocatedBytesPerSetup(sut => sut.Square(Arg<int>.Any()).Returns(4))
+                .ShouldBeLessThanOrEqualTo(400);
+        }
+
+        // Each Then() adds only its step, the step's node in the sequence and its Returns closure.
+        [Fact]
+        public void GivenMethodSequence_WhenSetUp_ShouldOnlyAllocateEachStep()
+        {
+            AllocatedBytesPerSetup(sut =>
+                    sut.Square(Arg<int>.Any()).Returns(1).Then().Returns(2).Then().Returns(3)
+                )
+                .ShouldBeLessThanOrEqualTo(736);
+        }
+
+        // Like Returns, Throws keeps one closure over its argument. The step wrapped it in a second one, which took
+        // 88 bytes more.
+        [Fact]
+        public void GivenMethodThrowingException_WhenSetUp_ShouldWrapItOnce()
+        {
+            var exception = new InvalidOperationException();
+
+            AllocatedBytesPerSetup(sut => sut.Square(Arg<int>.Any()).Throws(exception))
+                .ShouldBeLessThanOrEqualTo(400);
+        }
+
+        // Throws<TException>() captures nothing, so its delegate is cached and the setup allocates no closure.
+        [Fact]
+        public void GivenMethodThrowingExceptionType_WhenSetUp_ShouldNotAllocateClosures()
+        {
+            AllocatedBytesPerSetup(sut =>
+                    sut.Square(Arg<int>.Any()).Throws<InvalidOperationException>()
+                )
+                .ShouldBeLessThanOrEqualTo(304);
+        }
+
+        private static long AllocatedBytesPerSetup(Action<ICallAllocationSutImposter> setup) =>
+            AllocatedBytesPerSetup(() => new ICallAllocationSutImposter(), setup);
+
+        // The setup is warmed up on other imposters first, so static initialization doesn't count. Averaging also
+        // spreads the one-off cost of rebuilding a reflection cache that a GC collected.
+        private static long AllocatedBytesPerSetup<TImposter>(
+            Func<TImposter> createImposter,
+            Action<TImposter> setup
+        )
+        {
+            for (var i = 0; i < Calls; i++)
+            {
+                setup(createImposter());
+            }
+
+            var suts = new TImposter[Calls];
+            for (var i = 0; i < Calls; i++)
+            {
+                suts[i] = createImposter();
+            }
+
+            var before = GC.GetAllocatedBytesForCurrentThread();
+            foreach (var sut in suts)
+            {
+                setup(sut);
+            }
+
+            return (GC.GetAllocatedBytesForCurrentThread() - before) / Calls;
         }
 
         // The call is warmed up first, so static initialization doesn't count.

@@ -1,4 +1,5 @@
 using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
+using Imposter.CodeGenerator.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -28,13 +29,11 @@ internal readonly struct DiagnosticLogger
         }
     }
 
-    internal void LogImposter(in ImposterGenerationContext imposterGenerationContext)
+    internal void LogImposter(string hintName, ImposterTargetModel target)
     {
         if (_enabled)
         {
-            var target = imposterGenerationContext.Target.DisplayName;
-
-            Log($"Generated {imposterGenerationContext.HintName} for {target}");
+            Log($"Generated {hintName} for {target.DisplayName}");
         }
     }
 

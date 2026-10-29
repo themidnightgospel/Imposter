@@ -85,9 +85,13 @@ public class ImposterTargetModelTests
             [MetadataReference.CreateFromFile(typeof(object).Assembly.Location)]
         );
 
+        var target = compilation.GetTypeByMetadataName(targetName)!;
+        var memberAccess = new MemberAccess(compilation.Assembly);
+
         return ImposterTargetModel.From(
-            compilation.GetTypeByMetadataName(targetName)!,
-            new MemberAccess(compilation.Assembly)
+            target,
+            TargetMembers.Of(target, memberAccess),
+            memberAccess
         );
     }
 }

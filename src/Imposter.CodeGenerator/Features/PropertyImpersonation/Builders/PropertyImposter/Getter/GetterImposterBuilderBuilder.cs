@@ -14,10 +14,15 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.PropertyImposter.Getter;
 
-internal static class GetterImposterBuilderBuilder
+internal static partial class GetterImposterBuilderBuilder
 {
     internal static ClassDeclarationSyntax? Build(in ImposterPropertyMetadata property)
     {
+        if (property.Core.UsesSharedRuntime)
+        {
+            return BuildShared(property);
+        }
+
         var builder = new ClassDeclarationBuilder(property.GetterImposterBuilder.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(property.GetterImposterBuilderInterface.TypeSyntax))
@@ -629,21 +634,9 @@ internal static class GetterImposterBuilderBuilder
         )
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .WithBody(
-                Block(
-                    LocalVariableDeclarationSyntax(
-                        Var,
-                        "returnValues",
-                        VolatileSyntaxHelper.VolatileRead(builder.ReturnValuesField.Name)
-                    ),
-                    ReturnStatement(
-                        ConditionalExpression(
-                            IdentifierName("returnValues").IsNotNull(),
-                            IdentifierName("returnValues")
-                                .Dot(IdentifierName("Next"))
-                                .Call(Argument(IdentifierName(builder.LastReturnValueField.Name))),
-                            IdentifierName(builder.LastReturnValueField.Name)
-                        )
-                    )
+                NextOutcomeSyntaxHelper.TakeNextOutcomeBody(
+                    builder.ReturnValuesField.Name,
+                    IdentifierName(builder.LastReturnValueField.Name)
                 )
             )
             .Build();

@@ -1,5 +1,4 @@
-﻿using System.Collections.Immutable;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator.Models;
@@ -19,40 +18,58 @@ internal sealed record InterfaceSetupMemberModel(
     bool HidesInheritedMember
 )
 {
-    internal static InterfaceSetupMemberModel From(ISymbol member) =>
+    // A member the imposter impersonates takes the types its own model describes.
+    internal static InterfaceSetupMemberModel From(IMethodSymbol method, MethodModel model) =>
         new(
-            GetKind(member),
-            member.Name,
-            TypeModel.From(member.ContainingType),
-            member is IMethodSymbol method
-                ? method.TypeParameters.Select(TypeParameterModel.From).ToEquatableArray()
-                : default,
-            ParameterModel
-                .MatchedParameters(GetParameters(member))
-                .Select(ParameterModel.From)
-                .ToEquatableArray(),
-            member is IEventSymbol @event ? TypeModel.From(@event.Type) : null,
-            member
-                .ContainingType.AllInterfaces.SelectMany(parent => parent.GetMembers(member.Name))
-                .Any(inherited => Hides(member, inherited))
+            InterfaceSetupMemberKind.Method,
+            method.Name,
+            model.ContainingType,
+            model.TypeParameters,
+            ParameterModel.MatchedParameters(model.Parameters),
+            EventType: null,
+            HidesAnInheritedMember(method)
         );
 
-    private static InterfaceSetupMemberKind GetKind(ISymbol member) =>
-        member switch
-        {
-            IMethodSymbol => InterfaceSetupMemberKind.Method,
-            IPropertySymbol { IsIndexer: true } => InterfaceSetupMemberKind.Indexer,
-            IPropertySymbol => InterfaceSetupMemberKind.Property,
-            _ => InterfaceSetupMemberKind.Event,
-        };
+    internal static InterfaceSetupMemberModel From(IPropertySymbol property, PropertyModel model) =>
+        new(
+            property.IsIndexer
+                ? InterfaceSetupMemberKind.Indexer
+                : InterfaceSetupMemberKind.Property,
+            property.Name,
+            model.ContainingType,
+            TypeParameters: default,
+            ParameterModel.MatchedParameters(model.Parameters),
+            EventType: null,
+            HidesAnInheritedMember(property)
+        );
 
-    private static ImmutableArray<IParameterSymbol> GetParameters(ISymbol member) =>
-        member switch
-        {
-            IMethodSymbol method => method.Parameters,
-            IPropertySymbol property => property.Parameters,
-            _ => ImmutableArray<IParameterSymbol>.Empty,
-        };
+    internal static InterfaceSetupMemberModel From(IEventSymbol @event, EventModel model) =>
+        FromEvent(@event, model.ContainingType, model.Type);
+
+    // An event an interface declares, which its setup view finds among the target's by equality (see
+    // InterfaceSetupViewMetadata), so it has to be modelled the same.
+    internal static InterfaceSetupMemberModel From(IEventSymbol @event) =>
+        FromEvent(@event, TypeModel.From(@event.ContainingType), TypeModel.From(@event.Type));
+
+    private static InterfaceSetupMemberModel FromEvent(
+        IEventSymbol @event,
+        TypeModel containingInterface,
+        TypeModel eventType
+    ) =>
+        new(
+            InterfaceSetupMemberKind.Event,
+            @event.Name,
+            containingInterface,
+            TypeParameters: default,
+            MatchedParameters: default,
+            eventType,
+            HidesAnInheritedMember(@event)
+        );
+
+    private static bool HidesAnInheritedMember(ISymbol member) =>
+        member
+            .ContainingType.AllInterfaces.SelectMany(parent => parent.GetMembers(member.Name))
+            .Any(inherited => Hides(member, inherited));
 
     // Methods and indexers hide inherited ones with the same arity and argument types; properties and events hide
     // any inherited member with their name.

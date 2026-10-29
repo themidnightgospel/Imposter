@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading;
 using Imposter.Abstractions;
 using Imposter.Tests.Shared;
@@ -128,6 +129,53 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 ConcurrentFirstCalls.FirstCallThenEveryOtherCall("1", "2"),
                 ignoreOrder: true
             );
+        }
+
+        [Fact]
+        public void GivenLongSequence_WhenEightThreadsCallMoreTimesThanItHasSteps_ShouldServeEachOnceThenRepeatTheLast()
+        {
+            const int steps = 1_000;
+            const int threads = 8;
+            const int callsPerThread = 250;
+            for (var round = 0; round < 50; round++)
+            {
+                var imposter = new IMethodSetupFeatureSutImposter();
+                var continuation = imposter.IntNoParams().Returns(0);
+                for (var step = 1; step < steps; step++)
+                {
+                    continuation = continuation.Then().Returns(step);
+                }
+
+                var instance = imposter.Instance();
+                var results = new int[threads * callsPerThread];
+                using var start = new Barrier(threads);
+                var workers = new Thread[threads];
+                for (var thread = 0; thread < threads; thread++)
+                {
+                    var offset = thread * callsPerThread;
+                    workers[thread] = new Thread(() =>
+                    {
+                        start.SignalAndWait();
+                        for (var call = 0; call < callsPerThread; call++)
+                        {
+                            results[offset + call] = instance.IntNoParams();
+                        }
+                    });
+                    workers[thread].Start();
+                }
+
+                foreach (var worker in workers)
+                {
+                    worker.Join();
+                }
+
+                results
+                    .Where(value => value != steps - 1)
+                    .OrderBy(value => value)
+                    .ShouldBe(Enumerable.Range(0, steps - 1));
+                results.Count(value => value == steps - 1).ShouldBe(results.Length - (steps - 1));
+                instance.IntNoParams().ShouldBe(steps - 1);
+            }
         }
 
         private static IMethodSetupFeatureSut ConfiguredInstance(

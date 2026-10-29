@@ -200,33 +200,30 @@ internal static partial class MethodImposterBuilderBuilder
             .Build();
     }
 
-    // Publish readiness only after configuration completes. Inferring it from the queue would confuse a bare
-    // void setup's default no-op with an explicitly configured outcome, and consuming a queue must not clear it.
-    // The volatile write also makes the configured outcome visible to a reader that selects this group.
+    // Add the invocation imposter only after configuring it, so a call that takes it finds the outcome in place.
     private static BlockSyntax ForwardToCurrentInvocationImposter(
         in ImposterTargetMethodMetadata method,
         string name,
         params ArgumentSyntax[] arguments
-    ) =>
-        Block(
-            IdentifierName(method.MethodImposter.Builder.CurrentInvocationImposterField.Name)
-                .Dot(IdentifierName(name))
-                .Call(arguments)
-                .ToStatementSyntax(),
-            IdentifierName(method.MethodImposter.Builder.CurrentInvocationImposterField.Name)
-                .Dot(IdentifierName(method.MethodInvocationImposter.IsConfiguredFieldName))
-                .Assign(True)
-                .ToStatementSyntax(),
+    )
+    {
+        var currentInvocationImposter = IdentifierName(
+            method.MethodImposter.Builder.CurrentInvocationImposterField.Name
+        );
+
+        return Block(
+            currentInvocationImposter.Dot(IdentifierName(name)).Call(arguments).ToStatementSyntax(),
             IdentifierName(method.MethodImposter.Builder.InvocationImposterGroupField.Name)
                 .Dot(
                     IdentifierName(
-                        method.MethodInvocationImposterGroup.HasConfiguredOutcomeFieldName
+                        MethodInvocationImposterGroupMetadata.AddInvocationImposterMethodName
                     )
                 )
-                .Assign(True)
+                .Call(Argument(currentInvocationImposter))
                 .ToStatementSyntax(),
             ReturnThis
         );
+    }
 
     private static MethodDeclarationSyntax BuildThenImplementation(
         in ImposterTargetMethodMetadata method
@@ -245,7 +242,7 @@ internal static partial class MethodImposterBuilderBuilder
             .Build();
     }
 
-    // Adds a new invocation imposter to the group, which the setup methods configure from then on.
+    // Starts a new invocation imposter, which the setup methods configure from then on and add to the group.
     private static ExpressionStatementSyntax AdvanceToNewInvocationImposter(
         in ImposterTargetMethodMetadata method,
         ExpressionSyntax invocationImposterGroup
@@ -256,7 +253,7 @@ internal static partial class MethodImposterBuilderBuilder
                 invocationImposterGroup
                     .Dot(
                         IdentifierName(
-                            MethodInvocationImposterGroupMetadata.AddInvocationImposterMethodName
+                            MethodInvocationImposterGroupMetadata.CreateInvocationImposterMethodName
                         )
                     )
                     .Call()

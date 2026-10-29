@@ -17,6 +17,9 @@ public class GeneratedCodeOnlyTypesTests
     [InlineData(typeof(EventHandlerCollection<>))]
     [InlineData(typeof(ReturnValueSequence<>))]
     [InlineData(typeof(AsyncCallbacks))]
+    [InlineData(typeof(PropertyValue<>))]
+    [InlineData(typeof(PropertyGetter<>))]
+    [InlineData(typeof(PropertySetter<>))]
     public void GivenGeneratedCodeOnlyType_WhenInspected_ShouldBeHiddenFromIntelliSense(Type type)
     {
         type.GetCustomAttribute<EditorBrowsableAttribute>()

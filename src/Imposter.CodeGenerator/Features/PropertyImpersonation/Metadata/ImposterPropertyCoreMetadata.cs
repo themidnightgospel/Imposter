@@ -42,6 +42,9 @@ internal readonly ref struct ImposterPropertyCoreMetadata
     // passed through.
     internal readonly bool KeepsValue;
 
+    // Span criteria and pass-through delegates still require signature-specific generated machinery.
+    internal readonly bool UsesSharedRuntime;
+
     internal readonly PropertyDelegateMetadata? Delegates;
 
     // Action<T>, or the generated setter callback delegate for a value passed through.
@@ -90,6 +93,7 @@ internal readonly ref struct ImposterPropertyCoreMetadata
             property.Type
         );
         IsPassedThrough = property.IsPassedThrough;
+        UsesSharedRuntime = !IsPassedThrough && span is null;
         KeepsValue = HasGetter && !IsPassedThrough;
         if (IsPassedThrough)
         {

@@ -80,4 +80,74 @@ public class ReturnValueSequenceTests
         );
         sequence.Next("fallback").ShouldBe((count - 1).ToString());
     }
+
+    [Fact]
+    public void GivenEightThreads_WhenCallingMoreTimesThanOutcomes_ShouldServeEachOnceThenRepeatTheLast()
+    {
+        const int count = 1_000;
+        const int threads = 8;
+        const int callsPerThread = 250;
+        for (var round = 0; round < 50; round++)
+        {
+            var sequence = new ReturnValueSequence<string>();
+            for (var i = 0; i < count; i++)
+                sequence.Add(i.ToString());
+
+            var results = new string[threads][];
+            using var start = new Barrier(threads);
+            Parallel.For(
+                0,
+                threads,
+                new ParallelOptions { MaxDegreeOfParallelism = threads },
+                thread =>
+                {
+                    var served = new string[callsPerThread];
+                    start.SignalAndWait();
+                    for (var call = 0; call < callsPerThread; call++)
+                        served[call] = sequence.Next("fallback");
+                    results[thread] = served;
+                }
+            );
+
+            var all = results.SelectMany(served => served).ToArray();
+            all.Where(value => value != "999")
+                .Select(int.Parse)
+                .OrderBy(value => value)
+                .ShouldBe(Enumerable.Range(0, count - 1));
+            all.Count(value => value == "999").ShouldBe(threads * callsPerThread - (count - 1));
+            sequence.Next("fallback").ShouldBe("999");
+        }
+    }
+
+    [Fact]
+    public void GivenConcurrentAdders_WhenConsumingAfterwards_ShouldKeepEachAdderOrder()
+    {
+        const int adders = 4;
+        const int perAdder = 250;
+        var sequence = new ReturnValueSequence<Tuple<int, int>?>();
+        using var start = new Barrier(adders);
+
+        Parallel.For(
+            0,
+            adders,
+            new ParallelOptions { MaxDegreeOfParallelism = adders },
+            adder =>
+            {
+                start.SignalAndWait();
+                for (var i = 0; i < perAdder; i++)
+                    sequence.Add(Tuple.Create(adder, i));
+            }
+        );
+
+        var served = Enumerable
+            .Range(0, adders * perAdder)
+            .Select(_ => sequence.Next(null).ShouldNotBeNull())
+            .ToArray();
+        foreach (var adder in Enumerable.Range(0, adders))
+            served
+                .Where(item => item.Item1 == adder)
+                .Select(item => item.Item2)
+                .ShouldBe(Enumerable.Range(0, perAdder));
+        sequence.Next(null).ShouldBeSameAs(served[^1]);
+    }
 }

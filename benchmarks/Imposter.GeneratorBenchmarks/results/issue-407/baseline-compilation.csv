@@ -1,0 +1,7 @@
+Scenario,GeneratedCharacters,GeneratedLines,MedianParseMilliseconds,MedianBindEmitMilliseconds,AssemblyBytes,MethodILBytes
+plain,14391220,353660,414.704,5510.909,7624704,1495349
+plain-without-generated,0,0,0.001,5.272,32256,9
+generic,14456340,353660,307.213,5132.361,10769408,1505229
+generic-without-generated,0,0,0.003,15.869,32768,9
+single-property,14825,390,0.531,21.657,11264,1342
+single-method,16790,454,0.480,11.450,11776,1663
