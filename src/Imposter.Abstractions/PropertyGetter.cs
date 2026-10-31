@@ -29,7 +29,7 @@ public class PropertyGetter<T>
 
     private void AddReturnValue(Func<Func<T>?, T> valueGenerator)
     {
-        _defaultValue.IsOn = false;
+        _defaultValue.TurnOff();
         LazyInitializer.EnsureInitialized(ref _returnValues)!.Add(valueGenerator);
         _hasConfiguredReturn = true;
     }
@@ -85,15 +85,7 @@ public class PropertyGetter<T>
             foreach (var callback in _callbacks)
                 callback();
         if (_defaultValue.IsOn)
-        {
-            if (
-                _invocationCount == 1
-                && baseImplementation is not null
-                && !_defaultValue.HasValueSet
-            )
-                _defaultValue.Value = baseImplementation();
-            return _defaultValue.Value;
-        }
+            return _defaultValue.Read(baseImplementation);
         // An empty sequence can be observed while the first setup is being published. A null fallback
         // returns default directly and avoids looking up a generic cached delegate on every read.
         var outcome = Volatile.Read(ref _returnValues)?.Next(null);

@@ -155,7 +155,6 @@ internal static class SetterImposterBuilder
         bodyStatements.AddRange(
             SetBackingField(
                 setterImposter,
-                property.DefaultPropertyBehaviour,
                 baseImplementationIdentifier,
                 property.Core.SetterSupportsBaseImplementation,
                 property.Core.KeepsValue
@@ -184,32 +183,27 @@ internal static class SetterImposterBuilder
 
         static IEnumerable<StatementSyntax> SetBackingField(
             in PropertySetterImposterMetadata setterImposter,
-            in DefaultPropertyBehaviourMetadata defaultPropertyBehaviour,
             ExpressionSyntax baseImplementationIdentifier,
             bool setterSupportsBaseImplementation,
             bool keepsValue
         )
         {
-            var defaultBehaviourCheck = IdentifierName(
-                    setterImposter.DefaultPropertyBehaviourField.Name
-                )
-                .Dot(IdentifierName(defaultPropertyBehaviour.IsOnField.Name));
-
-            StatementSyntax[] assignBackingFieldStatements =
-            [
-                IdentifierName(setterImposter.DefaultPropertyBehaviourField.Name)
-                    .Dot(IdentifierName(defaultPropertyBehaviour.BackingField.Name))
-                    .Assign(IdentifierName(setterImposter.SetMethod.ValueParameter.Name))
-                    .ToStatementSyntax(),
-                IdentifierName(setterImposter.DefaultPropertyBehaviourField.Name)
-                    .Dot(IdentifierName(defaultPropertyBehaviour.HasValueSetField.Name))
-                    .Assign(True)
-                    .ToStatementSyntax(),
-            ];
+            var defaultPropertyBehaviour = IdentifierName(
+                setterImposter.DefaultPropertyBehaviourField.Name
+            );
 
             var defaultBehaviourPath = IfStatement(
-                defaultBehaviourCheck,
-                Block(assignBackingFieldStatements)
+                defaultPropertyBehaviour.Dot(
+                    IdentifierName(DefaultPropertyBehaviourMetadata.IsOnPropertyName)
+                ),
+                Block(
+                    defaultPropertyBehaviour
+                        .Dot(IdentifierName(DefaultPropertyBehaviourMetadata.WriteMethodName))
+                        .Call(
+                            Argument(IdentifierName(setterImposter.SetMethod.ValueParameter.Name))
+                        )
+                        .ToStatementSyntax()
+                )
             );
 
             var statements = new List<StatementSyntax>();

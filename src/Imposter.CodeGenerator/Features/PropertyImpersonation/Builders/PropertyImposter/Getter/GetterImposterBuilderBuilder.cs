@@ -222,8 +222,8 @@ internal static partial class GetterImposterBuilderBuilder
         var getterImposterBuilder = property.GetterImposterBuilder;
         var turnDefaultBehaviourOff = property.Core.KeepsValue
             ? IdentifierName(getterImposterBuilder.DefaultPropertyBehaviourField.Name)
-                .Dot(IdentifierName(property.DefaultPropertyBehaviour.IsOnField.Name))
-                .Assign(False)
+                .Dot(IdentifierName(DefaultPropertyBehaviourMetadata.TurnOffMethodName))
+                .Call()
             : null;
 
         return new MethodDeclarationBuilder(
@@ -534,9 +534,8 @@ internal static partial class GetterImposterBuilderBuilder
                     .AddStatement(InvokeGetterCallbacks(builder))
                     .AddStatement(
                         property.Core.KeepsValue
-                            ? IfAutoPropertyBehaviourReturnBackingField(
+                            ? IfAutoPropertyBehaviourReturnValue(
                                 builder,
-                                property.DefaultPropertyBehaviour,
                                 baseImplementationIdentifier
                             )
                             : null
@@ -572,39 +571,26 @@ internal static partial class GetterImposterBuilderBuilder
                 IdentifierName(nextVariableName).Call(Argument(baseImplementationIdentifier))
             );
 
-        static StatementSyntax IfAutoPropertyBehaviourReturnBackingField(
+        static StatementSyntax IfAutoPropertyBehaviourReturnValue(
             in PropertyGetterImposterBuilderMetadata builder,
-            in DefaultPropertyBehaviourMetadata defaultPropertyBehaviour,
             ExpressionSyntax baseImplementationIdentifier
         )
         {
-            var defaultBehaviourCheck = IdentifierName(builder.DefaultPropertyBehaviourField.Name)
-                .Dot(IdentifierName(defaultPropertyBehaviour.IsOnField.Name));
-            var baseImplementationIsNotNull = baseImplementationIdentifier.IsNotNull();
-            var returnBackingField = ReturnStatement(
-                IdentifierName(builder.DefaultPropertyBehaviourField.Name)
-                    .Dot(IdentifierName(defaultPropertyBehaviour.BackingField.Name))
+            var defaultPropertyBehaviour = IdentifierName(
+                builder.DefaultPropertyBehaviourField.Name
             );
 
-            // If default behaviour is on, optionally seed the backing field from base on first read
-            var hasValueSetCheck = IdentifierName(builder.DefaultPropertyBehaviourField.Name)
-                .Dot(IdentifierName(defaultPropertyBehaviour.HasValueSetField.Name));
-            var seedFromBaseCondition = BinaryExpression(
-                    SyntaxKind.EqualsExpression,
-                    IdentifierName(builder.InvocationCountField.Name),
-                    LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(1))
-                )
-                .And(baseImplementationIsNotNull)
-                .And(Not(hasValueSetCheck));
-
-            var seedFromBase = IdentifierName(builder.DefaultPropertyBehaviourField.Name)
-                .Dot(IdentifierName(defaultPropertyBehaviour.BackingField.Name))
-                .Assign(baseImplementationIdentifier.Call())
-                .ToStatementSyntax();
-
             return IfStatement(
-                defaultBehaviourCheck,
-                Block(IfStatement(seedFromBaseCondition, Block(seedFromBase)), returnBackingField)
+                defaultPropertyBehaviour.Dot(
+                    IdentifierName(DefaultPropertyBehaviourMetadata.IsOnPropertyName)
+                ),
+                Block(
+                    ReturnStatement(
+                        defaultPropertyBehaviour
+                            .Dot(IdentifierName(DefaultPropertyBehaviourMetadata.ReadMethodName))
+                            .Call(Argument(baseImplementationIdentifier))
+                    )
+                )
             );
         }
 
