@@ -100,24 +100,16 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class BufferPropertyBuilder : IBufferPropertyBuilder
 		{
-			private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
+			private readonly global::Imposter.Abstractions.PropertyValue<byte[]> _defaultPropertyBehaviour;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			internal SetterImposter _setterImposter;
 			internal GetterImposterBuilder _getterImposterBuilder;
 			internal BufferPropertyBuilder(global::Imposter.Abstractions.ImposterMode invocationBehavior)
 			{
-				_defaultPropertyBehaviour = new DefaultPropertyBehaviour();
+				_defaultPropertyBehaviour = new global::Imposter.Abstractions.PropertyValue<byte[]>();
 				_invocationBehavior = invocationBehavior;
 				_getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.ISpanPropertySut.Buffer");
 				_setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.ISpanPropertySut.Buffer");
-			}
-
-			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal class DefaultPropertyBehaviour
-			{
-				internal volatile bool IsOn = true;
-				internal volatile bool HasValueSet = false;
-				internal byte[] BackingField = default !;
 			}
 
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -127,11 +119,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 				private global::Imposter.Abstractions.CallbackCollection<global::System.Action>? _callbacks;
 				private volatile global::System.Func<global::System.Func<byte[]>?, byte[]> _lastReturnValue = _ => default !;
 				private int _invocationCount;
-				private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
+				private readonly global::Imposter.Abstractions.PropertyValue<byte[]> _defaultPropertyBehaviour;
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 				private readonly string _propertyDisplayName;
 				private bool _hasConfiguredReturn;
-				internal GetterImposterBuilder(DefaultPropertyBehaviour _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName)
+				internal GetterImposterBuilder(global::Imposter.Abstractions.PropertyValue<byte[]> _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName)
 				{
 					this._defaultPropertyBehaviour = _defaultPropertyBehaviour;
 					this._invocationBehavior = invocationBehavior;
@@ -140,7 +132,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 				private void AddReturnValue(global::System.Func<global::System.Func<byte[]>?, byte[]> valueGenerator)
 				{
-					_defaultPropertyBehaviour.IsOn = false;
+					_defaultPropertyBehaviour.TurnOff();
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _returnValues).Add(valueGenerator);
 					_hasConfiguredReturn = true;
 				}
@@ -200,12 +192,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 					if (_defaultPropertyBehaviour.IsOn)
 					{
-						if (((_invocationCount == 1) && (baseImplementation != null)) && !_defaultPropertyBehaviour.HasValueSet)
-						{
-							_defaultPropertyBehaviour.BackingField = baseImplementation();
-						}
-
-						return _defaultPropertyBehaviour.BackingField;
+						return _defaultPropertyBehaviour.Read(baseImplementation);
 					}
 
 					var nextReturnValue = NextReturnValue();
@@ -230,11 +217,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			{
 				private global::Imposter.Abstractions.CallbackCollection<global::System.Tuple<global::Imposter.Abstractions.SpanArg<byte>, global::System.Action<byte[]>>>? _callbacks;
 				private global::System.Collections.Concurrent.ConcurrentStack<byte[]>? _invocationHistory;
-				private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
+				private readonly global::Imposter.Abstractions.PropertyValue<byte[]> _defaultPropertyBehaviour;
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 				private readonly string _propertyDisplayName;
 				private bool _hasConfiguredSetter;
-				internal SetterImposter(DefaultPropertyBehaviour _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName)
+				internal SetterImposter(global::Imposter.Abstractions.PropertyValue<byte[]> _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName)
 				{
 					this._defaultPropertyBehaviour = _defaultPropertyBehaviour;
 					this._invocationBehavior = invocationBehavior;
@@ -280,8 +267,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 					if (_defaultPropertyBehaviour.IsOn)
 					{
-						_defaultPropertyBehaviour.BackingField = value;
-						_defaultPropertyBehaviour.HasValueSet = true;
+						_defaultPropertyBehaviour.Write(value);
 					}
 				}
 
@@ -386,22 +372,14 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class NamePropertyBuilder : INamePropertyBuilder
 		{
-			private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
+			private readonly global::Imposter.Abstractions.PropertyValue<char[]> _defaultPropertyBehaviour;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			internal GetterImposterBuilder _getterImposterBuilder;
 			internal NamePropertyBuilder(global::Imposter.Abstractions.ImposterMode invocationBehavior)
 			{
-				_defaultPropertyBehaviour = new DefaultPropertyBehaviour();
+				_defaultPropertyBehaviour = new global::Imposter.Abstractions.PropertyValue<char[]>();
 				_invocationBehavior = invocationBehavior;
 				_getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.ISpanPropertySut.Name");
-			}
-
-			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal class DefaultPropertyBehaviour
-			{
-				internal volatile bool IsOn = true;
-				internal volatile bool HasValueSet = false;
-				internal char[] BackingField = default !;
 			}
 
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -411,11 +389,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 				private global::Imposter.Abstractions.CallbackCollection<global::System.Action>? _callbacks;
 				private volatile global::System.Func<global::System.Func<char[]>?, char[]> _lastReturnValue = _ => default !;
 				private int _invocationCount;
-				private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
+				private readonly global::Imposter.Abstractions.PropertyValue<char[]> _defaultPropertyBehaviour;
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 				private readonly string _propertyDisplayName;
 				private bool _hasConfiguredReturn;
-				internal GetterImposterBuilder(DefaultPropertyBehaviour _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName)
+				internal GetterImposterBuilder(global::Imposter.Abstractions.PropertyValue<char[]> _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName)
 				{
 					this._defaultPropertyBehaviour = _defaultPropertyBehaviour;
 					this._invocationBehavior = invocationBehavior;
@@ -424,7 +402,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 				private void AddReturnValue(global::System.Func<global::System.Func<char[]>?, char[]> valueGenerator)
 				{
-					_defaultPropertyBehaviour.IsOn = false;
+					_defaultPropertyBehaviour.TurnOff();
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _returnValues).Add(valueGenerator);
 					_hasConfiguredReturn = true;
 				}
@@ -484,12 +462,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 					if (_defaultPropertyBehaviour.IsOn)
 					{
-						if (((_invocationCount == 1) && (baseImplementation != null)) && !_defaultPropertyBehaviour.HasValueSet)
-						{
-							_defaultPropertyBehaviour.BackingField = baseImplementation();
-						}
-
-						return _defaultPropertyBehaviour.BackingField;
+						return _defaultPropertyBehaviour.Read(baseImplementation);
 					}
 
 					var nextReturnValue = NextReturnValue();

@@ -91,10 +91,7 @@ public class PropertySetter<T>
         if (_useBaseImplementation)
             return true;
         if (_defaultValue is { IsOn: true })
-        {
-            _defaultValue.Value = value;
-            _defaultValue.HasValueSet = true;
-        }
+            _defaultValue.Write(value);
         return false;
     }
 }

@@ -63,6 +63,32 @@ public class PropertyRuntimeTests
     }
 
     [Fact]
+    public void GivenBaseGetterReadingTheProperty_WhenReadingFirst_ShouldReturnDefaultToTheNestedRead()
+    {
+        var getter = new Getter<int>(_value);
+        int ReadAgain() => getter.Get(ReadAgain) + 1;
+
+        getter.Get(ReadAgain).ShouldBe(1);
+        getter.Get(ReadAgain).ShouldBe(1);
+    }
+
+    [Fact]
+    public void GivenThrowingBaseGetter_WhenReadingTwice_ShouldCallItOnlyOnce()
+    {
+        var getter = new Getter<int>(_value);
+        var baseCalls = 0;
+        int ThrowFromBase()
+        {
+            baseCalls++;
+            throw new InvalidOperationException();
+        }
+
+        Should.Throw<InvalidOperationException>(() => getter.Get(ThrowFromBase));
+        getter.Get(ThrowFromBase).ShouldBe(0);
+        baseCalls.ShouldBe(1);
+    }
+
+    [Fact]
     public void GivenThrowingCallback_WhenReading_ShouldRecordButNotConsumeOutcome()
     {
         var getter = new Getter<int>(_value);

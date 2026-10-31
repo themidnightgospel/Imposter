@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Threading;
 using Imposter.Abstractions;
 using Imposter.Tests.Shared;
 using Shouldly;
@@ -9,6 +11,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
     public class ThreadSafetyTests
     {
         private const int ThreadCount = 200;
+        private const int FirstReaderCount = 8;
         private readonly IPropertySetupSutImposter _sut =
 #if USE_CSHARP14
         IPropertySetupSut.Imposter();
@@ -83,6 +86,39 @@ namespace Imposter.Tests.Features.PropertyImpersonation
                 ConcurrentFirstCalls.FirstCallThenEveryOtherCall("1", "2"),
                 ignoreOrder: true
             );
+        }
+
+        // A getter callback runs after the read is counted and before its value is chosen, so the barrier holds every
+        // first read there until all of them are counted.
+        [Fact]
+        public void GivenClassPropertyWithInitializer_WhenFirstReadsAreConcurrent_ShouldReturnBaseValueEveryTime()
+        {
+            var imposter = new ClassWithInitialValuePropertyImposter();
+            using var countedReads = new Barrier(FirstReaderCount);
+            imposter.A.Getter().Callback(() => countedReads.SignalAndWait());
+            var instance = imposter.Instance();
+            var values = new int[FirstReaderCount];
+
+            DedicatedThreads.RunTogether(FirstReaderCount, reader => values[reader] = instance.A);
+
+            values.ShouldAllBe(it => it == 11);
+        }
+
+        [Fact]
+        public void GivenClassSpanPropertyWithInitializer_WhenFirstReadsAreConcurrent_ShouldReturnBaseValueEveryTime()
+        {
+            var imposter = new SpanPropertyClassImposter();
+            using var countedReads = new Barrier(FirstReaderCount);
+            imposter.Buffer.Getter().Callback(() => countedReads.SignalAndWait());
+            var instance = imposter.Instance();
+            var buffers = new byte[FirstReaderCount][];
+
+            DedicatedThreads.RunTogether(
+                FirstReaderCount,
+                reader => buffers[reader] = instance.Buffer.ToArray()
+            );
+
+            buffers.ShouldAllBe(it => it.SequenceEqual(new byte[] { 1, 2 }));
         }
 
         private static IPropertySetupSut ConfiguredInstance(Action<IPropertySetupSutImposter> setup)
