@@ -15,6 +15,9 @@ public sealed class PropertyValue<T>
     private bool _isSeeding;
     private T _value = default!;
 
+    // Created by the first read that seeds or the first write, so a property nobody uses allocates nothing more.
+    private object? _gate;
+
     /// <summary>Whether the property still behaves like an auto-property.</summary>
     public bool IsOn => _isOn;
 
@@ -42,18 +45,22 @@ public sealed class PropertyValue<T>
         }
 
         // Waits for a seeding read, so the assignment isn't overwritten by the base value.
-        lock (this)
+        lock (Gate)
         {
             _value = value;
             _isSettled = true;
         }
     }
 
-    // Concurrent first reads wait here for the one that calls the base getter. Only these accessors can reach the
-    // instance, so nothing else locks on it.
+    private object Gate =>
+        Volatile.Read(ref _gate)
+        ?? Interlocked.CompareExchange(ref _gate, new object(), null)
+        ?? _gate!;
+
+    // Concurrent first reads wait here for the one that calls the base getter.
     private void Seed(Func<T> baseImplementation)
     {
-        lock (this)
+        lock (Gate)
         {
             // The lock lets the seeding thread in again, so a base getter that reads the property gets the default.
             if (_isSettled || _isSeeding)
