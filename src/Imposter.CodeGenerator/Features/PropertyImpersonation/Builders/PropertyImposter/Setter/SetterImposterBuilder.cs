@@ -32,13 +32,7 @@ internal static class SetterImposterBuilder
 
         return new ClassDeclarationBuilder(property.SetterImposter.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddMember(
-                SingleVariableField(
-                    property.SetterImposter.CallbacksField.Type.ToNullableType(),
-                    CallbacksFieldMetadata.Name,
-                    SyntaxKind.PrivateKeyword
-                )
-            )
+            .AddMember(LazyCollectionSyntaxHelper.Field(property.SetterImposter.CallbacksField))
             .AddMember(BuildInvocationsField(property.SetterImposter))
             .AddMembers(
                 PropertyAccessorStateBuilder.Fields(property, property.SetterImposter.State)
@@ -212,25 +206,27 @@ internal static class SetterImposterBuilder
 
         static StatementSyntax InvokeCallbacks(in PropertySetterImposterMetadata setterImposter)
         {
+            var callbacks = IdentifierName(setterImposter.CallbacksField.Name);
             var value = IdentifierName(setterImposter.SetMethod.ValueParameter.Name);
             var invokeCallback = IdentifierName("setterCallback")
                 .Call(Argument(value))
                 .ToStatementSyntax();
 
             return LazyCollectionSyntaxHelper.UnlessNull(
-                setterImposter.CallbacksField.TupleTypeSyntax is null
+                setterImposter.CallbackTupleType is null
                     ? ForEachStatement(
                         type: Var,
                         identifier: Identifier("setterCallback"),
-                        expression: IdentifierName(CallbacksFieldMetadata.Name),
+                        expression: callbacks,
                         statement: Block(invokeCallback)
                     )
-                    : CriteriaCallbacksLoop(value, invokeCallback)
+                    : CriteriaCallbacksLoop(callbacks, value, invokeCallback)
             );
         }
 
         // A callback with criteria runs only for a value they match.
         static ForEachVariableStatementSyntax CriteriaCallbacksLoop(
+            IdentifierNameSyntax callbacks,
             IdentifierNameSyntax value,
             StatementSyntax invokeCallback
         ) =>
@@ -250,7 +246,7 @@ internal static class SetterImposterBuilder
                         Token(SyntaxKind.CloseParenToken)
                     )
                 ),
-                IdentifierName(CallbacksFieldMetadata.Name),
+                callbacks,
                 Block(
                     IfStatement(
                         IdentifierName("criteria")
@@ -358,7 +354,7 @@ internal static class SetterImposterBuilder
         // A callback is queued with its criteria, unless the value is passed through and can't be matched.
         ExpressionSyntax queuedCallback =
             callbackMethod.CriteriaParameter is { } criteria
-            && setterImposter.CallbacksField.TupleTypeSyntax is { } tupleType
+            && setterImposter.CallbackTupleType is { } tupleType
                 ? tupleType.New(
                     ArgumentListSyntax([
                         Argument(IdentifierName(criteria.Name)),
@@ -378,7 +374,7 @@ internal static class SetterImposterBuilder
             .WithBody(
                 Block(
                     LazyCollectionSyntaxHelper
-                        .EnsureInitialized(CallbacksFieldMetadata.Name)
+                        .EnsureInitialized(setterImposter.CallbacksField.Name)
                         .Dot(IdentifierName("Add"))
                         .Call(Argument(queuedCallback))
                         .ToStatementSyntax(),

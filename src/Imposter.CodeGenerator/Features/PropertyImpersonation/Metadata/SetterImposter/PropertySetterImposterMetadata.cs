@@ -11,7 +11,10 @@ internal readonly struct PropertySetterImposterMetadata
 
     internal readonly NameSyntax TypeSyntax;
 
-    internal readonly CallbacksFieldMetadata CallbacksField;
+    internal readonly FieldMetadata CallbacksField;
+
+    // A callback with the criteria the value has to match, or a bare callback for a value passed through.
+    internal readonly TypeSyntax? CallbackTupleType;
 
     // The values set, which Called matches against its criteria. A value passed through can't be kept, so the setter
     // only counts the sets in InvocationCountField instead.
@@ -40,7 +43,15 @@ internal readonly struct PropertySetterImposterMetadata
     {
         Name = "SetterImposter";
         TypeSyntax = SyntaxFactory.IdentifierName(Name);
-        CallbacksField = new CallbacksFieldMetadata(property);
+        CallbackTupleType = property.AsArgType is { } argType
+            ? WellKnownTypes.System.Tuple(argType, property.SetterCallbackType)
+            : null;
+        CallbacksField = new FieldMetadata(
+            "_callbacks",
+            WellKnownTypes.Imposter.Abstractions.CallbackCollection(
+                CallbackTupleType ?? property.SetterCallbackType
+            )
+        );
         InvocationHistoryField = property.IsPassedThrough
             ? null
             : new FieldMetadata(
