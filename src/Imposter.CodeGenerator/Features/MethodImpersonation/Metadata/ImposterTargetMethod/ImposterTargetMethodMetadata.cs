@@ -37,10 +37,6 @@ internal readonly struct ImposterTargetMethodMetadata
 
     internal readonly TypeMetadata Arguments;
 
-    // A generic method's arguments class converts itself with this method. Like the criteria, it keeps a field per
-    // parameter, so it takes the criteria's As name.
-    internal readonly string ArgumentsAsMethodName;
-
     internal readonly InvocationHistoryTypeMetadata InvocationHistory;
 
     internal readonly InvocationVerifierInterfaceMetadata InvocationVerifierInterface;
@@ -196,7 +192,6 @@ internal readonly struct ImposterTargetMethodMetadata
             SyntaxFactoryHelper.WithMethodGenericArguments(GenericTypeArguments, argumentsTypeName)
         );
         ArgumentsCriteria = new ArgumentCriteriaTypeMetadata(this);
-        ArgumentsAsMethodName = ArgumentsCriteria.AsMethod.Name;
         InvocationHistory = new InvocationHistoryTypeMetadata(this);
         MethodInvocationImposterGroup = new MethodInvocationImposterGroupMetadata(this);
         MethodInvocationImposter = new MethodInvocationImposterMetadata(

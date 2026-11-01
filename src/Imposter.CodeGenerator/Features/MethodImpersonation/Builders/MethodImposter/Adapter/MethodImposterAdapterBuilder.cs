@@ -303,7 +303,7 @@ internal static class MethodImposterAdapterBuilder
         );
         var hasMatchingMethod = method.MethodImposter.HasMatchingInvocationImposterGroupMethod;
         var parameters = (ParameterListSyntax)
-            typeParamRenamer.Visit(CapturedArgumentsBuilder.Parameters(method));
+            typeParamRenamer.Visit(CapturedArgumentsBuilder.InParameters(method));
         var arguments = method.Parameters.InputParameterMetadata.Select(p =>
         {
             var converted = p.Model.Type.IsDynamic

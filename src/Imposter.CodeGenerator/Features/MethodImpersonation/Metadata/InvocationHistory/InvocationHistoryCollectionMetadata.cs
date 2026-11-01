@@ -6,13 +6,21 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.Invocatio
 
 internal readonly record struct InvocationHistoryCollectionMetadata
 {
+    internal const string AddMethodName = "Add";
+
     internal const string RecordFailureMethodName = "RecordFailure";
 
-    internal const string InvocationHistoryCollectionFieldName = "_invocationHistory";
+    internal const string HeadFieldName = "_invocationHistory";
+
+    internal const string NodeTypeName = "Node";
+
+    internal const string NextFieldName = "Next";
 
     internal readonly string Name;
 
     internal readonly NameSyntax Syntax;
+
+    internal readonly NameSyntax NodeSyntax;
 
     internal readonly FieldDeclarationMetadata AsField;
 
@@ -20,6 +28,10 @@ internal readonly record struct InvocationHistoryCollectionMetadata
     {
         Name = name;
         Syntax = SyntaxFactory.IdentifierName(Name);
+        NodeSyntax = SyntaxFactory.QualifiedName(
+            Syntax,
+            SyntaxFactory.IdentifierName(NodeTypeName)
+        );
         AsField = new FieldDeclarationMetadata(Name, fieldNames);
     }
 }

@@ -18,7 +18,7 @@ internal static partial class MethodImposterBuilder
 
         return new MethodDeclarationBuilder(hasMatchingMethod.ReturnType, hasMatchingMethod.Name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .WithParameterList(CapturedArgumentsBuilder.Parameters(method))
+            .WithParameterList(CapturedArgumentsBuilder.InParameters(method))
             .WithBody(
                 Block(
                     ReturnStatement(

@@ -32,9 +32,7 @@ internal partial class MethodImposterBuilder
                         TryStatement(
                             new BlockBuilder()
                                 .AddStatement(InvokeMatchingInvocationImposterGroup(method))
-                                .AddStatement(
-                                    AddToInvocationHistoryCollection(method, threwException: false)
-                                )
+                                .AddStatement(RecordInvocation(method))
                                 .AddStatement(ReturnResultStatement(method))
                                 .Build(),
                             SingletonList(
@@ -45,12 +43,7 @@ internal partial class MethodImposterBuilder
                                             method.MethodImposter.InvokeMethod.ExceptionVariableName
                                         )
                                     ),
-                                    CatchFilterClause(
-                                        AddToInvocationHistoryCollection(
-                                            method,
-                                            threwException: true
-                                        ).Expression
-                                    ),
+                                    CatchFilterClause(RecordFailure(method)),
                                     Block(ThrowStatement())
                                 )
                             ),
@@ -84,60 +77,65 @@ internal partial class MethodImposterBuilder
         );
     }
 
-    private static ExpressionStatementSyntax AddToInvocationHistoryCollection(
-        in ImposterTargetMethodMetadata method,
-        bool threwException
-    )
-    {
-        return IdentifierName(method.InvocationHistory.Collection.AsField.Name)
-            .Dot(
-                IdentifierName(
-                    threwException
-                        ? InvocationHistoryCollectionMetadata.RecordFailureMethodName
-                        : "Add"
-                )
-            )
-            .Call(
-                Argument(
-                    method.InvocationHistory.Syntax.New(
-                        ArgumentListSyntax(GetArguments(method, threwException))
-                    )
+    private static ExpressionStatementSyntax RecordInvocation(
+        in ImposterTargetMethodMetadata method
+    ) =>
+        CallInvocationHistoryCollection(
+                method,
+                InvocationHistoryCollectionMetadata.AddMethodName,
+                NewInvocationHistory(
+                    method,
+                    method.ReturnType.KeptValue(
+                        IdentifierName(method.MethodImposter.InvokeMethod.ResultVariableName)
+                    ),
+                    Default
                 )
             )
             .ToStatementSyntax();
 
-        static IReadOnlyList<ArgumentSyntax> GetArguments(
-            in ImposterTargetMethodMetadata method,
-            bool threwException
-        )
+    // The filter records the failed invocation before the stack unwinds.
+    private static InvocationExpressionSyntax RecordFailure(
+        in ImposterTargetMethodMetadata method
+    ) =>
+        CallInvocationHistoryCollection(
+            method,
+            InvocationHistoryCollectionMetadata.RecordFailureMethodName,
+            NewInvocationHistory(
+                method,
+                DefaultNonNullable,
+                IdentifierName(method.MethodImposter.InvokeMethod.ExceptionVariableName)
+            )
+        );
+
+    private static InvocationExpressionSyntax CallInvocationHistoryCollection(
+        in ImposterTargetMethodMetadata method,
+        string methodName,
+        ExpressionSyntax invocationHistory
+    ) =>
+        IdentifierName(method.InvocationHistory.Collection.AsField.Name)
+            .Dot(IdentifierName(methodName))
+            .Call(Argument(invocationHistory));
+
+    // The result is left out when the method keeps none.
+    private static ObjectCreationExpressionSyntax NewInvocationHistory(
+        in ImposterTargetMethodMetadata method,
+        ExpressionSyntax result,
+        ExpressionSyntax exception
+    )
+    {
+        List<ArgumentSyntax> arguments =
+        [
+            .. CapturedArgumentsBuilder.CapturedValues(method).Arguments,
+        ];
+
+        if (method.KeepsResult)
         {
-            List<ArgumentSyntax> arguments = [];
-
-            arguments.AddRange(CapturedArgumentsBuilder.Fields(method).Arguments);
-
-            if (method.KeepsResult)
-            {
-                arguments.Add(
-                    threwException
-                        ? Argument(DefaultNonNullable)
-                        : Argument(
-                            method.ReturnType.KeptValue(
-                                IdentifierName(
-                                    method.MethodImposter.InvokeMethod.ResultVariableName
-                                )
-                            )
-                        )
-                );
-            }
-
-            arguments.Add(
-                threwException
-                    ? method.MethodImposter.InvokeMethod.ExceptionVariableName.ToArgument()
-                    : Argument(Default)
-            );
-
-            return arguments;
+            arguments.Add(Argument(result));
         }
+
+        arguments.Add(Argument(exception));
+
+        return method.InvocationHistory.Syntax.New(ArgumentListSyntax(arguments));
     }
 
     private static StatementSyntax InvokeMatchingInvocationImposterGroup(
@@ -175,7 +173,7 @@ internal partial class MethodImposterBuilder
             Var,
             method.MethodImposter.InvokeMethod.MatchingInvocationImposterGroupVariableName,
             IdentifierName(method.MethodImposter.FindMatchingInvocationImposterGroupMethod.Name)
-                .Call(CapturedArgumentsBuilder.Fields(method))
+                .Call(CapturedArgumentsBuilder.CapturedValues(method))
         );
 
     private static IfStatementSyntax EnsureMatchingInvocationImposterGroup(

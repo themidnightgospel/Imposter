@@ -43,7 +43,7 @@ internal partial class MethodImposterBuilder
             lookup.Name
         )
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
-            .WithParameterList(CapturedArgumentsBuilder.Parameters(method))
+            .WithParameterList(CapturedArgumentsBuilder.InParameters(method))
             .WithBody(
                 Block(
                     ForEachStatement(

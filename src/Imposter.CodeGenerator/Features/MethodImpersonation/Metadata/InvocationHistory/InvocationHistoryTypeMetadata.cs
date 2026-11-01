@@ -4,7 +4,6 @@ using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTarge
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationHistory;
 
@@ -16,12 +15,6 @@ internal readonly record struct InvocationHistoryTypeMetadata
     internal const string ResultFieldName = "Result";
 
     internal const string ExceptionFieldName = "Exception";
-
-    internal const string NodeTypeName = "Node";
-
-    internal const string NextFieldName = "Next";
-
-    internal readonly NameSyntax NodeSyntax;
 
     internal readonly IReadOnlyDictionary<string, string> ArgumentFields;
 
@@ -41,12 +34,19 @@ internal readonly record struct InvocationHistoryTypeMetadata
             $"{Name}Collection",
             method.MemberNames
         );
-        NodeSyntax = QualifiedName(Collection.Syntax, IdentifierName(NodeTypeName));
         var fieldNames = new NameSet(
             method
                 .Model.Parameters.Select(p => p.Name)
                 .Concat(method.Model.TypeParameters.Select(p => p.Name))
-                .Concat(new[] { Name, ResultFieldName, ExceptionFieldName, NextFieldName })
+                .Concat(
+                    new[]
+                    {
+                        Name,
+                        ResultFieldName,
+                        ExceptionFieldName,
+                        InvocationHistoryCollectionMetadata.NextFieldName,
+                    }
+                )
         );
         ArgumentFields = method.Parameters.InputParameterMetadata.ToDictionary(
             p => p.Name,

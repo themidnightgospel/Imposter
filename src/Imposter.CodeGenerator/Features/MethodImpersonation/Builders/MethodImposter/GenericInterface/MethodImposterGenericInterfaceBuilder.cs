@@ -36,7 +36,7 @@ internal static class MethodImposterGenericInterfaceBuilder
         );
 
         hasMatchingGroupMethodBuilder.WithParameterList(
-            CapturedArgumentsBuilder.Parameters(method)
+            CapturedArgumentsBuilder.InParameters(method)
         );
 
         var hasMatchingGroupMethod = hasMatchingGroupMethodBuilder.WithSemicolon().Build();

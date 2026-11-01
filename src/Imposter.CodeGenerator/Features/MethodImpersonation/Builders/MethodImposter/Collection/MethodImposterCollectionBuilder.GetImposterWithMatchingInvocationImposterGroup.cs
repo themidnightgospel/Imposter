@@ -34,7 +34,7 @@ internal static partial class MethodImposterCollectionBuilder
         )
             // Own the lookup snapshot. In particular, a predicate may mutate the caller's ref/in storage while
             // candidates are inspected; subsequent candidates must still see the originally supplied values.
-            .WithParameterList(CapturedArgumentsBuilder.Parameters(method, byReference: false))
+            .WithParameterList(CapturedArgumentsBuilder.ValueParameters(method))
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithTypeParameters(method.GenericTypeParameterListSyntax)
             .AddConstraintClauses(method.GenericTypeConstraintClauses)

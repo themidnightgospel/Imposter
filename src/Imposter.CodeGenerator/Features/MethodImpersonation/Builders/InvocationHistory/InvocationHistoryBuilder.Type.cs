@@ -24,7 +24,7 @@ internal static partial class InvocationHistoryBuilder
         )
             .WithTypeParameterConstraintClauses(method.GenericTypeConstraintClauses)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddBaseType(SimpleBaseType(method.InvocationHistory.NodeSyntax))
+            .AddBaseType(SimpleBaseType(method.InvocationHistory.Collection.NodeSyntax))
             .AddBaseType(SimpleBaseType(method.InvocationHistory.Interface.Syntax))
             .AddMembers(fields)
             .AddMember(

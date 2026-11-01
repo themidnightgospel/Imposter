@@ -213,7 +213,7 @@ public static class ArgumentsCriteriaBuilder
             method.ArgumentsCriteria.MatchesCapturedMethodName
         )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .WithParameterList(CapturedArgumentsBuilder.Parameters(method))
+            .WithParameterList(CapturedArgumentsBuilder.InParameters(method))
             .WithBody(
                 Block(
                     ReturnStatement(
