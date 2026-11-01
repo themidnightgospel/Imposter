@@ -24,31 +24,17 @@ public static class TypeCaster
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool TryCast<TIn, TOut>(TIn input, out TOut result)
     {
-        // Handle null input first. A null can be cast to any reference type or nullable value type.
-        if (input == null)
+        // Handles identity, boxing, unboxing and reference conversions. A null input never matches.
+        if (input is TOut cast)
         {
-            // `default(TOut) == null` is a check to see if TOut is a reference type or Nullable<T>.
-            if (default(TOut) == null)
-            {
-                result = default!;
-                return true;
-            }
-
-            // Cannot cast null to a non-nullable value type (e.g., int, bool).
-            result = default!;
-            return false;
-        }
-
-        // Use the 'is' operator for a fast path. This handles identity, boxing, unboxing,
-        // and reference conversions efficiently.
-        if (input is TOut casted)
-        {
-            result = casted;
+            result = cast;
             return true;
         }
 
         result = default!;
-        return false;
+        // A null casts to any reference type or Nullable<T>, the types whose default is null, but not to a
+        // non-nullable value type such as int.
+        return input is null && default(TOut) is null;
     }
 
     /// <summary>
