@@ -53,8 +53,7 @@ internal static class ImposterTypeCollisions
             sameImposterTypeAs.TryGetValue(declaration, out var other)
                 ? declaration with
                 {
-                    Diagnostics = new[]
-                    {
+                    Diagnostics = new([
                         DiagnosticModel.Create(
                             DiagnosticDescriptors.ImposterTypeNameCollision,
                             declaration.TargetLocation,
@@ -62,7 +61,7 @@ internal static class ImposterTypeCollisions
                             other.TargetDisplayName,
                             declaration.ImposterTypeDisplayName
                         ),
-                    }.ToEquatableArray(),
+                    ]),
                     Target = null,
                 }
             : repeatedRegistrations.Contains(declaration) ? declaration with { Target = null }
