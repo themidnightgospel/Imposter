@@ -84,11 +84,9 @@ internal readonly struct EventImposterBuilderFieldsMetadata
             handlerInvocationType
         );
 
-        UseBaseImplementation = new FieldMetadata(
+        UseBaseImplementation = FieldMetadata.PrivateField(
             fieldNames.Use("_useBaseImplementation"),
-            WellKnownTypes.Bool,
-            TokenList(Token(SyntaxKind.PrivateKeyword)),
-            null
+            WellKnownTypes.Bool
         );
 
         EventDisplayName = new FieldMetadata(

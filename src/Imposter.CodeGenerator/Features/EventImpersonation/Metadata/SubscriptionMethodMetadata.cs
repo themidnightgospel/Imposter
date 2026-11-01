@@ -2,8 +2,8 @@ using Imposter.CodeGenerator.SyntaxHelpers;
 
 namespace Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 
-// Subscribe or Unsubscribe. DelegateOperation is the System.Delegate method that adds the handler to the active
-// handlers or removes it.
+// Subscribe or Unsubscribe. DelegateOperation is the EventHandlerCollection method that adds the handler to the
+// active handlers or removes it.
 internal readonly struct SubscriptionMethodMetadata
 {
     internal readonly string Name;
