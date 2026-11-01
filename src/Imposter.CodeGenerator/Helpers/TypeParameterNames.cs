@@ -35,6 +35,9 @@ internal static class TypeParameterNames
     internal static string NameInGeneratedCode(this ITypeParameterSymbol typeParameter) =>
         GeneratedNames.GetValue(typeParameter, ComputeNameInGeneratedCode);
 
+    internal static IEnumerable<string> TypeParameterNamesIn(this ITypeSymbol type) =>
+        type.TypeParametersIn().Select(it => it.NameInGeneratedCode());
+
     private static string ComputeNameInGeneratedCode(ITypeParameterSymbol typeParameter)
     {
         var containingType =
@@ -42,28 +45,24 @@ internal static class TypeParameterNames
             ?? typeParameter.DeclaringType?.ContainingType;
         var containingNames = containingType is null
             ? []
-            : containingType.TypeParametersIn().Select(it => it.NameInGeneratedCode()).ToArray();
+            : containingType.TypeParameterNamesIn().ToArray();
         var imposterNames = typeParameter.DeclaringType is { } declaringType
             ? NamesInImposters(declaringType).ToArray()
             : [];
-        var clashesWithMethodMember =
-            typeParameter.DeclaringMethod is not null
-            && GeneratedMethodMemberNames.Reserved.Contains(typeParameter.Name);
+        var reservedMemberNames = typeParameter.DeclaringMethod is not null
+            ? GeneratedMethodMemberNames.Reserved
+            : Enumerable.Empty<string>();
 
         return
             SyntaxFacts.GetContextualKeywordKind(typeParameter.Name) != SyntaxKind.None
             || containingNames.Contains(typeParameter.Name)
             || imposterNames.Contains(typeParameter.Name)
-            || clashesWithMethodMember
+            || reservedMemberNames.Contains(typeParameter.Name)
             ? new NameSet(
                 NamesBeside(typeParameter)
                     .Concat(containingNames)
                     .Concat(imposterNames)
-                    .Concat(
-                        typeParameter.DeclaringMethod is not null
-                            ? GeneratedMethodMemberNames.Reserved
-                            : Enumerable.Empty<string>()
-                    )
+                    .Concat(reservedMemberNames)
             ).Use(typeParameter.Name)
             : typeParameter.Name;
     }
@@ -138,15 +137,12 @@ internal static class TypeParameterNames
         return part.ToString();
     }
 
-    // A method's type parameter meets the method's others, its parameters and, under their names in generated code, the
-    // type parameters of the types it's a member of. A type's meets the type's others, those of its containing types,
+    // A method's type parameter meets the method's others and its parameters; ComputeNameInGeneratedCode adds the
+    // containing type's generated parameter names. A type's meets the type's others, those of its containing types,
     // and the members of the type, its base types and interfaces, with their type parameters and parameters.
     private static IEnumerable<string> NamesBeside(ITypeParameterSymbol typeParameter) =>
         typeParameter.DeclaringMethod is { } method
             ? NamesDeclaredBy(method)
-                .Concat(
-                    TypeParametersIn(method.ContainingType).Select(it => it.NameInGeneratedCode())
-                )
             : TypeParametersIn(typeParameter.DeclaringType!)
                 .Select(it => it.Name)
                 .Concat(MembersOf(typeParameter.DeclaringType!).SelectMany(NamesDeclaredBy));

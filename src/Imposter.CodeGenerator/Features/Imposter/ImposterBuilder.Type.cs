@@ -126,6 +126,7 @@ internal readonly ref struct ImposterBuilder
             .ToArray();
         var setup = new InterfaceSetupMetadata(
             context.Target.InterfaceSetup!,
+            context.Target.TypeParameters.Select(parameter => parameter.Name),
             members,
             _imposterBuilder.Members
         );

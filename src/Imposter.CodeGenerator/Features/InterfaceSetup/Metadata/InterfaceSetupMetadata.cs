@@ -13,6 +13,7 @@ internal readonly struct InterfaceSetupMetadata
 
     internal InterfaceSetupMetadata(
         InterfaceSetupTargetModel target,
+        IEnumerable<string> typeParameterNames,
         IReadOnlyList<InterfaceSetupMemberMetadata> members,
         IReadOnlyList<MemberDeclarationSyntax> existingMembers
     )
@@ -20,7 +21,7 @@ internal readonly struct InterfaceSetupMetadata
         var names = new NameSet(
             MemberNamesHelper
                 .GetNames(existingMembers)
-                .Concat(target.TypeParameterNames)
+                .Concat(typeParameterNames)
                 .Concat(members.Select(member => member.Model.Name))
                 .Concat(
                     members.SelectMany(member =>

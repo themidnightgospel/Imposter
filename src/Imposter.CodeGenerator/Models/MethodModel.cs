@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Imposter.CodeGenerator.Helpers;
-using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator.Models;
@@ -48,10 +47,7 @@ internal sealed record MethodModel(
             method.ToFullDisplayName(),
             method.ContainingNamespace.ToDisplayString(),
             TypeModel.From(method.ContainingType),
-            method
-                .ContainingType.TypeParametersIn()
-                .Select(it => it.NameInGeneratedCode())
-                .ToEquatableArray(),
+            method.ContainingType.TypeParameterNamesIn().ToEquatableArray(),
             method.ContainingType.TypeKind == TypeKind.Class,
             method.IsAbstract,
             memberAccess.GetOverrideAccessibility(method),

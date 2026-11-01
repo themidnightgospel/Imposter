@@ -16,6 +16,6 @@ internal readonly struct DefaultResultGeneratorMethodMetadata
     )
     {
         Name = memberNames.Use("DefaultResultGenerator");
-        ReturnType = methodReturnType.TypeSymbolMetadata.TypeSyntax;
+        ReturnType = methodReturnType.TypeSyntax;
     }
 }
