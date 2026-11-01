@@ -1,6 +1,5 @@
 ﻿using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.GetterImposterBuilder;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.SetterImposter;
-using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -37,13 +36,7 @@ internal readonly struct PropertyImposterBuilderMetadata
             "_getterImposterBuilder",
             getterImposterBuilder.TypeSyntax
         );
-        InvocationBehaviorField = new FieldMetadata(
-            "_invocationBehavior",
-            WellKnownTypes.Imposter.Abstractions.ImposterMode
-        );
-        InvocationBehaviorParameter = new ParameterMetadata(
-            "invocationBehavior",
-            WellKnownTypes.Imposter.Abstractions.ImposterMode
-        );
+        InvocationBehaviorField = PropertyAccessorStateMetadata.InvocationBehaviorField;
+        InvocationBehaviorParameter = PropertyAccessorStateMetadata.InvocationBehaviorParameter;
     }
 }

@@ -18,7 +18,7 @@ internal readonly struct PropertyGetterImposterBuilderMetadata
 
     internal readonly InvocationCountFieldMetadata InvocationCountField;
 
-    internal readonly FieldMetadata DefaultPropertyBehaviourField;
+    internal readonly PropertyAccessorStateMetadata State;
 
     internal readonly AddReturnValueMethodMetadata AddReturnValueMethod;
 
@@ -26,19 +26,7 @@ internal readonly struct PropertyGetterImposterBuilderMetadata
 
     internal readonly NextReturnValueMethodMetadata NextReturnValueMethod;
 
-    internal readonly FieldMetadata InvocationBehaviorField;
-
-    internal readonly FieldMetadata PropertyDisplayNameField;
-
-    internal readonly FieldMetadata HasConfiguredReturnField;
-
-    internal readonly ParameterMetadata InvocationBehaviorParameter;
-
-    internal readonly ParameterMetadata PropertyDisplayNameParameter;
-
     internal readonly MethodMetadata EnableBaseImplementationMethod;
-
-    internal readonly string EnsureConfiguredMethodName;
 
     internal PropertyGetterImposterBuilderMetadata(
         in ImposterPropertyCoreMetadata property,
@@ -51,28 +39,13 @@ internal readonly struct PropertyGetterImposterBuilderMetadata
         CallbacksField = new CallbacksFieldMetadata();
         LastReturnValueField = new LastReturnValueFieldMetadata(property.ReturnHandlerType);
         InvocationCountField = new InvocationCountFieldMetadata();
-        DefaultPropertyBehaviourField = defaultPropertyBehaviourMetadata;
+        State = PropertyAccessorStateMetadata.Getter(defaultPropertyBehaviourMetadata);
         AddReturnValueMethod = new AddReturnValueMethodMetadata(property.ReturnHandlerType);
         GetMethod = new GetMethodMetadata(property);
         NextReturnValueMethod = new NextReturnValueMethodMetadata(property.ReturnHandlerType);
-        InvocationBehaviorField = new FieldMetadata(
-            "_invocationBehavior",
-            WellKnownTypes.Imposter.Abstractions.ImposterMode
-        );
-        PropertyDisplayNameField = new FieldMetadata("_propertyDisplayName", WellKnownTypes.String);
-        HasConfiguredReturnField = new FieldMetadata("_hasConfiguredReturn", WellKnownTypes.Bool);
-        InvocationBehaviorParameter = new ParameterMetadata(
-            "invocationBehavior",
-            WellKnownTypes.Imposter.Abstractions.ImposterMode
-        );
-        PropertyDisplayNameParameter = new ParameterMetadata(
-            "propertyDisplayName",
-            WellKnownTypes.String
-        );
         EnableBaseImplementationMethod = new MethodMetadata(
             "EnableBaseImplementation",
             WellKnownTypes.Void
         );
-        EnsureConfiguredMethodName = "EnsureGetterConfigured";
     }
 }

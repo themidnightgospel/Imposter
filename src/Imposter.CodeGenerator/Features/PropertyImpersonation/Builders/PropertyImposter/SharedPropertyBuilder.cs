@@ -14,12 +14,12 @@ internal static class SharedPropertyBuilder
 {
     internal static ConstructorDeclarationSyntax Constructor(
         in ImposterPropertyMetadata property,
-        string name,
-        ParameterMetadata mode,
-        ParameterMetadata displayName
+        string className
     )
     {
-        var constructor = new ConstructorBuilder(name).WithModifiers(
+        var mode = PropertyAccessorStateMetadata.InvocationBehaviorParameter;
+        var displayName = PropertyAccessorStateMetadata.PropertyDisplayNameParameter;
+        var constructor = new ConstructorBuilder(className).WithModifiers(
             TokenList(Token(SyntaxKind.InternalKeyword))
         );
         var arguments = new List<ArgumentSyntax>();
@@ -53,14 +53,7 @@ internal static class SharedPropertyBuilder
         var builder = new ClassDeclarationBuilder(setter.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(runtime.SetterType))
-            .AddMember(
-                Constructor(
-                    property,
-                    setter.Name,
-                    setter.InvocationBehaviorParameter,
-                    setter.PropertyDisplayNameParameter
-                )
-            );
+            .AddMember(Constructor(property, setter.Name));
         if (setter.SetMethod.RequiresDirectBaseAssignment)
         {
             builder.AddMember(

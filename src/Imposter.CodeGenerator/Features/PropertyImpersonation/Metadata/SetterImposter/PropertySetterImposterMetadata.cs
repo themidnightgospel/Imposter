@@ -19,7 +19,7 @@ internal readonly struct PropertySetterImposterMetadata
 
     internal readonly FieldMetadata InvocationCountField;
 
-    internal readonly FieldMetadata DefaultPropertyBehaviourField;
+    internal readonly PropertyAccessorStateMetadata State;
 
     internal readonly CallbackMethodMetadata CallbackMethod;
 
@@ -29,21 +29,9 @@ internal readonly struct PropertySetterImposterMetadata
 
     internal readonly PropertySetterImposterBuilderMetadata Builder;
 
-    internal readonly FieldMetadata InvocationBehaviorField;
-
-    internal readonly FieldMetadata PropertyDisplayNameField;
-
-    internal readonly FieldMetadata HasConfiguredSetterField;
-
     internal readonly FieldMetadata UseBaseImplementationField;
 
-    internal readonly ParameterMetadata InvocationBehaviorParameter;
-
-    internal readonly ParameterMetadata PropertyDisplayNameParameter;
-
     internal readonly MethodMetadata UseBaseImplementationMethod;
-
-    internal readonly string EnsureConfiguredMethodName;
 
     public PropertySetterImposterMetadata(
         in ImposterPropertyCoreMetadata property,
@@ -62,33 +50,18 @@ internal readonly struct PropertySetterImposterMetadata
                 )
             );
         InvocationCountField = new FieldMetadata("_invocationCount", WellKnownTypes.Int);
-        DefaultPropertyBehaviourField = defaultPropertyBehaviourMetadata;
+        State = PropertyAccessorStateMetadata.Setter(defaultPropertyBehaviourMetadata);
         CallbackMethod = new CallbackMethodMetadata(property);
         CalledMethod = new CalledMethodMetadata(property);
         SetMethod = new SetMethodMetadata(property);
         Builder = new PropertySetterImposterBuilderMetadata(property, TypeSyntax);
-        InvocationBehaviorField = new FieldMetadata(
-            "_invocationBehavior",
-            WellKnownTypes.Imposter.Abstractions.ImposterMode
-        );
-        PropertyDisplayNameField = new FieldMetadata("_propertyDisplayName", WellKnownTypes.String);
-        HasConfiguredSetterField = new FieldMetadata("_hasConfiguredSetter", WellKnownTypes.Bool);
         UseBaseImplementationField = new FieldMetadata(
             "_useBaseImplementation",
             WellKnownTypes.Bool
-        );
-        InvocationBehaviorParameter = new ParameterMetadata(
-            "invocationBehavior",
-            WellKnownTypes.Imposter.Abstractions.ImposterMode
-        );
-        PropertyDisplayNameParameter = new ParameterMetadata(
-            "propertyDisplayName",
-            WellKnownTypes.String
         );
         UseBaseImplementationMethod = new MethodMetadata(
             "UseBaseImplementation",
             WellKnownTypes.Void
         );
-        EnsureConfiguredMethodName = "EnsureSetterConfigured";
     }
 }

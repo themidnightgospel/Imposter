@@ -20,14 +20,7 @@ internal static partial class GetterImposterBuilderBuilder
             .AddBaseType(SimpleBaseType(runtime.GetterType))
             .AddBaseType(SimpleBaseType(api.TypeSyntax))
             .AddBaseType(SimpleBaseType(api.FluentInterfaceTypeSyntax))
-            .AddMember(
-                SharedPropertyBuilder.Constructor(
-                    property,
-                    getter.Name,
-                    getter.InvocationBehaviorParameter,
-                    getter.PropertyDisplayNameParameter
-                )
-            );
+            .AddMember(SharedPropertyBuilder.Constructor(property, getter.Name));
 
         var returns = api.ReturnsMethod;
         builder.AddMember(
