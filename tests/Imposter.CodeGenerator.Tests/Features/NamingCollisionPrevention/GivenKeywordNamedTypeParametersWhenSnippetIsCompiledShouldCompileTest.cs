@@ -1,4 +1,4 @@
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Imposter.CodeGenerator.Tests.Helpers;
 using Microsoft.CodeAnalysis;

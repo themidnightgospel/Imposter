@@ -1,4 +1,4 @@
-using Imposter.Abstractions;
+﻿using Imposter.Abstractions;
 using Imposter.Tests.Features.EventImpersonation;
 
 [assembly: GenerateImposter(typeof(IRefStructEventSut))]

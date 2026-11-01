@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.Features.InterfaceSetup.Metadata;
 using Imposter.CodeGenerator.Models;

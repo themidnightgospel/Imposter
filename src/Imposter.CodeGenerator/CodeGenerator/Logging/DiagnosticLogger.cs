@@ -1,4 +1,4 @@
-using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
+﻿using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
 using Imposter.CodeGenerator.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;

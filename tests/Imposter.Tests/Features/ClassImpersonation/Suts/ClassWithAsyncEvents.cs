@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Imposter.Abstractions;
 using Imposter.Tests.Features.ClassImpersonation.Suts;

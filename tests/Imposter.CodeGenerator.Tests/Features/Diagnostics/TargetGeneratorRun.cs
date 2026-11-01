@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Imposter.CodeGenerator.CodeGenerator;
 using Microsoft.CodeAnalysis;

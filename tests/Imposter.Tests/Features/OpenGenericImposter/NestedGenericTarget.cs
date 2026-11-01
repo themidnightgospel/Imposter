@@ -1,4 +1,4 @@
-using Imposter.Abstractions;
+﻿using Imposter.Abstractions;
 using Imposter.Tests.Features.OpenGenericImposter.NestedTargets;
 
 [assembly: GenerateImposter(typeof(Outer<>.Inner<>))]

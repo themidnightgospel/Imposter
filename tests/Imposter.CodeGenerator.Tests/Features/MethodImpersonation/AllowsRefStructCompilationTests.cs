@@ -1,4 +1,4 @@
-#if ROSLYN4_14_OR_GREATER
+﻿#if ROSLYN4_14_OR_GREATER
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp;
 using Xunit;

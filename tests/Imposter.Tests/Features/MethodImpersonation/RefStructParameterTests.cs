@@ -1,4 +1,4 @@
-using Imposter.Abstractions;
+﻿using Imposter.Abstractions;
 using Shouldly;
 using Xunit;
 

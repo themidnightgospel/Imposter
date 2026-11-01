@@ -1,4 +1,4 @@
-namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationSetup;
+﻿namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationSetup;
 
 internal readonly struct DefaultInvocationImposterGroupFieldMetadata
 {

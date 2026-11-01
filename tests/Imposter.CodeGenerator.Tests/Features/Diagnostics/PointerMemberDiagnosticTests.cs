@@ -1,4 +1,4 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Shouldly;

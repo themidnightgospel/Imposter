@@ -1,4 +1,4 @@
-namespace Imposter.Abstractions;
+﻿namespace Imposter.Abstractions;
 
 /// <summary>
 /// Matches an <c>out ReadOnlySpan&lt;T&gt;</c> parameter. An out argument is an output, so it always matches.

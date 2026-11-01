@@ -1,4 +1,4 @@
-using Imposter.CodeGenerator.Helpers;
+﻿using Imposter.CodeGenerator.Helpers;
 using Shouldly;
 using Xunit;
 

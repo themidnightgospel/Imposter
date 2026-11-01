@@ -1,4 +1,4 @@
-using Imposter.Abstractions;
+﻿using Imposter.Abstractions;
 using Imposter.Tests.Features.IndexerImpersonation;
 
 [assembly: GenerateImposter(typeof(ISetterOnlyIndexerSetupSut))]

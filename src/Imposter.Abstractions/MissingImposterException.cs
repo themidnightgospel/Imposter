@@ -1,4 +1,4 @@
-namespace Imposter.Abstractions;
+﻿namespace Imposter.Abstractions;
 
 /// <summary>
 /// Exception thrown when an imposter running in <see cref="ImposterMode.Explicit"/> mode

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers;

@@ -1,4 +1,4 @@
-using Imposter.CodeGenerator.Helpers;
+﻿using Imposter.CodeGenerator.Helpers;
 
 namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationSetup;
 
