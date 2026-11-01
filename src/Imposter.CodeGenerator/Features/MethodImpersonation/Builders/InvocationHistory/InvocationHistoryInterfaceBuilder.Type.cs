@@ -8,7 +8,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.InvocationHistory;
 
-public static class InvocationHistoryInterfaceBuilder
+internal static class InvocationHistoryInterfaceBuilder
 {
     internal static MemberDeclarationSyntax Build(in ImposterTargetMethodMetadata method) =>
         new InterfaceDeclarationBuilder(method.InvocationHistory.Interface.Name)

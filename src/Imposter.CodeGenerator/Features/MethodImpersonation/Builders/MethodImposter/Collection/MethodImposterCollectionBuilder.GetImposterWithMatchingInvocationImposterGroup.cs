@@ -18,8 +18,6 @@ internal static partial class MethodImposterCollectionBuilder
         in ImposterTargetMethodMetadata method
     )
     {
-        var hasMatchingMethod = method.MethodImposter.HasMatchingInvocationImposterGroupMethod;
-
         var localNames = new NameSet(
             method
                 .Model.TypeParameters.Select(typeParameter => typeParameter.Name)
@@ -62,7 +60,11 @@ internal static partial class MethodImposterCollectionBuilder
                                     .IsNotNull()
                                     .And(
                                         typedImposterName
-                                            .Dot(IdentifierName(hasMatchingMethod.Name))
+                                            .Dot(
+                                                IdentifierName(
+                                                    HasMatchingInvocationImposterGroupMethodMetadata.Name
+                                                )
+                                            )
                                             .Call(CapturedArgumentsBuilder.Arguments(method))
                                     ),
                                 ReturnStatement(typedImposterName)

@@ -46,8 +46,6 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
 
     internal readonly UseBaseImplementationMethodMetadata? UseBaseImplementationMethod;
 
-    internal readonly DefaultInvocationImposterGroupFieldMetadata DefaultInvocationImposterGroupField;
-
     internal readonly DefaultResultGeneratorMethodMetadata DefaultResultGeneratorMethod;
 
     internal MethodInvocationImposterGroupMetadata(in ImposterTargetMethodMetadata method)
@@ -115,7 +113,6 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
                 Interface.Syntax
             )
             : null;
-        DefaultInvocationImposterGroupField = new DefaultInvocationImposterGroupFieldMetadata();
         DefaultResultGeneratorMethod = new DefaultResultGeneratorMethodMetadata(
             method.ReturnType,
             method.MemberNames

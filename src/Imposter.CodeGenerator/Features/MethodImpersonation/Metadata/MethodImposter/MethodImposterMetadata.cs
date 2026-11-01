@@ -31,8 +31,6 @@ internal readonly struct MethodImposterMetadata
 
     internal readonly FindMatchingInvocationImposterGroupMethodMetadata FindMatchingInvocationImposterGroupMethod;
 
-    internal readonly HasMatchingInvocationImposterGroupMethodMetadata HasMatchingInvocationImposterGroupMethod;
-
     internal readonly InvocationImposterGroupsFieldMetadata InvocationImposterGroupsField;
 
     // The method imposter and its collection both keep the imposter's mode in a field of this name.
@@ -69,8 +67,6 @@ internal readonly struct MethodImposterMetadata
                 method.ReservedParameterNames,
                 method.MemberNames
             );
-        HasMatchingInvocationImposterGroupMethod =
-            new HasMatchingInvocationImposterGroupMethodMetadata();
         InvocationImposterGroupsField = new InvocationImposterGroupsFieldMetadata(
             method.MemberNames
         );

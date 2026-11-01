@@ -10,7 +10,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.MethodImposter;
 
-internal partial class MethodImposterBuilder
+internal static partial class MethodImposterBuilder
 {
     // Only a group with a configured outcome answers a call. A bare one, which a builder registers before it is
     // configured or only to verify, leaves the call to the default outcome, or to MissingImposterException in Explicit
