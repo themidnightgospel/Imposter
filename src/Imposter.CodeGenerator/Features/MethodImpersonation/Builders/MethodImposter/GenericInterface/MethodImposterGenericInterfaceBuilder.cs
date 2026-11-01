@@ -26,13 +26,9 @@ internal static class MethodImposterGenericInterfaceBuilder
             .WithSemicolon()
             .Build();
 
-        var hasMatchingMethodMetadata = method
-            .MethodImposter
-            .HasMatchingInvocationImposterGroupMethod;
-
         var hasMatchingGroupMethodBuilder = new MethodDeclarationBuilder(
-            hasMatchingMethodMetadata.ReturnType,
-            hasMatchingMethodMetadata.Name
+            HasMatchingInvocationImposterGroupMethodMetadata.ReturnType,
+            HasMatchingInvocationImposterGroupMethodMetadata.Name
         );
 
         hasMatchingGroupMethodBuilder.WithParameterList(

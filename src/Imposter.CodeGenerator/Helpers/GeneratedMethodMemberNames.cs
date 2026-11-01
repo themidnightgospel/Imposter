@@ -34,8 +34,8 @@ internal static class GeneratedMethodMemberNames
         MethodInvocationImposterGroupMetadata.AddInvocationImposterMethodName,
         MethodInvocationImposterGroupMetadata.InvocationImpostersFieldName,
         MethodInvocationImposterGroupMetadata.ArgumentsCriteriaPropertyName,
-        DefaultInvocationImposterGroupFieldMetadata.BaseName,
-        HasMatchingInvocationImposterGroupMethodMetadata.BaseName,
+        DefaultInvocationImposterGroupFieldMetadata.Name,
+        HasMatchingInvocationImposterGroupMethodMetadata.Name,
         FormatValueMethodBuilder.Name,
         nameof(ToString),
     ];

@@ -384,10 +384,7 @@ internal readonly ref struct ImposterBuilder
             Argument(ThisExpression()),
         };
 
-        if (parameters.Length > 0)
-        {
-            arguments.AddRange(SyntaxFactoryHelper.ArgumentListSyntax(parameters).Arguments);
-        }
+        arguments.AddRange(SyntaxFactoryHelper.ArgumentListSyntax(parameters).Arguments);
 
         var argumentList = SyntaxFactoryHelper.ArgumentListSyntax(arguments);
 
@@ -398,7 +395,7 @@ internal readonly ref struct ImposterBuilder
     }
 
     private static FieldDeclarationSyntax ImposterInstanceField(
-        in string imposterTargetInstanceClassName,
+        string imposterTargetInstanceClassName,
         string imposterInstanceFieldName
     ) =>
         SyntaxFactoryHelper.SingleVariableField(

@@ -3,6 +3,7 @@ using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Shared;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationHistory;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationSetup;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -14,7 +15,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.MethodImposter;
 
-internal partial class MethodImposterBuilder
+internal static partial class MethodImposterBuilder
 {
     private static MethodDeclarationSyntax InvokeMethod(in ImposterTargetMethodMetadata method) =>
         new MethodDeclarationBuilder(
@@ -184,9 +185,7 @@ internal partial class MethodImposterBuilder
             method.MethodImposter.InvokeMethod.MatchingInvocationImposterGroupVariableName
         );
         var defaultGroup = method.MethodInvocationImposterGroup.Syntax.Dot(
-            IdentifierName(
-                method.MethodInvocationImposterGroup.DefaultInvocationImposterGroupField.Name
-            )
+            IdentifierName(DefaultInvocationImposterGroupFieldMetadata.Name)
         );
 
         return IfStatement(
