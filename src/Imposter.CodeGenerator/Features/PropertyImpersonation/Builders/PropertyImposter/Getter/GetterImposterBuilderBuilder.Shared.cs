@@ -13,16 +13,15 @@ internal static partial class GetterImposterBuilderBuilder
     private static ClassDeclarationSyntax BuildShared(in ImposterPropertyMetadata property)
     {
         var getter = property.GetterImposterBuilder;
-        var api = property.GetterImposterBuilderInterface;
-        var runtime = new SharedPropertyMetadata(property.Core);
+        var builderInterface = property.GetterImposterBuilderInterface;
         var builder = new ClassDeclarationBuilder(getter.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddBaseType(SimpleBaseType(runtime.GetterType))
-            .AddBaseType(SimpleBaseType(api.TypeSyntax))
-            .AddBaseType(SimpleBaseType(api.FluentInterfaceTypeSyntax))
-            .AddMember(SharedPropertyBuilder.Constructor(property, getter.Name));
+            .AddBaseType(SimpleBaseType(property.SharedRuntime.GetterType))
+            .AddBaseType(SimpleBaseType(builderInterface.TypeSyntax))
+            .AddBaseType(SimpleBaseType(builderInterface.FluentInterfaceTypeSyntax))
+            .AddMember(SharedPropertyBuilder.BuildConstructor(property, getter.Name));
 
-        var returns = api.ReturnsMethod;
+        var returns = builderInterface.ReturnsMethod;
         builder.AddMember(
             Forward(
                 returns.ReturnType,
@@ -40,7 +39,8 @@ internal static partial class GetterImposterBuilderBuilder
                 returns.ValueGeneratorParameter
             )
         );
-        var throws = api.ThrowsMethod;
+
+        var throws = builderInterface.ThrowsMethod;
         builder.AddMember(
             Forward(
                 throws.ReturnType,
@@ -73,7 +73,8 @@ internal static partial class GetterImposterBuilderBuilder
                 )
                 .Build()
         );
-        var callback = api.CallbackMethod;
+
+        var callback = builderInterface.CallbackMethod;
         builder.AddMember(
             Forward(
                 callback.ReturnType,
@@ -82,10 +83,11 @@ internal static partial class GetterImposterBuilderBuilder
                 callback.CallbackParameter
             )
         );
-        var called = api.CalledMethod;
+
+        var called = builderInterface.CalledMethod;
         builder.AddMember(
             new MethodDeclarationBuilder(called.ReturnType, called.Name)
-                .WithExplicitInterfaceSpecifier(api.VerificationInterfaceTypeSyntax)
+                .WithExplicitInterfaceSpecifier(builderInterface.VerificationInterfaceTypeSyntax)
                 .AddParameter(ParameterSyntax(called.CountParameter))
                 .WithBody(
                     Block(
@@ -97,8 +99,12 @@ internal static partial class GetterImposterBuilderBuilder
                 )
                 .Build()
         );
-        if (api.UseBaseImplementationEntryMethod is { } entry)
+
+        if (builderInterface.UseBaseImplementationEntryMethod is { } entry)
+        {
             builder.AddBaseType(SimpleBaseType(entry.InterfaceSyntax));
+        }
+
         return builder
             .AddMembers(BuildThenMethods(property))
             .AddMembers(BuildUseBaseImplementationMethods(property))
@@ -106,14 +112,14 @@ internal static partial class GetterImposterBuilderBuilder
     }
 
     private static MethodDeclarationSyntax Forward(
-        TypeSyntax result,
+        TypeSyntax returnType,
         string name,
-        NameSyntax api,
+        NameSyntax interfaceSyntax,
         ParameterMetadata parameter,
         ExpressionSyntax? argument = null
     ) =>
-        new MethodDeclarationBuilder(result, name)
-            .WithExplicitInterfaceSpecifier(api)
+        new MethodDeclarationBuilder(returnType, name)
+            .WithExplicitInterfaceSpecifier(interfaceSyntax)
             .AddParameter(ParameterSyntax(parameter))
             .WithBody(
                 Block(

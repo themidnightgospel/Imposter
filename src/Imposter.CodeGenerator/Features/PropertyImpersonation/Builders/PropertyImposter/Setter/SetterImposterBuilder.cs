@@ -16,18 +16,13 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.PropertyImposter.Setter;
 
-internal static class SetterImposterBuilder
+internal static partial class SetterImposterBuilder
 {
-    internal static ClassDeclarationSyntax? Build(in ImposterPropertyMetadata property)
+    internal static ClassDeclarationSyntax Build(in ImposterPropertyMetadata property)
     {
-        if (!property.Core.HasSetter)
-        {
-            return null;
-        }
-
         if (property.Core.UsesSharedRuntime)
         {
-            return SharedPropertyBuilder.BuildSetter(property);
+            return BuildShared(property);
         }
 
         return new ClassDeclarationBuilder(property.SetterImposter.Name)
@@ -99,7 +94,7 @@ internal static class SetterImposterBuilder
             )
             .Build();
 
-    internal static MethodDeclarationSyntax BuildSetMethod(in ImposterPropertyMetadata property)
+    private static MethodDeclarationSyntax BuildSetMethod(in ImposterPropertyMetadata property)
     {
         var setterImposter = property.SetterImposter;
         var baseImplementationIdentifier = IdentifierName(
@@ -273,7 +268,7 @@ internal static class SetterImposterBuilder
             ).ToStatementSyntax();
     }
 
-    internal static MethodDeclarationSyntax BuildSetterCalledMethod(
+    private static MethodDeclarationSyntax BuildSetterCalledMethod(
         in PropertySetterImposterMetadata setterImposter
     )
     {
@@ -345,7 +340,7 @@ internal static class SetterImposterBuilder
             .Build();
     }
 
-    internal static MethodDeclarationSyntax? BuildSetterCallbackMethod(
+    private static MethodDeclarationSyntax BuildSetterCallbackMethod(
         in PropertySetterImposterMetadata setterImposter
     )
     {
