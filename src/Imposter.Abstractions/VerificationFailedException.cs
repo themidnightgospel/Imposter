@@ -15,7 +15,7 @@ public class VerificationFailedException : Exception
     public string? PerformedInvocations { get; }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="VerificationFailedException"/> class with expected and actual invocation counts.
+    /// Constructor
     /// </summary>
     /// <param name="expectedCount">The expected number of invocations.</param>
     /// <param name="actualCount">The actual number of invocations that occurred.</param>
@@ -23,7 +23,7 @@ public class VerificationFailedException : Exception
         : this(expectedCount, actualCount, null) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="VerificationFailedException"/> class with the performed invocations.
+    /// Constructor
     /// </summary>
     /// <param name="expectedCount">The expected number of invocations.</param>
     /// <param name="actualCount">The actual number of invocations that occurred.</param>

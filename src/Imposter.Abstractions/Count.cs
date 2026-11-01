@@ -18,29 +18,12 @@
 /// sut.Do().Called(Count.Any);             // any number of times
 /// </code>
 /// </remarks>
-public sealed class Count : global::System.IEquatable<Count>
+public sealed class Count : IEquatable<Count>
 {
-    /// <summary>
-    /// The exact number of times the action should occur, if specified.
-    /// </summary>
     private readonly int? _exactly;
-
-    /// <summary>
-    /// The minimum number of times the action should occur, if specified.
-    /// </summary>
     private readonly int? _atLeast;
-
-    /// <summary>
-    /// The maximum number of times the action should occur, if specified.
-    /// </summary>
     private readonly int? _atMost;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Count"/> class with the given constraints.
-    /// </summary>
-    /// <param name="exactly">The exact count, if applicable.</param>
-    /// <param name="atLeast">The minimum count, if applicable.</param>
-    /// <param name="atMost">The maximum count, if applicable.</param>
     private Count(int? exactly, int? atLeast, int? atMost)
     {
         _exactly = exactly;

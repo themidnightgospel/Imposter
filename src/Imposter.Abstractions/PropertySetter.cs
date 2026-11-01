@@ -9,7 +9,7 @@ namespace Imposter.Abstractions;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public class PropertySetter<T>
 {
-    private CallbackCollection<Tuple<Arg<T>, Action<T>>>? _callbacks;
+    private CallbackCollection<(Arg<T> Criteria, Action<T> Callback)>? _callbacks;
     private ConcurrentStack<T>? _invocationHistory;
     private readonly PropertyValue<T>? _defaultValue;
     private readonly ImposterMode _mode;
@@ -17,7 +17,7 @@ public class PropertySetter<T>
     private bool _hasConfiguredSetter;
     private bool _useBaseImplementation;
 
-    /// <summary>Initializes a generated setter.</summary>
+    /// <summary>Constructor</summary>
     /// <param name="defaultValue">The value shared with the getter, if present.</param>
     /// <param name="mode">Whether an explicit setup is required.</param>
     /// <param name="displayName">The property name used in diagnostics.</param>
@@ -33,7 +33,7 @@ public class PropertySetter<T>
     /// <param name="callback">The callback to invoke.</param>
     public void Callback(Arg<T> criteria, Action<T> callback)
     {
-        LazyInitializer.EnsureInitialized(ref _callbacks)!.Add(Tuple.Create(criteria, callback));
+        LazyInitializer.EnsureInitialized(ref _callbacks)!.Add((criteria, callback));
         _hasConfiguredSetter = true;
     }
 
@@ -72,7 +72,7 @@ public class PropertySetter<T>
         if (!SetForInit(value))
             return;
         if (baseImplementation is null)
-            throw new MissingImposterException(_displayName + " (setter)");
+            throw MissingImposter();
         baseImplementation(value);
     }
 
@@ -82,16 +82,18 @@ public class PropertySetter<T>
     protected bool SetForInit(T value)
     {
         if (_mode == ImposterMode.Explicit && !_hasConfiguredSetter)
-            throw new MissingImposterException(_displayName + " (setter)");
+            throw MissingImposter();
         LazyInitializer.EnsureInitialized(ref _invocationHistory)!.Push(value);
         if (_callbacks is not null)
             foreach (var registration in _callbacks)
-                if (registration.Item1.Matches(value))
-                    registration.Item2(value);
+                if (registration.Criteria.Matches(value))
+                    registration.Callback(value);
         if (_useBaseImplementation)
             return true;
         if (_defaultValue is { IsOn: true })
             _defaultValue.Write(value);
         return false;
     }
+
+    private MissingImposterException MissingImposter() => new(_displayName + " (setter)");
 }

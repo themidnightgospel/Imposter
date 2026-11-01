@@ -1,7 +1,7 @@
 namespace Imposter.Abstractions;
 
 /// <summary>
-/// Marker class to be implicitly converted to a generic Arg
+/// What <see cref="Arg.Any"/> returns before it converts to a matcher of the parameter's type.
 /// </summary>
 public struct AnyArgMarker { }
 
@@ -237,8 +237,7 @@ public class Arg<T>
     public static implicit operator Arg<T>(T value) => Is(value);
 
     /// <summary>
-    /// Implicitly converts a value of type AnyArgMarker to an <see cref="Arg{T}"/>
-    /// that matches that specific value.
+    /// Converts <see cref="Arg.Any"/> to a matcher for any value.
     /// </summary>
     public static implicit operator Arg<T>(AnyArgMarker _) => Any();
 }
