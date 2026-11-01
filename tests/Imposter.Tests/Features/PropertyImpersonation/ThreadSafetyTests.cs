@@ -95,7 +95,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
         {
             var imposter = new ClassWithInitialValuePropertyImposter();
             using var countedReads = new Barrier(FirstReaderCount);
-            imposter.A.Getter().Callback(() => countedReads.SignalAndWait());
+            imposter.A.Getter().Callback(() => WaitForOtherReads(countedReads));
             var instance = imposter.Instance();
             var values = new int[FirstReaderCount];
 
@@ -109,7 +109,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
         {
             var imposter = new SpanPropertyClassImposter();
             using var countedReads = new Barrier(FirstReaderCount);
-            imposter.Buffer.Getter().Callback(() => countedReads.SignalAndWait());
+            imposter.Buffer.Getter().Callback(() => WaitForOtherReads(countedReads));
             var instance = imposter.Instance();
             var buffers = new byte[FirstReaderCount][];
 
@@ -127,5 +127,9 @@ namespace Imposter.Tests.Features.PropertyImpersonation
             setup(imposter);
             return imposter.Instance();
         }
+
+        // A reader that fails before reaching the barrier would otherwise leave the others waiting for good.
+        private static void WaitForOtherReads(Barrier countedReads) =>
+            countedReads.SignalAndWait(TimeSpan.FromSeconds(10)).ShouldBeTrue();
     }
 }
