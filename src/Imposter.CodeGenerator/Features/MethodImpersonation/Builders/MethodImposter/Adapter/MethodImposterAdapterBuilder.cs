@@ -76,13 +76,9 @@ internal static class MethodImposterAdapterBuilder
         var invokeArguments = new List<ArgumentSyntax>();
         var postInvokeActions = new List<StatementSyntax>();
 
-        var typeParamRenamer = new TypeParameterRenamer(
-            method.Model.TypeParameters,
-            method.TargetGenericTypeArguments
+        var parameterList = method.InTargetTypeArguments(
+            method.Parameters.ParameterListSyntaxIncludingNullable
         );
-
-        var parameterList = (ParameterListSyntax)
-            typeParamRenamer.Visit(method.Parameters.ParameterListSyntaxIncludingNullable);
 
         var adaptedParameterNames = adapterNames.AdaptedParameterNames;
         foreach (var parameter in method.Parameters.AllParameterMetadata)
@@ -99,7 +95,7 @@ internal static class MethodImposterAdapterBuilder
                 parameter.IsSpan
                     ? AdaptedSpan(
                         IdentifierName(parameter.Name),
-                        (TypeSyntax)typeParamRenamer.Visit(parameter.NullableAwareKeptTypeSyntax),
+                        method.InTargetTypeArguments(parameter.NullableAwareKeptTypeSyntax),
                         parameter.NullableAwareKeptTypeSyntax
                     )
                 // dynamic uses none of the method's type parameters, so it passes on as the object it is: TypeCaster
@@ -111,7 +107,7 @@ internal static class MethodImposterAdapterBuilder
                     )
                 : TypeCasterSyntaxHelper.CastExpression(
                     parameter.Name,
-                    (TypeSyntax)typeParamRenamer.Visit(parameterType),
+                    method.InTargetTypeArguments(parameterType),
                     parameterType
                 );
 
@@ -119,11 +115,11 @@ internal static class MethodImposterAdapterBuilder
             {
                 case RefKind.Ref:
                     invokeArguments.Add(PassThroughLocal(SyntaxKind.RefKeyword, castArgument));
-                    postInvokeActions.Add(CastBackToCaller());
+                    postInvokeActions.Add(CastBackToCaller(method));
                     break;
                 case RefKind.Out:
                     invokeArguments.Add(PassThroughLocal(SyntaxKind.OutKeyword, initializer: null));
-                    postInvokeActions.Add(CastBackToCaller());
+                    postInvokeActions.Add(CastBackToCaller(method));
                     break;
                 case RefKinds.RefReadOnlyParameter:
                     // A `ref readonly` parameter takes a variable, not the cast itself (CS9193).
@@ -142,11 +138,9 @@ internal static class MethodImposterAdapterBuilder
                 return Argument(IdentifierName(adaptedName)).WithRefOrOutKeyword(Token(keyword));
             }
 
-            StatementSyntax CastBackToCaller() =>
+            StatementSyntax CastBackToCaller(in ImposterTargetMethodMetadata metadata) =>
                 IdentifierName(parameter.Name)
-                    .Assign(
-                        CastBack(parameter, adaptedParameterNames[parameter.Name], typeParamRenamer)
-                    )
+                    .Assign(CastBack(parameter, adaptedParameterNames[parameter.Name], metadata))
                     .ToStatementSyntax();
         }
 
@@ -156,7 +150,7 @@ internal static class MethodImposterAdapterBuilder
             var baseInvocation = method.MethodImposter.InvokeMethod.BaseInvocationParameter;
             var adapterBaseInvocation = new ParameterMetadata(
                 baseInvocation.Name,
-                (TypeSyntax)typeParamRenamer.Visit(baseInvocation.Type),
+                method.InTargetTypeArguments(baseInvocation.Type),
                 baseInvocation.DefaultValue
             );
             parameterList = parameterList.AddParameters(ParameterSyntax(adapterBaseInvocation));
@@ -187,7 +181,7 @@ internal static class MethodImposterAdapterBuilder
             );
             body.AddRange(postInvokeActions);
 
-            body.Add(ReturnStatement(AdaptedResult(method, adapterNames, typeParamRenamer)));
+            body.Add(ReturnStatement(AdaptedResult(method, adapterNames)));
         }
         else
         {
@@ -196,7 +190,7 @@ internal static class MethodImposterAdapterBuilder
         }
 
         return new MethodDeclarationBuilder(
-            (TypeSyntax)typeParamRenamer.Visit(method.NullableAwareReturnTypeSyntax),
+            method.InTargetTypeArguments(method.NullableAwareReturnTypeSyntax),
             MethodImposterInvokeMethodMetadata.Name
         )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
@@ -209,7 +203,7 @@ internal static class MethodImposterAdapterBuilder
     private static ExpressionSyntax CastBack(
         in MethodParameterMetadata parameter,
         string adaptedName,
-        TypeParameterRenamer typeParamRenamer
+        in ImposterTargetMethodMetadata method
     )
     {
         if (parameter.IsSpan)
@@ -218,7 +212,7 @@ internal static class MethodImposterAdapterBuilder
             return AdaptedSpan(
                 IdentifierName(adaptedName),
                 elementsType,
-                (TypeSyntax)typeParamRenamer.Visit(elementsType)
+                method.InTargetTypeArguments(elementsType)
             );
         }
 
@@ -231,21 +225,20 @@ internal static class MethodImposterAdapterBuilder
         return TypeCasterSyntaxHelper.CastExpression(
             adaptedName,
             type,
-            (TypeSyntax)typeParamRenamer.Visit(type)
+            method.InTargetTypeArguments(type)
         );
     }
 
     private static ExpressionSyntax AdaptedResult(
         in ImposterTargetMethodMetadata method,
-        in AdapterNames adapterNames,
-        TypeParameterRenamer typeParamRenamer
+        in AdapterNames adapterNames
     )
     {
         if (method.ReturnType.IsSpan)
         {
             var result = IdentifierName(adapterNames.InvokeResultVariableName);
             var elementsType = method.ReturnType.ValueTypeSyntax;
-            var targetElementsType = (TypeSyntax)typeParamRenamer.Visit(elementsType);
+            var targetElementsType = method.InTargetTypeArguments(elementsType);
 
             // The result may refer to the locals the adapter passes by reference, so with those it can't pass back as
             // it is.
@@ -265,7 +258,7 @@ internal static class MethodImposterAdapterBuilder
         return TypeCasterSyntaxHelper.CastExpression(
             adapterNames.InvokeResultVariableName,
             returnType,
-            (TypeSyntax)typeParamRenamer.Visit(returnType)
+            method.InTargetTypeArguments(returnType)
         );
     }
 
@@ -297,34 +290,34 @@ internal static class MethodImposterAdapterBuilder
         in AdapterNames adapterNames
     )
     {
-        var typeParamRenamer = new TypeParameterRenamer(
-            method.Model.TypeParameters,
-            method.TargetGenericTypeArguments
-        );
         var hasMatchingMethod = method.MethodImposter.HasMatchingInvocationImposterGroupMethod;
-        var parameters = (ParameterListSyntax)
-            typeParamRenamer.Visit(CapturedArgumentsBuilder.InParameters(method));
-        var arguments = method.Parameters.InputParameterMetadata.Select(p =>
+        var parameters = method.InTargetTypeArguments(
+            CapturedArgumentsBuilder.InParameters(method)
+        );
+        var arguments = new List<ArgumentSyntax>();
+        foreach (var parameter in method.Parameters.InputParameterMetadata)
         {
-            var converted = p.Model.Type.IsDynamic
-                ? AsObject(IdentifierName(p.Name), p.Model.Type)
+            var converted = parameter.Model.Type.IsDynamic
+                ? AsObject(IdentifierName(parameter.Name), parameter.Model.Type)
                 : TypeCasterSyntaxHelper.CastExpression(
-                    p.Name,
-                    (TypeSyntax)typeParamRenamer.Visit(p.NullableAwareKeptTypeSyntax),
-                    p.NullableAwareKeptTypeSyntax
+                    parameter.Name,
+                    method.InTargetTypeArguments(parameter.NullableAwareKeptTypeSyntax),
+                    parameter.NullableAwareKeptTypeSyntax
                 );
             // A differently typed setup gets its own span snapshot, just as Arguments.As did. A predicate may mutate
             // that array; its writes must not affect the snapshot passed to the next candidate setup.
-            return Argument(
-                p.IsSpan
-                    ? SpanElementsCopy(
-                        ParenthesizedExpression(
-                            CastExpression(p.NullableAwareTypeSyntax, converted)
+            arguments.Add(
+                Argument(
+                    parameter.IsSpan
+                        ? SpanElementsCopy(
+                            ParenthesizedExpression(
+                                CastExpression(parameter.NullableAwareTypeSyntax, converted)
+                            )
                         )
-                    )
-                    : converted
+                        : converted
+                )
             );
-        });
+        }
         return new MethodDeclarationBuilder(hasMatchingMethod.ReturnType, hasMatchingMethod.Name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithParameterList(parameters)

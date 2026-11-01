@@ -2,7 +2,6 @@
 using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.MethodImposter.Builder;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Helpers;
-using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -24,27 +23,9 @@ internal static partial class MethodImposterBuilder
             );
         }
 
-        var invocationHistoryCollectionField =
-            SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(
-                method.InvocationHistory.Collection.Syntax,
-                method.InvocationHistory.Collection.AsField.Name
-            );
-
-        var invocationBehaviorField = SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(
-            WellKnownTypes.Imposter.Abstractions.ImposterMode,
-            method.MethodImposter.InvocationBehaviorFieldName
-        );
-
         return methodImposterClassBuilder
             .AddMember(BuildInvocationImposterGroupsField(method))
-            .AddMember(invocationHistoryCollectionField)
-            .AddMember(invocationBehaviorField)
-            .AddMember(
-                SyntaxFactoryHelper.BuildConstructorAndInitializeMembers(
-                    method.MethodImposter.Name,
-                    [invocationHistoryCollectionField, invocationBehaviorField]
-                )
-            )
+            .AddMembers(MethodImposterStateBuilder.BuildMembers(method, method.MethodImposter.Name))
             .AddMember(BuildAsMethodForGenericImposter(method))
             .AddMember(MethodImposterAdapterBuilder.Build(method))
             // Only generic method imposters are looked up by matching setup (through their generic interface).

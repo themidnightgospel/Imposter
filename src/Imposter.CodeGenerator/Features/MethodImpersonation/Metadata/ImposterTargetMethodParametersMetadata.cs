@@ -12,10 +12,6 @@ internal readonly record struct ImposterTargetMethodParametersMetadata
 {
     internal IReadOnlyList<ParameterModel> AllParameters { get; }
 
-    // The parameters the arguments, the history and the criteria keep: neither an out parameter nor one the imposter
-    // only passes through.
-    internal IReadOnlyList<ParameterModel> InputParameters { get; }
-
     internal IReadOnlyList<ParameterModel> OutputParameters { get; }
 
     internal IReadOnlyList<MethodParameterMetadata> AllParameterMetadata { get; }
@@ -23,6 +19,8 @@ internal readonly record struct ImposterTargetMethodParametersMetadata
     // The parameters setups and the arguments criteria match: all but the ones the imposter only passes through.
     internal IReadOnlyList<MethodParameterMetadata> MatchedParameterMetadata { get; }
 
+    // The parameters the arguments, the history and the criteria keep: neither an out parameter nor one the imposter
+    // only passes through.
     internal IReadOnlyList<MethodParameterMetadata> InputParameterMetadata { get; }
 
     internal readonly ParameterListSyntax ParameterListSyntaxIncludingNullable;
@@ -33,26 +31,18 @@ internal readonly record struct ImposterTargetMethodParametersMetadata
 
     internal readonly ArgumentListSyntax ArgAnyArgumentListSyntax;
 
-    internal bool HasInputParameters => InputParameters.Count > 0;
+    internal bool HasInputParameters => InputParameterMetadata.Count > 0;
 
     internal readonly bool HasOutputParameters;
 
-    internal readonly bool HasSpanParameters;
-
     internal readonly bool HasByReferenceParameters;
 
-    internal readonly bool HasPassedThroughParameters;
-
     // An async lambda or method can't declare a ref struct (CS4012) or by-reference (CS1988) parameter.
-    internal bool HasAsyncIncompatibleParameters =>
-        HasSpanParameters || HasByReferenceParameters || HasPassedThroughParameters;
+    internal readonly bool HasAsyncIncompatibleParameters;
 
     public ImposterTargetMethodParametersMetadata(IReadOnlyList<ParameterModel> parameters)
     {
         AllParameters = parameters;
-        InputParameters = parameters
-            .Where(it => it.RefKind is not RefKind.Out && !it.IsPassedThrough)
-            .ToArray();
         OutputParameters = parameters.Where(it => it.RefKind is RefKind.Out).ToArray();
         HasOutputParameters = OutputParameters.Count > 0;
 
@@ -60,9 +50,11 @@ internal readonly record struct ImposterTargetMethodParametersMetadata
         MatchedParameterMetadata = AllParameterMetadata
             .Where(it => !it.Model.IsPassedThrough)
             .ToArray();
-        HasSpanParameters = AllParameterMetadata.Any(it => it.IsSpan);
+        var hasSpanParameters = AllParameterMetadata.Any(it => it.IsSpan);
         HasByReferenceParameters = parameters.Any(it => it.RefKind is not RefKind.None);
-        HasPassedThroughParameters = parameters.Any(it => it.IsPassedThrough);
+        var hasPassedThroughParameters = parameters.Any(it => it.IsPassedThrough);
+        HasAsyncIncompatibleParameters =
+            hasSpanParameters || HasByReferenceParameters || hasPassedThroughParameters;
         InputParameterMetadata = MatchedParameterMetadata
             .Where(it => it.Model.RefKind is not RefKind.Out)
             .ToArray();
@@ -71,7 +63,7 @@ internal readonly record struct ImposterTargetMethodParametersMetadata
             SyntaxFactoryHelper.ParameterListSyntaxWithoutDefaultValues(AllParameters);
         InputParameterWithoutRefKindListSyntaxIncludingNullable =
             SyntaxFactoryHelper.ParameterListSyntaxWithoutDefaultValues(
-                InputParameters,
+                InputParameterMetadata.Select(it => it.Model),
                 includeRefKind: false
             );
         ArgParameterListSyntax = SyntaxFactoryHelper.ArgParameters(

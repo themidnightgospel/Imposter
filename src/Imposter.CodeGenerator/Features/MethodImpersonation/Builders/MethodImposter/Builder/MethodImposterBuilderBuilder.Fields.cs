@@ -11,10 +11,7 @@ internal static partial class MethodImposterBuilderBuilder
     {
         var fields = new List<FieldDeclarationSyntax>
         {
-            SinglePrivateReadonlyVariableField(
-                method.InvocationHistory.Collection.Syntax,
-                method.InvocationHistory.Collection.AsField.Name
-            ),
+            MethodImposterStateBuilder.BuildHistoryField(method),
         };
 
         if (method.Parameters.HasInputParameters)

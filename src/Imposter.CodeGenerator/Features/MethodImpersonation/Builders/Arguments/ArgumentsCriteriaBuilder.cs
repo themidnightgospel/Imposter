@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Shared;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata;
@@ -73,11 +74,7 @@ public static class ArgumentsCriteriaBuilder
     private static MethodDeclarationSyntax BuildAsMethod(in ImposterTargetMethodMetadata method)
     {
         var returnType = method.ArgumentsCriteria.SyntaxWithTargetGenericTypeArguments;
-        var typeParameterRenamer = new TypeParameterRenamer(
-            method.Model.TypeParameters,
-            method.TargetGenericTypeArguments
-        );
-        var constructorArgs = BuildConstructorArgs(method, typeParameterRenamer);
+        var constructorArgs = BuildConstructorArgs(method);
 
         return new MethodDeclarationBuilder(returnType, method.ArgumentsCriteria.AsMethod.Name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
@@ -95,26 +92,26 @@ public static class ArgumentsCriteriaBuilder
             .Build();
 
         static SeparatedSyntaxList<ArgumentSyntax> BuildConstructorArgs(
-            in ImposterTargetMethodMetadata metadata,
-            TypeParameterRenamer renamer
+            in ImposterTargetMethodMetadata metadata
         )
         {
             var matcherLambdaParameter = metadata.ArgumentsCriteria.AsMethod.MatcherLambdaParameter;
 
-            return SeparatedList(
-                metadata.Parameters.MatchedParameterMetadata.Select(parameter =>
-                    BuildArgForParameter(parameter, renamer, matcherLambdaParameter)
-                )
-            );
+            var arguments = new List<ArgumentSyntax>();
+            foreach (var parameter in metadata.Parameters.MatchedParameterMetadata)
+            {
+                arguments.Add(BuildArgForParameter(parameter, metadata, matcherLambdaParameter));
+            }
+            return SeparatedList(arguments);
         }
 
         static ArgumentSyntax BuildArgForParameter(
             MethodParameterMetadata parameter,
-            TypeParameterRenamer renamer,
+            in ImposterTargetMethodMetadata metadata,
             IdentifierNameSyntax matcherLambdaParameter
         )
         {
-            var targetMatcherType = (TypeSyntax)renamer.Visit(parameter.KeptArgTypeSyntax);
+            var targetMatcherType = metadata.InTargetTypeArguments(parameter.KeptArgTypeSyntax);
 
             if (parameter.Model.RefKind is RefKind.Out)
             {
@@ -122,7 +119,7 @@ public static class ArgumentsCriteriaBuilder
             }
 
             var sourceType = parameter.NullableAwareKeptTypeSyntax;
-            var targetType = (TypeSyntax)renamer.Visit(sourceType);
+            var targetType = metadata.InTargetTypeArguments(sourceType);
             return Argument(
                 targetMatcherType
                     .Dot(IdentifierName("Is"))
