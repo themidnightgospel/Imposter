@@ -386,9 +386,7 @@ internal readonly ref struct ImposterBuilder
 
         if (parameters.Length > 0)
         {
-            arguments.AddRange(
-                SyntaxFactoryHelper.ArgumentListSyntax(parameters, includeRefKind: true).Arguments
-            );
+            arguments.AddRange(SyntaxFactoryHelper.ArgumentListSyntax(parameters).Arguments);
         }
 
         var argumentList = SyntaxFactoryHelper.ArgumentListSyntax(arguments);
