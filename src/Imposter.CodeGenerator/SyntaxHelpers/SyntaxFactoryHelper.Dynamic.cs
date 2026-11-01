@@ -29,9 +29,8 @@ internal static partial class SyntaxFactoryHelper
 
     // A dynamic passed by value, or to an in parameter, which takes a value too, passes as an object. One passed by
     // ref or out stays dynamic.
-    internal static bool PassesAsObject(ParameterModel parameter, bool includeRefKind = true) =>
-        parameter.Type.IsDynamic
-        && (!includeRefKind || parameter.RefKind is RefKind.None or RefKind.In);
+    internal static bool PassesAsObject(ParameterModel parameter) =>
+        parameter.Type.IsDynamic && parameter.RefKind is RefKind.None or RefKind.In;
 
     // The type the imposter keeps a value as: the array of a span's elements, the object a dynamic is, or the type
     // itself.

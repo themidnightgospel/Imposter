@@ -48,11 +48,6 @@ internal static class WellKnownTypes
             IdentifierName("String")
         );
 
-        internal static readonly TypeSyntax Delegate = QualifiedName(
-            Namespace,
-            IdentifierName("Delegate")
-        );
-
         internal static readonly TypeSyntax Action = QualifiedName(
             Namespace,
             IdentifierName("Action")
@@ -100,9 +95,6 @@ internal static class WellKnownTypes
                     WellKnownTypes.System.Collections.Namespace,
                     IdentifierName("Generic")
                 );
-
-                internal static TypeSyntax IEnumerable(TypeSyntax typeArgument) =>
-                    GenericType(Namespace, "IEnumerable", typeArgument);
 
                 internal static TypeSyntax List(TypeSyntax typeArgument) =>
                     GenericType(Namespace, "List", typeArgument);

@@ -24,10 +24,7 @@ internal static class InitializeOutParametersMethodBuilder
     private static ExpressionStatementSyntax Invoke(
         string name,
         IReadOnlyList<ParameterModel> outParameters
-    ) =>
-        IdentifierName(name)
-            .Call(outParameters.Select(it => ArgumentSyntax(it)))
-            .ToStatementSyntax();
+    ) => IdentifierName(name).Call(outParameters.Select(ArgumentSyntax)).ToStatementSyntax();
 
     internal static MethodDeclarationSyntax? Build(in ImposterTargetMethodMetadata method) =>
         method.Parameters.HasOutputParameters
