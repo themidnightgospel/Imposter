@@ -15,27 +15,32 @@ public class MissingImposterException : Exception
     /// </summary>
     public string? MethodName { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Constructor
+    /// </summary>
     public MissingImposterException() { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MissingImposterException"/> class for the specified method.
+    /// Constructor
     /// </summary>
     /// <param name="methodName">The fully-qualified member name that was invoked without a matching setup.</param>
     public MissingImposterException(string methodName)
-        : base($"No imposter setup was configured for '{methodName}'.")
+        : base(MessageFor(methodName))
     {
         MethodName = methodName;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MissingImposterException"/> class with an inner exception.
+    /// Constructor
     /// </summary>
     /// <param name="methodName">The fully-qualified member name that was invoked without a matching setup.</param>
     /// <param name="innerException">The exception that caused the current exception.</param>
     public MissingImposterException(string methodName, Exception innerException)
-        : base($"No imposter setup was configured for '{methodName}'.", innerException)
+        : base(MessageFor(methodName), innerException)
     {
         MethodName = methodName;
     }
+
+    private static string MessageFor(string methodName) =>
+        $"No imposter setup was configured for '{methodName}'.";
 }

@@ -17,24 +17,32 @@ internal static partial class InvocationHistoryCollectionBuilder
     {
         var head = IdentifierName("head");
         var entry = IdentifierName("invocationHistory");
-        var field = IdentifierName(
-            InvocationHistoryCollectionMetadata.InvocationHistoryCollectionFieldName
-        );
-        return new MethodDeclarationBuilder(WellKnownTypes.Void, "Add")
+        var field = IdentifierName(InvocationHistoryCollectionMetadata.HeadFieldName);
+        return new MethodDeclarationBuilder(
+            WellKnownTypes.Void,
+            InvocationHistoryCollectionMetadata.AddMethodName
+        )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddParameter(ParameterSyntax(method.InvocationHistory.NodeSyntax, "invocationHistory"))
+            .AddParameter(
+                ParameterSyntax(method.InvocationHistory.Collection.NodeSyntax, "invocationHistory")
+            )
             .WithBody(
                 Block(
                     LocalVariableDeclarationSyntax(
-                        method.InvocationHistory.NodeSyntax.ToNullableType(),
+                        method.InvocationHistory.Collection.NodeSyntax.ToNullableType(),
                         "head",
                         null
                     ),
                     DoStatement(
                         Block(
-                            head.Assign(ReadHead()).ToStatementSyntax(),
+                            head.Assign(VolatileSyntaxHelper.VolatileRead(field))
+                                .ToStatementSyntax(),
                             entry
-                                .Dot(IdentifierName(InvocationHistoryTypeMetadata.NextFieldName))
+                                .Dot(
+                                    IdentifierName(
+                                        InvocationHistoryCollectionMetadata.NextFieldName
+                                    )
+                                )
                                 .Assign(head)
                                 .ToStatementSyntax()
                         ),
@@ -42,21 +50,7 @@ internal static partial class InvocationHistoryCollectionBuilder
                             SyntaxKind.NotEqualsExpression,
                             WellKnownTypes
                                 .System.Threading.Interlocked.Dot(IdentifierName("CompareExchange"))
-                                .Call(
-                                    ArgumentList(
-                                        SeparatedList(
-                                            new[]
-                                            {
-                                                Argument(field)
-                                                    .WithRefOrOutKeyword(
-                                                        Token(SyntaxKind.RefKeyword)
-                                                    ),
-                                                Argument(entry),
-                                                Argument(head),
-                                            }
-                                        )
-                                    )
-                                ),
+                                .Call([RefArgument(field), Argument(entry), Argument(head)]),
                             head
                         )
                     )
@@ -75,10 +69,12 @@ internal static partial class InvocationHistoryCollectionBuilder
             InvocationHistoryCollectionMetadata.RecordFailureMethodName
         )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddParameter(ParameterSyntax(method.InvocationHistory.NodeSyntax, "invocationHistory"))
+            .AddParameter(
+                ParameterSyntax(method.InvocationHistory.Collection.NodeSyntax, "invocationHistory")
+            )
             .WithBody(
                 Block(
-                    IdentifierName("Add")
+                    IdentifierName(InvocationHistoryCollectionMetadata.AddMethodName)
                         .Call(Argument(IdentifierName("invocationHistory")))
                         .ToStatementSyntax(),
                     ReturnStatement(False)

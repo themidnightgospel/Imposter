@@ -23,16 +23,17 @@ internal static partial class InvocationHistoryCollectionBuilder
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(GetParameter(method))
             .WithBody(
-                Block(
-                    LocalVariableDeclarationSyntax(
-                        Var,
-                        names.CountVariableName,
-                        LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))
-                    ),
-                    LocalVariableDeclarationSyntax(Var, names.InvocationVariableName, ReadHead()),
-                    WhileStatement(
-                        IdentifierName(names.InvocationVariableName).IsNotNull(),
-                        Block(
+                new BlockBuilder()
+                    .AddStatement(
+                        LocalVariableDeclarationSyntax(
+                            Var,
+                            names.CountVariableName,
+                            LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))
+                        )
+                    )
+                    .AddStatements(
+                        ForEachEntry(
+                            names.InvocationVariableName,
                             IfStatement(
                                 ParenthesizedExpression(
                                         CastExpression(
@@ -53,21 +54,11 @@ internal static partial class InvocationHistoryCollectionBuilder
                                         IdentifierName(names.CountVariableName)
                                     )
                                     .ToStatementSyntax()
-                            ),
-                            IdentifierName(names.InvocationVariableName)
-                                .Assign(
-                                    IdentifierName(names.InvocationVariableName)
-                                        .Dot(
-                                            IdentifierName(
-                                                InvocationHistoryTypeMetadata.NextFieldName
-                                            )
-                                        )
-                                )
-                                .ToStatementSyntax()
+                            )
                         )
-                    ),
-                    ReturnStatement(IdentifierName(names.CountVariableName))
-                )
+                    )
+                    .AddStatement(ReturnStatement(IdentifierName(names.CountVariableName)))
+                    .Build()
             )
             .Build();
 

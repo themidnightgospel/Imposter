@@ -32,7 +32,7 @@ public class GenerateImposterAttribute : Attribute
     public bool PutInTheSameNamespace { get; }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GenerateImposterAttribute"/> class.
+    /// Constructor
     /// </summary>
     /// <param name="type">The target interface or class for which to generate an imposter.</param>
     /// <param name="putInTheSameNamespace">Whether to place the generated imposter in the same namespace as <paramref name="type"/>.</param>
