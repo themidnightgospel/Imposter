@@ -20,11 +20,6 @@ internal static partial class SyntaxFactoryHelper
         Identifier("_").Lambda(body);
 
     public static SimpleLambdaExpressionSyntax Lambda(
-        this ParameterSyntax lambdaParameter,
-        CSharpSyntaxNode body
-    ) => SimpleLambdaExpression(lambdaParameter, body);
-
-    public static SimpleLambdaExpressionSyntax Lambda(
         this in SyntaxToken lambdaParameter,
         CSharpSyntaxNode body
     ) => SimpleLambdaExpression(Parameter(lambdaParameter), body);
