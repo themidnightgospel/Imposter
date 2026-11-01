@@ -533,16 +533,9 @@ internal readonly ref struct ImposterInstanceBuilder
                 {
                     ParameterSyntax(imposterTypeSyntax, imposterFieldName),
                 };
-                constructorParameters.AddRange(
-                    constructorMetadata.Parameters.Select(parameter =>
-                        ParameterSyntax(parameter, includeRefKind: true)
-                    )
-                );
+                constructorParameters.AddRange(ParameterSyntaxes(constructorMetadata.Parameters));
 
-                var baseArgumentList = ArgumentListSyntax(
-                    constructorMetadata.Parameters,
-                    includeRefKind: true
-                );
+                var baseArgumentList = ArgumentListSyntax(constructorMetadata.Parameters);
 
                 var constructorBody = Block(
                     ThisExpression()
@@ -589,10 +582,7 @@ internal readonly ref struct ImposterInstanceBuilder
         return imposterGenerationContext.Imposter.Methods.Select(imposterMethod =>
         {
             var invokeArguments = new List<ArgumentSyntax>(
-                ArgumentListSyntax(
-                    imposterMethod.Parameters.AllParameters,
-                    includeRefKind: true
-                ).Arguments
+                ArgumentListSyntax(imposterMethod.Parameters.AllParameters).Arguments
             );
 
             if (imposterMethod.SupportsBaseImplementation)
