@@ -181,13 +181,13 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 				ISPropertyGetterFluentBuilder ISPropertyGetterUseBaseImplementationBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 
 				ISPropertyGetterFluentBuilder ISPropertyGetterFluentBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 			}
@@ -246,7 +246,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 			ISPropertyBuilder ISPropertyBuilder.UseBaseImplementation()
 			{
-				_getterImposterBuilder.EnableBaseImplementation();
+				_getterImposterBuilder.UseBaseImplementation();
 				_setterImposter.UseBaseImplementation();
 				return this;
 			}

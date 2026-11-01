@@ -69,17 +69,17 @@ public class PropertySetter<T>
     /// <param name="baseImplementation">The base setter, when available.</param>
     public void Set(T value, Action<T>? baseImplementation = null)
     {
-        if (!SetForInit(value))
+        if (!RecordAndShouldCallBase(value))
             return;
         if (baseImplementation is null)
             throw MissingImposter();
         baseImplementation(value);
     }
 
-    /// <summary>Processes an assignment whose base init accessor must be called by generated code.</summary>
+    /// <summary>Records an assignment, invokes callbacks, and updates enabled storage unless the base accessor is configured.</summary>
     /// <param name="value">The assigned value.</param>
-    /// <returns>Whether the generated accessor should assign the base property.</returns>
-    protected bool SetForInit(T value)
+    /// <returns>Whether the caller should invoke the base set or init accessor.</returns>
+    protected bool RecordAndShouldCallBase(T value)
     {
         if (_mode == ImposterMode.Explicit && !_hasConfiguredSetter)
             throw MissingImposter();

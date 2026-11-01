@@ -189,7 +189,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 					return this;
 				}
 
-				internal void EnableBaseImplementation()
+				internal void UseBaseImplementation()
 				{
 					AddReturnValue((CurrentPropertyDelegate? baseImplementation) =>
 					{
@@ -202,13 +202,13 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 				ICurrentPropertyGetterFluentBuilder ICurrentPropertyGetterUseBaseImplementationBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 
 				ICurrentPropertyGetterFluentBuilder ICurrentPropertyGetterFluentBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 
@@ -349,7 +349,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 			ICurrentPropertyBuilder ICurrentPropertyBuilder.UseBaseImplementation()
 			{
-				_getterImposterBuilder.EnableBaseImplementation();
+				_getterImposterBuilder.UseBaseImplementation();
 				_setterImposter.UseBaseImplementation();
 				return this;
 			}

@@ -583,13 +583,13 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 				ILabelPropertyGetterFluentBuilder ILabelPropertyGetterUseBaseImplementationBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 
 				ILabelPropertyGetterFluentBuilder ILabelPropertyGetterFluentBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 			}
@@ -648,7 +648,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			ILabelPropertyBuilder ILabelPropertyBuilder.UseBaseImplementation()
 			{
-				_getterImposterBuilder.EnableBaseImplementation();
+				_getterImposterBuilder.UseBaseImplementation();
 				_setterImposter.UseBaseImplementation();
 				return this;
 			}

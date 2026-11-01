@@ -1017,13 +1017,13 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 				INamePropertyGetterFluentBuilder INamePropertyGetterUseBaseImplementationBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 
 				INamePropertyGetterFluentBuilder INamePropertyGetterFluentBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 			}
@@ -1082,7 +1082,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			INamePropertyBuilder INamePropertyBuilder.UseBaseImplementation()
 			{
-				_getterImposterBuilder.EnableBaseImplementation();
+				_getterImposterBuilder.UseBaseImplementation();
 				_setterImposter.UseBaseImplementation();
 				return this;
 			}
@@ -1248,13 +1248,13 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 				INameNullablePropertyGetterFluentBuilder INameNullablePropertyGetterUseBaseImplementationBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 
 				INameNullablePropertyGetterFluentBuilder INameNullablePropertyGetterFluentBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 			}
@@ -1313,7 +1313,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			INameNullablePropertyBuilder INameNullablePropertyBuilder.UseBaseImplementation()
 			{
-				_getterImposterBuilder.EnableBaseImplementation();
+				_getterImposterBuilder.UseBaseImplementation();
 				_setterImposter.UseBaseImplementation();
 				return this;
 			}
