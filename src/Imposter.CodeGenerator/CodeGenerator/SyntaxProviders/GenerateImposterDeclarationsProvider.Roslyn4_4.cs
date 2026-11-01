@@ -8,10 +8,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
 
-/// <summary>
-/// Discover GenerateImposterAttribute usages and produce GenerateImposterDeclaration values for the generator pipeline.
-/// </summary>
-internal static class GenerateImposterDeclarationsProvider
+internal static partial class GenerateImposterDeclarationsProvider
 {
     private static readonly string GenerateImposterAttribute =
         typeof(GenerateImposterAttribute).FullName!;
@@ -28,10 +25,11 @@ internal static class GenerateImposterDeclarationsProvider
                 predicate: static (_, _) => true,
                 transform: static (ctx, token) => GetDeclarations(ctx, token)
             )
-            .SelectMany((declarations, _) => declarations)
+            .SelectMany(static (declarations, _) => declarations)
             .Collect()
             .SelectMany(
-                (declarations, _) => ImposterTypeCollisions.Mark(declarations.Distinct().ToArray())
+                static (declarations, _) =>
+                    ImposterTypeCollisions.Mark(declarations.Distinct().ToArray())
             )
             .WithTrackingName("GenerateImposterDeclarations");
     }
@@ -46,31 +44,19 @@ internal static class GenerateImposterDeclarationsProvider
         var memberAccess = new MemberAccess(context.SemanticModel.Compilation.Assembly);
 
         return context
-            .Attributes.Where(attribute =>
-                attribute.ConstructorArguments.Length > 0
-                && attribute.ConstructorArguments[0].Value
-                    is INamedTypeSymbol { TypeKind: not TypeKind.Error }
+            .Attributes.Select(attribute =>
+                (Attribute: attribute, Target: RegisteredTarget(attribute))
             )
-            .Select(attribute =>
+            .Where(it => it.Target is not null)
+            .Select(it =>
                 GenerateImposterDeclaration.From(
-                    NormalizeImposterTarget(
-                        (INamedTypeSymbol)attribute.ConstructorArguments[0].Value!
-                    ),
-                    GetPutInTheSameNamespaceValue(attribute),
+                    it.Target!,
+                    PutInTheSameNamespace(it.Attribute),
                     memberAccess
                 )
             )
             .Distinct()
             .ToEquatableArray();
-    }
-
-    private static bool GetPutInTheSameNamespaceValue(AttributeData attributeData) =>
-        attributeData.ConstructorArguments.Length != 2
-        || (bool)attributeData.ConstructorArguments[1].Value!;
-
-    private static INamedTypeSymbol NormalizeImposterTarget(INamedTypeSymbol imposterType)
-    {
-        return imposterType.IsUnboundGenericType ? imposterType.OriginalDefinition : imposterType;
     }
 }
 #endif
