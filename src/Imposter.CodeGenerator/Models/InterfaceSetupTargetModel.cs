@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Imposter.CodeGenerator.Helpers;
 using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator.Models;
@@ -9,16 +8,11 @@ namespace Imposter.CodeGenerator.Models;
 /// it inherits.
 /// </summary>
 internal sealed record InterfaceSetupTargetModel(
-    EquatableArray<string> TypeParameterNames,
     EquatableArray<InterfaceSetupInterfaceModel> Interfaces
 )
 {
     internal static InterfaceSetupTargetModel From(INamedTypeSymbol target) =>
         new(
-            target
-                .TypeParametersIn()
-                .Select(parameter => parameter.NameInGeneratedCode())
-                .ToEquatableArray(),
             target
                 .AllInterfaces.Prepend(target)
                 .Select(InterfaceSetupInterfaceModel.From)
