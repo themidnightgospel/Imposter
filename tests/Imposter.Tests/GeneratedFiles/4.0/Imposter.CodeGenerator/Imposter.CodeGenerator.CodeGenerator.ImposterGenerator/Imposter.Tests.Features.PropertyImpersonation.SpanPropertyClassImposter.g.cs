@@ -198,7 +198,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 					return this;
 				}
 
-				internal void EnableBaseImplementation()
+				internal void UseBaseImplementation()
 				{
 					AddReturnValue((global::System.Func<byte[]>? baseImplementation) =>
 					{
@@ -211,13 +211,13 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 				IBufferPropertyGetterFluentBuilder IBufferPropertyGetterUseBaseImplementationBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 
 				IBufferPropertyGetterFluentBuilder IBufferPropertyGetterFluentBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 
@@ -390,7 +390,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 			IBufferPropertyBuilder IBufferPropertyBuilder.UseBaseImplementation()
 			{
-				_getterImposterBuilder.EnableBaseImplementation();
+				_getterImposterBuilder.UseBaseImplementation();
 				_setterImposter.UseBaseImplementation();
 				return this;
 			}

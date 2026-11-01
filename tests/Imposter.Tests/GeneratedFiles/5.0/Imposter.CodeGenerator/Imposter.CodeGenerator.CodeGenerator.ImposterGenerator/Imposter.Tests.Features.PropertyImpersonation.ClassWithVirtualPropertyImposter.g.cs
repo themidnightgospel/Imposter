@@ -181,13 +181,13 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 				IVirtualPropertyPropertyGetterFluentBuilder IVirtualPropertyPropertyGetterUseBaseImplementationBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 
 				IVirtualPropertyPropertyGetterFluentBuilder IVirtualPropertyPropertyGetterFluentBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 			}
@@ -246,7 +246,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 			IVirtualPropertyPropertyBuilder IVirtualPropertyPropertyBuilder.UseBaseImplementation()
 			{
-				_getterImposterBuilder.EnableBaseImplementation();
+				_getterImposterBuilder.UseBaseImplementation();
 				_setterImposter.UseBaseImplementation();
 				return this;
 			}
@@ -412,13 +412,13 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 				IVirtualPropertyWithInitializerPropertyGetterFluentBuilder IVirtualPropertyWithInitializerPropertyGetterUseBaseImplementationBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 
 				IVirtualPropertyWithInitializerPropertyGetterFluentBuilder IVirtualPropertyWithInitializerPropertyGetterFluentBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 			}
@@ -477,7 +477,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 			IVirtualPropertyWithInitializerPropertyBuilder IVirtualPropertyWithInitializerPropertyBuilder.UseBaseImplementation()
 			{
-				_getterImposterBuilder.EnableBaseImplementation();
+				_getterImposterBuilder.UseBaseImplementation();
 				_setterImposter.UseBaseImplementation();
 				return this;
 			}

@@ -622,13 +622,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				IValuePropertyGetterFluentBuilder IValuePropertyGetterUseBaseImplementationBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 
 				IValuePropertyGetterFluentBuilder IValuePropertyGetterFluentBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 			}
@@ -687,7 +687,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			IValuePropertyBuilder IValuePropertyBuilder.UseBaseImplementation()
 			{
-				_getterImposterBuilder.EnableBaseImplementation();
+				_getterImposterBuilder.UseBaseImplementation();
 				_setterImposter.UseBaseImplementation();
 				return this;
 			}

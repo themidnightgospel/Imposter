@@ -59,7 +59,7 @@ public class PropertyGetter<T>
     }
 
     /// <summary>Appends an outcome that calls the base getter.</summary>
-    public void EnableBaseImplementation() =>
+    public void UseBaseImplementation() =>
         AddReturnValue(baseImplementation =>
             baseImplementation is not null ? baseImplementation() : throw MissingImposter()
         );
