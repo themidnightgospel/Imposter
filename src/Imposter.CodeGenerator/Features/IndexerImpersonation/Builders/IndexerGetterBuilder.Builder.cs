@@ -200,13 +200,7 @@ internal static partial class IndexerGetterBuilder
                     outcome
                 );
 
-        return Block(
-            IdentifierName(getter.Builder.InvocationImposterPropertyName)
-                .Dot(IdentifierName("AddReturnValue"))
-                .Call(Argument(generator))
-                .ToStatementSyntax(),
-            ReturnThis
-        );
+        return CallInvocationImposter(indexer, "AddReturnValue", Argument(generator));
     }
 
     private static MethodDeclarationSyntax BuildGetterBuilderCallbackMethod(
@@ -219,14 +213,10 @@ internal static partial class IndexerGetterBuilder
             .WithExplicitInterfaceSpecifier(callback.InterfaceSyntax)
             .AddParameter(ParameterSyntax(callback.CallbackParameter))
             .WithBody(
-                Block(
-                    IdentifierName(
-                            indexer.GetterImplementation.Builder.InvocationImposterPropertyName
-                        )
-                        .Dot(IdentifierName("AddCallback"))
-                        .Call(Argument(IdentifierName(callback.CallbackParameter.Name)))
-                        .ToStatementSyntax(),
-                    ReturnThis
+                CallInvocationImposter(
+                    indexer,
+                    "AddCallback",
+                    Argument(IdentifierName(callback.CallbackParameter.Name))
                 )
             )
             .Build();
@@ -284,17 +274,21 @@ internal static partial class IndexerGetterBuilder
             useBaseImplementation.Name
         )
             .WithExplicitInterfaceSpecifier(useBaseImplementation.InterfaceSyntax)
-            .WithBody(
-                Block(
-                    IdentifierName(
-                            indexer.GetterImplementation.Builder.InvocationImposterPropertyName
-                        )
-                        .Dot(IdentifierName("UseBaseImplementation"))
-                        .Call()
-                        .ToStatementSyntax(),
-                    ReturnThis
-                )
-            )
+            .WithBody(CallInvocationImposter(indexer, "UseBaseImplementation"))
             .Build();
     }
+
+    // The setup's invocation imposter does the work; the builder returns itself so setups chain.
+    private static BlockSyntax CallInvocationImposter(
+        in ImposterIndexerMetadata indexer,
+        string methodName,
+        params ArgumentSyntax[] arguments
+    ) =>
+        Block(
+            IdentifierName(indexer.GetterImplementation.Builder.InvocationImposterPropertyName)
+                .Dot(IdentifierName(methodName))
+                .Call(arguments)
+                .ToStatementSyntax(),
+            ReturnThis
+        );
 }

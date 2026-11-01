@@ -10,14 +10,46 @@ namespace Imposter.CodeGenerator.Features.IndexerImpersonation.Builders;
 
 internal static class IndexerDelegatesBuilder
 {
-    internal static MemberDeclarationSyntax[] Build(in ImposterIndexerMetadata indexer) =>
+    internal static MemberDeclarationSyntax[] Build(in ImposterIndexerMetadata indexer)
+    {
+        var keys = IndexerParameters(indexer);
+        var names = indexer.Delegates;
+
+        return
         [
-            BuildValueDelegate(indexer),
-            BuildGetterCallbackDelegate(indexer),
-            BuildSetterCallbackDelegate(indexer),
-            BuildExceptionDelegate(indexer),
+            Delegate(
+                SyntaxKind.PublicKeyword,
+                indexer.Core.NullableAwareValueTypeSyntax,
+                names.ValueDelegateName,
+                keys
+            ),
+            Delegate(
+                SyntaxKind.PublicKeyword,
+                WellKnownTypes.Void,
+                names.GetterCallbackDelegateName,
+                keys
+            ),
+            Delegate(
+                SyntaxKind.PublicKeyword,
+                WellKnownTypes.Void,
+                names.SetterCallbackDelegateName,
+                [
+                    .. keys,
+                    SyntaxFactoryHelper.ParameterSyntax(
+                        indexer.Core.NullableAwareValueTypeSyntax,
+                        indexer.SetterImplementation.ValueParameterName
+                    ),
+                ]
+            ),
+            Delegate(
+                SyntaxKind.PublicKeyword,
+                WellKnownTypes.System.Exception,
+                names.ExceptionDelegateName,
+                keys
+            ),
             .. BuildGeneratedValueDelegates(indexer),
         ];
+    }
 
     // See ImposterIndexerCoreMetadata.HasGeneratedValueDelegates for when these delegates are generated and why.
     private static List<DelegateDeclarationSyntax> BuildGeneratedValueDelegates(
@@ -41,17 +73,24 @@ internal static class IndexerDelegatesBuilder
         if (indexer.Core.HasGetter)
         {
             delegates.Add(
-                InternalDelegate(value, indexer.Delegates.BaseGetterDelegateName, passedThroughKeys)
+                Delegate(
+                    SyntaxKind.InternalKeyword,
+                    value,
+                    indexer.Delegates.BaseGetterDelegateName,
+                    passedThroughKeys
+                )
             );
             delegates.Add(
-                InternalDelegate(
+                Delegate(
+                    SyntaxKind.InternalKeyword,
                     value,
                     indexer.Delegates.ReturnGeneratorDelegateName,
                     [arguments, .. passedThroughKeys]
                 )
             );
             delegates.Add(
-                InternalDelegate(
+                Delegate(
+                    SyntaxKind.InternalKeyword,
                     value,
                     indexer.Delegates.ReturnHandlerDelegateName,
                     [
@@ -69,7 +108,8 @@ internal static class IndexerDelegatesBuilder
         if (indexer.Core.HasSetter)
         {
             delegates.Add(
-                InternalDelegate(
+                Delegate(
+                    SyntaxKind.InternalKeyword,
                     WellKnownTypes.Void,
                     indexer.Delegates.BaseSetterDelegateName,
                     [
@@ -86,63 +126,15 @@ internal static class IndexerDelegatesBuilder
         return delegates;
     }
 
-    private static DelegateDeclarationSyntax InternalDelegate(
+    private static DelegateDeclarationSyntax Delegate(
+        SyntaxKind accessibility,
         TypeSyntax returnType,
         string name,
         params ParameterSyntax[] parameters
     ) =>
         DelegateDeclaration(returnType, Identifier(name))
-            .AddModifiers(Token(SyntaxKind.InternalKeyword))
+            .AddModifiers(Token(accessibility))
             .AddParameterListParameters(parameters);
-
-    private static DelegateDeclarationSyntax BuildValueDelegate(
-        in ImposterIndexerMetadata indexer
-    ) =>
-        DelegateDeclaration(
-                indexer.Core.NullableAwareValueTypeSyntax,
-                Identifier(indexer.Delegates.ValueDelegateName)
-            )
-            .AddModifiers(Token(SyntaxKind.PublicKeyword))
-            .AddParameterListParameters(IndexerParameters(indexer));
-
-    private static DelegateDeclarationSyntax BuildGetterCallbackDelegate(
-        in ImposterIndexerMetadata indexer
-    ) =>
-        DelegateDeclaration(
-                WellKnownTypes.Void,
-                Identifier(indexer.Delegates.GetterCallbackDelegateName)
-            )
-            .AddModifiers(Token(SyntaxKind.PublicKeyword))
-            .AddParameterListParameters(IndexerParameters(indexer));
-
-    private static DelegateDeclarationSyntax BuildSetterCallbackDelegate(
-        in ImposterIndexerMetadata indexer
-    ) =>
-        DelegateDeclaration(
-                WellKnownTypes.Void,
-                Identifier(indexer.Delegates.SetterCallbackDelegateName)
-            )
-            .AddModifiers(Token(SyntaxKind.PublicKeyword))
-            .AddParameterListParameters(
-                IndexerParameters(indexer)
-                    .Concat([
-                        SyntaxFactoryHelper.ParameterSyntax(
-                            indexer.Core.NullableAwareValueTypeSyntax,
-                            indexer.SetterImplementation.ValueParameterName
-                        ),
-                    ])
-                    .ToArray()
-            );
-
-    private static DelegateDeclarationSyntax BuildExceptionDelegate(
-        in ImposterIndexerMetadata indexer
-    ) =>
-        DelegateDeclaration(
-                WellKnownTypes.System.Exception,
-                Identifier(indexer.Delegates.ExceptionDelegateName)
-            )
-            .AddModifiers(Token(SyntaxKind.PublicKeyword))
-            .AddParameterListParameters(IndexerParameters(indexer));
 
     private static ParameterSyntax[] IndexerParameters(in ImposterIndexerMetadata indexer) =>
         indexer

@@ -5,6 +5,7 @@ using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.Features.IndexerImpersonation.Builders.IndexerImposterBuilderCommon;
+using static Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata.IndexerGetterImposterMetadata.GetterInvocationMetadata;
 using static Imposter.CodeGenerator.Features.Shared.Builders.MissingImposterBuilder;
 using static Imposter.CodeGenerator.Features.Shared.Builders.VerificationFailedBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
@@ -140,13 +141,7 @@ internal static partial class IndexerGetterBuilder
                                     setup
                                         .IsNotNull()
                                         .And(
-                                            setup.Dot(
-                                                IdentifierName(
-                                                    IndexerGetterImposterMetadata
-                                                        .GetterInvocationMetadata
-                                                        .HasConfiguredReturnFieldName
-                                                )
-                                            )
+                                            setup.Dot(IdentifierName(HasConfiguredReturnFieldName))
                                         ),
                                     invokeSetup
                                 ),
@@ -250,13 +245,7 @@ internal static partial class IndexerGetterBuilder
                                 setupMatches,
                                 Block(
                                     IfStatement(
-                                        setup.Dot(
-                                            IdentifierName(
-                                                IndexerGetterImposterMetadata
-                                                    .GetterInvocationMetadata
-                                                    .HasConfiguredReturnFieldName
-                                            )
-                                        ),
+                                        setup.Dot(IdentifierName(HasConfiguredReturnFieldName)),
                                         ReturnStatement(setup)
                                     ),
                                     IfStatement(
@@ -342,7 +331,8 @@ internal static partial class IndexerGetterBuilder
     {
         var getter = indexer.GetterImplementation;
         var invocationHistory = IdentifierName(getter.InvocationHistoryField.Name);
-        var count = IdentifierName(getter.CountParameterName);
+        var countParameter = indexer.GetterBuilderInterface.CalledMethod.CountParameter;
+        var count = IdentifierName(countParameter.Name);
         var invocationCount = IdentifierName("invocationCount");
 
         var invocationCountDeclaration = LocalVariableDeclarationSyntax(
@@ -372,12 +362,7 @@ internal static partial class IndexerGetterBuilder
             .AddParameter(
                 ParameterSyntax(indexer.ArgumentsCriteria.TypeSyntax, getter.CriteriaParameterName)
             )
-            .AddParameter(
-                ParameterSyntax(
-                    WellKnownTypes.Imposter.Abstractions.Count,
-                    getter.CountParameterName
-                )
-            )
+            .AddParameter(ParameterSyntax(countParameter))
             .WithBody(
                 Block(
                     invocationCountDeclaration,

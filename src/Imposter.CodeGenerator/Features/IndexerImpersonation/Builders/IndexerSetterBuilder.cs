@@ -161,7 +161,7 @@ internal static partial class IndexerSetterBuilder
                         .Dot(IdentifierName("Add"))
                         .Call(Argument(tupleExpression))
                         .ToStatementSyntax(),
-                    IdentifierName(setter.MarkConfiguredMethod.Name).Call().ToStatementSyntax()
+                    IdentifierName(setter.MarkConfiguredMethodName).Call().ToStatementSyntax()
                 )
             )
             .Build();
@@ -264,7 +264,7 @@ internal static partial class IndexerSetterBuilder
                         .Dot(IdentifierName("Add"))
                         .Call(Argument(IdentifierName(setter.CriteriaParameterName)))
                         .ToStatementSyntax(),
-                    IdentifierName(setter.MarkConfiguredMethod.Name).Call().ToStatementSyntax()
+                    IdentifierName(setter.MarkConfiguredMethodName).Call().ToStatementSyntax()
                 )
             )
             .Build();
@@ -524,7 +524,7 @@ internal static partial class IndexerSetterBuilder
     {
         var setter = indexer.SetterImplementation;
 
-        return new MethodDeclarationBuilder(WellKnownTypes.Void, setter.MarkConfiguredMethod.Name)
+        return new MethodDeclarationBuilder(WellKnownTypes.Void, setter.MarkConfiguredMethodName)
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .WithBody(
                 Block(VolatileWrite(setter.HasConfiguredSetterField.Name, True).ToStatementSyntax())

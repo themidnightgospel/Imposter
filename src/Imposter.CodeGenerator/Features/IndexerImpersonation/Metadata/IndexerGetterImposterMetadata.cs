@@ -36,8 +36,6 @@ internal readonly struct IndexerGetterImposterMetadata
 
     internal readonly string CriteriaParameterName;
 
-    internal readonly string CountParameterName;
-
     internal readonly string GetterSuffix;
 
     internal readonly ParameterMetadata BaseImplementationParameter;
@@ -55,7 +53,6 @@ internal readonly struct IndexerGetterImposterMetadata
         ArgumentsVariableName = names.Use("arguments");
         SetupVariableName = names.Use("getterInvocationImposter");
         CriteriaParameterName = "criteria";
-        CountParameterName = "count";
         GetterSuffix = " (getter)";
         BaseImplementationParameter = indexer.Core.GetterBaseImplementationParameter(
             names.Use(ImposterIndexerCoreMetadata.BaseImplementationParameterName)
