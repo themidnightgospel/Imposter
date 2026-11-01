@@ -653,12 +653,12 @@ internal readonly ref struct ImposterInstanceBuilder
                             TypeArguments(method.GenericTypeArguments)
                         )
                     )
-                    .Call(GetGetImposterWithMatchingInvocationImposterGroupArguments(method));
+                    .Call(ArgumentsForGetImposterWithMatchingInvocationImposterGroup(method));
             }
 
             return imposterField;
 
-            static ArgumentListSyntax? GetGetImposterWithMatchingInvocationImposterGroupArguments(
+            static ArgumentListSyntax? ArgumentsForGetImposterWithMatchingInvocationImposterGroup(
                 in ImposterTargetMethodMetadata method
             )
             {

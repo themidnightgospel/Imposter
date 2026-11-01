@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
@@ -30,17 +31,15 @@ internal readonly struct InterfaceSetupMemberMetadata
         InterfaceSetupMemberModel model,
         string setupName,
         TypeSyntax returnType,
-        bool isSetUpByMethod = false,
-        string? viewName = null,
-        bool isDeclaredAsMethod = false
+        string? viewName = null
     )
     {
         Model = model;
         SetupName = setupName;
         ReturnType = returnType;
-        IsSetUpByMethod = isSetUpByMethod;
+        IsSetUpByMethod = false;
         ViewName = viewName ?? model.Name;
-        IsDeclaredAsMethod = isDeclaredAsMethod || model.Kind == InterfaceSetupMemberKind.Method;
+        IsDeclaredAsMethod = model.Kind == InterfaceSetupMemberKind.Method;
         ImplementationConstraints =
             model.Kind == InterfaceSetupMemberKind.Method
                 ? GetImplementationConstraints(model)
@@ -55,6 +54,22 @@ internal readonly struct InterfaceSetupMemberMetadata
             method.MethodImposter.BuilderInterface.Syntax,
             viewName: method.Model.HasOverloadWithTheSameSetup ? method.SetupName : null
         ) { }
+
+    internal InterfaceSetupMemberMetadata(
+        InterfaceSetupMemberModel model,
+        in ImposterIndexerMetadata indexer
+    )
+        : this(
+            model,
+            indexer.Core.UniqueName,
+            indexer.BuilderInterface.TypeSyntax,
+            viewName: indexer.HasSetupMethod ? indexer.Core.UniqueName : null
+        )
+    {
+        IsSetUpByMethod = indexer.IsSetUpByMethod;
+        // The view declares an indexer with a setup method of its own as that method.
+        IsDeclaredAsMethod = indexer.HasSetupMethod;
+    }
 
     private static List<TypeParameterConstraintClauseSyntax> GetImplementationConstraints(
         InterfaceSetupMemberModel method
