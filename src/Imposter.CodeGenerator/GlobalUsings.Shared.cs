@@ -1,1 +1,1 @@
-global using Imposter.CodeGenerator.Features.Shared;
+﻿global using Imposter.CodeGenerator.Features.Shared;

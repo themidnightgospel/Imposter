@@ -1,4 +1,4 @@
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using Imposter.CodeGenerator.Models;
 
 namespace Imposter.CodeGenerator.Features.Shared;

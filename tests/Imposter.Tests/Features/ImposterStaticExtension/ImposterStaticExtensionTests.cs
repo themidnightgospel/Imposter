@@ -1,4 +1,4 @@
-#if ROSLYN_5_OR_GREATER
+﻿#if ROSLYN_5_OR_GREATER
 using Imposter.Abstractions;
 using Imposter.Tests.Shared;
 using Shouldly;

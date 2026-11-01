@@ -1,4 +1,4 @@
-using System.Threading;
+﻿using System.Threading;
 using Imposter.Abstractions;
 using Imposter.Tests.Shared;
 using Shouldly;

@@ -1,4 +1,4 @@
-using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Features.Shared.BuilderInterface;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp;

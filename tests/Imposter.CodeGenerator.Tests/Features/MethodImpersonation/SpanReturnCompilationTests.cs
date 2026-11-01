@@ -1,4 +1,4 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Xunit;
 using static Imposter.CodeGenerator.Tests.Features.NamingCollisionPrevention.CollisionCompilation;
 #if ROSLYN4_4_OR_GREATER

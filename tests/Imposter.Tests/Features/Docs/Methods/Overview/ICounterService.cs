@@ -1,4 +1,4 @@
-using Imposter.Abstractions;
+﻿using Imposter.Abstractions;
 using Imposter.Tests.Features.Docs.Methods.Overview;
 
 [assembly: GenerateImposter(typeof(ICounterService))]

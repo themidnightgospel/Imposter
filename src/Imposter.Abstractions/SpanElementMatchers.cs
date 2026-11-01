@@ -1,4 +1,4 @@
-namespace Imposter.Abstractions;
+﻿namespace Imposter.Abstractions;
 
 // The element checks behind SpanArg<T> and ReadOnlySpanArg<T>, which match an imposter's copy of a span argument.
 internal static class SpanElementMatchers

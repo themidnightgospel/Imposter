@@ -1,4 +1,4 @@
-#if USE_CSHARP14
+﻿#if USE_CSHARP14
 using System;
 using Imposter.Abstractions;
 using Imposter.Tests.Features.Docs.ArgumentsMatching;

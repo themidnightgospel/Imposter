@@ -1,4 +1,4 @@
-using Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
+﻿using Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;

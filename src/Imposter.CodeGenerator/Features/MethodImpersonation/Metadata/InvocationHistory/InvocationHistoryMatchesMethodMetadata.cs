@@ -1,4 +1,4 @@
-namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationHistory;
+﻿namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationHistory;
 
 internal readonly struct InvocationHistoryMatchesMethodMetadata
 {
