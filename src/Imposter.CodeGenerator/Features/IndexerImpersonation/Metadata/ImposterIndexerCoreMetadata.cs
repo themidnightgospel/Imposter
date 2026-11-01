@@ -60,8 +60,10 @@ internal readonly ref struct ImposterIndexerCoreMetadata
     // value passed through too.
     internal readonly bool HasDefaultBehaviour;
 
-    // Func<T>, Action and the getter's outcome types can't take a ref struct value or key, so with either the indexer
-    // generates delegates of its own (see IndexerDelegateMetadata).
+    // When the value or a key is passed through, the indexer generates delegates in place of Func<T>, Action,
+    // Func<Arguments, T> and Func<Arguments, Func<T>?, T>: ref structs can't be their type arguments or be captured.
+    // The generated delegates take passed-through keys explicitly, and the base setter also takes the value.
+    // They are internal because the getter's outcome delegates take the internal arguments class.
     internal readonly bool HasGeneratedValueDelegates;
 
     // Func<T>, or the generated base getter delegate.

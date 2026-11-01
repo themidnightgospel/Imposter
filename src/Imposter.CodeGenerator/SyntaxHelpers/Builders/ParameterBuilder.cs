@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -23,8 +22,7 @@ internal sealed class ParameterBuilder(TypeSyntax type, string name)
     {
         if (defaultValue is not null)
         {
-            // Roslyn factory requires the EqualsToken to be part of the EqualsValueClauseSyntax
-            _defaultValueClause = EqualsValueClause(Token(SyntaxKind.EqualsToken), defaultValue);
+            _defaultValueClause = EqualsValueClause(defaultValue);
         }
 
         return this;

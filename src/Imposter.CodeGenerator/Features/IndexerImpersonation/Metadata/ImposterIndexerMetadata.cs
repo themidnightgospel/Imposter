@@ -42,7 +42,7 @@ internal readonly ref struct ImposterIndexerMetadata
 
     internal readonly bool RequiresExplicitInterfaceImplementation;
 
-    // An indexer without keys to match, or whose keys to match another indexer's, can't have a this[...] of its own
+    // An indexer without keys to match, or whose keys match another indexer's, can't have a this[...] of its own
     // on the imposter or its interface's setup view, so it's set up by a method named after its unique name.
     internal readonly bool HasSetupMethod;
 
