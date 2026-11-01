@@ -48,10 +48,10 @@ internal sealed record ParameterModel(
     ) => parameters.Where(parameter => !parameter.IsPassedThrough).ToEquatableArray();
 
     internal static bool PassesThrough(IParameterSymbol parameter) =>
-        IsCustomRefStruct(parameter) || parameter.Type.IsMethodTypeParameterAllowingRefStructs();
+        IsOtherRefStruct(parameter) || parameter.Type.IsMethodTypeParameterAllowingRefStructs();
 
-    internal static bool IsCustomRefStruct(IParameterSymbol parameter) =>
-        parameter.Type.IsRefLikeType && SpanModel.From(parameter) is null;
+    internal static bool IsOtherRefStruct(IParameterSymbol parameter) =>
+        SpanModel.IsOtherRefStruct(parameter.Type);
 
     // Setups take the same matchers for parameters of the same types, whatever their ref kinds, except out, which gets
     // OutArg<T>. A method's own type parameters compare by position (see TypeSymbolExtensions.ToSignatureKey).
