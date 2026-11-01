@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
 using Imposter.CodeGenerator.CodeGenerator.Logging;
 using Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
 using Imposter.CodeGenerator.Features.EventImpersonation.Builders;
@@ -24,7 +23,6 @@ using Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.PropertyImp
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.PropertyImposter.Getter;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.PropertyImposter.Setter;
 using Imposter.CodeGenerator.SyntaxHelpers;
-using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -39,14 +37,14 @@ namespace Imposter.CodeGenerator.CodeGenerator;
 [Generator]
 public sealed class ImposterGenerator : IIncrementalGenerator
 {
-    public void Initialize(IncrementalGeneratorInitializationContext context) =>
-        InitializeCore(in context);
-
-    private static void InitializeCore(in IncrementalGeneratorInitializationContext context)
+    public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var optionsProvider = context.GetGeneratorOptions();
 
-        context.ReportDiagnostics(optionsProvider.GetLanguageVersionDiagnostics());
+        context.RegisterSourceOutput(
+            optionsProvider.GetLanguageVersionDiagnostics(),
+            static (sourceContext, diagnostic) => sourceContext.ReportDiagnostic(diagnostic)
+        );
 
         context.RegisterSourceOutput(
             optionsProvider,
@@ -220,41 +218,29 @@ public sealed class ImposterGenerator : IIncrementalGenerator
         BuildIndexerImposter(imposterBuilder, imposterGenerationContext, cancellationToken);
         imposterBuilder.AddInterfaceSetupViews(imposterGenerationContext);
 
-        Action<MemberDeclarationSyntax> AddMember;
-        Func<MemberDeclarationSyntax[]> GetTopLevelMembers;
-
-        if (imposterGenerationContext.ImposterNamespaceName is null)
-        {
-            var globalMembers = new List<MemberDeclarationSyntax>();
-
-            AddMember = globalMembers.Add;
-            GetTopLevelMembers = globalMembers.ToArray;
-        }
-        else
-        {
-            var imposterNamespaceBuilder = new NamespaceDeclarationSyntaxBuilder(
-                imposterGenerationContext.ImposterNamespaceName
-            );
-
-            AddMember = syntax => imposterNamespaceBuilder.AddMember(syntax);
-            GetTopLevelMembers = () => [imposterNamespaceBuilder.Build()];
-        }
-
         var imposter = imposterBuilder.Build();
         clashingUniqueNames = imposterBuilder.UniqueNamesOfClashingTypes(imposter);
-        AddMember(imposter);
+        List<MemberDeclarationSyntax> members = [imposter];
 
 #if ROSLYN4_14_OR_GREATER
         if (imposterGenerationContext.SupportedCSharpFeatures.SupportsTypeExtensions)
         {
-            AddMember(
-                ImposterExtensionsBuilder.Build(
-                    imposterGenerationContext,
-                    imposterGenerationContext.ImposterNamespaceName
-                )
-            );
+            members.Add(ImposterExtensionsBuilder.Build(imposterGenerationContext));
         }
 #endif
+
+        MemberDeclarationSyntax[] topLevelMembers = imposterGenerationContext.ImposterNamespaceName
+            is { } namespaceName
+            ?
+            [
+                NamespaceDeclaration(
+                    IdentifierName(namespaceName),
+                    externs: List<ExternAliasDirectiveSyntax>(),
+                    usings: List<UsingDirectiveSyntax>(),
+                    members: List(members)
+                ),
+            ]
+            : [.. members];
 
         var compilationUnit = CompilationUnit(
             externs: List<ExternAliasDirectiveSyntax>(),
@@ -262,7 +248,7 @@ public sealed class ImposterGenerator : IIncrementalGenerator
                 UsingStatements.Build(imposterGenerationContext.Target.ContainingNamespace)
             ),
             attributeLists: List<AttributeListSyntax>(),
-            members: List<MemberDeclarationSyntax>(GetTopLevelMembers())
+            members: List(topLevelMembers)
         );
 
         return compilationUnit
