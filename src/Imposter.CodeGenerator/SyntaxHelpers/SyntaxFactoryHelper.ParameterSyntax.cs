@@ -13,27 +13,16 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static partial class SyntaxFactoryHelper
 {
-    internal static ArgumentListSyntax ArgumentListSyntax(
-        IEnumerable<ParameterModel> parameters,
-        bool includeRefKind = true
-    ) =>
-        ArgumentListSyntax(
-            SeparatedList(parameters.Select(it => ArgumentSyntax(it, includeRefKind)))
-        );
+    internal static ArgumentListSyntax ArgumentListSyntax(IEnumerable<ParameterModel> parameters) =>
+        ArgumentListSyntax(parameters.Select(ArgumentSyntax));
 
-    internal static ArgumentSyntax ArgumentSyntax(
-        ParameterModel parameter,
-        bool includeRefKind = true
-    )
+    internal static ArgumentSyntax ArgumentSyntax(ParameterModel parameter)
     {
-        var refKindKeyword = includeRefKind
-            ? ForwardingKeyword(parameter.RefKind)
-            : SyntaxKind.None;
         var name = IdentifierName(EscapeKeyword(parameter.Name));
 
-        return PassesAsObject(parameter, includeRefKind)
+        return PassesAsObject(parameter)
             ? Argument(AsObject(name, parameter.Type))
-            : Argument(null, Token(refKindKeyword), name);
+            : Argument(null, Token(ForwardingKeyword(parameter.RefKind)), name);
     }
 
     // Preserves the parameter's ref kind when forwarding a variable. Explicit `in` keeps an `in` overload selected
@@ -82,7 +71,12 @@ internal static partial class SyntaxFactoryHelper
     ) => parameters.Select(ParameterSyntax);
 
     internal static ParameterSyntax ParameterSyntax(ParameterModel parameter) =>
-        ParameterSyntax(parameter, includeRefKind: true);
+        ParameterSyntaxInternal(
+            parameter,
+            includeRefKind: true,
+            includeNullableReferenceAnnotations: false,
+            includeDefaultValue: true
+        );
 
     internal static ParameterSyntax ParameterSyntaxIncludingNullable(
         ParameterModel parameter,
@@ -102,17 +96,6 @@ internal static partial class SyntaxFactoryHelper
         new ParameterBuilder(parameterMetadata.Type, parameterMetadata.Name)
             .WithDefaultValue(parameterMetadata.DefaultValue)
             .Build();
-
-    internal static ParameterSyntax ParameterSyntax(
-        ParameterModel parameter,
-        bool includeRefKind
-    ) =>
-        ParameterSyntaxInternal(
-            parameter,
-            includeRefKind,
-            includeNullableReferenceAnnotations: false,
-            includeDefaultValue: true
-        );
 
     private static ParameterSyntax ParameterSyntaxInternal(
         ParameterModel parameter,

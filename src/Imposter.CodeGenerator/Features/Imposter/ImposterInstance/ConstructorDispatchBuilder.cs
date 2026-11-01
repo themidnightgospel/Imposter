@@ -37,7 +37,7 @@ internal static class ConstructorDispatchBuilder
             var name = method.WithGenericArguments(method.Model.Name);
             var call = BaseExpression()
                 .Dot(name)
-                .Call(ArgumentListSyntax(method.Parameters.AllParameters, includeRefKind: true));
+                .Call(ArgumentListSyntax(method.Parameters.AllParameters));
             return method.HasReturnValue
                 ? Block(ReturnStatement(call))
                 : Block(call.ToStatementSyntax(), ReturnVoid);

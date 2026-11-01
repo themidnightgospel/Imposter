@@ -16,7 +16,7 @@ public class PropertyGetter<T>
     private readonly string _displayName;
     private bool _hasConfiguredReturn;
 
-    /// <summary>Initializes a generated getter.</summary>
+    /// <summary>Constructor</summary>
     /// <param name="defaultValue">The value shared with the setter.</param>
     /// <param name="mode">Whether an explicit outcome is required.</param>
     /// <param name="displayName">The property name used in diagnostics.</param>
@@ -25,13 +25,6 @@ public class PropertyGetter<T>
         _defaultValue = defaultValue;
         _mode = mode;
         _displayName = displayName;
-    }
-
-    private void AddReturnValue(Func<Func<T>?, T> valueGenerator)
-    {
-        _defaultValue.TurnOff();
-        LazyInitializer.EnsureInitialized(ref _returnValues)!.Add(valueGenerator);
-        _hasConfiguredReturn = true;
     }
 
     /// <summary>Appends a constant outcome.</summary>
@@ -68,10 +61,15 @@ public class PropertyGetter<T>
     /// <summary>Appends an outcome that calls the base getter.</summary>
     public void EnableBaseImplementation() =>
         AddReturnValue(baseImplementation =>
-            baseImplementation is not null
-                ? baseImplementation()
-                : throw new MissingImposterException(_displayName + " (getter)")
+            baseImplementation is not null ? baseImplementation() : throw MissingImposter()
         );
+
+    private void AddReturnValue(Func<Func<T>?, T> valueGenerator)
+    {
+        _defaultValue.TurnOff();
+        LazyInitializer.EnsureInitialized(ref _returnValues)!.Add(valueGenerator);
+        _hasConfiguredReturn = true;
+    }
 
     /// <summary>Records a read, invokes callbacks, and returns the current outcome.</summary>
     /// <param name="baseImplementation">The base getter, when available.</param>
@@ -79,7 +77,7 @@ public class PropertyGetter<T>
     public T Get(Func<T>? baseImplementation = null)
     {
         if (_mode == ImposterMode.Explicit && !_hasConfiguredReturn)
-            throw new MissingImposterException(_displayName + " (getter)");
+            throw MissingImposter();
         Interlocked.Increment(ref _invocationCount);
         if (_callbacks is not null)
             foreach (var callback in _callbacks)
@@ -91,4 +89,6 @@ public class PropertyGetter<T>
         var outcome = Volatile.Read(ref _returnValues)?.Next(null);
         return outcome is not null ? outcome(baseImplementation) : default!;
     }
+
+    private MissingImposterException MissingImposter() => new(_displayName + " (getter)");
 }
