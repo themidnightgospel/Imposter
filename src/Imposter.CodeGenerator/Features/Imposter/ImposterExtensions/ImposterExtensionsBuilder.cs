@@ -16,15 +16,14 @@ internal static class ImposterExtensionsBuilder
     private const string MethodName = "Imposter";
 
     internal static ClassDeclarationSyntax Build(
-        in ImposterGenerationContext imposterGenerationContext,
-        string? imposterNamespaceName
+        in ImposterGenerationContext imposterGenerationContext
     )
     {
         var extensionClassName = imposterGenerationContext.ExtensionClassName;
         var targetType = imposterGenerationContext.Imposter.TargetTypeSyntax;
 
         var imposterType = SyntaxFactoryHelper.GlobalQualifiedName(
-            imposterNamespaceName,
+            imposterGenerationContext.ImposterNamespaceName,
             imposterGenerationContext.Imposter.ImposterTypeSyntax.ToString()
         );
         var accessibilityModifiers = GetAccessibilityModifiers(
