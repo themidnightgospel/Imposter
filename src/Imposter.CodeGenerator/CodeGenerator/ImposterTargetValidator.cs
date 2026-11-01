@@ -15,32 +15,36 @@ internal static class ImposterTargetValidator
     // (IMP007) are found once all targets are known. The generated target is what's validated, with its members.
     internal static (EquatableArray<DiagnosticModel> Diagnostics, bool CanGenerate) Validate(
         INamedTypeSymbol registeredTarget,
+        INamedTypeSymbol generatedTarget,
         TargetMembers generatedTargetMembers,
         MemberAccess memberAccess
     )
     {
-        var generatedTarget = GeneratedTarget(registeredTarget);
-        var (diagnostics, canGenerate) = ValidateTarget(
-            generatedTarget,
-            generatedTargetMembers,
-            memberAccess
-        );
+        if (
+            FindBlockingDiagnostic(generatedTarget, generatedTargetMembers, memberAccess) is
+            { } blocking
+        )
+        {
+            return (new([blocking]), false);
+        }
 
-        return
-            canGenerate && !SymbolEqualityComparer.Default.Equals(registeredTarget, generatedTarget)
-            ? (
-                Single(
-                    DiagnosticDescriptors.ClosedGenericImposterTarget,
-                    LocationModel.From(registeredTarget),
-                    registeredTarget.ToDisplayString(),
-                    registeredTarget.ConstructUnboundGenericType().ToDisplayString()
-                ),
+        return SymbolEqualityComparer.Default.Equals(registeredTarget, generatedTarget)
+            ? (default, true)
+            : (
+                new([
+                    DiagnosticModel.Create(
+                        DiagnosticDescriptors.ClosedGenericImposterTarget,
+                        LocationModel.From(registeredTarget),
+                        registeredTarget.ToDisplayString(),
+                        registeredTarget.ConstructUnboundGenericType().ToDisplayString()
+                    ),
+                ]),
                 true
-            )
-            : (diagnostics, canGenerate);
+            );
     }
 
-    private static (EquatableArray<DiagnosticModel> Diagnostics, bool CanGenerate) ValidateTarget(
+    // Only the first failing check is reported, so their order decides what a target with several problems gets.
+    private static DiagnosticModel? FindBlockingDiagnostic(
         INamedTypeSymbol target,
         TargetMembers members,
         MemberAccess memberAccess
@@ -51,51 +55,29 @@ internal static class ImposterTargetValidator
 
         if (!IsInterfaceOrNonSealedClass(target))
         {
-            return (
-                Single(
-                    DiagnosticDescriptors.InvalidImposterTarget,
-                    location,
-                    targetDisplayName,
-                    target.TypeKind.ToString()
-                ),
-                false
+            return Blocking(
+                DiagnosticDescriptors.InvalidImposterTarget,
+                target.TypeKind.ToString()
             );
         }
 
         if (FindUnimplementedStaticAbstractMember(target) is { } staticAbstractMember)
         {
-            return (
-                Single(
-                    DiagnosticDescriptors.ImposterTargetHasStaticAbstractMember,
-                    location,
-                    targetDisplayName,
-                    staticAbstractMember.ToDisplayString()
-                ),
-                false
+            return Blocking(
+                DiagnosticDescriptors.ImposterTargetHasStaticAbstractMember,
+                staticAbstractMember.ToDisplayString()
             );
         }
 
         if (target.TypeKind == TypeKind.Class && !HasAccessibleConstructor(target, memberAccess))
         {
-            return (
-                Single(
-                    DiagnosticDescriptors.ImposterTargetMustHaveAccessibleConstructor,
-                    location,
-                    targetDisplayName
-                ),
-                false
-            );
+            return Blocking(DiagnosticDescriptors.ImposterTargetMustHaveAccessibleConstructor);
         }
 
         if (target.HasRequiredMembers() && memberAccess.LacksSetsRequiredMembersAttribute())
         {
-            return (
-                Single(
-                    DiagnosticDescriptors.ImposterTargetRequiredMembersNeedSetsRequiredMembers,
-                    location,
-                    targetDisplayName
-                ),
-                false
+            return Blocking(
+                DiagnosticDescriptors.ImposterTargetRequiredMembersNeedSetsRequiredMembers
             );
         }
 
@@ -104,70 +86,47 @@ internal static class ImposterTargetValidator
             && FindUnoverridableAbstractMember(target, memberAccess) is { } abstractMember
         )
         {
-            return (
-                Single(
-                    DiagnosticDescriptors.ImposterTargetHasUnoverridableAbstractMember,
-                    location,
-                    targetDisplayName,
-                    abstractMember.ToDisplayString()
-                ),
-                false
+            return Blocking(
+                DiagnosticDescriptors.ImposterTargetHasUnoverridableAbstractMember,
+                abstractMember.ToDisplayString()
             );
         }
 
         if (FindRefLikeMember(members) is { } refLikeMember)
         {
-            return (
-                Single(
-                    DiagnosticDescriptors.ImposterTargetHasRefLikeMember,
-                    location,
-                    targetDisplayName,
-                    refLikeMember.Member.ToDisplayString(),
-                    refLikeMember.Type.ToDisplayString()
-                ),
-                false
+            return Blocking(
+                DiagnosticDescriptors.ImposterTargetHasRefLikeMember,
+                refLikeMember.Member.ToDisplayString(),
+                refLikeMember.Type.ToDisplayString()
             );
         }
 
         if (FindRefReturningMember(members) is { } refReturningMember)
         {
-            return (
-                Single(
-                    DiagnosticDescriptors.ImposterTargetHasRefReturningMember,
-                    location,
-                    targetDisplayName,
-                    refReturningMember.ToDisplayString()
-                ),
-                false
+            return Blocking(
+                DiagnosticDescriptors.ImposterTargetHasRefReturningMember,
+                refReturningMember.ToDisplayString()
             );
         }
 
         if (FindPointerMember(target, members, memberAccess) is { } pointerMember)
         {
-            return (
-                Single(
-                    DiagnosticDescriptors.ImposterTargetHasPointerMember,
-                    location,
-                    targetDisplayName,
-                    pointerMember.Member.ToDisplayString(),
-                    pointerMember.Type.ToDisplayString()
-                ),
-                false
+            return Blocking(
+                DiagnosticDescriptors.ImposterTargetHasPointerMember,
+                pointerMember.Member.ToDisplayString(),
+                pointerMember.Type.ToDisplayString()
             );
         }
 
-        return (default, true);
+        return null;
+
+        DiagnosticModel Blocking(DiagnosticDescriptor descriptor, params string[] details) =>
+            DiagnosticModel.Create(descriptor, location, [targetDisplayName, .. details]);
     }
 
     internal static bool IsInterfaceOrNonSealedClass(INamedTypeSymbol typeSymbol) =>
         typeSymbol.TypeKind == TypeKind.Interface
         || typeSymbol is { TypeKind: TypeKind.Class, IsSealed: false };
-
-    private static EquatableArray<DiagnosticModel> Single(
-        DiagnosticDescriptor descriptor,
-        LocationModel? location,
-        params string[] arguments
-    ) => new[] { DiagnosticModel.Create(descriptor, location, arguments) }.ToEquatableArray();
 
     // The type a registration generates the imposter of: the registered type with its own type parameters open, so a
     // closed generic registration (IMP006) generates its open type's imposter. A containing type's type arguments stay

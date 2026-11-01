@@ -50,6 +50,7 @@ internal sealed record GenerateImposterDeclaration(
         var members = TargetMembers.Of(target, memberAccess);
         var (diagnostics, canGenerate) = ImposterTargetValidator.Validate(
             registeredTarget,
+            target,
             members,
             memberAccess
         );
