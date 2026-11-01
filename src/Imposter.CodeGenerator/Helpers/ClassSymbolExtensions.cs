@@ -73,12 +73,7 @@ internal static class ClassSymbolExtensions
             return false;
         }
 
-        if (method.IsStatic)
-        {
-            return false;
-        }
-
-        if (method.IsSealed || method.DeclaredAccessibility == Accessibility.Private)
+        if (IsExcluded(method))
         {
             return false;
         }
@@ -101,62 +96,28 @@ internal static class ClassSymbolExtensions
         return root.ContainingType.SpecialType == SpecialType.System_Object;
     }
 
-    private static bool IsOverridableProperty(IPropertySymbol property)
-    {
-        if (
-            property.IsStatic
-            || property.DeclaredAccessibility == Accessibility.Private
-            || property.IsSealed
-        )
-        {
-            return false;
-        }
+    private static bool IsOverridableProperty(IPropertySymbol property) =>
+        !IsExcluded(property)
+        && (
+            CanBeOverridden(property)
+            || IsOverridableAccessor(property.GetMethod)
+            || IsOverridableAccessor(property.SetMethod)
+        );
 
-        if (property.IsAbstract || property.IsVirtual || property.IsOverride)
-        {
-            return true;
-        }
+    private static bool IsOverridableAccessor(IMethodSymbol? accessor) =>
+        accessor is not null && !IsExcluded(accessor) && CanBeOverridden(accessor);
 
-        return IsOverridableAccessor(property.GetMethod)
-            || IsOverridableAccessor(property.SetMethod);
-    }
+    private static bool IsOverridableEvent(IEventSymbol @event) =>
+        !IsExcluded(@event)
+        && (
+            CanBeOverridden(@event)
+            || IsOverridableAccessor(@event.AddMethod)
+            || IsOverridableAccessor(@event.RemoveMethod)
+        );
 
-    private static bool IsOverridableAccessor(IMethodSymbol? accessor)
-    {
-        if (accessor is null)
-        {
-            return false;
-        }
+    private static bool IsExcluded(ISymbol symbol) =>
+        symbol.IsStatic || symbol.DeclaredAccessibility == Accessibility.Private || symbol.IsSealed;
 
-        if (
-            accessor.IsStatic
-            || accessor.DeclaredAccessibility == Accessibility.Private
-            || accessor.IsSealed
-        )
-        {
-            return false;
-        }
-
-        return accessor.IsAbstract || accessor.IsVirtual || accessor.IsOverride;
-    }
-
-    private static bool IsOverridableEvent(IEventSymbol @event)
-    {
-        if (
-            @event.IsStatic
-            || @event.DeclaredAccessibility == Accessibility.Private
-            || @event.IsSealed
-        )
-        {
-            return false;
-        }
-
-        if (@event.IsAbstract || @event.IsVirtual || @event.IsOverride)
-        {
-            return true;
-        }
-
-        return IsOverridableAccessor(@event.AddMethod)
-            || IsOverridableAccessor(@event.RemoveMethod);
-    }
+    private static bool CanBeOverridden(ISymbol symbol) =>
+        symbol.IsAbstract || symbol.IsVirtual || symbol.IsOverride;
 }

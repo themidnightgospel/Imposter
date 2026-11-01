@@ -17,11 +17,16 @@ internal sealed record SpanModel(TypeModel ElementType, bool IsReadOnly)
     internal static SpanModel? FromProperty(IPropertySymbol property) =>
         property.RefKind == RefKind.None ? From(property.Type) : null;
 
-    private static SpanModel? From(ITypeSymbol type) =>
+    internal static bool IsOtherRefStruct(ITypeSymbol type) => type.IsRefLikeType && !IsSpan(type);
+
+    internal static bool IsSpan(ITypeSymbol type) =>
         type is INamedTypeSymbol { IsRefLikeType: true, TypeArguments.Length: 1 } span
         && span.ContainingNamespace
             is { Name: "System", ContainingNamespace.IsGlobalNamespace: true }
-        && span.Name is "Span" or "ReadOnlySpan"
+        && span.Name is "Span" or "ReadOnlySpan";
+
+    private static SpanModel? From(ITypeSymbol type) =>
+        IsSpan(type) && type is INamedTypeSymbol span
             ? new SpanModel(TypeModel.From(span.TypeArguments[0]), span.Name == "ReadOnlySpan")
             : null;
 }
