@@ -40,24 +40,8 @@ internal static class SetterImposterBuilder
                 )
             )
             .AddMember(BuildInvocationsField(property.SetterImposter))
-            .AddMember(
-                property.Core.KeepsValue
-                    ? SinglePrivateReadonlyVariableField(
-                        property.SetterImposter.DefaultPropertyBehaviourField
-                    )
-                    : null
-            )
-            .AddMember(
-                SinglePrivateReadonlyVariableField(property.SetterImposter.InvocationBehaviorField)
-            )
-            .AddMember(
-                SinglePrivateReadonlyVariableField(property.SetterImposter.PropertyDisplayNameField)
-            )
-            .AddMember(
-                SingleVariableField(
-                    property.SetterImposter.HasConfiguredSetterField,
-                    SyntaxKind.PrivateKeyword
-                )
+            .AddMembers(
+                PropertyAccessorStateBuilder.Fields(property, property.SetterImposter.State)
             )
             .AddMember(
                 property.Core.SetterSupportsBaseImplementation
@@ -67,7 +51,13 @@ internal static class SetterImposterBuilder
                     )
                     : null
             )
-            .AddMember(BuildConstructor(property))
+            .AddMember(
+                PropertyAccessorStateBuilder.Constructor(
+                    property.SetterImposter.Name,
+                    property,
+                    property.SetterImposter.State
+                )
+            )
             .AddMember(BuildSetterCallbackMethod(property.SetterImposter))
             .AddMember(BuildSetterCalledMethod(property.SetterImposter))
             .AddMember(
@@ -76,39 +66,15 @@ internal static class SetterImposterBuilder
                     : null
             )
             .AddMember(BuildSetMethod(property))
-            .AddMember(BuildEnsureSetterConfiguredMethod(property.SetterImposter))
+            .AddMember(
+                PropertyAccessorStateBuilder.EnsureConfiguredMethod(property.SetterImposter.State)
+            )
             .AddMember(
                 property.SetterImposter.InvocationHistoryField is null
                     ? null
                     : FormatValueMethodBuilder.Build()
             )
             .AddMember(SetterImposterBuilderBuilder.Build(property))
-            .Build();
-    }
-
-    private static ConstructorDeclarationSyntax BuildConstructor(
-        in ImposterPropertyMetadata property
-    )
-    {
-        var setterImposter = property.SetterImposter;
-        var constructor = new ConstructorWithFieldInitializationBuilder(
-            setterImposter.Name
-        ).WithModifiers(Token(SyntaxKind.InternalKeyword));
-
-        if (property.Core.KeepsValue)
-        {
-            constructor.AddParameter(setterImposter.DefaultPropertyBehaviourField);
-        }
-
-        return constructor
-            .AddParameter(
-                setterImposter.InvocationBehaviorParameter,
-                setterImposter.InvocationBehaviorField.Name
-            )
-            .AddParameter(
-                setterImposter.PropertyDisplayNameParameter,
-                setterImposter.PropertyDisplayNameField.Name
-            )
             .Build();
     }
 
@@ -129,7 +95,7 @@ internal static class SetterImposterBuilder
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(
                 Block(
-                    IdentifierName(setterImposter.HasConfiguredSetterField.Name)
+                    IdentifierName(setterImposter.State.HasConfiguredField.Name)
                         .Assign(True)
                         .ToStatementSyntax(),
                     IdentifierName(setterImposter.UseBaseImplementationField.Name)
@@ -147,7 +113,9 @@ internal static class SetterImposterBuilder
         );
         var bodyStatements = new List<StatementSyntax>
         {
-            IdentifierName(setterImposter.EnsureConfiguredMethodName).Call().ToStatementSyntax(),
+            IdentifierName(setterImposter.State.EnsureConfiguredMethodName)
+                .Call()
+                .ToStatementSyntax(),
             TrackSetterInvocation(setterImposter),
             InvokeCallbacks(setterImposter),
         };
@@ -189,7 +157,7 @@ internal static class SetterImposterBuilder
         )
         {
             var defaultPropertyBehaviour = IdentifierName(
-                setterImposter.DefaultPropertyBehaviourField.Name
+                setterImposter.State.DefaultPropertyBehaviourField.Name
             );
 
             var defaultBehaviourPath = IfStatement(
@@ -228,7 +196,7 @@ internal static class SetterImposterBuilder
                     IdentifierName(setterImposter.UseBaseImplementationField.Name),
                     baseImplementationIdentifier,
                     Block(baseImplementationCall.ToStatementSyntax(), ReturnStatement()),
-                    ThrowMissingImposter(setterImposter.PropertyDisplayNameField.Name, " (setter)")
+                    PropertyAccessorStateBuilder.ThrowMissingImposter(setterImposter.State)
                 );
 
                 statements.Add(baseImplementationPath);
@@ -343,7 +311,7 @@ internal static class SetterImposterBuilder
         var value = IdentifierName("value");
         var valueDescription = "set "
             .StringLiteral()
-            .Add(IdentifierName(setterImposter.PropertyDisplayNameField.Name))
+            .Add(IdentifierName(PropertyAccessorStateMetadata.PropertyDisplayNameField.Name))
             .Add(" = ".StringLiteral())
             .Add(Invocation(value));
 
@@ -414,21 +382,11 @@ internal static class SetterImposterBuilder
                         .Dot(IdentifierName("Add"))
                         .Call(Argument(queuedCallback))
                         .ToStatementSyntax(),
-                    IdentifierName(setterImposter.HasConfiguredSetterField.Name)
+                    IdentifierName(setterImposter.State.HasConfiguredField.Name)
                         .Assign(True)
                         .ToStatementSyntax()
                 )
             )
             .Build();
     }
-
-    private static MethodDeclarationSyntax BuildEnsureSetterConfiguredMethod(
-        in PropertySetterImposterMetadata setterImposter
-    ) =>
-        EnsureConfiguredMethod(
-            setterImposter.EnsureConfiguredMethodName,
-            setterImposter.InvocationBehaviorField.Name,
-            IdentifierName(setterImposter.HasConfiguredSetterField.Name),
-            ThrowMissingImposter(setterImposter.PropertyDisplayNameField.Name, " (setter)")
-        );
 }

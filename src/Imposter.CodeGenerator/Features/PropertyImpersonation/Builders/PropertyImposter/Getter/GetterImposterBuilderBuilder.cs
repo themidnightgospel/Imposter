@@ -6,7 +6,6 @@ using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Imposter.CodeGenerator.Features.Shared.Builders.MissingImposterBuilder;
 using static Imposter.CodeGenerator.Features.Shared.Builders.VerificationFailedBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.InterlockedSyntaxHelper;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
@@ -48,30 +47,16 @@ internal static partial class GetterImposterBuilderBuilder
             .AddMember(BuildGetterCallbacksField(property.GetterImposterBuilder))
             .AddMember(BuildLastGetterReturnValueField(property))
             .AddMember(BuildGetterInvocationCountField(property.GetterImposterBuilder))
-            .AddMember(
-                property.Core.KeepsValue
-                    ? SinglePrivateReadonlyVariableField(
-                        property.GetterImposterBuilder.DefaultPropertyBehaviourField
-                    )
-                    : null
+            .AddMembers(
+                PropertyAccessorStateBuilder.Fields(property, property.GetterImposterBuilder.State)
             )
             .AddMember(
-                SinglePrivateReadonlyVariableField(
-                    property.GetterImposterBuilder.InvocationBehaviorField
+                PropertyAccessorStateBuilder.Constructor(
+                    property.GetterImposterBuilder.Name,
+                    property,
+                    property.GetterImposterBuilder.State
                 )
             )
-            .AddMember(
-                SinglePrivateReadonlyVariableField(
-                    property.GetterImposterBuilder.PropertyDisplayNameField
-                )
-            )
-            .AddMember(
-                SingleVariableField(
-                    property.GetterImposterBuilder.HasConfiguredReturnField,
-                    SyntaxKind.PrivateKeyword
-                )
-            )
-            .AddMember(BuildConstructor(property))
             .AddMember(BuildAddGetterReturnValueMethod(property))
             .AddMembers(BuildReturnsMethods(property))
             .AddMembers(
@@ -124,32 +109,13 @@ internal static partial class GetterImposterBuilderBuilder
             )
             .AddMember(BuildGetMethod(property))
             .AddMember(BuildNextReturnValueMethod(property.GetterImposterBuilder))
-            .AddMember(BuildEnsureGetterConfiguredMethod(property.GetterImposterBuilder));
+            .AddMember(
+                PropertyAccessorStateBuilder.EnsureConfiguredMethod(
+                    property.GetterImposterBuilder.State
+                )
+            );
 
         return builder.Build();
-    }
-
-    private static ConstructorDeclarationSyntax BuildConstructor(
-        in ImposterPropertyMetadata property
-    )
-    {
-        var builder = property.GetterImposterBuilder;
-        var constructor = new ConstructorWithFieldInitializationBuilder(builder.Name).WithModifiers(
-            Token(SyntaxKind.InternalKeyword)
-        );
-
-        if (property.Core.KeepsValue)
-        {
-            constructor.AddParameter(builder.DefaultPropertyBehaviourField);
-        }
-
-        return constructor
-            .AddParameter(builder.InvocationBehaviorParameter, builder.InvocationBehaviorField.Name)
-            .AddParameter(
-                builder.PropertyDisplayNameParameter,
-                builder.PropertyDisplayNameField.Name
-            )
-            .Build();
     }
 
     private static FieldDeclarationSyntax BuildGetterReturnValuesField(
@@ -221,7 +187,7 @@ internal static partial class GetterImposterBuilderBuilder
     {
         var getterImposterBuilder = property.GetterImposterBuilder;
         var turnDefaultBehaviourOff = property.Core.KeepsValue
-            ? IdentifierName(getterImposterBuilder.DefaultPropertyBehaviourField.Name)
+            ? IdentifierName(getterImposterBuilder.State.DefaultPropertyBehaviourField.Name)
                 .Dot(IdentifierName(DefaultPropertyBehaviourMetadata.TurnOffMethodName))
                 .Call()
             : null;
@@ -253,7 +219,7 @@ internal static partial class GetterImposterBuilderBuilder
                             )
                     )
                     .AddExpression(
-                        IdentifierName(getterImposterBuilder.HasConfiguredReturnField.Name)
+                        IdentifierName(getterImposterBuilder.State.HasConfiguredField.Name)
                             .Assign(True)
                     )
                     .Build()
@@ -500,9 +466,8 @@ internal static partial class GetterImposterBuilderBuilder
                         baseImplementationIdentifier.IsNotNull(),
                         ReturnStatement(baseImplementationIdentifier.Call()),
                         ElseClause(
-                            ThrowMissingImposter(
-                                property.GetterImposterBuilder.PropertyDisplayNameField.Name,
-                                " (getter)"
+                            PropertyAccessorStateBuilder.ThrowMissingImposter(
+                                property.GetterImposterBuilder.State
                             )
                         )
                     )
@@ -529,7 +494,7 @@ internal static partial class GetterImposterBuilderBuilder
             .AddParameter(ParameterSyntax(builder.GetMethod.BaseImplementationParameter))
             .WithBody(
                 new BlockBuilder()
-                    .AddExpression(IdentifierName(builder.EnsureConfiguredMethodName).Call())
+                    .AddExpression(IdentifierName(builder.State.EnsureConfiguredMethodName).Call())
                     .AddStatement(TrackGetterInvocation(builder))
                     .AddStatement(InvokeGetterCallbacks(builder))
                     .AddStatement(
@@ -577,7 +542,7 @@ internal static partial class GetterImposterBuilderBuilder
         )
         {
             var defaultPropertyBehaviour = IdentifierName(
-                builder.DefaultPropertyBehaviourField.Name
+                builder.State.DefaultPropertyBehaviourField.Name
             );
 
             return IfStatement(
@@ -626,14 +591,4 @@ internal static partial class GetterImposterBuilderBuilder
                 )
             )
             .Build();
-
-    private static MethodDeclarationSyntax BuildEnsureGetterConfiguredMethod(
-        in PropertyGetterImposterBuilderMetadata builder
-    ) =>
-        EnsureConfiguredMethod(
-            builder.EnsureConfiguredMethodName,
-            builder.InvocationBehaviorField.Name,
-            IdentifierName(builder.HasConfiguredReturnField.Name),
-            ThrowMissingImposter(builder.PropertyDisplayNameField.Name, " (getter)")
-        );
 }
