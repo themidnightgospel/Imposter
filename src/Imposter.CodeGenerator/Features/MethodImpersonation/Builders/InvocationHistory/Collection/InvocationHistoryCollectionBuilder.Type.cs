@@ -13,25 +13,25 @@ internal static partial class InvocationHistoryCollectionBuilder
 {
     internal static MemberDeclarationSyntax Build(in ImposterTargetMethodMetadata method)
     {
-        var historyType = method.InvocationHistory.NodeSyntax.ToNullableType();
+        var historyType = method.InvocationHistory.Collection.NodeSyntax.ToNullableType();
 
         return new ClassDeclarationBuilder(method.InvocationHistory.Collection.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddMember(
                 SingleVariableField(
                     historyType,
-                    InvocationHistoryCollectionMetadata.InvocationHistoryCollectionFieldName,
+                    InvocationHistoryCollectionMetadata.HeadFieldName,
                     TokenList(Token(SyntaxKind.PrivateKeyword))
                 )
             )
             .AddMember(
-                new ClassDeclarationBuilder(InvocationHistoryTypeMetadata.NodeTypeName)
+                new ClassDeclarationBuilder(InvocationHistoryCollectionMetadata.NodeTypeName)
                     .AddModifier(Token(SyntaxKind.InternalKeyword))
                     .AddModifier(Token(SyntaxKind.AbstractKeyword))
                     .AddMember(
                         SingleVariableField(
                             historyType,
-                            InvocationHistoryTypeMetadata.NextFieldName,
+                            InvocationHistoryCollectionMetadata.NextFieldName,
                             TokenList(Token(SyntaxKind.InternalKeyword))
                         )
                     )
@@ -49,18 +49,21 @@ internal static partial class InvocationHistoryCollectionBuilder
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddModifier(Token(SyntaxKind.OverrideKeyword))
             .WithBody(
-                Block(
-                    LocalVariableDeclarationSyntax(
-                        Var,
-                        "descriptions",
-                        WellKnownTypes
-                            .System.Collections.Generic.List(WellKnownTypes.String.ToNullableType())
-                            .New()
-                    ),
-                    LocalVariableDeclarationSyntax(Var, "invocation", ReadHead()),
-                    WhileStatement(
-                        IdentifierName("invocation").IsNotNull(),
-                        Block(
+                new BlockBuilder()
+                    .AddStatement(
+                        LocalVariableDeclarationSyntax(
+                            Var,
+                            "descriptions",
+                            WellKnownTypes
+                                .System.Collections.Generic.List(
+                                    WellKnownTypes.String.ToNullableType()
+                                )
+                                .New()
+                        )
+                    )
+                    .AddStatements(
+                        ForEachEntry(
+                            "invocation",
                             IdentifierName("descriptions")
                                 .Dot(IdentifierName("Add"))
                                 .Call(
@@ -70,33 +73,39 @@ internal static partial class InvocationHistoryCollectionBuilder
                                             .Call()
                                     )
                                 )
-                                .ToStatementSyntax(),
-                            IdentifierName("invocation")
-                                .Assign(
-                                    IdentifierName("invocation")
-                                        .Dot(
-                                            IdentifierName(
-                                                InvocationHistoryTypeMetadata.NextFieldName
-                                            )
-                                        )
-                                )
                                 .ToStatementSyntax()
                         )
-                    ),
-                    ReturnStatement(JoinWithNewLines(IdentifierName("descriptions")))
-                )
+                    )
+                    .AddStatement(ReturnStatement(JoinWithNewLines(IdentifierName("descriptions"))))
+                    .Build()
             )
             .Build();
 
-    private static InvocationExpressionSyntax ReadHead() =>
-        WellKnownTypes
-            .System.Threading.Volatile.Dot(IdentifierName("Read"))
-            .Call(
-                Argument(
-                        IdentifierName(
-                            InvocationHistoryCollectionMetadata.InvocationHistoryCollectionFieldName
+    // Declares the entry variable and runs the body for each entry, newest first.
+    private static StatementSyntax[] ForEachEntry(string entryName, StatementSyntax body)
+    {
+        var entry = IdentifierName(entryName);
+
+        return
+        [
+            LocalVariableDeclarationSyntax(
+                Var,
+                entryName,
+                VolatileSyntaxHelper.VolatileRead(InvocationHistoryCollectionMetadata.HeadFieldName)
+            ),
+            WhileStatement(
+                entry.IsNotNull(),
+                Block(
+                    body,
+                    entry
+                        .Assign(
+                            entry.Dot(
+                                IdentifierName(InvocationHistoryCollectionMetadata.NextFieldName)
+                            )
                         )
-                    )
-                    .WithRefOrOutKeyword(Token(SyntaxKind.RefKeyword))
-            );
+                        .ToStatementSyntax()
+                )
+            ),
+        ];
+    }
 }

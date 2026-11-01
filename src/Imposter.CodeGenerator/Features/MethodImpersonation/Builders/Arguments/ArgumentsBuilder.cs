@@ -46,7 +46,7 @@ internal static class ArgumentsBuilder
                     .Build()
             );
 
-        // Only the adapter converts the arguments to its type arguments.
+        // Generated code no longer converts the arguments with As. It stays so code that calls it still compiles.
         if (method.Model.HasAdapter)
         {
             argumentsClassBuilder.AddMember(BuildArgumentsAsMethod(method));
@@ -83,7 +83,8 @@ internal static class ArgumentsBuilder
             return Argument(TypeCasterSyntaxHelper.CastExpression(p.Name, sourceType, targetType));
         });
 
-        return new MethodDeclarationBuilder(returnType, method.ArgumentsAsMethodName)
+        // Like the criteria, the arguments class keeps a field per parameter, so it takes the criteria's As name.
+        return new MethodDeclarationBuilder(returnType, method.ArgumentsCriteria.AsMethod.Name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithTypeParameters(method.TargetGenericTypeParameterListSyntax)
             .AddConstraintClauses(method.TargetGenericTypeConstraintClauses)

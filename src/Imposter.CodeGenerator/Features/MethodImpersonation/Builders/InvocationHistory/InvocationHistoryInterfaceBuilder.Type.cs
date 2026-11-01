@@ -18,26 +18,23 @@ public static class InvocationHistoryInterfaceBuilder
 
     private static MethodDeclarationSyntax BuildMatchesMethod(
         in ImposterTargetMethodMetadata method
-    )
-    {
-        return new MethodDeclarationBuilder(
+    ) =>
+        new MethodDeclarationBuilder(
             WellKnownTypes.Bool,
             InvocationHistoryMatchesMethodMetadata.Name
         )
             .WithSemicolon()
             .WithTypeParameters(method.TargetGenericTypeParameterListSyntax)
             .AddConstraintClauses(method.TargetGenericTypeConstraintClauses)
-            .AddParameter(GetParameter(method))
+            .AddParameter(MatchesParameter(method))
             .Build();
 
-        static ParameterSyntax? GetParameter(in ImposterTargetMethodMetadata method)
-        {
-            return method.Parameters.HasInputParameters
-                ? SyntaxFactoryHelper.ParameterSyntax(
-                    method.ArgumentsCriteria.SyntaxWithTargetGenericTypeArguments,
-                    InvocationHistoryMatchesMethodMetadata.ArgumentsCriteriaParameterName
-                )
-                : null;
-        }
-    }
+    // A method without input parameters matches without criteria.
+    internal static ParameterSyntax? MatchesParameter(in ImposterTargetMethodMetadata method) =>
+        method.Parameters.HasInputParameters
+            ? SyntaxFactoryHelper.ParameterSyntax(
+                method.ArgumentsCriteria.SyntaxWithTargetGenericTypeArguments,
+                InvocationHistoryMatchesMethodMetadata.ArgumentsCriteriaParameterName
+            )
+            : null;
 }

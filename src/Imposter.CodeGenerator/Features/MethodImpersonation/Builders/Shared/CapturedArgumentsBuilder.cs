@@ -1,6 +1,6 @@
 using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
-using Imposter.CodeGenerator.SyntaxHelpers;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
@@ -12,17 +12,20 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Shared;
 // Readonly references avoid copying large value types for each candidate setup.
 internal static class CapturedArgumentsBuilder
 {
-    internal static ParameterListSyntax Parameters(
+    internal static ParameterListSyntax InParameters(in ImposterTargetMethodMetadata method) =>
+        Parameters(method, TokenList(Token(SyntaxKind.InKeyword)));
+
+    internal static ParameterListSyntax ValueParameters(in ImposterTargetMethodMetadata method) =>
+        Parameters(method, default);
+
+    private static ParameterListSyntax Parameters(
         in ImposterTargetMethodMetadata method,
-        bool byReference = true
+        SyntaxTokenList modifiers
     ) =>
         ParameterList(
             SeparatedList(
                 method.Parameters.InputParameterMetadata.Select(p =>
-                    ParameterSyntax(p.NullableAwareKeptTypeSyntax, p.Name)
-                        .WithModifiers(
-                            byReference ? TokenList(Token(SyntaxKind.InKeyword)) : default
-                        )
+                    ParameterSyntax(p.NullableAwareKeptTypeSyntax, p.Name).WithModifiers(modifiers)
                 )
             )
         );
@@ -36,20 +39,14 @@ internal static class CapturedArgumentsBuilder
             )
         );
 
-    internal static ArgumentListSyntax Fields(
-        in ImposterTargetMethodMetadata method,
-        ExpressionSyntax? owner = null
-    )
+    // Invoke's locals and the history entry's fields share these names.
+    internal static ArgumentListSyntax CapturedValues(in ImposterTargetMethodMetadata method)
     {
-        var fields = method.InvocationHistory.ArgumentFields;
+        var names = method.InvocationHistory.ArgumentFields;
         return ArgumentList(
             SeparatedList(
                 method.Parameters.InputParameterMetadata.Select(p =>
-                    Argument(
-                        owner is null
-                            ? IdentifierName(fields[p.Name])
-                            : owner.Dot(IdentifierName(fields[p.Name]))
-                    )
+                    Argument(IdentifierName(names[p.Name]))
                 )
             )
         );
