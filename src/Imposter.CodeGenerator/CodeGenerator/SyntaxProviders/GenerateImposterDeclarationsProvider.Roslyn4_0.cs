@@ -9,10 +9,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator.CodeGenerator.SyntaxProviders;
 
-/// <summary>
-/// Discover GenerateImposterAttribute usages and produce GenerateImposterDeclaration values for the generator pipeline.
-/// </summary>
-internal static class GenerateImposterDeclarationsProvider
+internal static partial class GenerateImposterDeclarationsProvider
 {
     internal static IncrementalValuesProvider<GenerateImposterDeclaration> GetGenerateImposterDeclarations(
         this in IncrementalGeneratorInitializationContext context
@@ -43,13 +40,10 @@ internal static class GenerateImposterDeclarationsProvider
 
             if (
                 IsGenerateImposterAttribute(attribute.AttributeClass)
-                && attribute.ConstructorArguments.Length > 0
-                && attribute.ConstructorArguments[0].Value
-                    is INamedTypeSymbol { TypeKind: not TypeKind.Error } imposterType
+                && RegisteredTarget(attribute) is { } target
             )
             {
-                var target = NormalizeImposterTarget(imposterType);
-                var putInTheSameNamespace = GetPutInTheSameNamespaceValue(attribute);
+                var putInTheSameNamespace = PutInTheSameNamespace(attribute);
 
                 if (seenRegistrations.Add((target, putInTheSameNamespace)))
                 {
@@ -79,16 +73,5 @@ internal static class GenerateImposterDeclarationsProvider
                     { Name: "Imposter", ContainingNamespace.IsGlobalNamespace: true },
                 },
             };
-
-    private static bool GetPutInTheSameNamespaceValue(AttributeData attributeData) =>
-        attributeData.ConstructorArguments.Length != 2
-        || (bool)attributeData.ConstructorArguments[1].Value!;
-
-    private static INamedTypeSymbol NormalizeImposterTarget(INamedTypeSymbol imposterType)
-    {
-        return imposterType.IsUnboundGenericType
-            ? (INamedTypeSymbol)imposterType.OriginalDefinition
-            : imposterType;
-    }
 }
 #endif
