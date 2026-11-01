@@ -48,10 +48,7 @@ internal static partial class MethodImposterBuilder
 
     private static BlockSyntax AdapterBody(in ImposterTargetMethodMetadata method)
     {
-        var conditions = TypeCompatibilityConditions(
-            method,
-            new TypeParameterRenamer(method.Model.TypeParameters, method.TargetGenericTypeArguments)
-        );
+        var conditions = TypeCompatibilityConditions(method);
 
         var returnThisWhenSameTypeArguments =
             GenericArgumentsMatcherBuilder.ReturnThisWhenSameTypeArguments(
@@ -81,8 +78,7 @@ internal static partial class MethodImposterBuilder
     // type parameter neither uses needs the same type argument. Every type parameter adds a check, so a generic method
     // always has one.
     private static List<ExpressionSyntax> TypeCompatibilityConditions(
-        in ImposterTargetMethodMetadata method,
-        TypeParameterRenamer typeParamRenamer
+        in ImposterTargetMethodMetadata method
     )
     {
         var conditions = new List<ExpressionSyntax>();
@@ -95,7 +91,7 @@ internal static partial class MethodImposterBuilder
         {
             var sourceTypeOf = RuntimeTypeOf(parameter.TypeSyntax, parameter.Model.Type);
             var targetTypeOf = RuntimeTypeOf(
-                (TypeSyntax)typeParamRenamer.Visit(parameter.TypeSyntax),
+                method.InTargetTypeArguments(parameter.TypeSyntax),
                 parameter.Model.Type
             );
 
@@ -118,7 +114,7 @@ internal static partial class MethodImposterBuilder
             var returnType = method.Model.ReturnType.Type;
             var sourceTypeOf = RuntimeTypeOf(method.ReturnTypeSyntax, returnType);
             var targetTypeOf = RuntimeTypeOf(
-                (TypeSyntax)typeParamRenamer.Visit(method.ReturnTypeSyntax),
+                method.InTargetTypeArguments(method.ReturnTypeSyntax),
                 returnType
             );
 
