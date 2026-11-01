@@ -34,7 +34,6 @@ internal static class DefaultIndexerBehaviourBuilder
             .AddMember(indexer.Core.HasGetter ? BuildGetMethod(indexer) : null)
             .AddMember(
                 indexer.DefaultIndexerBehaviour.BackingField is { } setBackingField
-                && indexer.Core.HasSetter
                     ? BuildSetMethod(indexer, setBackingField)
                     : null
             )

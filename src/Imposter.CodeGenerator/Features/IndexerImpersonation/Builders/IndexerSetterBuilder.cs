@@ -15,7 +15,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.IndexerImpersonation.Builders;
 
-internal static class IndexerSetterBuilder
+internal static partial class IndexerSetterBuilder
 {
     internal static MethodDeclarationSyntax BuildSetForwarder(in ImposterIndexerMetadata indexer)
     {
@@ -62,18 +62,33 @@ internal static class IndexerSetterBuilder
     internal static ClassDeclarationSyntax BuildSetterImposter(in ImposterIndexerMetadata indexer)
     {
         var setter = indexer.SetterImplementation;
+        FieldDeclarationSyntax? baseCriteriaField = null;
+        MethodDeclarationSyntax? useBaseImplementationMethod = null;
+        StatementSyntax? baseCriteriaLoop = null;
+        IdentifierNameSyntax? invokedBaseIdentifier = null;
+        if (setter.BaseImplementationCriteriaField is { } baseCriteria)
+        {
+            baseCriteriaField = LazyCollectionSyntaxHelper.Field(baseCriteria);
+            useBaseImplementationMethod = BuildSetterUseBaseImplementationMethod(
+                indexer,
+                baseCriteria
+            );
+            invokedBaseIdentifier = setter.DefaultBehaviourField is null
+                ? null
+                : IdentifierName(setter.InvokedBaseImplementationVariableName);
+            baseCriteriaLoop = CallMatchingBaseImplementation(
+                indexer,
+                baseCriteria,
+                invokedBaseIdentifier
+            );
+        }
 
         return new ClassDeclarationBuilder(setter.Name)
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddModifier(Token(SyntaxKind.SealedKeyword))
             .AddMember(LazyCollectionSyntaxHelper.Field(setter.CallbacksField))
             .AddMember(LazyCollectionSyntaxHelper.Field(setter.InvocationHistoryField))
-            .AddMember(
-                indexer.Core.SetterSupportsBaseImplementation
-                && setter.BaseImplementationCriteriaField.HasValue
-                    ? LazyCollectionSyntaxHelper.Field(setter.BaseImplementationCriteriaField.Value)
-                    : null
-            )
+            .AddMember(baseCriteriaField)
             .AddMember(
                 setter.DefaultBehaviourField is { } defaultBehaviourField
                     ? SinglePrivateReadonlyVariableField(defaultBehaviourField)
@@ -91,14 +106,10 @@ internal static class IndexerSetterBuilder
             .AddMember(BuildSetterConstructor(indexer))
             .AddMember(BuildSetterCallbackMethod(indexer))
             .AddMember(BuildSetterCalledMethod(indexer))
-            .AddMember(BuildSetterSetMethod(indexer))
+            .AddMember(BuildSetterSetMethod(indexer, baseCriteriaLoop, invokedBaseIdentifier))
             .AddMember(BuildEnsureSetterConfiguredMethod(indexer))
             .AddMember(BuildMarkSetterConfiguredMethod(indexer))
-            .AddMember(
-                indexer.Core.SetterSupportsBaseImplementation
-                    ? BuildSetterUseBaseImplementationMethod(indexer)
-                    : null
-            )
+            .AddMember(useBaseImplementationMethod)
             .AddMember(BuildSetterBuilder(indexer))
             .Build();
     }
@@ -235,7 +246,8 @@ internal static class IndexerSetterBuilder
     }
 
     private static MethodDeclarationSyntax BuildSetterUseBaseImplementationMethod(
-        in ImposterIndexerMetadata indexer
+        in ImposterIndexerMetadata indexer,
+        in FieldMetadata baseCriteria
     )
     {
         var setter = indexer.SetterImplementation;
@@ -248,7 +260,7 @@ internal static class IndexerSetterBuilder
             .WithBody(
                 Block(
                     LazyCollectionSyntaxHelper
-                        .EnsureInitialized(setter.BaseImplementationCriteriaField!.Value.Name)
+                        .EnsureInitialized(baseCriteria.Name)
                         .Dot(IdentifierName("Add"))
                         .Call(Argument(IdentifierName(setter.CriteriaParameterName)))
                         .ToStatementSyntax(),
@@ -258,7 +270,11 @@ internal static class IndexerSetterBuilder
             .Build();
     }
 
-    private static MethodDeclarationSyntax BuildSetterSetMethod(in ImposterIndexerMetadata indexer)
+    private static MethodDeclarationSyntax BuildSetterSetMethod(
+        in ImposterIndexerMetadata indexer,
+        StatementSyntax? baseCriteriaLoop,
+        IdentifierNameSyntax? invokedBaseIdentifier
+    )
     {
         var setter = indexer.SetterImplementation;
         var argumentsVariable = IdentifierName(setter.ArgumentsVariableName);
@@ -274,6 +290,70 @@ internal static class IndexerSetterBuilder
         var defaultBehaviourField = setter.DefaultBehaviourField;
         var callbackMatchedIdentifier = IdentifierName(setter.MatchedCallbackVariableName);
 
+        var bodyBuilder = new BlockBuilder()
+            .AddStatement(
+                IdentifierName(setter.EnsureSetterConfiguredMethodName).Call().ToStatementSyntax()
+            )
+            .AddStatement(CreateArgumentsDeclaration(indexer, setter.ArgumentsVariableName))
+            .AddStatement(
+                LazyCollectionSyntaxHelper
+                    .EnsureInitialized(setter.InvocationHistoryField.Name)
+                    .Dot(ConcurrentStackSyntaxHelper.Push)
+                    .Call(Argument(HistoryEntry(indexer, argumentsVariable, value)))
+                    .ToStatementSyntax()
+            )
+            .AddStatement(
+                defaultBehaviourField is null
+                    ? null
+                    : LocalVariableDeclarationSyntax(
+                        WellKnownTypes.Bool,
+                        callbackMatchedIdentifier.Identifier.Text,
+                        False
+                    )
+            )
+            .AddStatement(
+                RunMatchingCallbacks(indexer, argumentsVariable, value, callbackMatchedIdentifier)
+            );
+
+        if (invokedBaseIdentifier is not null)
+        {
+            bodyBuilder.AddStatement(
+                LocalVariableDeclarationSyntax(
+                    WellKnownTypes.Bool,
+                    invokedBaseIdentifier.Identifier.Text,
+                    False
+                )
+            );
+        }
+
+        bodyBuilder.AddStatement(baseCriteriaLoop);
+
+        bodyBuilder.AddStatement(
+            KeepInDefaultBehaviour(
+                indexer,
+                argumentsVariable,
+                value,
+                callbackMatchedIdentifier,
+                invokedBaseIdentifier
+            )
+        );
+
+        return new MethodDeclarationBuilder(WellKnownTypes.Void, "Set")
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddParameters(parameters.ToArray())
+            .WithBody(bodyBuilder.Build())
+            .Build();
+    }
+
+    private static StatementSyntax RunMatchingCallbacks(
+        in ImposterIndexerMetadata indexer,
+        IdentifierNameSyntax argumentsVariable,
+        IdentifierNameSyntax value,
+        IdentifierNameSyntax callbackMatchedIdentifier
+    )
+    {
+        var setter = indexer.SetterImplementation;
+        var defaultBehaviourField = setter.DefaultBehaviourField;
         var foreachStatement = ForEachStatement(
             Var,
             Identifier(setter.RegistrationVariableName),
@@ -297,12 +377,12 @@ internal static class IndexerSetterBuilder
                                     )
                                 )
                                 .Call(
-                                    BuildDelegateInvocationArgumentsWithValue(
-                                        argumentsVariable,
-                                        indexer,
-                                        indexer.Core.PassedThroughKeyNames,
-                                        value
-                                    )
+                                    BuildDelegateInvocationArguments(
+                                            argumentsVariable,
+                                            indexer,
+                                            indexer.Core.PassedThroughKeyNames
+                                        )
+                                        .AddArguments(Argument(value))
                                 )
                         )
                         .AddExpression(
@@ -315,98 +395,71 @@ internal static class IndexerSetterBuilder
             )
         );
 
-        IdentifierNameSyntax? invokedBaseIdentifier = null;
-        StatementSyntax? baseCriteriaLoop = null;
+        return LazyCollectionSyntaxHelper.UnlessNull(foreachStatement);
+    }
 
-        if (
-            indexer.Core.SetterSupportsBaseImplementation
-            && setter.BaseImplementationCriteriaField.HasValue
-        )
-        {
-            invokedBaseIdentifier = defaultBehaviourField is null
-                ? null
-                : IdentifierName(setter.InvokedBaseImplementationVariableName);
-            // A generated base setter takes the keys passed through and the value instead of capturing them.
-            var baseImplementationCall = IdentifierName(setter.BaseImplementationParameter.Name)
-                .Call(
-                    indexer.Core.HasGeneratedValueDelegates
-                        ? ArgumentListSyntax([
-                            .. PassedThroughKeyArguments(indexer.Core.PassedThroughKeyNames),
-                            Argument(value),
-                        ])
-                        : EmptyArgumentListSyntax
-                );
+    private static StatementSyntax CallMatchingBaseImplementation(
+        in ImposterIndexerMetadata indexer,
+        in FieldMetadata baseCriteria,
+        IdentifierNameSyntax? invokedBaseIdentifier
+    )
+    {
+        var setter = indexer.SetterImplementation;
+        var argumentsVariable = IdentifierName(setter.ArgumentsVariableName);
+        var value = IdentifierName(setter.ValueParameterName);
+        // A generated base setter takes the keys passed through and the value instead of capturing them.
+        var baseImplementationCall = IdentifierName(setter.BaseImplementationParameter.Name)
+            .Call(
+                indexer.Core.HasGeneratedValueDelegates
+                    ? ArgumentListSyntax([
+                        .. PassedThroughKeyArguments(indexer.Core.PassedThroughKeyNames),
+                        Argument(value),
+                    ])
+                    : EmptyArgumentListSyntax
+            );
 
-            baseCriteriaLoop = LazyCollectionSyntaxHelper.UnlessNull(
-                ForEachStatement(
-                    Var,
-                    Identifier(setter.CriteriaParameterName),
-                    IdentifierName(setter.BaseImplementationCriteriaField.Value.Name),
-                    Block(
-                        IfStatement(
-                            IdentifierName(setter.CriteriaParameterName)
-                                .Dot(IdentifierName("Matches"))
-                                .Call(Argument(argumentsVariable)),
-                            new BlockBuilder()
-                                .AddStatement(
-                                    IfStatement(
-                                        IdentifierName(setter.BaseImplementationParameter.Name)
-                                            .IsNull(),
-                                        Block(
-                                            ThrowMissingImposter(
-                                                setter.PropertyDisplayNameField.Name,
-                                                setter.SetterSuffix
-                                            )
+        return LazyCollectionSyntaxHelper.UnlessNull(
+            ForEachStatement(
+                Var,
+                Identifier(setter.CriteriaParameterName),
+                IdentifierName(baseCriteria.Name),
+                Block(
+                    IfStatement(
+                        IdentifierName(setter.CriteriaParameterName)
+                            .Dot(IdentifierName("Matches"))
+                            .Call(Argument(argumentsVariable)),
+                        new BlockBuilder()
+                            .AddStatement(
+                                IfStatement(
+                                    IdentifierName(setter.BaseImplementationParameter.Name)
+                                        .IsNull(),
+                                    Block(
+                                        ThrowMissingImposter(
+                                            setter.PropertyDisplayNameField.Name,
+                                            setter.SetterSuffix
                                         )
                                     )
                                 )
-                                .AddExpression(baseImplementationCall)
-                                .AddExpression(invokedBaseIdentifier?.Assign(True))
-                                .AddStatement(BreakStatement())
-                                .Build()
-                        )
+                            )
+                            .AddExpression(baseImplementationCall)
+                            .AddExpression(invokedBaseIdentifier?.Assign(True))
+                            .AddStatement(BreakStatement())
+                            .Build()
                     )
                 )
-            );
-        }
-
-        var bodyBuilder = new BlockBuilder()
-            .AddStatement(
-                IdentifierName(setter.EnsureSetterConfiguredMethodName).Call().ToStatementSyntax()
             )
-            .AddStatement(CreateArgumentsDeclaration(indexer, setter.ArgumentsVariableName))
-            .AddStatement(
-                LazyCollectionSyntaxHelper
-                    .EnsureInitialized(setter.InvocationHistoryField.Name)
-                    .Dot(ConcurrentStackSyntaxHelper.Push)
-                    .Call(Argument(HistoryEntry(indexer, argumentsVariable, value)))
-                    .ToStatementSyntax()
-            )
-            .AddStatement(
-                defaultBehaviourField is null
-                    ? null
-                    : LocalVariableDeclarationSyntax(
-                        WellKnownTypes.Bool,
-                        callbackMatchedIdentifier.Identifier.Text,
-                        False
-                    )
-            )
-            .AddStatement(LazyCollectionSyntaxHelper.UnlessNull(foreachStatement));
+        );
+    }
 
-        if (invokedBaseIdentifier is not null)
-        {
-            bodyBuilder.AddStatement(
-                LocalVariableDeclarationSyntax(
-                    WellKnownTypes.Bool,
-                    invokedBaseIdentifier.Identifier.Text,
-                    False
-                )
-            );
-        }
-
-        bodyBuilder.AddStatement(baseCriteriaLoop);
-
-        if (defaultBehaviourField is { } field)
+    private static IfStatementSyntax? KeepInDefaultBehaviour(
+        in ImposterIndexerMetadata indexer,
+        IdentifierNameSyntax argumentsVariable,
+        IdentifierNameSyntax value,
+        IdentifierNameSyntax callbackMatchedIdentifier,
+        IdentifierNameSyntax? invokedBaseIdentifier
+    )
+    {
+        if (indexer.SetterImplementation.DefaultBehaviourField is { } field)
         {
             ExpressionSyntax defaultBehaviourCondition = Not(callbackMatchedIdentifier)
                 .And(
@@ -419,24 +472,17 @@ internal static class IndexerSetterBuilder
                     .And(defaultBehaviourCondition);
             }
 
-            bodyBuilder.AddStatement(
-                IfStatement(
-                    defaultBehaviourCondition,
-                    Block(
-                        IdentifierName(field.Name)
-                            .Dot(IdentifierName("Set"))
-                            .Call([Argument(argumentsVariable), Argument(value)])
-                            .ToStatementSyntax()
-                    )
+            return IfStatement(
+                defaultBehaviourCondition,
+                Block(
+                    IdentifierName(field.Name)
+                        .Dot(IdentifierName("Set"))
+                        .Call([Argument(argumentsVariable), Argument(value)])
+                        .ToStatementSyntax()
                 )
             );
         }
-
-        return new MethodDeclarationBuilder(WellKnownTypes.Void, "Set")
-            .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddParameters(parameters.ToArray())
-            .WithBody(bodyBuilder.Build())
-            .Build();
+        return null;
     }
 
     // The history keeps the keys with the value, or the keys alone for a value passed through.
@@ -478,132 +524,10 @@ internal static class IndexerSetterBuilder
     {
         var setter = indexer.SetterImplementation;
 
-        return BuildMarkConfiguredMethod(
-            setter.MarkConfiguredMethod.Name,
-            setter.HasConfiguredSetterField.Name
-        );
-    }
-
-    private static ClassDeclarationSyntax BuildSetterBuilder(in ImposterIndexerMetadata indexer)
-    {
-        var builderMetadata = indexer.SetterImplementation.Builder;
-        var imposterField = new FieldMetadata(
-            builderMetadata.ImposterFieldName,
-            indexer.SetterImplementation.TypeSyntax
-        );
-        var criteriaField = new FieldMetadata(
-            builderMetadata.CriteriaFieldName,
-            indexer.ArgumentsCriteria.TypeSyntax
-        );
-
-        return new ClassDeclarationBuilder(builderMetadata.Name)
-            .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddBaseType(SimpleBaseType(indexer.SetterBuilderInterface.TypeSyntax))
-            .AddBaseType(SimpleBaseType(indexer.SetterBuilderInterface.FluentInterfaceTypeSyntax))
-            .AddMember(SinglePrivateReadonlyVariableField(imposterField))
-            .AddMember(SinglePrivateReadonlyVariableField(criteriaField))
-            .AddMember(
-                new ConstructorWithFieldInitializationBuilder(builderMetadata.Name)
-                    .WithModifiers(Token(SyntaxKind.InternalKeyword))
-                    .AddParameter(imposterField)
-                    .AddParameter(criteriaField)
-                    .Build()
-            )
-            .AddMember(BuildSetterBuilderCallbackMethod(indexer))
-            .AddMember(BuildSetterBuilderCalledMethod(indexer))
-            .AddMember(BuildSetterBuilderThenMethod(indexer))
-            .AddMember(
-                indexer.SetterBuilderInterface.UseBaseImplementationMethod is not null
-                    ? BuildSetterBuilderUseBaseImplementationMethod(indexer)
-                    : null
-            )
-            .Build();
-    }
-
-    private static MethodDeclarationSyntax BuildSetterBuilderCallbackMethod(
-        in ImposterIndexerMetadata indexer
-    )
-    {
-        var builderMetadata = indexer.SetterImplementation.Builder;
-        var callbackMetadata = indexer.SetterBuilderInterface.CallbackMethod;
-        var parameter = ParameterSyntax(callbackMetadata.CallbackParameter);
-
-        return new MethodDeclarationBuilder(callbackMetadata.ReturnType, callbackMetadata.Name)
-            .WithExplicitInterfaceSpecifier(
-                indexer.SetterBuilderInterface.CallbackMethod.InterfaceSyntax
-            )
-            .AddParameter(parameter)
+        return new MethodDeclarationBuilder(WellKnownTypes.Void, setter.MarkConfiguredMethod.Name)
+            .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .WithBody(
-                Block(
-                    IdentifierName(builderMetadata.ImposterFieldName)
-                        .Dot(IdentifierName("Callback"))
-                        .Call([
-                            Argument(IdentifierName(builderMetadata.CriteriaFieldName)),
-                            Argument(IdentifierName(parameter.Identifier)),
-                        ])
-                        .ToStatementSyntax(),
-                    ReturnThis
-                )
-            )
-            .Build();
-    }
-
-    private static MethodDeclarationSyntax BuildSetterBuilderCalledMethod(
-        in ImposterIndexerMetadata indexer
-    )
-    {
-        var builderMetadata = indexer.SetterImplementation.Builder;
-        var calledMetadata = indexer.SetterBuilderInterface.CalledMethod;
-        var parameter = ParameterSyntax(calledMetadata.CountParameter);
-
-        return new MethodDeclarationBuilder(calledMetadata.ReturnType, calledMetadata.Name)
-            .WithExplicitInterfaceSpecifier(
-                indexer.SetterBuilderInterface.VerificationInterfaceTypeSyntax
-            )
-            .AddParameter(parameter)
-            .WithBody(
-                Block(
-                    IdentifierName(builderMetadata.ImposterFieldName)
-                        .Dot(IdentifierName("Called"))
-                        .Call([
-                            Argument(IdentifierName(builderMetadata.CriteriaFieldName)),
-                            Argument(IdentifierName(parameter.Identifier)),
-                        ])
-                        .ToStatementSyntax()
-                )
-            )
-            .Build();
-    }
-
-    private static MethodDeclarationSyntax BuildSetterBuilderThenMethod(
-        in ImposterIndexerMetadata indexer
-    )
-    {
-        var thenMetadata = indexer.SetterBuilderInterface.ThenMethod;
-
-        return new MethodDeclarationBuilder(thenMetadata.ReturnType, thenMetadata.Name)
-            .WithExplicitInterfaceSpecifier(thenMetadata.InterfaceSyntax)
-            .WithBody(Block(ReturnThis))
-            .Build();
-    }
-
-    private static MethodDeclarationSyntax BuildSetterBuilderUseBaseImplementationMethod(
-        in ImposterIndexerMetadata indexer
-    )
-    {
-        var builderMetadata = indexer.SetterImplementation.Builder;
-        var metadata = indexer.SetterBuilderInterface.UseBaseImplementationMethod!.Value;
-
-        return new MethodDeclarationBuilder(metadata.ReturnType, metadata.Name)
-            .WithExplicitInterfaceSpecifier(metadata.InterfaceSyntax)
-            .WithBody(
-                Block(
-                    IdentifierName(builderMetadata.ImposterFieldName)
-                        .Dot(IdentifierName("UseBaseImplementation"))
-                        .Call(Argument(IdentifierName(builderMetadata.CriteriaFieldName)))
-                        .ToStatementSyntax(),
-                    ReturnThis
-                )
+                Block(VolatileWrite(setter.HasConfiguredSetterField.Name, True).ToStatementSyntax())
             )
             .Build();
     }
