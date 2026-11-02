@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Imposter.CodeGenerator.Features.Imposter;
 using Shouldly;
 using Xunit;

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
 using Imposter.CodeGenerator.Models;
 using Microsoft.CodeAnalysis;

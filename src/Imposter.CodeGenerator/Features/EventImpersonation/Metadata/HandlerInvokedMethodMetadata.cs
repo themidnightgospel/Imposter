@@ -1,4 +1,4 @@
-namespace Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
+﻿namespace Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 
 internal readonly struct HandlerInvokedMethodMetadata
 {

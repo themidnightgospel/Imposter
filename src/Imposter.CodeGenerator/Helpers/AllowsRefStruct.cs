@@ -1,4 +1,4 @@
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 #if !ROSLYN4_14_OR_GREATER
 using System.Reflection;
 #endif

@@ -1,4 +1,4 @@
-using Imposter.Abstractions;
+﻿using Imposter.Abstractions;
 using Sample.Services;
 
 [assembly: GenerateImposter(typeof(IPricingService))]

@@ -1,4 +1,4 @@
-namespace Imposter.Abstractions;
+﻿namespace Imposter.Abstractions;
 
 /// <summary>
 /// Specifies how an imposter should behave when a member is invoked without an explicit setup.

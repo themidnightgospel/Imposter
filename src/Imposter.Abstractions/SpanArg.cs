@@ -1,4 +1,4 @@
-namespace Imposter.Abstractions;
+﻿namespace Imposter.Abstractions;
 
 /// <summary>
 /// Matches a <c>Span&lt;T&gt;</c> parameter. An imposter keeps a copy of each span argument as an array, so the

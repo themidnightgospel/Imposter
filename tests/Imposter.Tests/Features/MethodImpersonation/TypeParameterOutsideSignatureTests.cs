@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Imposter.Abstractions;
 using Shouldly;
 using Xunit;

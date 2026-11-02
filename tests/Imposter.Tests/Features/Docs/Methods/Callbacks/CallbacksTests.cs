@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Imposter.Abstractions;
 using Imposter.Tests.Features.Docs.Methods.Callbacks;

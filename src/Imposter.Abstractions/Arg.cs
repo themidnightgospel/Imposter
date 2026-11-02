@@ -1,4 +1,4 @@
-namespace Imposter.Abstractions;
+﻿namespace Imposter.Abstractions;
 
 /// <summary>
 /// What <see cref="Arg.Any"/> returns before it converts to a matcher of the parameter's type.

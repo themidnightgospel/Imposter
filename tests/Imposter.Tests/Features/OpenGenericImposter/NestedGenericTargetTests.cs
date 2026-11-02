@@ -1,4 +1,4 @@
-using Imposter.Tests.Features.OpenGenericImposter.NestedTargets;
+﻿using Imposter.Tests.Features.OpenGenericImposter.NestedTargets;
 using Shouldly;
 using Xunit;
 

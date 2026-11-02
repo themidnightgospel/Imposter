@@ -1,4 +1,4 @@
-using Imposter.Tests.Features.EventImpersonation;
+﻿using Imposter.Tests.Features.EventImpersonation;
 using Imposter.Tests.Features.IndexerImpersonation;
 using Imposter.Tests.Features.MethodImpersonation;
 using Imposter.Tests.Features.PropertyImpersonation;

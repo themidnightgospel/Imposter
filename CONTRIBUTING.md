@@ -18,6 +18,16 @@ cd Imposter
 dotnet build Imposter.slnx
 ```
 
+### Source Encoding and Blame
+
+C# files use UTF-8 with a byte order mark (BOM), as specified in `.editorconfig`. Preserve this encoding when creating or editing C# files.
+
+To exclude the encoding-only normalization commit from local `git blame`, run this once in your clone:
+
+```bash
+git config blame.ignoreRevsFile .git-blame-ignore-revs
+```
+
 ### Run Tests
 
 Use the CI-style script for full verification:

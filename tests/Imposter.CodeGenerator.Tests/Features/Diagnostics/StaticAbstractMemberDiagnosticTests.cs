@@ -1,4 +1,4 @@
-#if ROSLYN4_4_OR_GREATER
+﻿#if ROSLYN4_4_OR_GREATER
 using System.Threading.Tasks;
 using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
 using Microsoft.CodeAnalysis;

@@ -1,4 +1,4 @@
-namespace Sample.Services;
+﻿namespace Sample.Services;
 
 public interface IPricingService
 {

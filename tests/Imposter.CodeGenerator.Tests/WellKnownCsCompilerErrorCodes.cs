@@ -1,4 +1,4 @@
-namespace Imposter.CodeGenerator.Tests;
+﻿namespace Imposter.CodeGenerator.Tests;
 
 internal static class WellKnownCsCompilerErrorCodes
 {

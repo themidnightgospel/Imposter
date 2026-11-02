@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Imposter.Abstractions;
 using Imposter.Tests.Features.PropertyImpersonation;
 

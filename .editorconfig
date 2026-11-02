@@ -149,5 +149,6 @@ resharper_web_config_type_not_resolved_highlighting = warning
 resharper_web_config_wrong_module_highlighting = warning
 
 [*.cs]
+charset = utf-8-bom
 # Unused usings warn in the build of the projects that set EnforceCodeStyleInBuild, and fail their Release build.
 dotnet_diagnostic.IDE0005.severity = warning

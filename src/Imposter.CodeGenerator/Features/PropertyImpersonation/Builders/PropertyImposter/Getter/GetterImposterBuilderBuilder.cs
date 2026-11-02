@@ -1,4 +1,4 @@
-using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
+﻿using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.GetterImposterBuilder;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.GetterImposterBuilderInterface;
 using Imposter.CodeGenerator.Features.Shared.BuilderInterface;

@@ -1,4 +1,4 @@
-using Imposter.CodeGenerator.Models;
+﻿using Imposter.CodeGenerator.Models;
 
 namespace Imposter.CodeGenerator.Features.Shared;
 

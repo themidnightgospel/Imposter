@@ -1,4 +1,4 @@
-internal static class RenameProbes
+﻿internal static class RenameProbes
 {
     internal static IEnumerable<(string Name, string Source)> All
     {

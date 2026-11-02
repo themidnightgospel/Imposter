@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using Imposter.Abstractions;
 using Shouldly;
 using Xunit;

@@ -1,4 +1,4 @@
-namespace Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
+﻿namespace Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 
 // The raise methods declare these locals next to the delegate's parameters, so the names avoid those parameters.
 internal readonly struct EventRaiseLocalNames

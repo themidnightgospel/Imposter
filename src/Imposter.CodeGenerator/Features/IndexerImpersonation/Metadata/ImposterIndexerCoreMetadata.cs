@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;

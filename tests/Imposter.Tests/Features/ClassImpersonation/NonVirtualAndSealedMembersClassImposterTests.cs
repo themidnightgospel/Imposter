@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using Imposter.Abstractions;
 using Imposter.Tests.Features.ClassImpersonation.Suts;
 using Shouldly;
