@@ -1,2 +1,4 @@
 # Normalize handwritten C# sources to UTF-8 with BOM (issue #482).
 9a09eaaf50a51309a6fe5e522be62c36e5b47b65
+# Normalize the C# sources added or changed since the first pass (issue #482).
+467af2ea10d6922518a831a863dd5a2766b3c162
