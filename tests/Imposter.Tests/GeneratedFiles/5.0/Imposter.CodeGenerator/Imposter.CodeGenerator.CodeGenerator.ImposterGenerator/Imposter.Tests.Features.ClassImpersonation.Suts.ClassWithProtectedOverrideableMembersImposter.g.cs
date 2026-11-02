@@ -3143,13 +3143,13 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 				IProtectedVirtualPropertyPropertyGetterFluentBuilder IProtectedVirtualPropertyPropertyGetterUseBaseImplementationBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 
 				IProtectedVirtualPropertyPropertyGetterFluentBuilder IProtectedVirtualPropertyPropertyGetterFluentBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 			}
@@ -3208,7 +3208,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			IProtectedVirtualPropertyPropertyBuilder IProtectedVirtualPropertyPropertyBuilder.UseBaseImplementation()
 			{
-				_getterImposterBuilder.EnableBaseImplementation();
+				_getterImposterBuilder.UseBaseImplementation();
 				_setterImposter.UseBaseImplementation();
 				return this;
 			}

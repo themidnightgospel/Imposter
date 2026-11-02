@@ -47,14 +47,12 @@ internal sealed record PropertyModel(
             PropertyAccessorModel.FromAccessible(property.SetMethod, memberAccess),
             property.Parameters.Select(ParameterModel.From).ToEquatableArray(),
             property.IsRequiredMember(),
-            PassesValueThrough(property),
+            PassesThrough(property),
             hasIndexerWithTheSameSetup
         );
 
-    internal static bool PassesValueThrough(IPropertySymbol property) =>
-        property.RefKind == RefKind.None
-        && property.Type.IsRefLikeType
-        && SpanModel.FromProperty(property) is null;
+    internal static bool PassesThrough(IPropertySymbol property) =>
+        property.RefKind == RefKind.None && SpanModel.IsOtherRefStruct(property.Type);
 
     private static string GetDisplayName(IPropertySymbol property)
     {

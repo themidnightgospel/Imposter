@@ -85,7 +85,7 @@ internal static partial class GetterImposterBuilderBuilder
             )
             .AddMember(
                 property.Core.GetterSupportsBaseImplementation
-                    ? BuildEnableBaseImplementationMethod(property)
+                    ? BuildUseBaseImplementationMethod(property)
                     : null
             )
             .AddMember(
@@ -419,7 +419,7 @@ internal static partial class GetterImposterBuilderBuilder
             .WithExplicitInterfaceSpecifier(methodMetadata.InterfaceSyntax)
             .WithBody(
                 Block(
-                    IdentifierName(builder.EnableBaseImplementationMethod.Name)
+                    IdentifierName(builder.UseBaseImplementationMethod.Name)
                         .Call()
                         .ToStatementSyntax(),
                     ReturnThis
@@ -427,12 +427,12 @@ internal static partial class GetterImposterBuilderBuilder
             )
             .Build();
 
-    private static MethodDeclarationSyntax BuildEnableBaseImplementationMethod(
+    private static MethodDeclarationSyntax BuildUseBaseImplementationMethod(
         in ImposterPropertyMetadata property
     ) =>
         new MethodDeclarationBuilder(
-            property.GetterImposterBuilder.EnableBaseImplementationMethod.ReturnType,
-            property.GetterImposterBuilder.EnableBaseImplementationMethod.Name
+            property.GetterImposterBuilder.UseBaseImplementationMethod.ReturnType,
+            property.GetterImposterBuilder.UseBaseImplementationMethod.Name
         )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(

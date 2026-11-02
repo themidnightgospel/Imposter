@@ -64,7 +64,11 @@ internal static class SharedPropertyBuilder
                         Block(
                             ReturnStatement(
                                 BaseExpression()
-                                    .Dot(IdentifierName(SharedPropertyMetadata.SetForInit))
+                                    .Dot(
+                                        IdentifierName(
+                                            SharedPropertyMetadata.RecordAndShouldCallBase
+                                        )
+                                    )
                                     .Call(
                                         Argument(
                                             IdentifierName(setter.SetMethod.ValueParameter.Name)

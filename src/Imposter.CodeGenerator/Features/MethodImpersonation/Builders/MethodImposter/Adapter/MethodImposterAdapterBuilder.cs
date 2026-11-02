@@ -290,7 +290,6 @@ internal static class MethodImposterAdapterBuilder
         in AdapterNames adapterNames
     )
     {
-        var hasMatchingMethod = method.MethodImposter.HasMatchingInvocationImposterGroupMethod;
         var parameters = method.InTargetTypeArguments(
             CapturedArgumentsBuilder.InParameters(method)
         );
@@ -318,14 +317,21 @@ internal static class MethodImposterAdapterBuilder
                 )
             );
         }
-        return new MethodDeclarationBuilder(hasMatchingMethod.ReturnType, hasMatchingMethod.Name)
+        return new MethodDeclarationBuilder(
+            HasMatchingInvocationImposterGroupMethodMetadata.ReturnType,
+            HasMatchingInvocationImposterGroupMethodMetadata.Name
+        )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithParameterList(parameters)
             .WithBody(
                 Block(
                     ReturnStatement(
                         IdentifierName(adapterNames.TargetFieldName)
-                            .Dot(IdentifierName(hasMatchingMethod.Name))
+                            .Dot(
+                                IdentifierName(
+                                    HasMatchingInvocationImposterGroupMethodMetadata.Name
+                                )
+                            )
                             .Call(ArgumentList(SeparatedList(arguments)))
                     )
                 )
