@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
@@ -71,17 +72,18 @@ internal static class ArgumentsBuilder
             method.TargetGenericTypeArguments,
             method.Arguments.Name
         );
-        var renamer = new TypeParameterRenamer(
-            method.Model.TypeParameters,
-            method.TargetGenericTypeArguments
-        );
-        var constructorArgs = method.Parameters.InputParameterMetadata.Select(p =>
+        var constructorArgs = new List<ArgumentSyntax>();
+        foreach (var parameter in method.Parameters.InputParameterMetadata)
         {
-            var sourceType = p.NullableAwareKeptTypeSyntax;
-            var targetType = (TypeSyntax)renamer.Visit(sourceType);
+            var sourceType = parameter.NullableAwareKeptTypeSyntax;
+            var targetType = method.InTargetTypeArguments(sourceType);
 
-            return Argument(TypeCasterSyntaxHelper.CastExpression(p.Name, sourceType, targetType));
-        });
+            constructorArgs.Add(
+                Argument(
+                    TypeCasterSyntaxHelper.CastExpression(parameter.Name, sourceType, targetType)
+                )
+            );
+        }
 
         // Like the criteria, the arguments class keeps a field per parameter, so it takes the criteria's As name.
         return new MethodDeclarationBuilder(returnType, method.ArgumentsCriteria.AsMethod.Name)
