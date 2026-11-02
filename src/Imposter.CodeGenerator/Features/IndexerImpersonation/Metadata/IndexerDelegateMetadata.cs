@@ -21,9 +21,7 @@ internal readonly struct IndexerDelegateMetadata
 
     internal readonly NameSyntax ExceptionDelegateType;
 
-    // An indexer of another ref struct type also gets these in place of Func<T>, Action, Func<Arguments, T> and
-    // Func<Arguments, Func<T>?, T>, whose type arguments can't be a ref struct. Its base setter takes the value, which
-    // a lambda can't capture.
+    // See ImposterIndexerCoreMetadata.HasGeneratedValueDelegates for when these delegates are generated and why.
     internal readonly string BaseGetterDelegateName;
 
     internal readonly NameSyntax BaseGetterDelegateType;
