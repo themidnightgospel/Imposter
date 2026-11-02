@@ -1,4 +1,5 @@
 ﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationSetup;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -14,7 +15,7 @@ internal static partial class InvocationImposterGroupBuilder
     ) =>
         SyntaxFactoryHelper.SingleVariableField(
             method.MethodInvocationImposterGroup.Syntax,
-            method.MethodInvocationImposterGroup.DefaultInvocationImposterGroupField.Name,
+            DefaultInvocationImposterGroupFieldMetadata.Name,
             TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.StaticKeyword)),
             method.MethodInvocationImposterGroup.Syntax.New(
                 method.Parameters.HasInputParameters

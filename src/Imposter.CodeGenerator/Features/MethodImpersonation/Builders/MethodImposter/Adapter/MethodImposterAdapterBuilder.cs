@@ -301,7 +301,6 @@ internal static class MethodImposterAdapterBuilder
             method.Model.TypeParameters,
             method.TargetGenericTypeArguments
         );
-        var hasMatchingMethod = method.MethodImposter.HasMatchingInvocationImposterGroupMethod;
         var parameters = (ParameterListSyntax)
             typeParamRenamer.Visit(CapturedArgumentsBuilder.InParameters(method));
         var arguments = method.Parameters.InputParameterMetadata.Select(p =>
@@ -325,14 +324,21 @@ internal static class MethodImposterAdapterBuilder
                     : converted
             );
         });
-        return new MethodDeclarationBuilder(hasMatchingMethod.ReturnType, hasMatchingMethod.Name)
+        return new MethodDeclarationBuilder(
+            HasMatchingInvocationImposterGroupMethodMetadata.ReturnType,
+            HasMatchingInvocationImposterGroupMethodMetadata.Name
+        )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithParameterList(parameters)
             .WithBody(
                 Block(
                     ReturnStatement(
                         IdentifierName(adapterNames.TargetFieldName)
-                            .Dot(IdentifierName(hasMatchingMethod.Name))
+                            .Dot(
+                                IdentifierName(
+                                    HasMatchingInvocationImposterGroupMethodMetadata.Name
+                                )
+                            )
                             .Call(ArgumentList(SeparatedList(arguments)))
                     )
                 )

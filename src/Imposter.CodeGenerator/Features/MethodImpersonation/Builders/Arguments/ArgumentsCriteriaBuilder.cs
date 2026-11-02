@@ -12,7 +12,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Arguments;
 
-public static class ArgumentsCriteriaBuilder
+internal static class ArgumentsCriteriaBuilder
 {
     internal static ClassDeclarationSyntax? Build(in ImposterTargetMethodMetadata method)
     {

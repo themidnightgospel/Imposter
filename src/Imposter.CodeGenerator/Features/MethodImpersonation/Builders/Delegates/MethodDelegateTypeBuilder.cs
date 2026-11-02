@@ -44,8 +44,8 @@ internal static class MethodDelegateTypeBuilder
 
     private static DelegateDeclarationSyntax CreateDelegateDeclaration(
         in ImposterTargetMethodMetadata method,
-        in string delegateName,
-        in TypeSyntax returnType
+        string delegateName,
+        TypeSyntax returnType
     ) =>
         DelegateDeclaration(
                 attributeLists: List<AttributeListSyntax>(),
