@@ -144,13 +144,13 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 				IPrivateSetterPropertyGetterFluentBuilder IPrivateSetterPropertyGetterUseBaseImplementationBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 
 				IPrivateSetterPropertyGetterFluentBuilder IPrivateSetterPropertyGetterFluentBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 			}
@@ -162,7 +162,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			IPrivateSetterPropertyBuilder IPrivateSetterPropertyBuilder.UseBaseImplementation()
 			{
-				_getterImposterBuilder.EnableBaseImplementation();
+				_getterImposterBuilder.UseBaseImplementation();
 				return this;
 			}
 		}
@@ -327,13 +327,13 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 				IProtectedGetterPropertyGetterFluentBuilder IProtectedGetterPropertyGetterUseBaseImplementationBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 
 				IProtectedGetterPropertyGetterFluentBuilder IProtectedGetterPropertyGetterFluentBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 			}
@@ -392,7 +392,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			IProtectedGetterPropertyBuilder IProtectedGetterPropertyBuilder.UseBaseImplementation()
 			{
-				_getterImposterBuilder.EnableBaseImplementation();
+				_getterImposterBuilder.UseBaseImplementation();
 				_setterImposter.UseBaseImplementation();
 				return this;
 			}
@@ -558,13 +558,13 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 				IProtectedSetterPropertyGetterFluentBuilder IProtectedSetterPropertyGetterUseBaseImplementationBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 
 				IProtectedSetterPropertyGetterFluentBuilder IProtectedSetterPropertyGetterFluentBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 			}
@@ -623,7 +623,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			IProtectedSetterPropertyBuilder IProtectedSetterPropertyBuilder.UseBaseImplementation()
 			{
-				_getterImposterBuilder.EnableBaseImplementation();
+				_getterImposterBuilder.UseBaseImplementation();
 				_setterImposter.UseBaseImplementation();
 				return this;
 			}
