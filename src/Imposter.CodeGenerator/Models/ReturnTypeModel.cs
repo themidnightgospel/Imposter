@@ -46,7 +46,7 @@ internal sealed record ReturnTypeModel(
     internal static bool PassesThrough(IMethodSymbol method) =>
         method.RefKind == RefKind.None
         && (
-            (method.ReturnType.IsRefLikeType && SpanModel.FromReturnType(method) is null)
+            SpanModel.IsOtherRefStruct(method.ReturnType)
             || method.ReturnType.IsMethodTypeParameterAllowingRefStructs()
         );
 }

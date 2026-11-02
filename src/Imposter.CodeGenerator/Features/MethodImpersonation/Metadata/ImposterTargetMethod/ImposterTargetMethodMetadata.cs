@@ -98,6 +98,8 @@ internal readonly struct ImposterTargetMethodMetadata
 
     internal readonly IReadOnlyList<TypeParameterConstraintClauseSyntax> TargetGenericTypeConstraintClauses;
 
+    private readonly TypeParameterRenamer? _targetTypeParameterRenamer;
+
     internal bool IsAsync { get; }
 
     internal ImposterTargetMethodMetadata(
@@ -160,14 +162,14 @@ internal readonly struct ImposterTargetMethodMetadata
             TargetGenericTypeArguments
         );
 
+        var targetRenamer = Model.IsGenericMethod
+            ? new TypeParameterRenamer(Model.TypeParameters, TargetGenericTypeArguments)
+            : null;
+        _targetTypeParameterRenamer = targetRenamer;
         if (GenericTypeConstraintClauses.Count > 0)
         {
-            var targetRenamer = new TypeParameterRenamer(
-                Model.TypeParameters,
-                TargetGenericTypeArguments
-            );
             TargetGenericTypeConstraintClauses = GenericTypeConstraintClauses
-                .Select(c => (TypeParameterConstraintClauseSyntax)targetRenamer.Visit(c))
+                .Select(c => (TypeParameterConstraintClauseSyntax)targetRenamer!.Visit(c))
                 .ToArray();
         }
         else
@@ -187,10 +189,7 @@ internal readonly struct ImposterTargetMethodMetadata
 
         // The arguments class keeps each parameter in a field named after it, which can't share the class's name.
         var argumentsTypeName = MemberNames.Use($"{uniqueName}Arguments");
-        Arguments = new TypeMetadata(
-            argumentsTypeName,
-            SyntaxFactoryHelper.WithMethodGenericArguments(GenericTypeArguments, argumentsTypeName)
-        );
+        Arguments = TypeMetadataFactory.Create(argumentsTypeName, GenericTypeArguments);
         ArgumentsCriteria = new ArgumentCriteriaTypeMetadata(this);
         InvocationHistory = new InvocationHistoryTypeMetadata(this);
         MethodInvocationImposterGroup = new MethodInvocationImposterGroupMetadata(this);
@@ -228,6 +227,14 @@ internal readonly struct ImposterTargetMethodMetadata
             ImposterInstanceMethodModifiers = ImposterInstanceModifierBuilder.For(Model);
         }
     }
+
+    internal TypeSyntax InTargetTypeArguments(TypeSyntax type) =>
+        _targetTypeParameterRenamer is { } renamer ? (TypeSyntax)renamer.Visit(type) : type;
+
+    internal ParameterListSyntax InTargetTypeArguments(ParameterListSyntax parameters) =>
+        _targetTypeParameterRenamer is { } renamer
+            ? (ParameterListSyntax)renamer.Visit(parameters)
+            : parameters;
 
     // A member name followed by this method's type arguments, when it has any.
     internal SimpleNameSyntax WithGenericArguments(string identifier) =>
