@@ -10,17 +10,19 @@ internal readonly struct PropertyGetterImposterBuilderMetadata
 
     internal readonly TypeSyntax TypeSyntax;
 
-    internal readonly ReturnValuesFieldMetadata ReturnValuesField;
+    internal readonly FieldMetadata ReturnValuesField;
 
-    internal readonly CallbacksFieldMetadata CallbacksField;
+    internal readonly FieldMetadata CallbacksField;
 
-    internal readonly LastReturnValueFieldMetadata LastReturnValueField;
+    internal readonly FieldMetadata LastReturnValueField;
 
-    internal readonly InvocationCountFieldMetadata InvocationCountField;
+    internal readonly FieldMetadata InvocationCountField;
 
     internal readonly PropertyAccessorStateMetadata State;
 
-    internal readonly AddReturnValueMethodMetadata AddReturnValueMethod;
+    internal readonly MethodMetadata AddReturnValueMethod;
+
+    internal readonly ParameterMetadata AddReturnValueParameter;
 
     internal readonly GetMethodMetadata GetMethod;
 
@@ -35,12 +37,22 @@ internal readonly struct PropertyGetterImposterBuilderMetadata
     {
         Name = "GetterImposterBuilder";
         TypeSyntax = SyntaxFactory.IdentifierName(Name);
-        ReturnValuesField = new ReturnValuesFieldMetadata(property.ReturnHandlerType);
-        CallbacksField = new CallbacksFieldMetadata();
-        LastReturnValueField = new LastReturnValueFieldMetadata(property.ReturnHandlerType);
-        InvocationCountField = new InvocationCountFieldMetadata();
+        ReturnValuesField = new FieldMetadata(
+            "_returnValues",
+            WellKnownTypes.Imposter.Abstractions.ReturnValueSequence(property.ReturnHandlerType)
+        );
+        CallbacksField = new FieldMetadata(
+            "_callbacks",
+            WellKnownTypes.Imposter.Abstractions.CallbackCollection(WellKnownTypes.System.Action)
+        );
+        LastReturnValueField = new FieldMetadata("_lastReturnValue", property.ReturnHandlerType);
+        InvocationCountField = new FieldMetadata("_invocationCount", WellKnownTypes.Int);
         State = PropertyAccessorStateMetadata.Getter(defaultPropertyBehaviourMetadata);
-        AddReturnValueMethod = new AddReturnValueMethodMetadata(property.ReturnHandlerType);
+        AddReturnValueMethod = new MethodMetadata("AddReturnValue", WellKnownTypes.Void);
+        AddReturnValueParameter = new ParameterMetadata(
+            "valueGenerator",
+            property.ReturnHandlerType
+        );
         GetMethod = new GetMethodMetadata(property);
         NextReturnValueMethod = new NextReturnValueMethodMetadata(property.ReturnHandlerType);
         UseBaseImplementationMethod = new MethodMetadata(

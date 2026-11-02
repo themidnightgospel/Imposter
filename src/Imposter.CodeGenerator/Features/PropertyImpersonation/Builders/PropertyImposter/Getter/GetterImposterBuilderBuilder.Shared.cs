@@ -97,17 +97,12 @@ internal static partial class GetterImposterBuilderBuilder
                 )
                 .Build()
         );
-        builder.AddMember(BuildThenMethod(api));
-        if (api.InitialThenMethod is not null)
-            builder.AddMember(BuildInitialThenMethod(property));
         if (api.UseBaseImplementationEntryMethod is { } entry)
-        {
             builder.AddBaseType(SimpleBaseType(entry.InterfaceSyntax));
-            builder.AddMember(BuildUseBaseImplementationInterfaceMethod(getter, entry));
-        }
-        if (api.UseBaseImplementationMethod is { } useBase)
-            builder.AddMember(BuildUseBaseImplementationInterfaceMethod(getter, useBase));
-        return builder.Build();
+        return builder
+            .AddMembers(BuildThenMethods(property))
+            .AddMembers(BuildUseBaseImplementationMethods(property))
+            .Build();
     }
 
     private static MethodDeclarationSyntax Forward(
