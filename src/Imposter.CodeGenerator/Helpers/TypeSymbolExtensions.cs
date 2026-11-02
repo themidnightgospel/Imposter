@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Imposter.CodeGenerator.SyntaxHelpers;
+namespace Imposter.CodeGenerator.Helpers;
 
 internal static class TypeSymbolExtensions
 {
@@ -158,17 +157,4 @@ internal readonly struct TaskLikeMetadata
     internal bool IsValueTask { get; }
 
     internal ITypeSymbol? GenericAwaitableResultType { get; }
-}
-
-internal readonly struct TypeSymbolMetadata
-{
-    internal TypeSymbolMetadata(TypeSyntax typeSyntax, TypeSyntax nullableTypeSyntax)
-    {
-        TypeSyntax = typeSyntax;
-        NullableTypeSyntax = nullableTypeSyntax;
-    }
-
-    internal TypeSyntax TypeSyntax { get; }
-
-    internal TypeSyntax NullableTypeSyntax { get; }
 }

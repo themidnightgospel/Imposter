@@ -1,5 +1,4 @@
 ﻿using Imposter.CodeGenerator.Helpers;
-using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator.Models;
