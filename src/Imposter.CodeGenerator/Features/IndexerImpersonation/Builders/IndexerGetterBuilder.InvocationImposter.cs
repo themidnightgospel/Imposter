@@ -102,7 +102,13 @@ internal static partial class IndexerGetterBuilder
                     .AddStatement(
                         ThisExpression()
                             .Dot(IdentifierName(invocation.PropertyDisplayNameField.Name))
-                            .Assign(parent.Dot(IdentifierName("PropertyDisplayName")))
+                            .Assign(
+                                parent.Dot(
+                                    IdentifierName(
+                                        IndexerGetterImposterMetadata.PropertyDisplayNamePropertyName
+                                    )
+                                )
+                            )
                             .ToStatementSyntax()
                     )
                     .AddStatement(
@@ -136,7 +142,7 @@ internal static partial class IndexerGetterBuilder
                     )
             );
 
-        return new MethodDeclarationBuilder(WellKnownTypes.Void, "AddReturnValue")
+        return new MethodDeclarationBuilder(WellKnownTypes.Void, AddReturnValueMethodName)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(generator)
             .WithBody(ConfigureReturn(indexer, handler))
@@ -149,7 +155,7 @@ internal static partial class IndexerGetterBuilder
     {
         var callback = indexer.GetterBuilderInterface.CallbackMethod.CallbackParameter;
 
-        return new MethodDeclarationBuilder(WellKnownTypes.Void, "AddCallback")
+        return new MethodDeclarationBuilder(WellKnownTypes.Void, AddCallbackMethodName)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(ParameterSyntax(callback))
             .WithBody(
@@ -227,7 +233,7 @@ internal static partial class IndexerGetterBuilder
         var generatorDeclaration = LocalVariableDeclarationSyntax(
             getter.ReturnHandlerType,
             IndexerGetterImposterMetadata.GeneratorVariableName,
-            IdentifierName("ResolveNextGenerator").Call(Argument(arguments))
+            IdentifierName(ResolveNextGeneratorMethodName).Call(Argument(arguments))
         );
 
         var returnGenerated = ReturnStatement(
@@ -240,7 +246,10 @@ internal static partial class IndexerGetterBuilder
                 )
         );
 
-        return new MethodDeclarationBuilder(indexer.Core.NullableAwareValueTypeSyntax, "Invoke")
+        return new MethodDeclarationBuilder(
+            indexer.Core.NullableAwareValueTypeSyntax,
+            InvokeMethodName
+        )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(
                 ParameterSyntax(indexer.Arguments.TypeSyntax, getter.ArgumentsVariableName)
@@ -276,7 +285,10 @@ internal static partial class IndexerGetterBuilder
             PostfixUnaryExpression(SyntaxKind.SuppressNullableWarningExpression, nextReturnValue)
         );
 
-        return new MethodDeclarationBuilder(getter.ReturnHandlerType, "ResolveNextGenerator")
+        return new MethodDeclarationBuilder(
+            getter.ReturnHandlerType,
+            ResolveNextGeneratorMethodName
+        )
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddParameter(
                 ParameterSyntax(indexer.Arguments.TypeSyntax, getter.ArgumentsVariableName)
@@ -316,7 +328,7 @@ internal static partial class IndexerGetterBuilder
     private static MethodDeclarationSyntax BuildGetterInvocationUseBaseImplementationMethod(
         in ImposterIndexerMetadata indexer
     ) =>
-        new MethodDeclarationBuilder(WellKnownTypes.Void, "UseBaseImplementation")
+        new MethodDeclarationBuilder(WellKnownTypes.Void, UseBaseImplementationMethodName)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(ConfigureReturn(indexer, BaseImplementationHandler(indexer)))
             .Build();

@@ -343,18 +343,20 @@ internal static class MethodImposterAdapterBuilder
         in ImposterTargetMethodMetadata method
     )
     {
-        var asMethodTypeParams = method
-            .Model.TypeParameters.Select(p => TypeParameter(p.Name + "Target1"))
+        var targetTypeParameterNames = method
+            .Model.TypeParameters.Select(p => p.Name + "Target1")
             .ToArray();
-        var targetTypeArgs = method.Model.TypeParameters.Select(p =>
-            IdentifierName(p.Name + "Target1")
-        );
+        var asMethodTypeParams = targetTypeParameterNames.Select(TypeParameter);
+        var targetTypeArgs = targetTypeParameterNames.Select(IdentifierName);
         var genericImposterInterface = GenericName(
             Identifier(method.MethodImposter.Interface.Name),
             TypeArguments(targetTypeArgs)
         );
 
-        return new MethodDeclarationBuilder(NullableType(genericImposterInterface), "As")
+        return new MethodDeclarationBuilder(
+            NullableType(genericImposterInterface),
+            MethodImposterMetadata.AsMethodName
+        )
             .WithExplicitInterfaceSpecifier(method.MethodImposter.Interface.Syntax)
             .WithTypeParameters(TypeParameterList(SeparatedList(asMethodTypeParams)))
             .WithBody(Block(ThrowStatement(WellKnownTypes.System.NotImplementedException.New())))

@@ -1,5 +1,6 @@
 ﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Shared;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationSetup;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -65,7 +66,7 @@ internal static partial class InvocationImposterGroupBuilder
     ) =>
         SingleVariableField(
             IdentifierName(method.MethodInvocationImposterGroup.MethodInvocationImposterTypeName),
-            "Default",
+            MethodInvocationImposterMetadata.DefaultFieldName,
             TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.StaticKeyword))
         );
 
@@ -74,7 +75,7 @@ internal static partial class InvocationImposterGroupBuilder
     )
     {
         var body = new BlockBuilder().AddStatement(
-            IdentifierName("Default")
+            IdentifierName(MethodInvocationImposterMetadata.DefaultFieldName)
                 .Assign(
                     IdentifierName(
                             method.MethodInvocationImposterGroup.MethodInvocationImposterTypeName
@@ -87,7 +88,7 @@ internal static partial class InvocationImposterGroupBuilder
         if (method.HasReturnValue)
         {
             body.AddStatement(
-                IdentifierName("Default")
+                IdentifierName(MethodInvocationImposterMetadata.DefaultFieldName)
                     .Dot(IdentifierName(method.MethodInvocationImposterGroup.ReturnsMethod.Name))
                     .Call(Argument(DefaultResultGeneratorDelegate(method)))
                     .ToStatementSyntax()
@@ -96,7 +97,7 @@ internal static partial class InvocationImposterGroupBuilder
         else
         {
             body.AddStatement(
-                IdentifierName("Default")
+                IdentifierName(MethodInvocationImposterMetadata.DefaultFieldName)
                     .Dot(ResultGeneratorIdentifier(method))
                     .Assign(DefaultResultGeneratorDelegate(method))
                     .ToStatementSyntax()
@@ -403,7 +404,10 @@ internal static partial class InvocationImposterGroupBuilder
     private static MethodDeclarationSyntax UseBaseImplementationMethod(
         in ImposterTargetMethodMetadata method
     ) =>
-        new MethodDeclarationBuilder(WellKnownTypes.Void, "UseBaseImplementation")
+        new MethodDeclarationBuilder(
+            WellKnownTypes.Void,
+            method.MethodInvocationImposterGroup.UseBaseImplementationMethod!.Value.Name
+        )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(
                 Block(
@@ -416,7 +420,10 @@ internal static partial class InvocationImposterGroupBuilder
     private static MethodDeclarationSyntax UseDefaultResultGeneratorMethod(
         in ImposterTargetMethodMetadata method
     ) =>
-        new MethodDeclarationBuilder(WellKnownTypes.Void, "UseDefaultResultGenerator")
+        new MethodDeclarationBuilder(
+            WellKnownTypes.Void,
+            MethodInvocationImposterMetadata.UseDefaultResultGeneratorMethodName
+        )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(
                 Block(

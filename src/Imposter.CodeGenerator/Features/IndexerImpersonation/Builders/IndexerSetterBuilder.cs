@@ -45,13 +45,16 @@ internal static partial class IndexerSetterBuilder
                 : Argument(Null)
         );
 
-        return new MethodDeclarationBuilder(WellKnownTypes.Void, "Set")
+        return new MethodDeclarationBuilder(
+            WellKnownTypes.Void,
+            IndexerImposterBuilderMetadata.SetMethodName
+        )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameters(parameters.ToArray())
             .WithBody(
                 Block(
                     IdentifierName(indexer.Builder.SetterImposterField.Name)
-                        .Dot(IdentifierName("Set"))
+                        .Dot(IdentifierName(IndexerSetterImposterMetadata.SetMethodName))
                         .Call(ArgumentListSyntax(invocationArguments))
                         .ToStatementSyntax()
                 )
@@ -148,7 +151,10 @@ internal static partial class IndexerSetterBuilder
             )
         );
 
-        return new MethodDeclarationBuilder(WellKnownTypes.Void, "Callback")
+        return new MethodDeclarationBuilder(
+            WellKnownTypes.Void,
+            IndexerSetterImposterMetadata.CallbackMethodName
+        )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddParameter(
                 ParameterSyntax(indexer.ArgumentsCriteria.TypeSyntax, setter.CriteriaParameterName)
@@ -197,7 +203,11 @@ internal static partial class IndexerSetterBuilder
                             SimpleLambdaExpression(
                                 Parameter(entryIdentifier.Identifier),
                                 IdentifierName(setter.CriteriaParameterName)
-                                    .Dot(IdentifierName("Matches"))
+                                    .Dot(
+                                        IdentifierName(
+                                            IndexerArgumentsCriteriaMetadata.MatchesMethodName
+                                        )
+                                    )
                                     .Call(Argument(entryArguments))
                             )
                         )
@@ -221,7 +231,10 @@ internal static partial class IndexerSetterBuilder
                 )
             : setDescription;
 
-        return new MethodDeclarationBuilder(WellKnownTypes.Void, "Called")
+        return new MethodDeclarationBuilder(
+            WellKnownTypes.Void,
+            IndexerSetterImposterMetadata.CalledMethodName
+        )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddParameter(
                 ParameterSyntax(indexer.ArgumentsCriteria.TypeSyntax, setter.CriteriaParameterName)
@@ -252,7 +265,10 @@ internal static partial class IndexerSetterBuilder
     {
         var setter = indexer.SetterImplementation;
 
-        return new MethodDeclarationBuilder(WellKnownTypes.Void, "UseBaseImplementation")
+        return new MethodDeclarationBuilder(
+            WellKnownTypes.Void,
+            IndexerSetterImposterMetadata.UseBaseImplementationMethodName
+        )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddParameter(
                 ParameterSyntax(indexer.ArgumentsCriteria.TypeSyntax, setter.CriteriaParameterName)
@@ -338,7 +354,10 @@ internal static partial class IndexerSetterBuilder
             )
         );
 
-        return new MethodDeclarationBuilder(WellKnownTypes.Void, "Set")
+        return new MethodDeclarationBuilder(
+            WellKnownTypes.Void,
+            IndexerSetterImposterMetadata.SetMethodName
+        )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameters(parameters.ToArray())
             .WithBody(bodyBuilder.Build())
@@ -366,7 +385,7 @@ internal static partial class IndexerSetterBuilder
                                 IndexerSetterImposterMetadata.RegistrationCriteriaElementName
                             )
                         )
-                        .Dot(IdentifierName("Matches"))
+                        .Dot(IdentifierName(IndexerArgumentsCriteriaMetadata.MatchesMethodName))
                         .Call(Argument(argumentsVariable)),
                     new BlockBuilder()
                         .AddExpression(
@@ -426,7 +445,7 @@ internal static partial class IndexerSetterBuilder
                 Block(
                     IfStatement(
                         IdentifierName(setter.CriteriaParameterName)
-                            .Dot(IdentifierName("Matches"))
+                            .Dot(IdentifierName(IndexerArgumentsCriteriaMetadata.MatchesMethodName))
                             .Call(Argument(argumentsVariable)),
                         new BlockBuilder()
                             .AddStatement(
@@ -476,7 +495,7 @@ internal static partial class IndexerSetterBuilder
                 defaultBehaviourCondition,
                 Block(
                     IdentifierName(field.Name)
-                        .Dot(IdentifierName("Set"))
+                        .Dot(IdentifierName(DefaultIndexerBehaviourMetadata.SetMethodName))
                         .Call([Argument(argumentsVariable), Argument(value)])
                         .ToStatementSyntax()
                 )

@@ -69,7 +69,10 @@ internal static class IndexerArgumentsCriteriaBuilder
             .DefaultIfEmpty(True)
             .Aggregate((all, next) => all.And(next));
 
-        return new MethodDeclarationBuilder(WellKnownTypes.Bool, "Matches")
+        return new MethodDeclarationBuilder(
+            WellKnownTypes.Bool,
+            IndexerArgumentsCriteriaMetadata.MatchesMethodName
+        )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddParameter(argumentsParam)
             .WithBody(Block(ReturnStatement(comparison)))

@@ -5,6 +5,8 @@ namespace Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 
 internal readonly struct IndexerArgumentsCriteriaMetadata
 {
+    internal const string MatchesMethodName = "Matches";
+
     internal readonly string Name;
 
     internal readonly NameSyntax TypeSyntax;

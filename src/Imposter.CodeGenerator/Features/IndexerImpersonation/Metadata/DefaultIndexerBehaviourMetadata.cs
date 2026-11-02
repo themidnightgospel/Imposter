@@ -6,6 +6,10 @@ namespace Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 
 internal readonly struct DefaultIndexerBehaviourMetadata
 {
+    internal const string GetMethodName = "Get";
+
+    internal const string SetMethodName = "Set";
+
     internal readonly string Name;
 
     internal readonly NameSyntax TypeSyntax;

@@ -63,7 +63,7 @@ internal static partial class IndexerSetterBuilder
             .WithBody(
                 Block(
                     IdentifierName(builderMetadata.ImposterFieldName)
-                        .Dot(IdentifierName("Callback"))
+                        .Dot(IdentifierName(IndexerSetterImposterMetadata.CallbackMethodName))
                         .Call([
                             Argument(IdentifierName(builderMetadata.CriteriaFieldName)),
                             Argument(IdentifierName(parameter.Identifier)),
@@ -91,7 +91,7 @@ internal static partial class IndexerSetterBuilder
             .WithBody(
                 Block(
                     IdentifierName(builderMetadata.ImposterFieldName)
-                        .Dot(IdentifierName("Called"))
+                        .Dot(IdentifierName(IndexerSetterImposterMetadata.CalledMethodName))
                         .Call([
                             Argument(IdentifierName(builderMetadata.CriteriaFieldName)),
                             Argument(IdentifierName(parameter.Identifier)),
@@ -126,7 +126,11 @@ internal static partial class IndexerSetterBuilder
             .WithBody(
                 Block(
                     IdentifierName(builderMetadata.ImposterFieldName)
-                        .Dot(IdentifierName("UseBaseImplementation"))
+                        .Dot(
+                            IdentifierName(
+                                IndexerSetterImposterMetadata.UseBaseImplementationMethodName
+                            )
+                        )
                         .Call(Argument(IdentifierName(builderMetadata.CriteriaFieldName)))
                         .ToStatementSyntax(),
                     ReturnThis

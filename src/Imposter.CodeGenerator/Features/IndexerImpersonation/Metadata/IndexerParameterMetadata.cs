@@ -42,7 +42,12 @@ internal readonly struct IndexerParameterMetadata
         ParameterSyntax = model.Span is null
             ? SyntaxFactoryHelper.ParameterSyntaxIncludingNullable(model)
             : SyntaxFactoryHelper.ParameterSyntax(TypeSyntax, Name);
-        FieldName = Name is "Equals" or "GetHashCode" or "Matches" ? fieldNames.Use(Name) : Name;
+        FieldName = Name
+            is "Equals"
+                or "GetHashCode"
+                or IndexerArgumentsCriteriaMetadata.MatchesMethodName
+            ? fieldNames.Use(Name)
+            : Name;
     }
 
     // Compares two arguments, so arguments class equality matches Arg<T>.Is, and SpanArg<T>.Is for a span key's

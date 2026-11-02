@@ -12,6 +12,14 @@ internal readonly struct IndexerGetterImposterMetadata
 
     internal const string CallbackVariableName = "callback";
 
+    internal const string GetMethodName = "Get";
+
+    internal const string GetOrCreateMethodName = "GetOrCreate";
+
+    internal const string CalledMethodName = "Called";
+
+    internal const string PropertyDisplayNamePropertyName = "PropertyDisplayName";
+
     internal readonly string Name;
 
     internal readonly NameSyntax TypeSyntax;
@@ -126,6 +134,16 @@ internal readonly struct IndexerGetterImposterMetadata
         internal const string HasConfiguredReturnFieldName = "HasConfiguredReturn";
 
         internal const string BareMatchVariableName = "bareMatch";
+
+        internal const string AddReturnValueMethodName = "AddReturnValue";
+
+        internal const string AddCallbackMethodName = "AddCallback";
+
+        internal const string InvokeMethodName = "Invoke";
+
+        internal const string ResolveNextGeneratorMethodName = "ResolveNextGenerator";
+
+        internal const string UseBaseImplementationMethodName = "UseBaseImplementation";
 
         internal readonly string Name;
 

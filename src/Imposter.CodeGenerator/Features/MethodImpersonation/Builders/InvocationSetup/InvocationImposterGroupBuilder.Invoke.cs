@@ -50,7 +50,11 @@ internal static partial class InvocationImposterGroupBuilder
                     )
                 ),
                 invocationImposterIdentifier
-                    .Assign(invocationImposterType.Dot(IdentifierName("Default")))
+                    .Assign(
+                        invocationImposterType.Dot(
+                            IdentifierName(MethodInvocationImposterMetadata.DefaultFieldName)
+                        )
+                    )
                     .ToStatementSyntax()
             )
         );

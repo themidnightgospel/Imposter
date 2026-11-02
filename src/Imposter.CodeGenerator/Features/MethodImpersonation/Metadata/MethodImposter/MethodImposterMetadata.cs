@@ -8,6 +8,9 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImp
 
 internal readonly struct MethodImposterMetadata
 {
+    // Not the criteria's AsMethodMetadata.BaseName: this As converts the imposter to other type arguments.
+    internal const string AsMethodName = "As";
+
     // A generic method imposter's nested class, which As returns to impersonate the method for other type arguments.
     internal readonly string AdapterName;
 

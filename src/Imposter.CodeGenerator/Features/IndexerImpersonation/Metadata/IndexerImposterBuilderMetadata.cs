@@ -5,6 +5,11 @@ namespace Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 
 internal readonly struct IndexerImposterBuilderMetadata
 {
+    // The imposter instance's indexer accessors forward to these.
+    internal const string GetMethodName = "Get";
+
+    internal const string SetMethodName = "Set";
+
     internal readonly string Name;
 
     internal readonly NameSyntax TypeSyntax;
