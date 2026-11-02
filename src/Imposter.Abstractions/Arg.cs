@@ -87,7 +87,7 @@ public class Arg<T>
             {
                 MatcherKind.Any => true,
                 // Keep Default at the call site so the JIT can specialize value-type equality.
-                // Custom comparers receive the actual argument first, as before.
+                // Custom comparers receive the actual argument first.
                 MatcherKind.Equality => _comparer is null
                     ? EqualityComparer<T>.Default.Equals(value, _value!)
                     : _comparer.Equals(value, _value!),
