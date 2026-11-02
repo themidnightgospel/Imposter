@@ -1,5 +1,6 @@
 using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Shared;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -14,9 +15,10 @@ internal static partial class MethodImposterBuilder
         in ImposterTargetMethodMetadata method
     )
     {
-        var hasMatchingMethod = method.MethodImposter.HasMatchingInvocationImposterGroupMethod;
-
-        return new MethodDeclarationBuilder(hasMatchingMethod.ReturnType, hasMatchingMethod.Name)
+        return new MethodDeclarationBuilder(
+            HasMatchingInvocationImposterGroupMethodMetadata.ReturnType,
+            HasMatchingInvocationImposterGroupMethodMetadata.Name
+        )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithParameterList(CapturedArgumentsBuilder.InParameters(method))
             .WithBody(
