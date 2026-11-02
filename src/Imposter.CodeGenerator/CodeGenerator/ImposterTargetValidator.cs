@@ -276,7 +276,7 @@ internal static class ImposterTargetValidator
 
     private static bool PassesThroughAdapterLocal(IParameterSymbol parameter) =>
         parameter.RefKind is RefKind.Ref or RefKind.In or RefKinds.RefReadOnlyParameter
-        && !ParameterModel.IsCustomRefStruct(parameter);
+        && !ParameterModel.IsOtherRefStruct(parameter);
 
     private static IEnumerable<ITypeSymbol> UncopiedTypes(IPropertySymbol property)
     {
@@ -289,7 +289,7 @@ internal static class ImposterTargetValidator
         // them.
         var uncopiedParameters = property.Parameters.Where(it =>
             SpanModel.From(it) is null
-            && !(ParameterModel.IsCustomRefStruct(it) && it.RefKind == RefKind.None)
+            && !(ParameterModel.IsOtherRefStruct(it) && it.RefKind == RefKind.None)
         );
         foreach (var parameter in uncopiedParameters)
         {
@@ -301,7 +301,7 @@ internal static class ImposterTargetValidator
     // refer to the copy of a key taken by in or ref readonly (CS8347), so the lambda couldn't return a value passed
     // through.
     private static bool CanPassValueThrough(IPropertySymbol property) =>
-        PropertyModel.PassesValueThrough(property)
+        PropertyModel.PassesThrough(property)
         && !(
             property.ContainingType.TypeKind == TypeKind.Class
             && property.GetMethod is { IsAbstract: false }
@@ -321,7 +321,7 @@ internal static class ImposterTargetValidator
         var isAsync = invoke.ReturnType.IsAwaitable();
         var uncopiedParameters = invoke.Parameters.Where(it =>
             SpanModel.From(it) is null
-                ? isAsync || !ParameterModel.IsCustomRefStruct(it)
+                ? isAsync || !ParameterModel.IsOtherRefStruct(it)
                 : isAsync
                     && it.RefKind is RefKind.Ref or RefKind.Out or RefKinds.RefReadOnlyParameter
         );

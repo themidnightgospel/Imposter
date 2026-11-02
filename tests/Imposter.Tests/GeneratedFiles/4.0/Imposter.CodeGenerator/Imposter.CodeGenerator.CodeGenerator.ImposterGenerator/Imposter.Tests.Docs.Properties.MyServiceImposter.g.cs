@@ -993,13 +993,13 @@ namespace Imposter.Tests.Docs.Properties
 
 				IProtectedAgePropertyGetterFluentBuilder IProtectedAgePropertyGetterUseBaseImplementationBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 
 				IProtectedAgePropertyGetterFluentBuilder IProtectedAgePropertyGetterFluentBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 			}
@@ -1058,7 +1058,7 @@ namespace Imposter.Tests.Docs.Properties
 
 			IProtectedAgePropertyBuilder IProtectedAgePropertyBuilder.UseBaseImplementation()
 			{
-				_getterImposterBuilder.EnableBaseImplementation();
+				_getterImposterBuilder.UseBaseImplementation();
 				_setterImposter.UseBaseImplementation();
 				return this;
 			}

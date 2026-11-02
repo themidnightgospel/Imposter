@@ -91,24 +91,26 @@ internal readonly ref struct ImposterBuilder
     internal ImposterBuilder AddInterfaceSetupMember(
         InterfaceSetupMemberModel? member,
         string setupName,
-        TypeSyntax returnType,
-        bool isSetUpByMethod = false,
-        bool hasSetupMethod = false
+        TypeSyntax returnType
     )
     {
         if (member is not null)
         {
-            // The view declares an indexer with a setup method of its own as that method.
             _interfaceSetupMembers.Add(
-                new InterfaceSetupMemberMetadata(
-                    member,
-                    setupName,
-                    returnType,
-                    isSetUpByMethod,
-                    viewName: hasSetupMethod ? setupName : null,
-                    isDeclaredAsMethod: hasSetupMethod
-                )
+                new InterfaceSetupMemberMetadata(member, setupName, returnType)
             );
+        }
+        return this;
+    }
+
+    internal ImposterBuilder AddInterfaceSetupMember(
+        InterfaceSetupMemberModel? member,
+        in ImposterIndexerMetadata indexer
+    )
+    {
+        if (member is not null)
+        {
+            _interfaceSetupMembers.Add(new InterfaceSetupMemberMetadata(member, indexer));
         }
         return this;
     }
@@ -385,10 +387,7 @@ internal readonly ref struct ImposterBuilder
             Argument(ThisExpression()),
         };
 
-        if (parameters.Length > 0)
-        {
-            arguments.AddRange(SyntaxFactoryHelper.ArgumentListSyntax(parameters).Arguments);
-        }
+        arguments.AddRange(SyntaxFactoryHelper.ArgumentListSyntax(parameters).Arguments);
 
         var argumentList = SyntaxFactoryHelper.ArgumentListSyntax(arguments);
 
@@ -399,7 +398,7 @@ internal readonly ref struct ImposterBuilder
     }
 
     private static FieldDeclarationSyntax ImposterInstanceField(
-        in string imposterTargetInstanceClassName,
+        string imposterTargetInstanceClassName,
         string imposterInstanceFieldName
     ) =>
         SyntaxFactoryHelper.SingleVariableField(

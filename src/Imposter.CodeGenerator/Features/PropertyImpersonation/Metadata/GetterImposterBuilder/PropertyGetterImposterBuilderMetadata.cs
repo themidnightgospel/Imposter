@@ -26,7 +26,7 @@ internal readonly struct PropertyGetterImposterBuilderMetadata
 
     internal readonly NextReturnValueMethodMetadata NextReturnValueMethod;
 
-    internal readonly MethodMetadata EnableBaseImplementationMethod;
+    internal readonly MethodMetadata UseBaseImplementationMethod;
 
     internal PropertyGetterImposterBuilderMetadata(
         in ImposterPropertyCoreMetadata property,
@@ -43,8 +43,8 @@ internal readonly struct PropertyGetterImposterBuilderMetadata
         AddReturnValueMethod = new AddReturnValueMethodMetadata(property.ReturnHandlerType);
         GetMethod = new GetMethodMetadata(property);
         NextReturnValueMethod = new NextReturnValueMethodMetadata(property.ReturnHandlerType);
-        EnableBaseImplementationMethod = new MethodMetadata(
-            "EnableBaseImplementation",
+        UseBaseImplementationMethod = new MethodMetadata(
+            "UseBaseImplementation",
             WellKnownTypes.Void
         );
     }

@@ -17,20 +17,12 @@ internal static partial class MethodImposterCollectionBuilder
             return null;
         }
 
-        var historyCollectionField = BuildInvocationHistoryCollectionField(method);
-        var invocationBehaviorField = SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(
-            WellKnownTypes.Imposter.Abstractions.ImposterMode,
-            method.MethodImposter.InvocationBehaviorFieldName
-        );
-
         return new ClassDeclarationBuilder(method.MethodImposter.Collection.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddMember(historyCollectionField)
-            .AddMember(invocationBehaviorField)
-            .AddMember(
-                SyntaxFactoryHelper.BuildConstructorAndInitializeMembers(
-                    method.MethodImposter.Collection.Name,
-                    [historyCollectionField, invocationBehaviorField]
+            .AddMembers(
+                MethodImposterStateBuilder.BuildMembers(
+                    method,
+                    method.MethodImposter.Collection.Name
                 )
             )
             .AddMember(BuildImpostersField(method))
@@ -38,14 +30,6 @@ internal static partial class MethodImposterCollectionBuilder
             .AddMember(BuildGetImposterWithMatchingInvocationImposterGroup(method))
             .Build();
     }
-
-    private static FieldDeclarationSyntax BuildInvocationHistoryCollectionField(
-        in ImposterTargetMethodMetadata method
-    ) =>
-        SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(
-            method.InvocationHistory.Collection.Syntax,
-            method.InvocationHistory.Collection.AsField.Name
-        );
 
     private static FieldDeclarationSyntax BuildImpostersField(
         in ImposterTargetMethodMetadata method

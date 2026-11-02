@@ -181,13 +181,13 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 				IValuePropertyGetterFluentBuilder IValuePropertyGetterUseBaseImplementationBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 
 				IValuePropertyGetterFluentBuilder IValuePropertyGetterFluentBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 			}
@@ -201,7 +201,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 				internal bool Set(int value)
 				{
-					return base.SetForInit(value);
+					return base.RecordAndShouldCallBase(value);
 				}
 
 				[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -251,7 +251,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 			IValuePropertyBuilder IValuePropertyBuilder.UseBaseImplementation()
 			{
-				_getterImposterBuilder.EnableBaseImplementation();
+				_getterImposterBuilder.UseBaseImplementation();
 				_setterImposter.UseBaseImplementation();
 				return this;
 			}
