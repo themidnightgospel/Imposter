@@ -3,17 +3,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
 
-internal readonly struct HasMatchingInvocationImposterGroupMethodMetadata
+internal static class HasMatchingInvocationImposterGroupMethodMetadata
 {
-    internal readonly TypeSyntax ReturnType;
+    internal const string Name = "HasMatchingInvocationImposterGroup";
 
-    internal const string BaseName = "HasMatchingInvocationImposterGroup";
-
-    internal readonly string Name;
-
-    public HasMatchingInvocationImposterGroupMethodMetadata()
-    {
-        ReturnType = WellKnownTypes.Bool;
-        Name = BaseName;
-    }
+    internal static readonly TypeSyntax ReturnType = WellKnownTypes.Bool;
 }

@@ -128,7 +128,7 @@ internal static class PropertyImposterBuilder
                 IdentifierName(property.ImposterBuilder.GetterImposterBuilderField.Name)
                     .Dot(
                         IdentifierName(
-                            property.GetterImposterBuilder.EnableBaseImplementationMethod.Name
+                            property.GetterImposterBuilder.UseBaseImplementationMethod.Name
                         )
                     )
                     .Call()

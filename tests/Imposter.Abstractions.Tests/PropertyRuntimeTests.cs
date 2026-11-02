@@ -50,7 +50,7 @@ public class PropertyRuntimeTests
         getter.Get(ReadBase).ShouldBe(1);
         getter.Get(ReadBase).ShouldBe(1);
         getter.Configure(10);
-        getter.EnableBaseImplementation();
+        getter.UseBaseImplementation();
         getter.Configure(20);
         getter.Get(ReadBase).ShouldBe(10);
         getter.Get(ReadBase).ShouldBe(2);
@@ -199,6 +199,6 @@ public class PropertyRuntimeTests
         ImposterMode mode = ImposterMode.Implicit
     ) : PropertySetter<T>(value, mode, "Value")
     {
-        internal bool AssignInit(T value) => SetForInit(value);
+        internal bool AssignInit(T value) => RecordAndShouldCallBase(value);
     }
 }

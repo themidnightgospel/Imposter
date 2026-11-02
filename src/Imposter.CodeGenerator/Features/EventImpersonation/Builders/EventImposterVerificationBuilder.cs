@@ -1,11 +1,11 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Imposter.CodeGenerator.Features.EventImpersonation.Builders.EventImposterBuilderCommon;
 using static Imposter.CodeGenerator.Features.Shared.Builders.FormatValueMethodBuilder;
 using static Imposter.CodeGenerator.Features.Shared.Builders.VerificationFailedBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
@@ -60,11 +60,8 @@ internal static class EventImposterVerificationBuilder
                 BuildHistoryVerificationBody(
                     @event,
                     historyField: history,
-                    criteriaParameterName: criteriaName,
-                    predicateFactory: handler =>
-                        IdentifierName(criteriaName)
-                            .Dot(IdentifierName("Matches"))
-                            .Call(Argument(handler)),
+                    criteriaParameterNames: [criteriaName],
+                    predicate: Matches(criteriaName, Entry),
                     descriptionFactory: handler =>
                         BuildSubscriptionDescription(eventName, action, handler)
                 )
@@ -76,7 +73,11 @@ internal static class EventImposterVerificationBuilder
         in ImposterEventMetadata @event
     )
     {
-        var methodBuilder = new MethodDeclarationBuilder(
+        var eventName = @event.Core.Name;
+        var parameters = @event.Core.MatchedParameters;
+        var historyEntry = @event.Builder.Fields.HistoryEntry;
+
+        return new MethodDeclarationBuilder(
             @event.BuilderInterface.VerificationInterfaceTypeSyntax,
             @event.Builder.Methods.RaisedVerification.Name
         )
@@ -86,53 +87,36 @@ internal static class EventImposterVerificationBuilder
                     ParameterSyntax(criteria)
                 )
             )
-            .AddParameter(ParameterSyntax(@event.Builder.Methods.CountParameter));
-
-        return methodBuilder.WithBody(BuildRaisedBody(@event)).Build();
-    }
-
-    private static BlockSyntax BuildRaisedBody(in ImposterEventMetadata @event)
-    {
-        var blockBuilder = new BlockBuilder();
-        var countParameterName = @event.Builder.Methods.CountParameter.Name;
-        foreach (var criteria in @event.Builder.Methods.RaisedCriteriaParameters)
-        {
-            blockBuilder.AddStatement(ThrowIfNull(criteria.Name));
-        }
-
-        blockBuilder.AddStatement(ThrowIfNull(countParameterName));
-
-        var predicate = BuildRaisedPredicate(@event);
-
-        AddEnsureCountMatchesStatements(
-            blockBuilder,
-            countParameterName,
-            FieldIdentifier(@event.Builder.Fields.History),
-            predicate,
-            BuildRaisedFailureBody(@event, predicate, countParameterName)
-        );
-
-        blockBuilder.AddStatement(ReturnThis);
-
-        return blockBuilder.Build();
+            .AddParameter(ParameterSyntax(@event.Builder.Methods.CountParameter))
+            .WithBody(
+                BuildHistoryVerificationBody(
+                    @event,
+                    historyField: @event.Builder.Fields.History,
+                    criteriaParameterNames: @event.Builder.Methods.RaisedCriteriaParameters.Select(
+                        criteria => criteria.Name
+                    ),
+                    predicate: BuildRaisedPredicate(@event),
+                    descriptionFactory: entry =>
+                        BuildRaisedDescription(eventName, parameters, historyEntry, entry)
+                )
+            )
+            .Build();
     }
 
     private static ExpressionSyntax BuildRaisedPredicate(in ImposterEventMetadata @event)
     {
         var historyEntry = @event.Builder.Fields.HistoryEntry;
         var criteria = @event.Builder.Methods.RaisedCriteriaParameters;
-        var predicateBody = @event
+        return @event
             .Core.MatchedParameters.Select(
                 (parameter, index) =>
-                    (ExpressionSyntax)
-                        IdentifierName(criteria[index].Name)
-                            .Dot(IdentifierName("Matches"))
-                            .Call(Argument(historyEntry.ParameterValue(Entry, parameter)))
+                    (ExpressionSyntax)Matches(
+                        criteria[index].Name,
+                        historyEntry.ParameterValue(Entry, parameter)
+                    )
             )
             .DefaultIfEmpty(True)
             .Aggregate((current, next) => current.And(next));
-
-        return predicateBody;
     }
 
     internal static MethodDeclarationSyntax BuildHandlerInvokedVerificationMethod(
@@ -156,11 +140,8 @@ internal static class EventImposterVerificationBuilder
                 BuildHistoryVerificationBody(
                     @event,
                     historyField: @event.Builder.Fields.HandlerInvocations,
-                    criteriaParameterName: criteriaName,
-                    predicateFactory: entry =>
-                        IdentifierName(criteriaName)
-                            .Dot(IdentifierName("Matches"))
-                            .Call(Argument(handlerInvocationEntry.Handler(entry))),
+                    criteriaParameterNames: [criteriaName],
+                    predicate: Matches(criteriaName, handlerInvocationEntry.Handler(Entry)),
                     descriptionFactory: entry =>
                         BuildHandlerInvocationDescription(
                             eventName,
@@ -173,26 +154,29 @@ internal static class EventImposterVerificationBuilder
             .Build();
     }
 
+    // The predicate and the description read the history entry as Entry.
     private static BlockSyntax BuildHistoryVerificationBody(
         in ImposterEventMetadata @event,
         in FieldMetadata historyField,
-        string criteriaParameterName,
-        Func<ExpressionSyntax, ExpressionSyntax> predicateFactory,
+        IEnumerable<string> criteriaParameterNames,
+        ExpressionSyntax predicate,
         Func<ExpressionSyntax, ExpressionSyntax> descriptionFactory
     )
     {
         var countParameterName = @event.Builder.Methods.CountParameter.Name;
 
-        var blockBuilder = new BlockBuilder()
-            .AddStatement(ThrowIfNull(criteriaParameterName))
-            .AddStatement(ThrowIfNull(countParameterName));
+        var blockBuilder = new BlockBuilder();
+        foreach (var criteriaParameterName in criteriaParameterNames)
+        {
+            blockBuilder.AddStatement(ThrowIfNull(criteriaParameterName));
+        }
 
-        var predicate = predicateFactory(Entry);
+        blockBuilder.AddStatement(ThrowIfNull(countParameterName));
 
         AddEnsureCountMatchesStatements(
             blockBuilder,
             countParameterName,
-            FieldIdentifier(historyField),
+            IdentifierName(historyField.Name),
             predicate,
             BuildHistoryFailureBody(historyField, descriptionFactory, predicate, countParameterName)
         );
@@ -201,6 +185,9 @@ internal static class EventImposterVerificationBuilder
 
         return blockBuilder.Build();
     }
+
+    private static InvocationExpressionSyntax Matches(string criteria, ExpressionSyntax value) =>
+        IdentifierName(criteria).Dot(IdentifierName("Matches")).Call(Argument(value));
 
     private static void AddEnsureCountMatchesStatements(
         BlockBuilder blockBuilder,
@@ -262,7 +249,7 @@ internal static class EventImposterVerificationBuilder
                 ForEachStatement(
                     Var,
                     Entry.Identifier,
-                    FieldIdentifier(historyField),
+                    IdentifierName(historyField.Name),
                     Block(
                         IfStatement(
                             predicateBody,
@@ -282,24 +269,6 @@ internal static class EventImposterVerificationBuilder
                 IdentifierName("actual"),
                 JoinWithNewLines(performedInvocations)
             )
-        );
-    }
-
-    private static BlockSyntax BuildRaisedFailureBody(
-        in ImposterEventMetadata @event,
-        ExpressionSyntax predicateBody,
-        string countParameterName
-    )
-    {
-        var eventName = @event.Core.Name;
-        var parameters = @event.Core.MatchedParameters;
-        var historyEntry = @event.Builder.Fields.HistoryEntry;
-
-        return BuildHistoryFailureBody(
-            @event.Builder.Fields.History,
-            entry => BuildRaisedDescription(eventName, parameters, historyEntry, entry),
-            predicateBody,
-            countParameterName
         );
     }
 

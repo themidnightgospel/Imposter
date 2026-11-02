@@ -56,14 +56,14 @@ internal readonly struct ImposterTargetMetadata
 
     // The unique names each member's generated types are named after. A name in avoidedUniqueNames is taken already,
     // so a member that would get it gets another.
-    private readonly NameSet _symbolNameNamespace;
+    private readonly NameSet _uniqueNames;
 
     internal ImposterTargetMetadata(
         ImposterTargetModel target,
         IEnumerable<string> avoidedUniqueNames
     )
     {
-        _symbolNameNamespace = new NameSet(avoidedUniqueNames);
+        _uniqueNames = new NameSet(avoidedUniqueNames);
         Name = GetImposterName(target.Name);
         TypeParameters = new ImposterTargetTypeParametersMetadata(target.TypeParameters);
         ImposterTypeSyntax = SyntaxFactoryHelper.WithMethodGenericArguments(
@@ -71,7 +71,7 @@ internal readonly struct ImposterTargetMetadata
             Name
         );
         TargetTypeSyntax = SyntaxFactoryHelper.TypeSyntax(target.Type);
-        var memberNames = _symbolNameNamespace;
+        var uniqueNames = _uniqueNames;
         // Built for the first method that needs a numbered setup: most targets have none.
         HashSet<(string Name, string Signature)>? ownMethodSetups = null;
         HashSet<string>? ownPropertyAndEventSetupNames = null;
@@ -118,7 +118,7 @@ internal readonly struct ImposterTargetMetadata
         // signature, as an overload doesn't, but a numbered name with any method's, so it never sets up another member.
         string UniqueName(TargetMemberModel<MethodModel> method)
         {
-            var name = memberNames.Use(method.Member.Name);
+            var name = uniqueNames.Use(method.Member.Name);
             if (!ImposterTargetMethodMetadata.NeedsNumberedSetup(method))
             {
                 return name;
@@ -136,7 +136,7 @@ internal readonly struct ImposterTargetMetadata
                 )
             )
             {
-                name = memberNames.Use(method.Member.Name);
+                name = uniqueNames.Use(method.Member.Name);
             }
 
             return name;
@@ -168,7 +168,7 @@ internal readonly struct ImposterTargetMetadata
     ) =>
         new(
             property.Member,
-            _symbolNameNamespace.Use(property.Member.Name),
+            _uniqueNames.Use(property.Member.Name),
             memberNameSet,
             property.RequiresExplicitInterfaceImplementation,
             _getterExceptionTypeParameter
@@ -180,7 +180,7 @@ internal readonly struct ImposterTargetMetadata
     ) =>
         new(
             indexer.Member,
-            _symbolNameNamespace.Use(IndexerMemberName),
+            _uniqueNames.Use(IndexerMemberName),
             memberNameSet,
             indexer.RequiresExplicitInterfaceImplementation,
             _getterExceptionTypeParameter
@@ -192,7 +192,7 @@ internal readonly struct ImposterTargetMetadata
     ) =>
         new(
             @event.Member,
-            _symbolNameNamespace.Use(@event.Member.Name),
+            _uniqueNames.Use(@event.Member.Name),
             memberNameSet,
             @event.RequiresExplicitInterfaceImplementation
         );

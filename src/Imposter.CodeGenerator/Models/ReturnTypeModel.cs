@@ -1,5 +1,4 @@
 ﻿using Imposter.CodeGenerator.Helpers;
-using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
 
 namespace Imposter.CodeGenerator.Models;
@@ -46,7 +45,7 @@ internal sealed record ReturnTypeModel(
     internal static bool PassesThrough(IMethodSymbol method) =>
         method.RefKind == RefKind.None
         && (
-            (method.ReturnType.IsRefLikeType && SpanModel.FromReturnType(method) is null)
+            SpanModel.IsOtherRefStruct(method.ReturnType)
             || method.ReturnType.IsMethodTypeParameterAllowingRefStructs()
         );
 }

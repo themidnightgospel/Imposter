@@ -8,7 +8,7 @@ internal readonly struct ReturnTypeMetadata
 {
     internal readonly TypeSyntax? GenericAwaitableResultType;
 
-    internal readonly TypeSymbolMetadata TypeSymbolMetadata;
+    internal readonly TypeSyntax TypeSyntax;
 
     internal readonly bool IsAwaitable;
 
@@ -34,10 +34,8 @@ internal readonly struct ReturnTypeMetadata
             ? SyntaxFactoryHelper.TypeSyntaxIncludingNullable(resultType)
             : null;
 
-        TypeSymbolMetadata = new TypeSymbolMetadata(
-            returnTypeSyntax,
-            NullableReturnTypeSyntax(returnType, returnTypeSyntax)
-        );
+        TypeSyntax = returnTypeSyntax;
+        var nullableTypeSyntax = NullableReturnTypeSyntax(returnType, returnTypeSyntax);
 
         IsSpan = returnType.Span is not null;
         _returnType = returnType;
@@ -51,7 +49,7 @@ internal readonly struct ReturnTypeMetadata
                     returnType,
                     SyntaxFactoryHelper.RuntimeTypeSyntax(returnType.Type)
                 )
-            : TypeSymbolMetadata.NullableTypeSyntax;
+            : nullableTypeSyntax;
     }
 
     internal ExpressionSyntax KeptValue(ExpressionSyntax result) =>

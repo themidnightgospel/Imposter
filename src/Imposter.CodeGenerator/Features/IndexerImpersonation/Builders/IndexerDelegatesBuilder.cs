@@ -19,9 +19,7 @@ internal static class IndexerDelegatesBuilder
             .. BuildGeneratedValueDelegates(indexer),
         ];
 
-    // The delegates that stand in for Func<T> and Action when the value or a key is passed through (see
-    // IndexerDelegateMetadata). They take the internal arguments class, so they're internal too, and they take the
-    // keys passed through beside it.
+    // See ImposterIndexerCoreMetadata.HasGeneratedValueDelegates for when these delegates are generated and why.
     private static List<DelegateDeclarationSyntax> BuildGeneratedValueDelegates(
         in ImposterIndexerMetadata indexer
     )

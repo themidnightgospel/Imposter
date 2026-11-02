@@ -7,7 +7,7 @@ internal readonly struct SharedPropertyMetadata
 {
     internal readonly NameSyntax GetterType;
     internal readonly NameSyntax SetterType;
-    internal const string SetForInit = "SetForInit";
+    internal const string RecordAndShouldCallBase = "RecordAndShouldCallBase";
 
     internal SharedPropertyMetadata(in ImposterPropertyCoreMetadata property)
     {

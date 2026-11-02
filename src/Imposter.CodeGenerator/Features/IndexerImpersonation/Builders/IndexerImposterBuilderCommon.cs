@@ -8,7 +8,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.Features.Shared.Builders.FormatValueMethodBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
-using static Imposter.CodeGenerator.SyntaxHelpers.VolatileSyntaxHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.IndexerImpersonation.Builders;
@@ -19,7 +18,7 @@ internal static class IndexerImposterBuilderCommon
     internal const string InvocationBehaviorParameterName = "invocationBehavior";
     internal const string PropertyDisplayNameParameterName = "propertyDisplayName";
 
-    internal static ArgumentListSyntax BuildIndexerArgumentsArgumentList(
+    private static ArgumentListSyntax BuildIndexerArgumentsArgumentList(
         in ImposterIndexerMetadata indexer
     ) =>
         ArgumentList(
@@ -79,19 +78,6 @@ internal static class IndexerImposterBuilderCommon
     internal static IEnumerable<ArgumentSyntax> PassedThroughKeyArguments(
         IReadOnlyList<string> names
     ) => names.Select(name => Argument(IdentifierName(name)));
-
-    internal static ArgumentListSyntax BuildDelegateInvocationArgumentsWithValue(
-        ExpressionSyntax source,
-        in ImposterIndexerMetadata indexer,
-        IReadOnlyList<string> passedThroughKeyNames,
-        ExpressionSyntax valueExpression
-    )
-    {
-        var arguments = BuildDelegateInvocationArguments(source, indexer, passedThroughKeyNames)
-            .Arguments.Add(Argument(valueExpression));
-
-        return ArgumentList(arguments);
-    }
 
     // The keys a setup matches, formatted as an index list. An indexer whose keys all pass through has none.
     internal static ExpressionSyntax BuildIndices(
@@ -170,13 +156,4 @@ internal static class IndexerImposterBuilderCommon
             )
             .Build();
     }
-
-    internal static MethodDeclarationSyntax BuildMarkConfiguredMethod(
-        string methodName,
-        string fieldName
-    ) =>
-        new MethodDeclarationBuilder(WellKnownTypes.Void, methodName)
-            .AddModifier(Token(SyntaxKind.PrivateKeyword))
-            .WithBody(Block(VolatileWrite(fieldName, True).ToStatementSyntax()))
-            .Build();
 }

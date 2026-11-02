@@ -1063,13 +1063,13 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				ICurrentPropertyGetterFluentBuilder ICurrentPropertyGetterUseBaseImplementationBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 
 				ICurrentPropertyGetterFluentBuilder ICurrentPropertyGetterFluentBuilder.UseBaseImplementation()
 				{
-					EnableBaseImplementation();
+					UseBaseImplementation();
 					return this;
 				}
 			}
@@ -1128,7 +1128,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			ICurrentPropertyBuilder ICurrentPropertyBuilder.UseBaseImplementation()
 			{
-				_getterImposterBuilder.EnableBaseImplementation();
+				_getterImposterBuilder.UseBaseImplementation();
 				_setterImposter.UseBaseImplementation();
 				return this;
 			}

@@ -4,7 +4,6 @@ using Imposter.CodeGenerator.Features.Shared.Builders;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Imposter.CodeGenerator.Features.EventImpersonation.Builders.EventImposterBuilderCommon;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -82,7 +81,7 @@ internal static class EventImposterBuilder
             .WithExplicitInterfaceSpecifier(@event.BuilderInterface.TypeSyntax)
             .WithBody(
                 Block(
-                    FieldIdentifier(@event.Builder.Fields.UseBaseImplementation)
+                    IdentifierName(@event.Builder.Fields.UseBaseImplementation.Name)
                         .Assign(True)
                         .ToStatementSyntax(),
                     ReturnThis

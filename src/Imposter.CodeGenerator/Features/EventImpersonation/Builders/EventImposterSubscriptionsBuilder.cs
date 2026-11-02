@@ -3,7 +3,6 @@ using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Imposter.CodeGenerator.Features.EventImpersonation.Builders.EventImposterBuilderCommon;
 using static Imposter.CodeGenerator.Features.Shared.Builders.MissingImposterBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -66,8 +65,8 @@ internal static class EventImposterSubscriptionsBuilder
 
         var blockBuilder = new BlockBuilder()
             .AddStatement(ThrowIfNull(method.HandlerParameter.Name))
-            .AddStatements(
-                UpdateActiveHandlers(@event, handlerIdentifier, method.DelegateOperation)
+            .AddStatement(
+                UpdateActiveHandlers(@event, handlerIdentifier, method.ActiveHandlersOperation)
             )
             .AddExpression(
                 LazyCollectionSyntaxHelper
@@ -131,18 +130,16 @@ internal static class EventImposterSubscriptionsBuilder
             @event.Builder.Fields.UnsubscribeInterceptors
         );
 
-    private static StatementSyntax[] UpdateActiveHandlers(
+    private static ExpressionStatementSyntax UpdateActiveHandlers(
         in ImposterEventMetadata @event,
         IdentifierNameSyntax handler,
-        string delegateOperation
+        string activeHandlersOperation
     ) =>
-        [
-            LazyCollectionSyntaxHelper
-                .EnsureInitialized(@event.Builder.Fields.ActiveHandlers.Name)
-                .Dot(IdentifierName(delegateOperation))
-                .Call(Argument(handler))
-                .ToStatementSyntax(),
-        ];
+        LazyCollectionSyntaxHelper
+            .EnsureInitialized(@event.Builder.Fields.ActiveHandlers.Name)
+            .Dot(IdentifierName(activeHandlersOperation))
+            .Call(Argument(handler))
+            .ToStatementSyntax();
 
     private static StatementSyntax ForEachInterceptor(
         in FieldMetadata interceptorsField,
@@ -152,7 +149,7 @@ internal static class EventImposterSubscriptionsBuilder
             ForEachStatement(
                 Var,
                 Identifier("interceptor"),
-                FieldIdentifier(interceptorsField),
+                IdentifierName(interceptorsField.Name),
                 Block(
                     IdentifierName("interceptor")
                         .Call(Argument(IdentifierName(handlerIdentifier)))
@@ -195,7 +192,7 @@ internal static class EventImposterSubscriptionsBuilder
         IdentifierNameSyntax baseImplementationIdentifier
     ) =>
         CallBaseImplementationIfUsed(
-            FieldIdentifier(@event.Builder.Fields.UseBaseImplementation),
+            IdentifierName(@event.Builder.Fields.UseBaseImplementation.Name),
             baseImplementationIdentifier,
             Block(baseImplementationIdentifier.Call().ToStatementSyntax()),
             ThrowMissingImposter(@event.Builder.Fields.EventDisplayName.Name, " (event)")
