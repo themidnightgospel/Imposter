@@ -16,7 +16,7 @@ namespace Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.Propert
 
 internal static partial class GetterImposterBuilderBuilder
 {
-    internal static ClassDeclarationSyntax? Build(in ImposterPropertyMetadata property)
+    internal static ClassDeclarationSyntax Build(in ImposterPropertyMetadata property)
     {
         if (property.Core.UsesSharedRuntime)
         {
@@ -253,7 +253,7 @@ internal static partial class GetterImposterBuilderBuilder
             ReturnThis
         );
 
-    internal static MethodDeclarationSyntax BuildGetterCallbackMethod(
+    private static MethodDeclarationSyntax BuildGetterCallbackMethod(
         in PropertyGetterImposterBuilderMetadata builder,
         in PropertyGetterImposterBuilderInterfaceMetadata builderInterface
     ) =>
@@ -281,7 +281,7 @@ internal static partial class GetterImposterBuilderBuilder
             )
             .Build();
 
-    internal static MethodDeclarationSyntax BuildGetterCalledMethod(
+    private static MethodDeclarationSyntax BuildGetterCalledMethod(
         in PropertyGetterImposterBuilderMetadata builder,
         in PropertyGetterImposterBuilderInterfaceMetadata builderInterface
     )
@@ -441,7 +441,7 @@ internal static partial class GetterImposterBuilderBuilder
         ParenthesizedLambdaExpression(body)
             .WithParameterList(ParameterList(SingletonSeparatedList(Parameter(Identifier("_")))));
 
-    internal static MethodDeclarationSyntax BuildGetMethod(in ImposterPropertyMetadata property)
+    private static MethodDeclarationSyntax BuildGetMethod(in ImposterPropertyMetadata property)
     {
         var builder = property.GetterImposterBuilder;
         var baseImplementationIdentifier = IdentifierName(

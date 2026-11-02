@@ -70,7 +70,7 @@ internal static class SetterImposterBuilderBuilder
         return constructor.Build();
     }
 
-    internal static MethodDeclarationSyntax BuildCalledMethod(
+    private static MethodDeclarationSyntax BuildCalledMethod(
         in ImposterPropertyMetadata property
     ) =>
         new MethodDeclarationBuilder(
@@ -102,7 +102,7 @@ internal static class SetterImposterBuilderBuilder
             )
             .Build();
 
-    internal static MethodDeclarationSyntax BuildCallbackMethod(
+    private static MethodDeclarationSyntax BuildCallbackMethod(
         in ImposterPropertyMetadata property
     ) =>
         new MethodDeclarationBuilder(

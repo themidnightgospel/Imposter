@@ -5,9 +5,11 @@ namespace Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
 
 internal readonly struct SharedPropertyMetadata
 {
-    internal readonly NameSyntax GetterType;
-    internal readonly NameSyntax SetterType;
     internal const string RecordAndShouldCallBase = "RecordAndShouldCallBase";
+
+    internal readonly NameSyntax GetterType;
+
+    internal readonly NameSyntax SetterType;
 
     internal SharedPropertyMetadata(in ImposterPropertyCoreMetadata property)
     {

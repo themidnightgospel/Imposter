@@ -54,13 +54,8 @@ internal static class PropertyImposterBuilder
             .AddMember(BuildUseBaseImplementationMethod(property))
             .Build();
 
-    internal static MethodDeclarationSyntax? BuildSetterMethod(in ImposterPropertyMetadata property)
+    private static MethodDeclarationSyntax BuildSetterMethod(in ImposterPropertyMetadata property)
     {
-        if (!property.Core.HasSetter)
-        {
-            return null;
-        }
-
         var criteria = property.ImposterBuilderInterface.SetterMethod.CriteriaParameter;
         var builderArguments = new List<ArgumentSyntax>
         {
@@ -89,14 +84,10 @@ internal static class PropertyImposterBuilder
             .Build();
     }
 
-    internal static MethodDeclarationSyntax? BuildGetterMethod(in ImposterPropertyMetadata property)
-    {
-        if (!property.Core.HasGetter)
-        {
-            return null;
-        }
-
-        return new MethodDeclarationBuilder(
+    private static MethodDeclarationSyntax BuildGetterMethod(
+        in ImposterPropertyMetadata property
+    ) =>
+        new MethodDeclarationBuilder(
             property.ImposterBuilderInterface.GetterMethod.ReturnType,
             property.ImposterBuilderInterface.GetterMethod.Name
         )
@@ -109,7 +100,6 @@ internal static class PropertyImposterBuilder
                 )
             )
             .Build();
-    }
 
     private static MethodDeclarationSyntax? BuildUseBaseImplementationMethod(
         in ImposterPropertyMetadata property
@@ -122,7 +112,7 @@ internal static class PropertyImposterBuilder
 
         var statements = new List<StatementSyntax>();
 
-        if (property.Core.HasGetter && property.Core.GetterSupportsBaseImplementation)
+        if (property.Core.GetterSupportsBaseImplementation)
         {
             statements.Add(
                 IdentifierName(property.ImposterBuilder.GetterImposterBuilderField.Name)
@@ -136,7 +126,7 @@ internal static class PropertyImposterBuilder
             );
         }
 
-        if (property.Core.HasSetter && property.Core.SetterSupportsBaseImplementation)
+        if (property.Core.SetterSupportsBaseImplementation)
         {
             statements.Add(
                 IdentifierName(property.ImposterBuilder.SetterImposterField.Name)
@@ -154,7 +144,7 @@ internal static class PropertyImposterBuilder
             .Build();
     }
 
-    internal static ConstructorDeclarationSyntax BuildConstructor(
+    private static ConstructorDeclarationSyntax BuildConstructor(
         in ImposterPropertyMetadata property
     )
     {
