@@ -412,13 +412,7 @@ public sealed class ImposterGenerator : IIncrementalGenerator
 
             imposterBuilder
                 .AddIndexerImposter(indexer)
-                .AddInterfaceSetupMember(
-                    targetIndexer.Setup,
-                    indexer.Core.UniqueName,
-                    indexer.BuilderInterface.TypeSyntax,
-                    isSetUpByMethod: indexer.IsSetUpByMethod,
-                    hasSetupMethod: indexer.HasSetupMethod
-                )
+                .AddInterfaceSetupMember(targetIndexer.Setup, indexer)
                 .AddMemberTypes(
                     indexer.Core.UniqueName,
                     [
