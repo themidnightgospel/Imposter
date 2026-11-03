@@ -24,11 +24,11 @@ internal class BlockBuilder
         return this;
     }
 
-    internal BlockBuilder AddExpression(ExpressionSyntax? statementSyntax)
+    internal BlockBuilder AddExpression(ExpressionSyntax? expression)
     {
-        if (statementSyntax is not null)
+        if (expression is not null)
         {
-            _statements.Add(statementSyntax.ToStatementSyntax());
+            _statements.Add(expression.ToStatementSyntax());
         }
         return this;
     }

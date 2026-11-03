@@ -1,7 +1,6 @@
 ﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Shared;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
-using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -37,8 +36,11 @@ internal static class MethodImposterGenericInterfaceBuilder
 
         var hasMatchingGroupMethod = hasMatchingGroupMethodBuilder.WithSemicolon().Build();
 
-        return InterfaceDeclarationBuilderFactory
-            .CreateForMethod(method.Model, method.MethodImposter.Interface.Name)
+        return new InterfaceDeclarationBuilder(
+            method.MethodImposter.Interface.Name,
+            method.GenericTypeParameterListSyntax
+        )
+            .AddConstraintClauses(method.GenericTypeConstraintClauses)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(method.MethodImposter.Interface.Syntax))
             .AddMember(invokeMethod)
