@@ -270,7 +270,7 @@ internal static class EventImposterRaiseBuilder
                     BinaryExpression(
                         SyntaxKind.GreaterThanExpression,
                         pendingTasks.Dot(IdentifierName("Count")),
-                        LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))
+                        NumericLiteral(0)
                     )
                 ),
             Block(

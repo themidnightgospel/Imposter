@@ -21,7 +21,7 @@ internal static partial class InvocationHistoryCollectionBuilder
                 SingleVariableField(
                     historyType,
                     InvocationHistoryCollectionMetadata.HeadFieldName,
-                    TokenList(Token(SyntaxKind.PrivateKeyword))
+                    SyntaxKind.PrivateKeyword
                 )
             )
             .AddMember(
@@ -32,7 +32,7 @@ internal static partial class InvocationHistoryCollectionBuilder
                         SingleVariableField(
                             historyType,
                             InvocationHistoryCollectionMetadata.NextFieldName,
-                            TokenList(Token(SyntaxKind.InternalKeyword))
+                            SyntaxKind.InternalKeyword
                         )
                     )
                     .Build()

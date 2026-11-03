@@ -93,25 +93,17 @@ internal static partial class InvocationHistoryBuilder
 
         return WellKnownTypes
             .System.String.Dot(IdentifierName("Join"))
-            .Call(
-                ArgumentList(
-                    SeparatedList<ArgumentSyntax>(
-                        new SyntaxNodeOrToken[]
-                        {
-                            Argument(", ".StringLiteral()),
-                            Token(SyntaxKind.CommaToken),
-                            Argument(
-                                ImplicitArrayCreationExpression(
-                                    InitializerExpression(
-                                        SyntaxKind.ArrayInitializerExpression,
-                                        SeparatedList(argumentDescriptions)
-                                    )
-                                )
-                            ),
-                        }
+            .Call([
+                Argument(", ".StringLiteral()),
+                Argument(
+                    ImplicitArrayCreationExpression(
+                        InitializerExpression(
+                            SyntaxKind.ArrayInitializerExpression,
+                            SeparatedList(argumentDescriptions)
+                        )
                     )
-                )
-            );
+                ),
+            ]);
     }
 
     private static ConditionalExpressionSyntax BuildExceptionText()

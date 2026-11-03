@@ -1,6 +1,4 @@
 ﻿using Imposter.CodeGenerator.SyntaxHelpers;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -75,16 +73,12 @@ internal readonly struct IndexerSetterImposterMetadata
         // A value passed through can't be kept, so the history keeps the keys alone.
         TypeSyntax invocationHistoryEntryType = !indexer.Core.IsValuePassedThrough
             ? TupleType(
-                SeparatedList<TupleElementSyntax>(
-                    new SyntaxNodeOrToken[]
-                    {
-                        TupleElement(indexer.Arguments.TypeSyntax)
-                            .WithIdentifier(Identifier(HistoryArgumentsElementName)),
-                        Token(SyntaxKind.CommaToken),
-                        TupleElement(indexer.Core.NullableAwareKeptTypeSyntax)
-                            .WithIdentifier(Identifier(HistoryValueElementName)),
-                    }
-                )
+                SeparatedList<TupleElementSyntax>([
+                    TupleElement(indexer.Arguments.TypeSyntax)
+                        .WithIdentifier(Identifier(HistoryArgumentsElementName)),
+                    TupleElement(indexer.Core.NullableAwareKeptTypeSyntax)
+                        .WithIdentifier(Identifier(HistoryValueElementName)),
+                ])
             )
             : indexer.Arguments.TypeSyntax;
         InvocationHistoryField = new FieldMetadata(
@@ -141,19 +135,15 @@ internal readonly struct IndexerSetterImposterMetadata
 
     private static TupleTypeSyntax BuildRegistrationTuple(in ImposterIndexerMetadata indexer) =>
         TupleType(
-            SeparatedList<TupleElementSyntax>(
-                new SyntaxNodeOrToken[]
-                {
-                    TupleElement(
-                        indexer.ArgumentsCriteria.TypeSyntax,
-                        Identifier(RegistrationCriteriaElementName)
-                    ),
-                    Token(SyntaxKind.CommaToken),
-                    TupleElement(
-                        indexer.Delegates.SetterCallbackDelegateType,
-                        Identifier(RegistrationCallbackElementName)
-                    ),
-                }
-            )
+            SeparatedList<TupleElementSyntax>([
+                TupleElement(
+                    indexer.ArgumentsCriteria.TypeSyntax,
+                    Identifier(RegistrationCriteriaElementName)
+                ),
+                TupleElement(
+                    indexer.Delegates.SetterCallbackDelegateType,
+                    Identifier(RegistrationCallbackElementName)
+                ),
+            ])
         );
 }
