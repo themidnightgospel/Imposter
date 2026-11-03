@@ -65,8 +65,18 @@ jobs:
         with:
           subject-path: 'artifacts/*.nupkg'
 
+      # Trusted publishing: nuget.org trades the job's GitHub token for an API key that lasts an hour, so it is asked
+      # for right before the push.
+      - name: sign in to nuget
+        id: nuget-login
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
+        with:
+          user: ${{ secrets.NUGET_USER }}
+
       - name: publish nuget
-        run: dotnet nuget push './artifacts/*.nupkg' --source "$NUGET_SOURCE" --api-key '${{ secrets.NUGET_API_KEY }}' --skip-duplicate
+        run: dotnet nuget push './artifacts/*.nupkg' --source "$NUGET_SOURCE" --api-key "$NUGET_API_KEY" --skip-duplicate
+        env:
+          NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
 
       - name: add release assets
         run: |
