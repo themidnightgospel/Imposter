@@ -104,12 +104,7 @@ internal static class IndexerArgumentsBuilder
         return new MethodDeclarationBuilder(WellKnownTypes.Bool, "Equals")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddModifier(Token(SyntaxKind.OverrideKeyword))
-            .AddParameter(
-                ParameterSyntax(
-                    NullableType(PredefinedType(Token(SyntaxKind.ObjectKeyword))),
-                    "obj"
-                )
-            )
+            .AddParameter(ParameterSyntax(WellKnownTypes.Object.ToNullableType(), "obj"))
             .WithBody(
                 Block(
                     ReturnStatement(
@@ -136,11 +131,7 @@ internal static class IndexerArgumentsBuilder
         var hash = IdentifierName(indexer.Arguments.HashVariableName);
         var statements = new List<StatementSyntax>
         {
-            LocalVariableDeclarationSyntax(
-                Var,
-                hash.Identifier.Text,
-                LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(17))
-            ),
+            LocalVariableDeclarationSyntax(Var, hash.Identifier.Text, NumericLiteral(17)),
         };
 
         statements.AddRange(
@@ -151,7 +142,7 @@ internal static class IndexerArgumentsBuilder
                             BinaryExpression(
                                 SyntaxKind.MultiplyExpression,
                                 hash,
-                                LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(31))
+                                NumericLiteral(31)
                             ),
                             parameter
                                 .EqualityComparer.Dot(IdentifierName("GetHashCode"))

@@ -19,9 +19,8 @@ internal static class DefaultIndexerBehaviourBuilder
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddMember(
                 SingleVariableField(
-                    indexer.DefaultIndexerBehaviour.IsOnBackingField.Type,
-                    indexer.DefaultIndexerBehaviour.IsOnBackingField.Name,
-                    TokenList(Token(SyntaxKind.PrivateKeyword)),
+                    indexer.DefaultIndexerBehaviour.IsOnBackingField,
+                    SyntaxKind.PrivateKeyword,
                     True
                 )
             )

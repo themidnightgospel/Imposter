@@ -22,15 +22,13 @@ internal static partial class MethodImposterBuilderBuilder
             .AddMembers(fields)
             .AddMember(
                 SinglePrivateReadonlyVariableField(
-                    method.MethodImposter.Builder.InvocationImposterGroupField.Type,
-                    method.MethodImposter.Builder.InvocationImposterGroupField.Name
+                    method.MethodImposter.Builder.InvocationImposterGroupField
                 )
             )
             .AddMember(
                 SingleVariableField(
-                    method.MethodImposter.Builder.CurrentInvocationImposterField.Type,
-                    method.MethodImposter.Builder.CurrentInvocationImposterField.Name,
-                    TokenList(Token(SyntaxKind.PrivateKeyword))
+                    method.MethodImposter.Builder.CurrentInvocationImposterField,
+                    SyntaxKind.PrivateKeyword
                 )
             );
 

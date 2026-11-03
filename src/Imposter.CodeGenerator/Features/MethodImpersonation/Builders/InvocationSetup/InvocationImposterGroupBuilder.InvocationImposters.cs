@@ -94,7 +94,7 @@ internal static partial class InvocationImposterGroupBuilder
             )
             .WithBody(
                 Block(
-                    IfStatement(isConfigured, Block(ReturnStatement())),
+                    IfStatement(isConfigured, Block(ReturnVoid)),
                     isConfigured.Assign(True).ToStatementSyntax(),
                     IdentifierName(
                             MethodInvocationImposterGroupMetadata.InvocationImpostersFieldName

@@ -21,10 +21,8 @@ internal static class IndexerImposterBuilderCommon
     private static ArgumentListSyntax BuildIndexerArgumentsArgumentList(
         in ImposterIndexerMetadata indexer
     ) =>
-        ArgumentList(
-            SeparatedList(
-                indexer.Core.MatchedParameters.Select(parameter => parameter.ConstructorArgument)
-            )
+        ArgumentListSyntax(
+            indexer.Core.MatchedParameters.Select(parameter => parameter.ConstructorArgument)
         );
 
     internal static LocalDeclarationStatementSyntax CreateArgumentsDeclaration(
@@ -56,7 +54,7 @@ internal static class IndexerImposterBuilderCommon
             );
         }
 
-        return ArgumentList(SeparatedList(arguments));
+        return ArgumentListSyntax(arguments);
     }
 
     // The keys passed through, which members and handlers take beside the arguments class under the given names, as
@@ -92,34 +90,22 @@ internal static class IndexerImposterBuilderCommon
 
         var formattedValues = IdentifierName("string")
             .Dot(IdentifierName("Join"))
-            .Call(
-                ArgumentList(
-                    SeparatedList<ArgumentSyntax>(
-                        new SyntaxNodeOrToken[]
-                        {
-                            Argument(", ".StringLiteral()),
-                            Token(SyntaxKind.CommaToken),
-                            Argument(
-                                ImplicitArrayCreationExpression(
-                                    InitializerExpression(
-                                        SyntaxKind.ArrayInitializerExpression,
-                                        SeparatedList(
-                                            indexer.Core.MatchedParameters.Select(
-                                                ExpressionSyntax (parameter) =>
-                                                    Invocation(
-                                                        source.Dot(
-                                                            IdentifierName(parameter.FieldName)
-                                                        )
-                                                    )
-                                            )
-                                        )
-                                    )
+            .Call([
+                Argument(", ".StringLiteral()),
+                Argument(
+                    ImplicitArrayCreationExpression(
+                        InitializerExpression(
+                            SyntaxKind.ArrayInitializerExpression,
+                            SeparatedList(
+                                indexer.Core.MatchedParameters.Select(
+                                    ExpressionSyntax (parameter) =>
+                                        Invocation(source.Dot(IdentifierName(parameter.FieldName)))
                                 )
-                            ),
-                        }
+                            )
+                        )
                     )
-                )
-            );
+                ),
+            ]);
 
         return "[".StringLiteral().Add(formattedValues.Add("]".StringLiteral()));
     }

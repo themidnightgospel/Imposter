@@ -47,7 +47,9 @@ internal static class MethodImposterMembersBuilder
                     Block(
                         ReturnStatement(
                             method.MethodImposter.Builder.Syntax.New(
-                                ArgumentList(SeparatedList(GetBuilderClassArguments(method)))
+                                SyntaxFactoryHelper.ArgumentListSyntax(
+                                    GetBuilderClassArguments(method)
+                                )
                             )
                         )
                     )

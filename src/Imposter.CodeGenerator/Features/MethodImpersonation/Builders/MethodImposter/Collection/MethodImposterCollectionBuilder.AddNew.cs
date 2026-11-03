@@ -68,15 +68,9 @@ internal static partial class MethodImposterCollectionBuilder
         in ImposterTargetMethodMetadata method
     ) =>
         method.MethodImposter.Syntax.New(
-            ArgumentList(
-                SeparatedList<ArgumentSyntax>(
-                    new SyntaxNodeOrToken[]
-                    {
-                        Argument(IdentifierName(method.InvocationHistory.Collection.AsField.Name)),
-                        Token(SyntaxKind.CommaToken),
-                        Argument(IdentifierName(method.MethodImposter.InvocationBehaviorFieldName)),
-                    }
-                )
-            )
+            ArgumentListSyntax([
+                Argument(IdentifierName(method.InvocationHistory.Collection.AsField.Name)),
+                Argument(IdentifierName(method.MethodImposter.InvocationBehaviorFieldName)),
+            ])
         );
 }

@@ -28,7 +28,7 @@ internal static partial class InvocationHistoryCollectionBuilder
                         LocalVariableDeclarationSyntax(
                             Var,
                             names.CountVariableName,
-                            LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))
+                            NumericLiteral(0)
                         )
                     )
                     .AddStatements(

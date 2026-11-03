@@ -597,7 +597,7 @@ internal readonly ref struct ImposterInstanceBuilder
             var invokeMethodInvocationExpression =
                 GetImposterWithMatchingInvocationImposterGroupExpression(imposterMethod)
                     .Dot(IdentifierName(MethodImposterInvokeMethodMetadata.Name))
-                    .Call(ArgumentList(SeparatedList(invokeArguments)));
+                    .Call(invokeArguments);
 
             var body = Block(
                 imposterMethod.HasReturnValue
@@ -664,12 +664,8 @@ internal readonly ref struct ImposterInstanceBuilder
             {
                 if (method.Parameters.HasInputParameters)
                 {
-                    return ArgumentList(
-                        SeparatedList(
-                            method.Parameters.InputParameterMetadata.Select(p =>
-                                Argument(p.KeptValue)
-                            )
-                        )
+                    return ArgumentListSyntax(
+                        method.Parameters.InputParameterMetadata.Select(p => Argument(p.KeptValue))
                     );
                 }
 

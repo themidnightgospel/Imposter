@@ -185,14 +185,14 @@ internal static partial class IndexerGetterBuilder
     )
     {
         var getter = indexer.GetterImplementation;
-        var arguments = Parameter(Identifier(getter.ArgumentsVariableName));
+        var arguments = Identifier(getter.ArgumentsVariableName);
         LambdaExpressionSyntax generator =
             indexer.Core.PassedThroughParameters.Length == 0
-                ? SimpleLambdaExpression(arguments, outcome)
+                ? arguments.Lambda(outcome)
                 : ParenthesizedLambdaExpression(
                     ParameterList(
                         SeparatedList([
-                            arguments,
+                            Parameter(arguments),
                             .. PassedThroughKeyLambdaParameters(
                                 indexer.GetterPassedThroughKeyNames
                             ),

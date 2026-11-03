@@ -2,7 +2,6 @@
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.Features.IndexerImpersonation.Builders.IndexerImposterBuilderCommon;
@@ -100,11 +99,7 @@ internal static partial class IndexerSetterBuilder
             .AddMember(SinglePrivateReadonlyVariableField(setter.InvocationBehaviorField))
             .AddMember(SinglePrivateReadonlyVariableField(setter.PropertyDisplayNameField))
             .AddMember(
-                SingleVariableField(
-                    setter.HasConfiguredSetterField.Type,
-                    setter.HasConfiguredSetterField.Name,
-                    SyntaxKind.PrivateKeyword
-                )
+                SingleVariableField(setter.HasConfiguredSetterField, SyntaxKind.PrivateKeyword)
             )
             .AddMember(BuildSetterConstructor(indexer))
             .AddMember(BuildSetterCallbackMethod(indexer))
@@ -141,14 +136,10 @@ internal static partial class IndexerSetterBuilder
         );
 
         var tupleExpression = TupleExpression(
-            SeparatedList<ArgumentSyntax>(
-                new SyntaxNodeOrToken[]
-                {
-                    Argument(IdentifierName(setter.CriteriaParameterName)),
-                    Token(SyntaxKind.CommaToken),
-                    Argument(IdentifierName(callbackParameter.Identifier)),
-                }
-            )
+            SeparatedList<ArgumentSyntax>([
+                Argument(IdentifierName(setter.CriteriaParameterName)),
+                Argument(IdentifierName(callbackParameter.Identifier)),
+            ])
         );
 
         return new MethodDeclarationBuilder(
@@ -200,8 +191,7 @@ internal static partial class IndexerSetterBuilder
                     .Dot(IdentifierName("Count"))
                     .Call(
                         Argument(
-                            SimpleLambdaExpression(
-                                Parameter(entryIdentifier.Identifier),
+                            entryIdentifier.Identifier.Lambda(
                                 IdentifierName(setter.CriteriaParameterName)
                                     .Dot(
                                         IdentifierName(
@@ -511,16 +501,7 @@ internal static partial class IndexerSetterBuilder
         ExpressionSyntax value
     ) =>
         !indexer.Core.IsValuePassedThrough
-            ? TupleExpression(
-                SeparatedList<ArgumentSyntax>(
-                    new SyntaxNodeOrToken[]
-                    {
-                        Argument(arguments),
-                        Token(SyntaxKind.CommaToken),
-                        Argument(value),
-                    }
-                )
-            )
+            ? TupleExpression(SeparatedList<ArgumentSyntax>([Argument(arguments), Argument(value)]))
             : arguments;
 
     private static MethodDeclarationSyntax BuildEnsureSetterConfiguredMethod(

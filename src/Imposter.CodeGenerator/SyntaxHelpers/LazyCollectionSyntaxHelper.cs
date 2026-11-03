@@ -8,21 +8,12 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 internal static class LazyCollectionSyntaxHelper
 {
     internal static FieldDeclarationSyntax Field(in FieldMetadata field) =>
-        SingleVariableField(
-            field.Type.ToNullableType(),
-            field.Name,
-            TokenList(Token(SyntaxKind.PrivateKeyword))
-        );
+        SingleVariableField(field.Type.ToNullableType(), field.Name, SyntaxKind.PrivateKeyword);
 
     internal static ExpressionSyntax CountOrZero(
         ExpressionSyntax history,
         ExpressionSyntax count
-    ) =>
-        ConditionalExpression(
-            history.IsNotNull(),
-            count,
-            LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))
-        );
+    ) => ConditionalExpression(history.IsNotNull(), count, NumericLiteral(0));
 
     internal static StatementSyntax UnlessNull(CommonForEachStatementSyntax loop) =>
         IfStatement(loop.Expression.IsNotNull(), Block(loop));

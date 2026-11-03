@@ -13,10 +13,7 @@ internal static class FormatValueMethodBuilder
 
     internal static MethodDeclarationSyntax Build()
     {
-        var valueParameter = ParameterSyntax(
-            NullableType(PredefinedType(Token(SyntaxKind.ObjectKeyword))),
-            "value"
-        );
+        var valueParameter = ParameterSyntax(WellKnownTypes.Object.ToNullableType(), "value");
 
         var valueToString = MemberBindingExpression(IdentifierName("ToString")).Call();
 
