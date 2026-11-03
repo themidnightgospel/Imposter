@@ -8,21 +8,14 @@ internal class NameSet(IEnumerable<string> alreadyUsedNames)
 
     internal string Use(string key)
     {
-        var counter = 0;
         var value = key;
+        var counter = 0;
 
-        while (IsNameUsed(value))
+        while (!_alreadyUsedNames.Add(value))
         {
             value = $"{key}_{++counter}";
         }
 
-        _alreadyUsedNames.Add(value);
-
         return value;
-    }
-
-    private bool IsNameUsed(string name)
-    {
-        return _alreadyUsedNames.Contains(name);
     }
 }

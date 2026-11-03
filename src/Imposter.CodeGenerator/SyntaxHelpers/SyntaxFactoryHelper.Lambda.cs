@@ -7,19 +7,19 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static partial class SyntaxFactoryHelper
 {
-    public static ParenthesizedLambdaExpressionSyntax Lambda(
+    internal static ParenthesizedLambdaExpressionSyntax Lambda(
         ParameterListSyntax parameterList,
         BlockSyntax body
     ) => ParenthesizedLambdaExpression(parameterList, body);
 
-    public static ParenthesizedLambdaExpressionSyntax EmptyParametersGoesTo(
+    internal static ParenthesizedLambdaExpressionSyntax EmptyParametersGoesTo(
         CSharpSyntaxNode body
     ) => ParenthesizedLambdaExpression(ParameterList(), body);
 
-    public static SimpleLambdaExpressionSyntax DiscardParameterGoesTo(CSharpSyntaxNode body) =>
+    internal static SimpleLambdaExpressionSyntax DiscardParameterGoesTo(CSharpSyntaxNode body) =>
         Identifier("_").Lambda(body);
 
-    public static SimpleLambdaExpressionSyntax Lambda(
+    internal static SimpleLambdaExpressionSyntax Lambda(
         this in SyntaxToken lambdaParameter,
         CSharpSyntaxNode body
     ) => SimpleLambdaExpression(Parameter(lambdaParameter), body);

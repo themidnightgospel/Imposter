@@ -33,7 +33,4 @@ internal static partial class SyntaxFactoryHelper
 
     internal static NullableDirectiveTriviaSyntax RestoreNullableTrivia() =>
         NullableDirectiveTrivia(Token(SyntaxKind.RestoreKeyword), isActive: true);
-
-    internal static TypeSyntax ToNullableType(this TypeSyntax typeSyntax) =>
-        NullableType(typeSyntax);
 }

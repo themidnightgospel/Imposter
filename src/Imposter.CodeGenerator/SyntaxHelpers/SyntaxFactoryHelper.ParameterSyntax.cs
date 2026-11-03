@@ -13,32 +13,6 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 
 internal static partial class SyntaxFactoryHelper
 {
-    internal static ArgumentListSyntax ArgumentListSyntax(IEnumerable<ParameterModel> parameters) =>
-        ArgumentListSyntax(parameters.Select(ArgumentSyntax));
-
-    internal static ArgumentSyntax ArgumentSyntax(ParameterModel parameter)
-    {
-        var name = IdentifierName(EscapeKeyword(parameter.Name));
-
-        return PassesAsObject(parameter)
-            ? Argument(AsObject(name, parameter.Type))
-            : Argument(null, Token(ForwardingKeyword(parameter.RefKind)), name);
-    }
-
-    // Preserves the parameter's ref kind when forwarding a variable. Explicit `in` keeps an `in` overload selected
-    // over a by-value overload and avoids CS9192/CS9195 for `ref readonly` parameters.
-    internal static ArgumentSyntax ForwardingArgument(string variableName, RefKind refKind) =>
-        Argument(null, Token(ForwardingKeyword(refKind)), IdentifierName(variableName));
-
-    private static SyntaxKind ForwardingKeyword(RefKind refKind) =>
-        refKind switch
-        {
-            RefKind.Ref => SyntaxKind.RefKeyword,
-            RefKind.Out => SyntaxKind.OutKeyword,
-            RefKind.In or RefKinds.RefReadOnlyParameter => SyntaxKind.InKeyword,
-            _ => SyntaxKind.None,
-        };
-
     internal static ParameterListSyntax ParameterListSyntaxWithoutDefaultValues(
         IEnumerable<ParameterModel> parameters,
         bool includeRefKind = true
@@ -186,24 +160,6 @@ internal static partial class SyntaxFactoryHelper
             ),
             _ => ParseExpression(defaultValue.ValueText),
         };
-
-    internal static StatementSyntax AssignDefaultValueStatementSyntax(ParameterModel parameter) =>
-        IdentifierName(EscapeKeyword(parameter.Name))
-            .Assign(DefaultNonNullable)
-            .ToStatementSyntax();
-
-    internal static TypeParameterListSyntax? TypeParameterListSyntax(
-        IReadOnlyList<NameSyntax> genericArguments
-    ) =>
-        genericArguments.Count == 0
-            ? null
-            : TypeParameterList(
-                SeparatedList(
-                    genericArguments.Select(name =>
-                        TypeParameter(((IdentifierNameSyntax)name).Identifier)
-                    )
-                )
-            );
 
     // C# reads (E)-1 as a subtraction, so a negative value is parenthesized: (E)(-1).
     private static ExpressionSyntax EnumValue(string valueText)
