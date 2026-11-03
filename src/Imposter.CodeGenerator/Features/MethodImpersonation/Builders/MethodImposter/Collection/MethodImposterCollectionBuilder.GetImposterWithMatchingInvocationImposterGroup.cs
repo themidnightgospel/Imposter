@@ -48,9 +48,8 @@ internal static partial class MethodImposterCollectionBuilder
                                 typedImposterName.Identifier.Text,
                                 IdentifierName(storedImposterIdentifier)
                                     .Dot(
-                                        GenericName(
-                                            Identifier("As"),
-                                            TypeArguments(method.GenericTypeArguments)
+                                        method.WithGenericArguments(
+                                            MethodImposterMetadata.AsMethodName
                                         )
                                     )
                                     .Call()

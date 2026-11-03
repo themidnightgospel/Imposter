@@ -2,6 +2,7 @@
 using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Shared;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
@@ -25,7 +26,7 @@ internal static partial class MethodImposterBuilder
 
         return new MethodDeclarationBuilder(
             NullableType(method.MethodImposter.GenericInterface.SyntaxWithTargetGenericArguments),
-            "As"
+            MethodImposterMetadata.AsMethodName
         )
             .WithExplicitInterfaceSpecifier(method.MethodImposter.Interface.Syntax)
             .WithTypeParameters(method.TargetGenericTypeParameterListSyntax)

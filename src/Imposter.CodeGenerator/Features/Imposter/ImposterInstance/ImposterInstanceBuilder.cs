@@ -194,7 +194,7 @@ internal readonly ref struct ImposterInstanceBuilder
         statements.Add(
             ReturnStatement(
                 MemberBuilder(indexer.BuilderField.Name)
-                    .Dot(IdentifierName("Get"))
+                    .Dot(IdentifierName(IndexerImposterBuilderMetadata.GetMethodName))
                     .Call(ArgumentListSyntax(arguments))
             )
         );
@@ -263,7 +263,7 @@ internal readonly ref struct ImposterInstanceBuilder
 
         statements.Add(
             MemberBuilder(indexer.BuilderField.Name)
-                .Dot(IdentifierName("Set"))
+                .Dot(IdentifierName(IndexerImposterBuilderMetadata.SetMethodName))
                 .Call(ArgumentListSyntax(arguments))
                 .ToStatementSyntax()
         );

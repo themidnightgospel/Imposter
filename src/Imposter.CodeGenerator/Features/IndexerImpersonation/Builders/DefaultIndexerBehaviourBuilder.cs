@@ -105,7 +105,10 @@ internal static class DefaultIndexerBehaviourBuilder
             )
             .ToArray();
 
-        return new MethodDeclarationBuilder(indexer.Core.NullableAwareValueTypeSyntax, "Get")
+        return new MethodDeclarationBuilder(
+            indexer.Core.NullableAwareValueTypeSyntax,
+            DefaultIndexerBehaviourMetadata.GetMethodName
+        )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(argumentsParam)
             .AddParameters(passedThroughKeys)
@@ -139,7 +142,10 @@ internal static class DefaultIndexerBehaviourBuilder
         in ImposterIndexerMetadata indexer,
         in FieldMetadata backingField
     ) =>
-        new MethodDeclarationBuilder(WellKnownTypes.Void, "Set")
+        new MethodDeclarationBuilder(
+            WellKnownTypes.Void,
+            DefaultIndexerBehaviourMetadata.SetMethodName
+        )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(ParameterSyntax(indexer.Arguments.TypeSyntax, "arguments"))
             .AddParameter(ParameterSyntax(indexer.Core.NullableAwareValueTypeSyntax, "value"))

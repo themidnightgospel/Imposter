@@ -47,7 +47,11 @@ internal static partial class InvocationImposterGroupBuilder
         {
             bodyBuilder.AddStatement(
                 IdentifierName("invocationImposter")
-                    .Dot(IdentifierName("UseDefaultResultGenerator"))
+                    .Dot(
+                        IdentifierName(
+                            MethodInvocationImposterMetadata.UseDefaultResultGeneratorMethodName
+                        )
+                    )
                     .Call(ArgumentList())
                     .ToStatementSyntax()
             );

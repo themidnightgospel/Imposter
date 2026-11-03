@@ -4,6 +4,7 @@ using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.Features.IndexerImpersonation.Builders.IndexerImposterBuilderCommon;
+using static Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata.IndexerGetterImposterMetadata.GetterInvocationMetadata;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using GetterReturnsMetadata = Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata.GetterImposterBuilderInterface.ReturnsMethodMetadata;
@@ -72,7 +73,7 @@ internal static partial class IndexerGetterBuilder
             .WithExpressionBody(
                 ArrowExpressionClause(
                     IdentifierName(getter.Builder.ImposterFieldName)
-                        .Dot(IdentifierName("GetOrCreate"))
+                        .Dot(IdentifierName(IndexerGetterImposterMetadata.GetOrCreateMethodName))
                         .Call(Argument(IdentifierName(getter.Builder.CriteriaFieldName)))
                 )
             )
@@ -200,7 +201,7 @@ internal static partial class IndexerGetterBuilder
                     outcome
                 );
 
-        return CallInvocationImposter(indexer, "AddReturnValue", Argument(generator));
+        return CallInvocationImposter(indexer, AddReturnValueMethodName, Argument(generator));
     }
 
     private static MethodDeclarationSyntax BuildGetterBuilderCallbackMethod(
@@ -215,7 +216,7 @@ internal static partial class IndexerGetterBuilder
             .WithBody(
                 CallInvocationImposter(
                     indexer,
-                    "AddCallback",
+                    AddCallbackMethodName,
                     Argument(IdentifierName(callback.CallbackParameter.Name))
                 )
             )
@@ -237,7 +238,7 @@ internal static partial class IndexerGetterBuilder
             .WithBody(
                 Block(
                     IdentifierName(builder.ImposterFieldName)
-                        .Dot(IdentifierName("Called"))
+                        .Dot(IdentifierName(IndexerGetterImposterMetadata.CalledMethodName))
                         .Call([
                             Argument(IdentifierName(builder.CriteriaFieldName)),
                             Argument(IdentifierName(called.CountParameter.Name)),
@@ -274,7 +275,7 @@ internal static partial class IndexerGetterBuilder
             useBaseImplementation.Name
         )
             .WithExplicitInterfaceSpecifier(useBaseImplementation.InterfaceSyntax)
-            .WithBody(CallInvocationImposter(indexer, "UseBaseImplementation"))
+            .WithBody(CallInvocationImposter(indexer, UseBaseImplementationMethodName))
             .Build();
     }
 

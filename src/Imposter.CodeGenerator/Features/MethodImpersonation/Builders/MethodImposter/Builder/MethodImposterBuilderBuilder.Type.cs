@@ -39,12 +39,7 @@ internal static partial class MethodImposterBuilderBuilder
         if (method.Model.IsGenericMethod)
         {
             var addNewCall = methodImposterAccess
-                .Dot(
-                    GenericName(
-                        Identifier(MethodImposterCollectionMetadata.AddNewMethodName),
-                        TypeArguments(method.GenericTypeArguments)
-                    )
-                )
+                .Dot(method.WithGenericArguments(MethodImposterCollectionMetadata.AddNewMethodName))
                 .Call();
 
             statements.Add(

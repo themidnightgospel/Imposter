@@ -41,14 +41,17 @@ internal static partial class IndexerGetterBuilder
             );
         }
 
-        return new MethodDeclarationBuilder(indexer.Core.NullableAwareValueTypeSyntax, "Get")
+        return new MethodDeclarationBuilder(
+            indexer.Core.NullableAwareValueTypeSyntax,
+            IndexerImposterBuilderMetadata.GetMethodName
+        )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameters(parameters.ToArray())
             .WithBody(
                 Block(
                     ReturnStatement(
                         IdentifierName(indexer.Builder.GetterImposterField.Name)
-                            .Dot(IdentifierName("Get"))
+                            .Dot(IdentifierName(IndexerGetterImposterMetadata.GetMethodName))
                             .Call(ArgumentListSyntax(invocationArguments))
                     )
                 )
@@ -106,7 +109,7 @@ internal static partial class IndexerGetterBuilder
         );
         var invokeSetup = ReturnStatement(
             setup
-                .Dot(IdentifierName("Invoke"))
+                .Dot(IdentifierName(InvokeMethodName))
                 .Call(
                     ArgumentListSyntax([
                         .. HandlerArguments(indexer, indexer.Core.PassedThroughKeyNames),
@@ -124,7 +127,10 @@ internal static partial class IndexerGetterBuilder
             )
         );
 
-        return new MethodDeclarationBuilder(indexer.Core.NullableAwareValueTypeSyntax, "Get")
+        return new MethodDeclarationBuilder(
+            indexer.Core.NullableAwareValueTypeSyntax,
+            IndexerGetterImposterMetadata.GetMethodName
+        )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameters([
                 .. indexer.Core.ParameterSyntaxes,
@@ -192,7 +198,7 @@ internal static partial class IndexerGetterBuilder
                 ),
                 ReturnStatement(
                     defaultBehaviour
-                        .Dot(IdentifierName("Get"))
+                        .Dot(IdentifierName(DefaultIndexerBehaviourMetadata.GetMethodName))
                         .Call(
                             ArgumentListSyntax([
                                 .. HandlerArguments(indexer, indexer.Core.PassedThroughKeyNames),
@@ -218,7 +224,7 @@ internal static partial class IndexerGetterBuilder
         );
         var setupMatches = setup
             .Dot(IdentifierName(getter.Invocation.CriteriaField.Name))
-            .Dot(IdentifierName("Matches"))
+            .Dot(IdentifierName(IndexerArgumentsCriteriaMetadata.MatchesMethodName))
             .Call(Argument(IdentifierName(getter.ArgumentsVariableName)));
 
         return new MethodDeclarationBuilder(
@@ -274,7 +280,10 @@ internal static partial class IndexerGetterBuilder
         );
         var setup = IdentifierName(getter.SetupVariableName);
 
-        return new MethodDeclarationBuilder(invocationType, "GetOrCreate")
+        return new MethodDeclarationBuilder(
+            invocationType,
+            IndexerGetterImposterMetadata.GetOrCreateMethodName
+        )
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddParameter(
                 ParameterSyntax(indexer.ArgumentsCriteria.TypeSyntax, criteria.Identifier.Text)
@@ -345,7 +354,11 @@ internal static partial class IndexerGetterBuilder
                     .Call(
                         Argument(
                             IdentifierName(getter.CriteriaParameterName)
-                                .Dot(IdentifierName("Matches"))
+                                .Dot(
+                                    IdentifierName(
+                                        IndexerArgumentsCriteriaMetadata.MatchesMethodName
+                                    )
+                                )
                         )
                     )
             )
@@ -357,7 +370,10 @@ internal static partial class IndexerGetterBuilder
             .Add(IdentifierName(getter.PropertyDisplayNameField.Name))
             .Add(BuildIndices(indexer, entry));
 
-        return new MethodDeclarationBuilder(WellKnownTypes.Void, "Called")
+        return new MethodDeclarationBuilder(
+            WellKnownTypes.Void,
+            IndexerGetterImposterMetadata.CalledMethodName
+        )
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddParameter(
                 ParameterSyntax(indexer.ArgumentsCriteria.TypeSyntax, getter.CriteriaParameterName)
@@ -384,7 +400,10 @@ internal static partial class IndexerGetterBuilder
     private static PropertyDeclarationSyntax BuildPropertyDisplayNameProperty(
         in IndexerGetterImposterMetadata getter
     ) =>
-        new PropertyDeclarationBuilder(WellKnownTypes.String, "PropertyDisplayName")
+        new PropertyDeclarationBuilder(
+            WellKnownTypes.String,
+            IndexerGetterImposterMetadata.PropertyDisplayNamePropertyName
+        )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .Build()
             .WithAccessorList(null)

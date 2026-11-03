@@ -8,6 +8,14 @@ namespace Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 
 internal readonly struct IndexerSetterImposterMetadata
 {
+    internal const string SetMethodName = "Set";
+
+    internal const string CallbackMethodName = "Callback";
+
+    internal const string CalledMethodName = "Called";
+
+    internal const string UseBaseImplementationMethodName = "UseBaseImplementation";
+
     internal readonly string Name;
 
     internal readonly NameSyntax TypeSyntax;

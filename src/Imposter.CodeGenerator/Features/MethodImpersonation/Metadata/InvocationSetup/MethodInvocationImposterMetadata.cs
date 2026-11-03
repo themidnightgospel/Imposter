@@ -4,6 +4,10 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.Invocatio
 
 internal readonly struct MethodInvocationImposterMetadata
 {
+    internal const string DefaultFieldName = "Default";
+
+    internal const string UseDefaultResultGeneratorMethodName = "UseDefaultResultGenerator";
+
     internal readonly string IsConfiguredFieldName;
 
     internal readonly string ResultVariableName;
