@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis.CSharp;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -30,4 +31,10 @@ internal static partial class SyntaxFactoryHelper
     internal static readonly ReturnStatementSyntax ReturnDefaultNonNullable = ReturnStatement(
         DefaultNonNullable
     );
+
+    internal static LiteralExpressionSyntax NumericLiteral(int value) =>
+        NumericLiteral(Literal(value));
+
+    private static LiteralExpressionSyntax NumericLiteral(SyntaxToken literal) =>
+        LiteralExpression(SyntaxKind.NumericLiteralExpression, literal);
 }

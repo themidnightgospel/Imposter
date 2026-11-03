@@ -26,7 +26,7 @@ internal static class ArgumentsCriteriaBuilder
             method.ArgumentsCriteria.Name,
             method.GenericTypeParameterListSyntax
         )
-            .WithTypeParameterConstraintClauses(method.GenericTypeConstraintClauses)
+            .AddConstraintClauses(method.GenericTypeConstraintClauses)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddMembers(method.Parameters.MatchedParameterMetadata.Select(ArgProperty))
             .AddMember(BuildConstructor(method))
@@ -148,29 +148,22 @@ internal static class ArgumentsCriteriaBuilder
                 .Imposter.Abstractions.TypeCaster.Dot(
                     GenericName(Identifier("TryCast"), TypeArguments([targetType, sourceType]))
                 )
-                .Call(
-                    ArgumentList(
-                        SeparatedList([
-                            Argument(matcherLambdaParameter),
-                            Argument(
-                                    DeclarationExpression(
-                                        sourceType,
-                                        SingleVariableDesignation(tryCastVarIdentifier)
-                                    )
-                                )
-                                .WithRefOrOutKeyword(Token(SyntaxKind.OutKeyword)),
-                        ])
-                    )
-                );
+                .Call([
+                    Argument(matcherLambdaParameter),
+                    Argument(
+                            DeclarationExpression(
+                                sourceType,
+                                SingleVariableDesignation(tryCastVarIdentifier)
+                            )
+                        )
+                        .WithRefOrOutKeyword(Token(SyntaxKind.OutKeyword)),
+                ]);
 
             var matchesCall = IdentifierName(parameter.Name)
                 .Dot(IdentifierName("Matches"))
                 .Call(Argument(IdentifierName(tryCastVarIdentifier)));
 
-            return SimpleLambdaExpression(
-                Parameter(matcherLambdaParameter.Identifier),
-                tryCastInvocation.And(matchesCall)
-            );
+            return matcherLambdaParameter.Identifier.Lambda(tryCastInvocation.And(matchesCall));
         }
     }
 
@@ -188,12 +181,8 @@ internal static class ArgumentsCriteriaBuilder
                     ReturnStatement(
                         IdentifierName(method.ArgumentsCriteria.MatchesCapturedMethodName)
                             .Call(
-                                ArgumentList(
-                                    SeparatedList(
-                                        method.Parameters.InputParameterMetadata.Select(p =>
-                                            Argument(arguments.Dot(IdentifierName(p.Name)))
-                                        )
-                                    )
+                                method.Parameters.InputParameterMetadata.Select(p =>
+                                    Argument(arguments.Dot(IdentifierName(p.Name)))
                                 )
                             )
                     )

@@ -144,10 +144,7 @@ internal static partial class SyntaxFactoryHelper
                 TypeSyntax(enumType),
                 EnumValue(defaultValue.ValueText)
             ),
-            { Value: decimal value } => LiteralExpression(
-                SyntaxKind.NumericLiteralExpression,
-                Literal(value)
-            ),
+            { Value: decimal value } => NumericLiteral(Literal(value)),
             { Value: float value } => FloatingPointDefault(
                 SyntaxKind.FloatKeyword,
                 value,
@@ -185,7 +182,7 @@ internal static partial class SyntaxFactoryHelper
             : null;
 
         return nonFiniteMember is null
-            ? LiteralExpression(SyntaxKind.NumericLiteralExpression, literal)
+            ? NumericLiteral(literal)
             : PredefinedType(Token(typeKeyword)).Dot(IdentifierName(nonFiniteMember));
     }
 }

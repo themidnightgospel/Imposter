@@ -15,7 +15,7 @@ internal static partial class SyntaxFactoryHelper
     internal static TypeSyntax TypeSyntaxIncludingNullable(TypeModel type) =>
         ParseTypeName(type.FullyQualifiedNameIncludingNullable);
 
-    internal static IEnumerable<TypeParameterSyntax> TypeParametersSyntax(
+    private static IEnumerable<TypeParameterSyntax> TypeParametersSyntax(
         IReadOnlyList<TypeParameterModel> typeParameters
     ) => typeParameters.Select(it => TypeParameter(EscapedIdentifier(it.Name)));
 

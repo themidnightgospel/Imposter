@@ -18,8 +18,7 @@ internal static partial class MethodImposterBuilderBuilder
         {
             fields.Add(
                 SinglePrivateReadonlyVariableField(
-                    method.MethodImposter.Builder.ArgumentsCriteriaField.Type,
-                    method.MethodImposter.Builder.ArgumentsCriteriaField.Name
+                    method.MethodImposter.Builder.ArgumentsCriteriaField
                 )
             );
         }

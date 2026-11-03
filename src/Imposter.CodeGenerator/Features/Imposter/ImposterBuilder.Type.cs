@@ -203,7 +203,7 @@ internal readonly ref struct ImposterBuilder
             imposterGenerationContext.Imposter.Name,
             typeParameters.TypeParameterListSyntax
         )
-            .WithTypeParameterConstraintClauses(typeParameters.ConstraintClauses)
+            .AddConstraintClauses(typeParameters.ConstraintClauses)
             .AddBaseType(
                 SimpleBaseType(
                     WellKnownTypes.Imposter.Abstractions.IHaveImposterInstance(
@@ -333,7 +333,7 @@ internal readonly ref struct ImposterBuilder
                     .Dot(IdentifierName(method.ImposterField.Name))
                     .Assign(
                         method.ImposterField.Type.New(
-                            ArgumentList(SeparatedList(constructorArguments))
+                            SyntaxFactoryHelper.ArgumentListSyntax(constructorArguments)
                         )
                     )
                     .ToStatementSyntax();

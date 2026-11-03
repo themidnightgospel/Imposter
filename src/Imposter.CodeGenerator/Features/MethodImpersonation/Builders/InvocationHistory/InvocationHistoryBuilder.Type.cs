@@ -22,7 +22,7 @@ internal static partial class InvocationHistoryBuilder
             method.InvocationHistory.Name,
             method.GenericTypeParameterListSyntax
         )
-            .WithTypeParameterConstraintClauses(method.GenericTypeConstraintClauses)
+            .AddConstraintClauses(method.GenericTypeConstraintClauses)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(method.InvocationHistory.Collection.NodeSyntax))
             .AddBaseType(SimpleBaseType(method.InvocationHistory.Interface.Syntax))
@@ -93,25 +93,17 @@ internal static partial class InvocationHistoryBuilder
 
         return WellKnownTypes
             .System.String.Dot(IdentifierName("Join"))
-            .Call(
-                ArgumentList(
-                    SeparatedList<ArgumentSyntax>(
-                        new SyntaxNodeOrToken[]
-                        {
-                            Argument(", ".StringLiteral()),
-                            Token(SyntaxKind.CommaToken),
-                            Argument(
-                                ImplicitArrayCreationExpression(
-                                    InitializerExpression(
-                                        SyntaxKind.ArrayInitializerExpression,
-                                        SeparatedList(argumentDescriptions)
-                                    )
-                                )
-                            ),
-                        }
+            .Call([
+                Argument(", ".StringLiteral()),
+                Argument(
+                    ImplicitArrayCreationExpression(
+                        InitializerExpression(
+                            SyntaxKind.ArrayInitializerExpression,
+                            SeparatedList(argumentDescriptions)
+                        )
                     )
-                )
-            );
+                ),
+            ]);
     }
 
     private static ConditionalExpressionSyntax BuildExceptionText()

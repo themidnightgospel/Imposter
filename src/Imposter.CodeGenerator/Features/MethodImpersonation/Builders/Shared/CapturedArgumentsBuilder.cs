@@ -31,23 +31,17 @@ internal static class CapturedArgumentsBuilder
         );
 
     internal static ArgumentListSyntax Arguments(in ImposterTargetMethodMetadata method) =>
-        ArgumentList(
-            SeparatedList(
-                method.Parameters.InputParameterMetadata.Select(p =>
-                    Argument(IdentifierName(p.Name))
-                )
-            )
+        ArgumentListSyntax(
+            method.Parameters.InputParameterMetadata.Select(p => Argument(IdentifierName(p.Name)))
         );
 
     // Invoke's locals and the history entry's fields share these names.
     internal static ArgumentListSyntax CapturedValues(in ImposterTargetMethodMetadata method)
     {
         var names = method.InvocationHistory.ArgumentFields;
-        return ArgumentList(
-            SeparatedList(
-                method.Parameters.InputParameterMetadata.Select(p =>
-                    Argument(IdentifierName(names[p.Name]))
-                )
+        return ArgumentListSyntax(
+            method.Parameters.InputParameterMetadata.Select(p =>
+                Argument(IdentifierName(names[p.Name]))
             )
         );
     }

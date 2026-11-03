@@ -203,7 +203,7 @@ internal static class EventImposterVerificationBuilder
             LocalVariableDeclarationSyntax(
                 WellKnownTypes.Int,
                 actual.Identifier.Text,
-                LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))
+                NumericLiteral(0)
             )
         );
         blockBuilder.AddStatement(

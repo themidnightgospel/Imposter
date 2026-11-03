@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
-using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -23,11 +22,11 @@ internal static partial class InvocationImposterGroupBuilder
     private static InterfaceDeclarationSyntax BuildCallbackInterface(
         in ImposterTargetMethodMetadata method
     ) =>
-        InterfaceDeclarationBuilderFactory
-            .CreateForMethod(
-                method.Model,
-                method.MethodInvocationImposterGroup.CallbackInterface.Name
-            )
+        new InterfaceDeclarationBuilder(
+            method.MethodInvocationImposterGroup.CallbackInterface.Name,
+            method.GenericTypeParameterListSyntax
+        )
+            .AddConstraintClauses(method.GenericTypeConstraintClauses)
             .AddMember(BuildCallbackInterfaceMethod(method))
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .Build();
@@ -35,11 +34,11 @@ internal static partial class InvocationImposterGroupBuilder
     private static InterfaceDeclarationSyntax BuildContinuationInterface(
         in ImposterTargetMethodMetadata method
     ) =>
-        InterfaceDeclarationBuilderFactory
-            .CreateForMethod(
-                method.Model,
-                method.MethodInvocationImposterGroup.ContinuationInterface.Name
-            )
+        new InterfaceDeclarationBuilder(
+            method.MethodInvocationImposterGroup.ContinuationInterface.Name,
+            method.GenericTypeParameterListSyntax
+        )
+            .AddConstraintClauses(method.GenericTypeConstraintClauses)
             .AddBaseType(
                 SimpleBaseType(method.MethodInvocationImposterGroup.CallbackInterface.Syntax)
             )
@@ -50,8 +49,11 @@ internal static partial class InvocationImposterGroupBuilder
     private static InterfaceDeclarationSyntax BuildStartInterface(
         in ImposterTargetMethodMetadata method
     ) =>
-        InterfaceDeclarationBuilderFactory
-            .CreateForMethod(method.Model, method.MethodInvocationImposterGroup.Interface.Name)
+        new InterfaceDeclarationBuilder(
+            method.MethodInvocationImposterGroup.Interface.Name,
+            method.GenericTypeParameterListSyntax
+        )
+            .AddConstraintClauses(method.GenericTypeConstraintClauses)
             .AddBaseType(
                 SimpleBaseType(method.MethodInvocationImposterGroup.CallbackInterface.Syntax)
             )

@@ -7,6 +7,7 @@ using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.Features.Shared.Builders.ThenMethodBuilder;
 using static Imposter.CodeGenerator.Features.Shared.Builders.VerificationFailedBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.InterlockedSyntaxHelper;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
@@ -312,11 +313,11 @@ internal static partial class GetterImposterBuilderBuilder
     {
         List<MethodDeclarationSyntax> methods =
         [
-            BuildThenMethod(property.GetterImposterBuilderInterface),
+            ThenReturningThis(property.GetterImposterBuilderInterface.ThenMethod),
         ];
-        if (property.GetterImposterBuilderInterface.InitialThenMethod is not null)
+        if (property.GetterImposterBuilderInterface.InitialThenMethod is { } initialThen)
         {
-            methods.Add(BuildInitialThenMethod(property));
+            methods.Add(ThenReturningThis(initialThen));
         }
 
         return methods;
@@ -346,29 +347,6 @@ internal static partial class GetterImposterBuilderBuilder
         }
 
         return methods;
-    }
-
-    private static MethodDeclarationSyntax BuildThenMethod(
-        in PropertyGetterImposterBuilderInterfaceMetadata builderInterface
-    ) =>
-        new MethodDeclarationBuilder(
-            builderInterface.ThenMethod.ReturnType,
-            builderInterface.ThenMethod.Name
-        )
-            .WithExplicitInterfaceSpecifier(builderInterface.ThenMethod.InterfaceSyntax)
-            .WithBody(Block(ReturnThis))
-            .Build();
-
-    private static MethodDeclarationSyntax BuildInitialThenMethod(
-        in ImposterPropertyMetadata property
-    )
-    {
-        var method = property.GetterImposterBuilderInterface.InitialThenMethod!.Value;
-
-        return new MethodDeclarationBuilder(method.ReturnType, method.Name)
-            .WithExplicitInterfaceSpecifier(property.GetterImposterBuilderInterface.TypeSyntax)
-            .WithBody(Block(ReturnThis))
-            .Build();
     }
 
     private static MethodDeclarationSyntax BuildUseBaseImplementationInterfaceMethod(

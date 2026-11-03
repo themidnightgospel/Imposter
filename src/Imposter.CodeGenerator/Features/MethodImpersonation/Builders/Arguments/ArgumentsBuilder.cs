@@ -25,7 +25,7 @@ internal static class ArgumentsBuilder
             method.Arguments.Name,
             method.GenericTypeParameterListSyntax
         )
-            .WithTypeParameterConstraintClauses(method.GenericTypeConstraintClauses)
+            .AddConstraintClauses(method.GenericTypeConstraintClauses)
             .AddPublicModifier()
             .AddMembers(inputParameters.Select(ArgumentField))
             .AddMember(
@@ -61,7 +61,7 @@ internal static class ArgumentsBuilder
         SyntaxFactoryHelper.SingleVariableField(
             parameter.NullableAwareKeptTypeSyntax,
             parameter.Name,
-            TokenList(Token(SyntaxKind.PublicKeyword))
+            SyntaxKind.PublicKeyword
         );
 
     private static MethodDeclarationSyntax BuildArgumentsAsMethod(
@@ -91,7 +91,11 @@ internal static class ArgumentsBuilder
             .WithTypeParameters(method.TargetGenericTypeParameterListSyntax)
             .AddConstraintClauses(method.TargetGenericTypeConstraintClauses)
             .WithBody(
-                Block(ReturnStatement(returnType.New(ArgumentList(SeparatedList(constructorArgs)))))
+                Block(
+                    ReturnStatement(
+                        returnType.New(SyntaxFactoryHelper.ArgumentListSyntax(constructorArgs))
+                    )
+                )
             )
             .Build();
     }

@@ -4,7 +4,6 @@ using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.SetterImpos
 using Imposter.CodeGenerator.Features.Shared.Builders;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.Features.Shared.Builders.FormatValueMethodBuilder;
@@ -131,9 +130,10 @@ internal static partial class SetterImposterBuilder
         )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(ParameterSyntax(setterImposter.SetMethod.ValueParameter))
-            .AddParameterIf(
-                !setterImposter.SetMethod.RequiresDirectBaseAssignment,
-                () => ParameterSyntax(baseImplementationParameter)
+            .AddParameter(
+                !setterImposter.SetMethod.RequiresDirectBaseAssignment
+                    ? ParameterSyntax(baseImplementationParameter)
+                    : null
             )
             .WithBody(Block(bodyStatements.ToArray()))
             .Build();
@@ -184,7 +184,7 @@ internal static partial class SetterImposterBuilder
                 var baseImplementationPath = CallBaseImplementationIfUsed(
                     IdentifierName(setterImposter.UseBaseImplementationField.Name),
                     baseImplementationIdentifier,
-                    Block(baseImplementationCall.ToStatementSyntax(), ReturnStatement()),
+                    Block(baseImplementationCall.ToStatementSyntax(), ReturnVoid),
                     PropertyAccessorStateBuilder.ThrowMissingImposter(setterImposter.State)
                 );
 
@@ -230,14 +230,10 @@ internal static partial class SetterImposterBuilder
                     Var,
                     ParenthesizedVariableDesignation(
                         Token(SyntaxKind.OpenParenToken),
-                        SeparatedList<VariableDesignationSyntax>(
-                            new SyntaxNodeOrToken[]
-                            {
-                                SingleVariableDesignation(Identifier("criteria")),
-                                Token(SyntaxKind.CommaToken),
-                                SingleVariableDesignation(Identifier("setterCallback")),
-                            }
-                        ),
+                        SeparatedList<VariableDesignationSyntax>([
+                            SingleVariableDesignation(Identifier("criteria")),
+                            SingleVariableDesignation(Identifier("setterCallback")),
+                        ]),
                         Token(SyntaxKind.CloseParenToken)
                     )
                 ),

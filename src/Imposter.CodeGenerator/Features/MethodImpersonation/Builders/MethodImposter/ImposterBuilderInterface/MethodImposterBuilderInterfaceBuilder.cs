@@ -1,5 +1,5 @@
 ﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
-using Imposter.CodeGenerator.Helpers;
+using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -12,8 +12,11 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.MethodImp
 internal static class MethodImposterBuilderInterfaceBuilder
 {
     internal static MemberDeclarationSyntax Build(in ImposterTargetMethodMetadata method) =>
-        InterfaceDeclarationBuilderFactory
-            .CreateForMethod(method.Model, method.MethodImposter.BuilderInterface.Name)
+        new InterfaceDeclarationBuilder(
+            method.MethodImposter.BuilderInterface.Name,
+            method.GenericTypeParameterListSyntax
+        )
+            .AddConstraintClauses(method.GenericTypeConstraintClauses)
             .AddBaseType(SimpleBaseType(method.MethodInvocationImposterGroup.Interface.Syntax))
             .AddBaseType(
                 SimpleBaseType(method.MethodInvocationImposterGroup.CallbackInterface.Syntax)

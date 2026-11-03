@@ -38,16 +38,16 @@ internal static class MethodImposterMembersBuilder
                 method.MethodImposter.BuilderInterface.Syntax,
                 SyntaxFactoryHelper.EscapeKeyword(method.SetupName)
             )
-                .WithTypeParameters(
-                    SyntaxFactoryHelper.TypeParameterListSyntax(method.Model.TypeParameters)
-                )
+                .WithTypeParameters(method.GenericTypeParameterListSyntax)
                 .AddConstraintClauses(method.GenericTypeConstraintClauses)
                 .WithParameterList(method.Parameters.ArgParameterListSyntax)
                 .WithBody(
                     Block(
                         ReturnStatement(
                             method.MethodImposter.Builder.Syntax.New(
-                                ArgumentList(SeparatedList(GetBuilderClassArguments(method)))
+                                SyntaxFactoryHelper.ArgumentListSyntax(
+                                    GetBuilderClassArguments(method)
+                                )
                             )
                         )
                     )

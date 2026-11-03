@@ -33,7 +33,7 @@ internal static partial class InvocationImposterGroupBuilder
                 SingleVariableField(
                     WellKnownTypes.Bool,
                     method.MethodInvocationImposter.IsConfiguredFieldName,
-                    TokenList(Token(SyntaxKind.InternalKeyword))
+                    SyntaxKind.InternalKeyword
                 )
             )
             .AddMember(InvokeInvocationMethod(method))
@@ -118,7 +118,7 @@ internal static partial class InvocationImposterGroupBuilder
         SingleVariableField(
             method.Delegate.Syntax.ToNullableType(),
             method.MethodInvocationImposter.ResultGeneratorFieldName,
-            TokenList(Token(SyntaxKind.PrivateKeyword))
+            SyntaxKind.PrivateKeyword
         );
 
     private static FieldDeclarationSyntax UseBaseImplementationField(
@@ -127,7 +127,7 @@ internal static partial class InvocationImposterGroupBuilder
         SingleVariableField(
             WellKnownTypes.Bool,
             method.MethodInvocationImposter.UseBaseImplementationFieldName,
-            TokenList(Token(SyntaxKind.PrivateKeyword))
+            SyntaxKind.PrivateKeyword
         );
 
     private static FieldDeclarationSyntax CallbacksField(in ImposterTargetMethodMetadata method) =>

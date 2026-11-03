@@ -4,6 +4,7 @@ using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.Features.Shared.Builders.FluentInterfaceBuilder;
 using static Imposter.CodeGenerator.Features.Shared.Builders.InterfaceMethodBuilder;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -20,10 +21,20 @@ internal static class PropertySetterImposterBuilderInterfaceBuilder
 
         var members = new List<MemberDeclarationSyntax>
         {
-            BuildCallbackInterface(property),
-            BuildContinuationInterface(property),
+            CallbackInterface(
+                property.SetterImposterBuilderInterface.CallbackInterfaceName,
+                property.SetterImposterBuilderInterface.CallbackMethod
+            ),
+            ContinuationInterface(
+                property.SetterImposterBuilderInterface.ContinuationInterfaceName,
+                property.SetterImposterBuilderInterface.CallbackInterfaceTypeSyntax,
+                property.SetterImposterBuilderInterface.ThenMethod
+            ),
             BuildFluentInterface(property),
-            BuildVerificationInterface(property),
+            VerificationInterface(
+                property.SetterImposterBuilderInterface.VerificationInterfaceName,
+                property.SetterImposterBuilderInterface.CalledMethod
+            ),
             BuildBuilderInterface(property),
         };
 
@@ -78,53 +89,6 @@ internal static class PropertySetterImposterBuilderInterfaceBuilder
                 )
             )
             .Build();
-
-    private static InterfaceDeclarationSyntax BuildCallbackInterface(
-        in ImposterPropertyMetadata property
-    )
-    {
-        var callback = property.SetterImposterBuilderInterface.CallbackMethod;
-
-        return new InterfaceDeclarationBuilder(
-            property.SetterImposterBuilderInterface.CallbackInterfaceName
-        )
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddMember(
-                InterfaceMethod(callback.ReturnType, callback.Name, callback.CallbackParameter)
-            )
-            .Build();
-    }
-
-    private static InterfaceDeclarationSyntax BuildContinuationInterface(
-        in ImposterPropertyMetadata property
-    )
-    {
-        var then = property.SetterImposterBuilderInterface.ThenMethod;
-
-        return new InterfaceDeclarationBuilder(
-            property.SetterImposterBuilderInterface.ContinuationInterfaceName
-        )
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddBaseType(
-                SimpleBaseType(property.SetterImposterBuilderInterface.CallbackInterfaceTypeSyntax)
-            )
-            .AddMember(InterfaceMethod(then.ReturnType, then.Name))
-            .Build();
-    }
-
-    private static InterfaceDeclarationSyntax BuildVerificationInterface(
-        in ImposterPropertyMetadata property
-    )
-    {
-        var called = property.SetterImposterBuilderInterface.CalledMethod;
-
-        return new InterfaceDeclarationBuilder(
-            property.SetterImposterBuilderInterface.VerificationInterfaceName
-        )
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddMember(InterfaceMethod(called.ReturnType, called.Name, called.CountParameter))
-            .Build();
-    }
 
     private static InterfaceDeclarationSyntax BuildUseBaseImplementationEntryInterface(
         in ImposterPropertyMetadata property

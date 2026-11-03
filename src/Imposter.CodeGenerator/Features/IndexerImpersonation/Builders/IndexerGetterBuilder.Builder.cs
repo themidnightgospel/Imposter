@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.Features.IndexerImpersonation.Builders.IndexerImposterBuilderCommon;
 using static Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata.IndexerGetterImposterMetadata.GetterInvocationMetadata;
+using static Imposter.CodeGenerator.Features.Shared.Builders.ThenMethodBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using GetterReturnsMetadata = Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata.GetterImposterBuilderInterface.ReturnsMethodMetadata;
@@ -20,27 +21,13 @@ internal static partial class IndexerGetterBuilder
         var builder = indexer.GetterImplementation.Builder;
         var returns = indexer.GetterBuilderInterface.ReturnsMethod;
         var throws = indexer.GetterBuilderInterface.ThrowsMethod;
-        var imposterField = new FieldMetadata(
-            builder.ImposterFieldName,
-            indexer.GetterImplementation.TypeSyntax
-        );
-        var criteriaField = new FieldMetadata(
-            builder.CriteriaFieldName,
-            indexer.ArgumentsCriteria.TypeSyntax
-        );
 
-        return new ClassDeclarationBuilder(builder.Name)
-            .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddBaseType(SimpleBaseType(indexer.GetterBuilderInterface.TypeSyntax))
-            .AddBaseType(SimpleBaseType(indexer.GetterBuilderInterface.FluentInterfaceTypeSyntax))
-            .AddMember(SinglePrivateReadonlyVariableField(imposterField))
-            .AddMember(SinglePrivateReadonlyVariableField(criteriaField))
-            .AddMember(
-                new ConstructorWithFieldInitializationBuilder(builder.Name)
-                    .WithModifiers(Token(SyntaxKind.InternalKeyword))
-                    .AddParameter(imposterField)
-                    .AddParameter(criteriaField)
-                    .Build()
+        return AccessorBuilder(
+                builder,
+                indexer.GetterImplementation.TypeSyntax,
+                indexer.ArgumentsCriteria.TypeSyntax,
+                indexer.GetterBuilderInterface.TypeSyntax,
+                indexer.GetterBuilderInterface.FluentInterfaceTypeSyntax
             )
             .AddMember(BuildGetterBuilderInvocationProperty(indexer.GetterImplementation))
             .AddMember(BuildGetterBuilderReturnsValueMethod(indexer, returns))
@@ -50,8 +37,15 @@ internal static partial class IndexerGetterBuilder
             .AddMember(BuildGetterBuilderThrowsGenericExceptionMethod(indexer, throws))
             .AddMember(BuildGetterBuilderThrowsDelegateMethod(indexer, throws))
             .AddMember(BuildGetterBuilderCallbackMethod(indexer))
-            .AddMember(BuildGetterBuilderCalledMethod(indexer))
-            .AddMember(BuildGetterBuilderThenMethod(indexer))
+            .AddMember(
+                ForwardCalled(
+                    builder,
+                    indexer.GetterBuilderInterface.VerificationInterfaceTypeSyntax,
+                    indexer.GetterBuilderInterface.CalledMethod,
+                    IndexerGetterImposterMetadata.CalledMethodName
+                )
+            )
+            .AddMember(ThenReturningThis(indexer.GetterBuilderInterface.ThenMethod))
             .AddMember(
                 indexer.GetterBuilderInterface.UseBaseImplementationMethod is not null
                     ? BuildGetterBuilderUseBaseImplementationMethod(indexer)
@@ -65,7 +59,7 @@ internal static partial class IndexerGetterBuilder
     ) =>
         new PropertyDeclarationBuilder(
             getter.Invocation.TypeSyntax,
-            getter.Builder.InvocationImposterPropertyName
+            IndexerGetterImposterMetadata.InvocationImposterPropertyName
         )
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .Build()
@@ -185,14 +179,14 @@ internal static partial class IndexerGetterBuilder
     )
     {
         var getter = indexer.GetterImplementation;
-        var arguments = Parameter(Identifier(getter.ArgumentsVariableName));
+        var arguments = Identifier(getter.ArgumentsVariableName);
         LambdaExpressionSyntax generator =
             indexer.Core.PassedThroughParameters.Length == 0
-                ? SimpleLambdaExpression(arguments, outcome)
+                ? arguments.Lambda(outcome)
                 : ParenthesizedLambdaExpression(
                     ParameterList(
                         SeparatedList([
-                            arguments,
+                            Parameter(arguments),
                             .. PassedThroughKeyLambdaParameters(
                                 indexer.GetterPassedThroughKeyNames
                             ),
@@ -223,44 +217,6 @@ internal static partial class IndexerGetterBuilder
             .Build();
     }
 
-    private static MethodDeclarationSyntax BuildGetterBuilderCalledMethod(
-        in ImposterIndexerMetadata indexer
-    )
-    {
-        var builder = indexer.GetterImplementation.Builder;
-        var called = indexer.GetterBuilderInterface.CalledMethod;
-
-        return new MethodDeclarationBuilder(called.ReturnType, called.Name)
-            .WithExplicitInterfaceSpecifier(
-                indexer.GetterBuilderInterface.VerificationInterfaceTypeSyntax
-            )
-            .AddParameter(ParameterSyntax(called.CountParameter))
-            .WithBody(
-                Block(
-                    IdentifierName(builder.ImposterFieldName)
-                        .Dot(IdentifierName(IndexerGetterImposterMetadata.CalledMethodName))
-                        .Call([
-                            Argument(IdentifierName(builder.CriteriaFieldName)),
-                            Argument(IdentifierName(called.CountParameter.Name)),
-                        ])
-                        .ToStatementSyntax()
-                )
-            )
-            .Build();
-    }
-
-    private static MethodDeclarationSyntax BuildGetterBuilderThenMethod(
-        in ImposterIndexerMetadata indexer
-    )
-    {
-        var then = indexer.GetterBuilderInterface.ThenMethod;
-
-        return new MethodDeclarationBuilder(then.ReturnType, then.Name)
-            .WithExplicitInterfaceSpecifier(then.InterfaceSyntax)
-            .WithBody(Block(ReturnThis))
-            .Build();
-    }
-
     private static MethodDeclarationSyntax BuildGetterBuilderUseBaseImplementationMethod(
         in ImposterIndexerMetadata indexer
     )
@@ -286,7 +242,7 @@ internal static partial class IndexerGetterBuilder
         params ArgumentSyntax[] arguments
     ) =>
         Block(
-            IdentifierName(indexer.GetterImplementation.Builder.InvocationImposterPropertyName)
+            IdentifierName(IndexerGetterImposterMetadata.InvocationImposterPropertyName)
                 .Dot(IdentifierName(methodName))
                 .Call(arguments)
                 .ToStatementSyntax(),

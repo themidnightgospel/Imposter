@@ -547,7 +547,7 @@ internal readonly ref struct ImposterInstanceBuilder
                 var constructor = new ConstructorBuilder(name)
                     .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
                     .WithParameterList(ParameterListSyntax(constructorParameters))
-                    .AddInitializer(
+                    .WithInitializer(
                         ConstructorInitializer(
                             SyntaxKind.BaseConstructorInitializer,
                             baseArgumentList
@@ -597,7 +597,7 @@ internal readonly ref struct ImposterInstanceBuilder
             var invokeMethodInvocationExpression =
                 GetImposterWithMatchingInvocationImposterGroupExpression(imposterMethod)
                     .Dot(IdentifierName(MethodImposterInvokeMethodMetadata.Name))
-                    .Call(ArgumentList(SeparatedList(invokeArguments)));
+                    .Call(invokeArguments);
 
             var body = Block(
                 imposterMethod.HasReturnValue
@@ -617,7 +617,7 @@ internal readonly ref struct ImposterInstanceBuilder
                 TypeSyntaxIncludingNullable(imposterMethod.Model.ReturnType.Type),
                 EscapeKeyword(imposterMethod.Model.Name)
             )
-                .AddTypeParameters(TypeParametersSyntax(imposterMethod.Model.TypeParameters))
+                .WithTypeParameters(imposterMethod.GenericTypeParameterListSyntax)
                 .AddParameters(
                     imposterMethod.Parameters.AllParameters.Select(it =>
                         ParameterSyntaxWithoutDefaultValue(it)
@@ -625,12 +625,8 @@ internal readonly ref struct ImposterInstanceBuilder
                 )
                 .WithBody(body)
                 .AddModifiers(imposterMethod.ImposterInstanceMethodModifiers)
-                .WithExplicitInterfaceSpecifier(imposterMethod.ExplicitInterfaceSpecifier);
-
-            foreach (var constraintClause in imposterMethod.ImposterInstanceMethodConstraintClauses)
-            {
-                methodBuilder.AddConstraintClause(constraintClause);
-            }
+                .WithExplicitInterfaceSpecifier(imposterMethod.ExplicitInterfaceSpecifier)
+                .AddConstraintClauses(imposterMethod.ImposterInstanceMethodConstraintClauses);
 
             return methodBuilder.Build();
         });
@@ -664,12 +660,8 @@ internal readonly ref struct ImposterInstanceBuilder
             {
                 if (method.Parameters.HasInputParameters)
                 {
-                    return ArgumentList(
-                        SeparatedList(
-                            method.Parameters.InputParameterMetadata.Select(p =>
-                                Argument(p.KeptValue)
-                            )
-                        )
+                    return ArgumentListSyntax(
+                        method.Parameters.InputParameterMetadata.Select(p => Argument(p.KeptValue))
                     );
                 }
 

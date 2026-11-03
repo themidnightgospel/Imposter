@@ -129,7 +129,7 @@ internal static partial class IndexerGetterBuilder
     {
         var getter = indexer.GetterImplementation;
         var generator = ParameterSyntax(
-            getter.Builder.ReturnGeneratorType,
+            getter.ReturnGeneratorType,
             IndexerGetterImposterMetadata.GeneratorVariableName
         );
         var handler = ReturnHandler(indexer)

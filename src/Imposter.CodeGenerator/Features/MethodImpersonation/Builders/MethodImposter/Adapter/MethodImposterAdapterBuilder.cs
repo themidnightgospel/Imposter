@@ -32,7 +32,7 @@ internal static class MethodImposterAdapterBuilder
             method.MethodImposter.AdapterName,
             method.TargetGenericTypeParameterListSyntax
         )
-            .WithTypeParameterConstraintClauses(method.TargetGenericTypeConstraintClauses)
+            .AddConstraintClauses(method.TargetGenericTypeConstraintClauses)
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddBaseType(adapterBaseType)
             .AddMember(
@@ -168,7 +168,7 @@ internal static class MethodImposterAdapterBuilder
 
         var invokeExpression = IdentifierName(adapterNames.TargetFieldName)
             .Dot(IdentifierName(MethodImposterInvokeMethodMetadata.Name))
-            .Call(ArgumentList(SeparatedList(invokeArguments)));
+            .Call(invokeArguments);
 
         if (method.HasReturnValue)
         {
@@ -332,7 +332,7 @@ internal static class MethodImposterAdapterBuilder
                                     HasMatchingInvocationImposterGroupMethodMetadata.Name
                                 )
                             )
-                            .Call(ArgumentList(SeparatedList(arguments)))
+                            .Call(arguments)
                     )
                 )
             )

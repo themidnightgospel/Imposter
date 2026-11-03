@@ -37,7 +37,7 @@ internal static class SharedPropertyBuilder
         arguments.Add(Argument(IdentifierName(displayName.Name)));
 
         return constructor
-            .AddInitializer(
+            .WithInitializer(
                 ConstructorInitializer(
                     SyntaxKind.BaseConstructorInitializer,
                     ArgumentListSyntax(arguments)
