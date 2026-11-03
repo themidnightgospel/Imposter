@@ -8,7 +8,7 @@ namespace Imposter.CodeGenerator.SyntaxHelpers.Builders;
 internal sealed class ConstructorBuilder(string name)
 {
     private readonly List<ParameterSyntax> _parameters = [];
-    private ConstructorInitializerSyntax? _initializers;
+    private ConstructorInitializerSyntax? _initializer;
     private BlockSyntax? _body;
     private SyntaxTokenList _modifiers;
     private ParameterListSyntax? _parameterListSyntax;
@@ -37,9 +37,9 @@ internal sealed class ConstructorBuilder(string name)
         return this;
     }
 
-    internal ConstructorBuilder AddInitializer(ConstructorInitializerSyntax initializer)
+    internal ConstructorBuilder WithInitializer(ConstructorInitializerSyntax initializer)
     {
-        _initializers = initializer;
+        _initializer = initializer;
         return this;
     }
 
@@ -56,7 +56,7 @@ internal sealed class ConstructorBuilder(string name)
             modifiers: _modifiers,
             identifier: Identifier(name),
             parameterList: _parameterListSyntax ?? ParameterList(SeparatedList(_parameters)),
-            initializer: _initializers!,
+            initializer: _initializer!,
             body: _body ?? Block()
         );
     }

@@ -38,9 +38,7 @@ internal static class MethodImposterMembersBuilder
                 method.MethodImposter.BuilderInterface.Syntax,
                 SyntaxFactoryHelper.EscapeKeyword(method.SetupName)
             )
-                .WithTypeParameters(
-                    SyntaxFactoryHelper.TypeParameterListSyntax(method.Model.TypeParameters)
-                )
+                .WithTypeParameters(method.GenericTypeParameterListSyntax)
                 .AddConstraintClauses(method.GenericTypeConstraintClauses)
                 .WithParameterList(method.Parameters.ArgParameterListSyntax)
                 .WithBody(

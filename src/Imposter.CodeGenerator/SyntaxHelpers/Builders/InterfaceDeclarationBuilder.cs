@@ -28,12 +28,12 @@ internal class InterfaceDeclarationBuilder(
     }
 
     internal InterfaceDeclarationBuilder AddConstraintClauses(
-        IReadOnlyList<TypeParameterConstraintClauseSyntax> clauses
+        IEnumerable<TypeParameterConstraintClauseSyntax>? clauses
     )
     {
-        foreach (var clause in clauses)
+        if (clauses is not null)
         {
-            _constraintClauses.Add(clause);
+            _constraintClauses.AddRange(clauses);
         }
         return this;
     }
