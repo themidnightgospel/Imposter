@@ -1,4 +1,14 @@
 <Project>
+  <!-- Both DLLs ship in the package, so each embeds its PDB with Source Link and the sources git doesn't track, and CI
+       builds them with deterministic source paths. -->
+  <PropertyGroup>
+    <DebugType>embedded</DebugType>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'"
+      >true</ContinuousIntegrationBuild
+    >
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(VERIFICATION_BUILD)' == 'true'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DefineConstants>$(DefineConstants);KEEP_WARNINGS_IN_GENERATED_FILES</DefineConstants>
