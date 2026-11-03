@@ -24,8 +24,6 @@
 
     <RepositoryType>git</RepositoryType>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <Deterministic>true</Deterministic>
     <IncludeSymbols>false</IncludeSymbols>
     <EnablePackageValidation>true</EnablePackageValidation>
 
@@ -35,10 +33,6 @@
     <!-- README and icon for NuGet package -->
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>imposter_logo.png</PackageIcon>
-
-    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'"
-      >true</ContinuousIntegrationBuild
-    >
   </PropertyGroup>
   <Import Project="../../Roslyn.Shared.props" />
   <Import Project="Imposter.Roslyn$(ROSLYN_VERSION).props" />
