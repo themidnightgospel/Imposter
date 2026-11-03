@@ -51,28 +51,14 @@ internal readonly struct ClassDeclarationBuilder(
         return this;
     }
 
-    internal ClassDeclarationBuilder AddTypeParameterConstraintClause(
-        TypeParameterConstraintClauseSyntax clause
+    internal ClassDeclarationBuilder AddConstraintClauses(
+        IEnumerable<TypeParameterConstraintClauseSyntax>? clauses
     )
     {
-        _typeParameterConstraintClauses.Add(clause);
-        return this;
-    }
-
-    internal ClassDeclarationBuilder WithTypeParameterConstraintClauses(
-        IEnumerable<TypeParameterConstraintClauseSyntax>? constraintClauses
-    )
-    {
-        if (constraintClauses is null)
+        if (clauses is not null)
         {
-            return this;
+            _typeParameterConstraintClauses.AddRange(clauses);
         }
-
-        foreach (var clause in constraintClauses)
-        {
-            AddTypeParameterConstraintClause(clause);
-        }
-
         return this;
     }
 

@@ -130,9 +130,10 @@ internal static partial class SetterImposterBuilder
         )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(ParameterSyntax(setterImposter.SetMethod.ValueParameter))
-            .AddParameterIf(
-                !setterImposter.SetMethod.RequiresDirectBaseAssignment,
-                () => ParameterSyntax(baseImplementationParameter)
+            .AddParameter(
+                !setterImposter.SetMethod.RequiresDirectBaseAssignment
+                    ? ParameterSyntax(baseImplementationParameter)
+                    : null
             )
             .WithBody(Block(bodyStatements.ToArray()))
             .Build();

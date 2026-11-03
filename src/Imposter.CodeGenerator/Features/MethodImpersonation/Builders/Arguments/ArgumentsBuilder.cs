@@ -25,7 +25,7 @@ internal static class ArgumentsBuilder
             method.Arguments.Name,
             method.GenericTypeParameterListSyntax
         )
-            .WithTypeParameterConstraintClauses(method.GenericTypeConstraintClauses)
+            .AddConstraintClauses(method.GenericTypeConstraintClauses)
             .AddPublicModifier()
             .AddMembers(inputParameters.Select(ArgumentField))
             .AddMember(

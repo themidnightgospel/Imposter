@@ -4,6 +4,7 @@ using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.GetterImpos
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.Features.Shared.Builders.FluentInterfaceBuilder;
 using static Imposter.CodeGenerator.Features.Shared.Builders.InterfaceMethodBuilder;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -21,9 +22,19 @@ internal static class PropertyGetterImposterBuilderInterfaceBuilder
         var members = new List<MemberDeclarationSyntax>
         {
             BuildOutcomeInterface(property),
-            BuildCallbackInterface(property),
-            BuildContinuationInterface(property),
-            BuildVerificationInterface(property),
+            CallbackInterface(
+                property.GetterImposterBuilderInterface.CallbackInterfaceName,
+                property.GetterImposterBuilderInterface.CallbackMethod
+            ),
+            ContinuationInterface(
+                property.GetterImposterBuilderInterface.ContinuationInterfaceName,
+                property.GetterImposterBuilderInterface.CallbackInterfaceTypeSyntax,
+                property.GetterImposterBuilderInterface.ThenMethod
+            ),
+            VerificationInterface(
+                property.GetterImposterBuilderInterface.VerificationInterfaceName,
+                property.GetterImposterBuilderInterface.CalledMethod
+            ),
             BuildFluentInterface(property),
             BuildBuilderInterface(property),
         };
@@ -118,53 +129,6 @@ internal static class PropertyGetterImposterBuilderInterfaceBuilder
             .AddMembers(BuildReturnsMethods(property.GetterImposterBuilderInterface))
             .AddMembers(BuildThrowsMethods(property.GetterImposterBuilderInterface))
             .Build();
-
-    private static InterfaceDeclarationSyntax BuildCallbackInterface(
-        in ImposterPropertyMetadata property
-    )
-    {
-        var callback = property.GetterImposterBuilderInterface.CallbackMethod;
-
-        return new InterfaceDeclarationBuilder(
-            property.GetterImposterBuilderInterface.CallbackInterfaceName
-        )
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddMember(
-                InterfaceMethod(callback.ReturnType, callback.Name, callback.CallbackParameter)
-            )
-            .Build();
-    }
-
-    private static InterfaceDeclarationSyntax BuildContinuationInterface(
-        in ImposterPropertyMetadata property
-    )
-    {
-        var then = property.GetterImposterBuilderInterface.ThenMethod;
-
-        return new InterfaceDeclarationBuilder(
-            property.GetterImposterBuilderInterface.ContinuationInterfaceName
-        )
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddBaseType(
-                SimpleBaseType(property.GetterImposterBuilderInterface.CallbackInterfaceTypeSyntax)
-            )
-            .AddMember(InterfaceMethod(then.ReturnType, then.Name))
-            .Build();
-    }
-
-    private static InterfaceDeclarationSyntax BuildVerificationInterface(
-        in ImposterPropertyMetadata property
-    )
-    {
-        var called = property.GetterImposterBuilderInterface.CalledMethod;
-
-        return new InterfaceDeclarationBuilder(
-            property.GetterImposterBuilderInterface.VerificationInterfaceName
-        )
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddMember(InterfaceMethod(called.ReturnType, called.Name, called.CountParameter))
-            .Build();
-    }
 
     private static MethodDeclarationSyntax[] BuildReturnsMethods(
         PropertyGetterImposterBuilderInterfaceMetadata getterInterface

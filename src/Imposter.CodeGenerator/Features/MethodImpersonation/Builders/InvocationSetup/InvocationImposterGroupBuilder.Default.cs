@@ -45,16 +45,19 @@ internal static partial class InvocationImposterGroupBuilder
                 .AddStatement(BuildDefaultReturnStatement(method))
                 .Build();
 
-        return new MethodDeclarationBuilder(
+        var methodBuilder = new MethodDeclarationBuilder(
             method.MethodInvocationImposterGroup.DefaultResultGeneratorMethod.ReturnType,
             method.MethodInvocationImposterGroup.DefaultResultGeneratorMethod.Name
         )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddModifier(Token(SyntaxKind.StaticKeyword))
-            .AddModifierIf(
-                method.IsAsync && !runsAsyncPartInLocalFunction,
-                () => Token(SyntaxKind.AsyncKeyword)
-            )
+            .AddModifier(Token(SyntaxKind.StaticKeyword));
+
+        if (method.IsAsync && !runsAsyncPartInLocalFunction)
+        {
+            methodBuilder.AddModifier(Token(SyntaxKind.AsyncKeyword));
+        }
+
+        return methodBuilder
             .WithParameterList(method.Parameters.ParameterListSyntaxIncludingNullable)
             .WithBody(body)
             .Build();

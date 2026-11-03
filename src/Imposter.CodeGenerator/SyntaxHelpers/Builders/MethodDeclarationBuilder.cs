@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -13,21 +12,11 @@ internal sealed class MethodDeclarationBuilder(TypeSyntax returnType, string nam
     private ParameterListSyntax? _parameterListSyntax;
     private readonly List<ParameterSyntax> _parameters = [];
     private readonly List<TypeParameterConstraintClauseSyntax> _constraintClauses = [];
-    private readonly List<TypeParameterSyntax> _typeParameters = [];
     private TypeParameterListSyntax? _typeParameterList;
     private BlockSyntax? _body;
     private ArrowExpressionClauseSyntax? _expressionBody;
     private SyntaxToken _semicolonToken;
     private ExplicitInterfaceSpecifierSyntax? _explicitInterfaceSpecifier;
-
-    public MethodDeclarationBuilder AddModifierIf(bool condition, Func<SyntaxToken> modifierFactory)
-    {
-        if (condition)
-        {
-            _modifiers.Add(modifierFactory());
-        }
-        return this;
-    }
 
     public MethodDeclarationBuilder AddModifier(in SyntaxToken modifier)
     {
@@ -37,11 +26,6 @@ internal sealed class MethodDeclarationBuilder(TypeSyntax returnType, string nam
 
     public MethodDeclarationBuilder AddModifiers(in SyntaxTokenList modifiers)
     {
-        if (modifiers.Count == 0)
-        {
-            return this;
-        }
-
         foreach (var modifier in modifiers)
         {
             _modifiers.Add(modifier);
@@ -66,16 +50,6 @@ internal sealed class MethodDeclarationBuilder(TypeSyntax returnType, string nam
         return this;
     }
 
-    public MethodDeclarationBuilder AddParameterIf(bool condition, Func<ParameterSyntax> parameter)
-    {
-        if (condition)
-        {
-            _parameters.Add(parameter());
-        }
-
-        return this;
-    }
-
     public MethodDeclarationBuilder AddParameters(IEnumerable<ParameterSyntax> parameters)
     {
         _parameters.AddRange(parameters);
@@ -88,18 +62,6 @@ internal sealed class MethodDeclarationBuilder(TypeSyntax returnType, string nam
         return this;
     }
 
-    public MethodDeclarationBuilder AddTypeParameters(
-        IEnumerable<TypeParameterSyntax>? typeParameters
-    )
-    {
-        if (typeParameters is not null)
-        {
-            _typeParameters.AddRange(typeParameters);
-        }
-
-        return this;
-    }
-
     public MethodDeclarationBuilder AddConstraintClause(TypeParameterConstraintClauseSyntax clause)
     {
         _constraintClauses.Add(clause);
@@ -107,12 +69,12 @@ internal sealed class MethodDeclarationBuilder(TypeSyntax returnType, string nam
     }
 
     public MethodDeclarationBuilder AddConstraintClauses(
-        IReadOnlyList<TypeParameterConstraintClauseSyntax> clauses
+        IEnumerable<TypeParameterConstraintClauseSyntax>? clauses
     )
     {
-        foreach (var clause in clauses)
+        if (clauses is not null)
         {
-            _constraintClauses.Add(clause);
+            _constraintClauses.AddRange(clauses);
         }
         return this;
     }
@@ -159,12 +121,7 @@ internal sealed class MethodDeclarationBuilder(TypeSyntax returnType, string nam
             returnType,
             _explicitInterfaceSpecifier,
             Identifier(name),
-            _typeParameterList
-                ?? (
-                    _typeParameters.Count > 0
-                        ? TypeParameterList(SeparatedList(_typeParameters))
-                        : null
-                ),
+            _typeParameterList,
             _parameterListSyntax ?? ParameterList(SeparatedList(_parameters)),
             _constraintClauses.Count > 0 ? List(_constraintClauses) : default,
             _body,

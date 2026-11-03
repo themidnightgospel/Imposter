@@ -1,6 +1,5 @@
 ﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationSetup;
-using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -13,8 +12,11 @@ internal static partial class InvocationImposterGroupBuilder
 {
     internal static ClassDeclarationSyntax Build(in ImposterTargetMethodMetadata method)
     {
-        return ClassDeclarationBuilderFactory
-            .CreateForMethod(method.Model, method.MethodInvocationImposterGroup.Name)
+        return new ClassDeclarationBuilder(
+            method.MethodInvocationImposterGroup.Name,
+            method.GenericTypeParameterListSyntax
+        )
+            .AddConstraintClauses(method.GenericTypeConstraintClauses)
             .AddMember(DefaultInstanceField(method))
             .AddMember(
                 method.Parameters.HasInputParameters ? ArgumentsCriteriaProperty(method) : null

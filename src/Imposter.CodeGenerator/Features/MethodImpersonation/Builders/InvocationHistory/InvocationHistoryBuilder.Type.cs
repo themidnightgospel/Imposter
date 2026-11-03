@@ -22,7 +22,7 @@ internal static partial class InvocationHistoryBuilder
             method.InvocationHistory.Name,
             method.GenericTypeParameterListSyntax
         )
-            .WithTypeParameterConstraintClauses(method.GenericTypeConstraintClauses)
+            .AddConstraintClauses(method.GenericTypeConstraintClauses)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(method.InvocationHistory.Collection.NodeSyntax))
             .AddBaseType(SimpleBaseType(method.InvocationHistory.Interface.Syntax))

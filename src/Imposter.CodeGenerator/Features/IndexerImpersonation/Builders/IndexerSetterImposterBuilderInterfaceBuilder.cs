@@ -2,6 +2,7 @@
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.Features.Shared.Builders.FluentInterfaceBuilder;
 using static Imposter.CodeGenerator.Features.Shared.Builders.InterfaceMethodBuilder;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -18,10 +19,20 @@ internal static class IndexerSetterImposterBuilderInterfaceBuilder
 
         return
         [
-            BuildCallbackInterface(indexer),
-            BuildContinuationInterface(indexer),
+            CallbackInterface(
+                indexer.SetterBuilderInterface.CallbackInterfaceName,
+                indexer.SetterBuilderInterface.CallbackMethod
+            ),
+            ContinuationInterface(
+                indexer.SetterBuilderInterface.ContinuationInterfaceName,
+                indexer.SetterBuilderInterface.CallbackInterfaceTypeSyntax,
+                indexer.SetterBuilderInterface.ThenMethod
+            ),
             BuildFluentInterface(indexer),
-            BuildVerificationInterface(indexer),
+            VerificationInterface(
+                indexer.SetterBuilderInterface.VerificationInterfaceName,
+                indexer.SetterBuilderInterface.CalledMethod
+            ),
             BuildBuilderInterface(indexer),
         ];
     }
@@ -57,47 +68,4 @@ internal static class IndexerSetterImposterBuilderInterfaceBuilder
                 SimpleBaseType(indexer.SetterBuilderInterface.ContinuationInterfaceTypeSyntax)
             )
             .Build();
-
-    private static InterfaceDeclarationSyntax BuildContinuationInterface(
-        in ImposterIndexerMetadata indexer
-    )
-    {
-        var then = indexer.SetterBuilderInterface.ThenMethod;
-
-        return new InterfaceDeclarationBuilder(
-            indexer.SetterBuilderInterface.ContinuationInterfaceName
-        )
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddBaseType(SimpleBaseType(indexer.SetterBuilderInterface.CallbackInterfaceTypeSyntax))
-            .AddMember(InterfaceMethod(then.ReturnType, then.Name))
-            .Build();
-    }
-
-    private static InterfaceDeclarationSyntax BuildCallbackInterface(
-        in ImposterIndexerMetadata indexer
-    )
-    {
-        var callback = indexer.SetterBuilderInterface.CallbackMethod;
-
-        return new InterfaceDeclarationBuilder(indexer.SetterBuilderInterface.CallbackInterfaceName)
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddMember(
-                InterfaceMethod(callback.ReturnType, callback.Name, callback.CallbackParameter)
-            )
-            .Build();
-    }
-
-    private static InterfaceDeclarationSyntax BuildVerificationInterface(
-        in ImposterIndexerMetadata indexer
-    )
-    {
-        var called = indexer.SetterBuilderInterface.CalledMethod;
-
-        return new InterfaceDeclarationBuilder(
-            indexer.SetterBuilderInterface.VerificationInterfaceName
-        )
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddMember(InterfaceMethod(called.ReturnType, called.Name, called.CountParameter))
-            .Build();
-    }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
+using Imposter.CodeGenerator.Features.Shared.BuilderInterface;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
@@ -17,6 +18,54 @@ internal static class IndexerImposterBuilderCommon
     internal const string DefaultBehaviourParameterName = "defaultBehaviour";
     internal const string InvocationBehaviorParameterName = "invocationBehavior";
     internal const string PropertyDisplayNameParameterName = "propertyDisplayName";
+
+    internal static ClassDeclarationBuilder AccessorBuilder(
+        in IndexerAccessorBuilderMetadata builder,
+        TypeSyntax imposterType,
+        TypeSyntax criteriaType,
+        NameSyntax builderInterface,
+        NameSyntax fluentInterface
+    )
+    {
+        var imposterField = new FieldMetadata(builder.ImposterFieldName, imposterType);
+        var criteriaField = new FieldMetadata(builder.CriteriaFieldName, criteriaType);
+
+        return new ClassDeclarationBuilder(builder.Name)
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddBaseType(SimpleBaseType(builderInterface))
+            .AddBaseType(SimpleBaseType(fluentInterface))
+            .AddMember(SinglePrivateReadonlyVariableField(imposterField))
+            .AddMember(SinglePrivateReadonlyVariableField(criteriaField))
+            .AddMember(
+                new ConstructorWithFieldInitializationBuilder(builder.Name)
+                    .WithModifiers(Token(SyntaxKind.InternalKeyword))
+                    .AddParameter(imposterField)
+                    .AddParameter(criteriaField)
+                    .Build()
+            );
+    }
+
+    internal static MethodDeclarationSyntax ForwardCalled(
+        in IndexerAccessorBuilderMetadata builder,
+        NameSyntax verificationInterface,
+        in CalledMethodMetadata called,
+        string imposterMethodName
+    ) =>
+        new MethodDeclarationBuilder(called.ReturnType, called.Name)
+            .WithExplicitInterfaceSpecifier(verificationInterface)
+            .AddParameter(ParameterSyntax(called.CountParameter))
+            .WithBody(
+                Block(
+                    IdentifierName(builder.ImposterFieldName)
+                        .Dot(IdentifierName(imposterMethodName))
+                        .Call([
+                            Argument(IdentifierName(builder.CriteriaFieldName)),
+                            Argument(IdentifierName(called.CountParameter.Name)),
+                        ])
+                        .ToStatementSyntax()
+                )
+            )
+            .Build();
 
     private static ArgumentListSyntax BuildIndexerArgumentsArgumentList(
         in ImposterIndexerMetadata indexer
