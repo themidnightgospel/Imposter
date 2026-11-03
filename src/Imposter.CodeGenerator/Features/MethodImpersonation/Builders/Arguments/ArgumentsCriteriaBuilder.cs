@@ -26,7 +26,7 @@ internal static class ArgumentsCriteriaBuilder
             method.ArgumentsCriteria.Name,
             method.GenericTypeParameterListSyntax
         )
-            .WithTypeParameterConstraintClauses(method.GenericTypeConstraintClauses)
+            .AddConstraintClauses(method.GenericTypeConstraintClauses)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddMembers(method.Parameters.MatchedParameterMetadata.Select(ArgProperty))
             .AddMember(BuildConstructor(method))
