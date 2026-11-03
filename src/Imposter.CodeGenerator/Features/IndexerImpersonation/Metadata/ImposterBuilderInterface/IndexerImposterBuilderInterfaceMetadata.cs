@@ -11,9 +11,9 @@ internal readonly struct IndexerImposterBuilderInterfaceMetadata
 
     internal readonly NameSyntax TypeSyntax;
 
-    internal readonly GetterMethodMetadata GetterMethod;
+    internal readonly MethodMetadata GetterMethod;
 
-    internal readonly SetterMethodMetadata SetterMethod;
+    internal readonly MethodMetadata SetterMethod;
 
     internal IndexerImposterBuilderInterfaceMetadata(
         in ImposterIndexerCoreMetadata core,
@@ -23,7 +23,7 @@ internal readonly struct IndexerImposterBuilderInterfaceMetadata
     {
         Name = $"I{core.UniqueName}IndexerBuilder";
         TypeSyntax = SyntaxFactory.IdentifierName(Name);
-        GetterMethod = new GetterMethodMetadata(getterInterfaceMetadata);
-        SetterMethod = new SetterMethodMetadata(setterInterfaceMetadata);
+        GetterMethod = new MethodMetadata("Getter", getterInterfaceMetadata.TypeSyntax);
+        SetterMethod = new MethodMetadata("Setter", setterInterfaceMetadata.TypeSyntax);
     }
 }

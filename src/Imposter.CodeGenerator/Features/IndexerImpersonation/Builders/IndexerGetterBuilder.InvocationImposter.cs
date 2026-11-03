@@ -5,6 +5,7 @@ using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.Features.IndexerImpersonation.Builders.IndexerImposterBuilderCommon;
+using static Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata.IndexerGetterImposterMetadata.GetterInvocationMetadata;
 using static Imposter.CodeGenerator.Features.Shared.Builders.MissingImposterBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -32,9 +33,7 @@ internal static partial class IndexerGetterBuilder
             .AddMember(
                 SingleVariableField(
                     WellKnownTypes.Bool,
-                    IndexerGetterImposterMetadata
-                        .GetterInvocationMetadata
-                        .HasConfiguredReturnFieldName,
+                    HasConfiguredReturnFieldName,
                     TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.VolatileKeyword))
                 )
             )
@@ -123,7 +122,6 @@ internal static partial class IndexerGetterBuilder
     )
     {
         var getter = indexer.GetterImplementation;
-        var invocation = getter.Invocation;
         var generator = ParameterSyntax(
             getter.Builder.ReturnGeneratorType,
             IndexerGetterImposterMetadata.GeneratorVariableName
@@ -141,19 +139,7 @@ internal static partial class IndexerGetterBuilder
         return new MethodDeclarationBuilder(WellKnownTypes.Void, "AddReturnValue")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(generator)
-            .WithBody(
-                Block(
-                    AddToReturnValues(invocation, handler),
-                    TurnDefaultBehaviourOff(indexer),
-                    IdentifierName(
-                            IndexerGetterImposterMetadata
-                                .GetterInvocationMetadata
-                                .HasConfiguredReturnFieldName
-                        )
-                        .Assign(True)
-                        .ToStatementSyntax()
-                )
-            )
+            .WithBody(ConfigureReturn(indexer, handler))
             .Build();
     }
 
@@ -312,39 +298,28 @@ internal static partial class IndexerGetterBuilder
             )
             .Build();
 
-    private static ExpressionStatementSyntax AddToReturnValues(
-        in IndexerGetterImposterMetadata.GetterInvocationMetadata invocation,
+    // Adds the handler as the next outcome, after which the default behaviour no longer answers.
+    private static BlockSyntax ConfigureReturn(
+        in ImposterIndexerMetadata indexer,
         ExpressionSyntax handler
     ) =>
-        LazyCollectionSyntaxHelper
-            .EnsureInitialized(invocation.ReturnValuesField.Name)
-            .Dot(IdentifierName("Add"))
-            .Call(Argument(handler))
-            .ToStatementSyntax();
+        Block(
+            LazyCollectionSyntaxHelper
+                .EnsureInitialized(indexer.GetterImplementation.Invocation.ReturnValuesField.Name)
+                .Dot(IdentifierName("Add"))
+                .Call(Argument(handler))
+                .ToStatementSyntax(),
+            TurnDefaultBehaviourOff(indexer),
+            IdentifierName(HasConfiguredReturnFieldName).Assign(True).ToStatementSyntax()
+        );
 
     private static MethodDeclarationSyntax BuildGetterInvocationUseBaseImplementationMethod(
         in ImposterIndexerMetadata indexer
-    )
-    {
-        var invocation = indexer.GetterImplementation.Invocation;
-
-        return new MethodDeclarationBuilder(WellKnownTypes.Void, "UseBaseImplementation")
+    ) =>
+        new MethodDeclarationBuilder(WellKnownTypes.Void, "UseBaseImplementation")
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .WithBody(
-                Block(
-                    AddToReturnValues(invocation, BaseImplementationHandler(indexer)),
-                    TurnDefaultBehaviourOff(indexer),
-                    IdentifierName(
-                            IndexerGetterImposterMetadata
-                                .GetterInvocationMetadata
-                                .HasConfiguredReturnFieldName
-                        )
-                        .Assign(True)
-                        .ToStatementSyntax()
-                )
-            )
+            .WithBody(ConfigureReturn(indexer, BaseImplementationHandler(indexer)))
             .Build();
-    }
 
     // A handler that calls the base implementation with the keys passed through, and throws a missing imposter when
     // there's none.

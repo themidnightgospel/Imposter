@@ -31,7 +31,7 @@ internal readonly struct IndexerSetterImposterMetadata
 
     internal readonly string CriteriaParameterName;
 
-    internal readonly MethodMetadata MarkConfiguredMethod;
+    internal readonly string MarkConfiguredMethodName;
 
     internal readonly string SetterSuffix;
 
@@ -118,7 +118,7 @@ internal readonly struct IndexerSetterImposterMetadata
         InvokedBaseImplementationVariableName = names.Use("invokedBaseImplementation");
 
         Builder = new SetterBuilderMetadata();
-        MarkConfiguredMethod = new MethodMetadata("MarkConfigured", WellKnownTypes.Void);
+        MarkConfiguredMethodName = "MarkConfigured";
     }
 
     // The elements of a history entry that keeps the value: the keys and the value.
