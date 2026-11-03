@@ -33,7 +33,7 @@ internal readonly struct IndexerSetterImposterMetadata
 
     internal readonly FieldMetadata HasConfiguredSetterField;
 
-    internal readonly SetterBuilderMetadata Builder;
+    internal readonly IndexerAccessorBuilderMetadata Builder;
 
     internal readonly string ValueParameterName;
 
@@ -125,7 +125,7 @@ internal readonly struct IndexerSetterImposterMetadata
         RegistrationVariableName = names.Use("registration");
         InvokedBaseImplementationVariableName = names.Use("invokedBaseImplementation");
 
-        Builder = new SetterBuilderMetadata();
+        Builder = new IndexerAccessorBuilderMetadata("_setterImposter");
         MarkConfiguredMethodName = "MarkConfigured";
     }
 
@@ -156,20 +156,4 @@ internal readonly struct IndexerSetterImposterMetadata
                 }
             )
         );
-
-    internal readonly struct SetterBuilderMetadata
-    {
-        internal readonly string Name;
-
-        internal readonly string ImposterFieldName;
-
-        internal readonly string CriteriaFieldName;
-
-        public SetterBuilderMetadata()
-        {
-            Name = "Builder";
-            ImposterFieldName = "_setterImposter";
-            CriteriaFieldName = "_criteria";
-        }
-    }
 }

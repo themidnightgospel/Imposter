@@ -3,6 +3,7 @@ using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.Features.Shared.Builders.ThenMethodBuilder;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -47,7 +48,7 @@ internal static class SetterImposterBuilderBuilder
             .AddMember(BuildConstructor(property))
             .AddMember(BuildCallbackMethod(property))
             .AddMember(BuildCalledMethod(property))
-            .AddMember(BuildThenMethod(property))
+            .AddMember(ThenReturningThis(property.SetterImposterBuilderInterface.ThenMethod))
             .AddMember(BuildUseBaseImplementationEntryMethod(property))
             .Build();
     }
@@ -152,17 +153,6 @@ internal static class SetterImposterBuilderBuilder
         arguments.Add(Argument(IdentifierName(argumentName)));
         return ArgumentListSyntax(arguments);
     }
-
-    private static MethodDeclarationSyntax BuildThenMethod(in ImposterPropertyMetadata property) =>
-        new MethodDeclarationBuilder(
-            property.SetterImposterBuilderInterface.ThenMethod.ReturnType,
-            property.SetterImposterBuilderInterface.ThenMethod.Name
-        )
-            .WithExplicitInterfaceSpecifier(
-                property.SetterImposterBuilderInterface.ThenMethod.InterfaceSyntax
-            )
-            .WithBody(Block(ReturnThis))
-            .Build();
 
     private static MethodDeclarationSyntax? BuildUseBaseImplementationEntryMethod(
         in ImposterPropertyMetadata property

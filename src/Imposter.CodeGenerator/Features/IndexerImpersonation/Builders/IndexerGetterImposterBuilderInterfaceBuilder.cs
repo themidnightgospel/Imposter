@@ -4,6 +4,7 @@ using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata.GetterImpost
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Imposter.CodeGenerator.Features.Shared.Builders.FluentInterfaceBuilder;
 using static Imposter.CodeGenerator.Features.Shared.Builders.InterfaceMethodBuilder;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -21,9 +22,19 @@ internal static class IndexerGetterImposterBuilderInterfaceBuilder
         return
         [
             BuildOutcomeInterface(indexer),
-            BuildCallbackInterface(indexer),
-            BuildContinuationInterface(indexer),
-            BuildVerificationInterface(indexer),
+            CallbackInterface(
+                indexer.GetterBuilderInterface.CallbackInterfaceName,
+                indexer.GetterBuilderInterface.CallbackMethod
+            ),
+            ContinuationInterface(
+                indexer.GetterBuilderInterface.ContinuationInterfaceName,
+                indexer.GetterBuilderInterface.CallbackInterfaceTypeSyntax,
+                indexer.GetterBuilderInterface.ThenMethod
+            ),
+            VerificationInterface(
+                indexer.GetterBuilderInterface.VerificationInterfaceName,
+                indexer.GetterBuilderInterface.CalledMethod
+            ),
             BuildFluentInterface(indexer),
             BuildBuilderInterface(indexer),
         ];
@@ -52,35 +63,6 @@ internal static class IndexerGetterImposterBuilderInterfaceBuilder
             )
             .Build();
 
-    private static InterfaceDeclarationSyntax BuildContinuationInterface(
-        in ImposterIndexerMetadata indexer
-    )
-    {
-        var then = indexer.GetterBuilderInterface.ThenMethod;
-
-        return new InterfaceDeclarationBuilder(
-            indexer.GetterBuilderInterface.ContinuationInterfaceName
-        )
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddBaseType(SimpleBaseType(indexer.GetterBuilderInterface.CallbackInterfaceTypeSyntax))
-            .AddMember(InterfaceMethod(then.ReturnType, then.Name))
-            .Build();
-    }
-
-    private static InterfaceDeclarationSyntax BuildCallbackInterface(
-        in ImposterIndexerMetadata indexer
-    )
-    {
-        var callback = indexer.GetterBuilderInterface.CallbackMethod;
-
-        return new InterfaceDeclarationBuilder(indexer.GetterBuilderInterface.CallbackInterfaceName)
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddMember(
-                InterfaceMethod(callback.ReturnType, callback.Name, callback.CallbackParameter)
-            )
-            .Build();
-    }
-
     private static InterfaceDeclarationSyntax BuildOutcomeInterface(
         in ImposterIndexerMetadata indexer
     )
@@ -100,20 +82,6 @@ internal static class IndexerGetterImposterBuilderInterfaceBuilder
         }
 
         return builder.Build();
-    }
-
-    private static InterfaceDeclarationSyntax BuildVerificationInterface(
-        in ImposterIndexerMetadata indexer
-    )
-    {
-        var called = indexer.GetterBuilderInterface.CalledMethod;
-
-        return new InterfaceDeclarationBuilder(
-            indexer.GetterBuilderInterface.VerificationInterfaceName
-        )
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .AddMember(InterfaceMethod(called.ReturnType, called.Name, called.CountParameter))
-            .Build();
     }
 
     private static MethodDeclarationSyntax[] BuildReturnsMethods(

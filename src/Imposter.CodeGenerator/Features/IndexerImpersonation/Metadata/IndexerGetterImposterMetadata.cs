@@ -18,6 +18,8 @@ internal readonly struct IndexerGetterImposterMetadata
 
     internal const string CalledMethodName = "Called";
 
+    internal const string InvocationImposterPropertyName = "InvocationImposter";
+
     internal const string PropertyDisplayNamePropertyName = "PropertyDisplayName";
 
     internal readonly string Name;
@@ -34,7 +36,9 @@ internal readonly struct IndexerGetterImposterMetadata
 
     internal readonly FieldMetadata PropertyDisplayNameField;
 
-    internal readonly GetterBuilderMetadata Builder;
+    internal readonly IndexerAccessorBuilderMetadata Builder;
+
+    internal readonly TypeSyntax ReturnGeneratorType;
 
     internal readonly GetterInvocationMetadata Invocation;
 
@@ -67,7 +71,7 @@ internal readonly struct IndexerGetterImposterMetadata
         );
         FindGetterInvocationImposterMethodName = names.Use("FindGetterInvocationImposter");
 
-        var returnGeneratorType = indexer.Core.HasGeneratedValueDelegates
+        ReturnGeneratorType = indexer.Core.HasGeneratedValueDelegates
             ? indexer.Delegates.ReturnGeneratorDelegateType
             : WellKnownTypes.System.Func(
                 indexer.Arguments.TypeSyntax,
@@ -104,29 +108,7 @@ internal readonly struct IndexerGetterImposterMetadata
             names.Use("_propertyDisplayName"),
             WellKnownTypes.String
         );
-        Builder = new GetterBuilderMetadata(returnGeneratorType);
-    }
-
-    internal readonly struct GetterBuilderMetadata
-    {
-        internal readonly string Name;
-
-        internal readonly string ImposterFieldName;
-
-        internal readonly string CriteriaFieldName;
-
-        internal readonly string InvocationImposterPropertyName;
-
-        internal readonly TypeSyntax ReturnGeneratorType;
-
-        internal GetterBuilderMetadata(TypeSyntax returnGeneratorType)
-        {
-            Name = "Builder";
-            ImposterFieldName = "_imposter";
-            CriteriaFieldName = "_criteria";
-            InvocationImposterPropertyName = "InvocationImposter";
-            ReturnGeneratorType = returnGeneratorType;
-        }
+        Builder = new IndexerAccessorBuilderMetadata("_imposter");
     }
 
     internal readonly struct GetterInvocationMetadata
