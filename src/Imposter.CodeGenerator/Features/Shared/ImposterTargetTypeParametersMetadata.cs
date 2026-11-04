@@ -10,7 +10,7 @@ namespace Imposter.CodeGenerator.Features.Shared;
 
 internal readonly struct ImposterTargetTypeParametersMetadata
 {
-    internal readonly IReadOnlyList<NameSyntax> TypeArguments;
+    internal readonly IReadOnlyList<IdentifierNameSyntax> TypeArguments;
 
     internal readonly TypeParameterListSyntax? TypeParameterListSyntax;
 
@@ -20,10 +20,7 @@ internal readonly struct ImposterTargetTypeParametersMetadata
     {
         TypeArguments = typeParameters
             .Select(parameter =>
-                (NameSyntax)
-                    SyntaxFactory.IdentifierName(
-                        SyntaxFactoryHelper.EscapedIdentifier(parameter.Name)
-                    )
+                SyntaxFactory.IdentifierName(SyntaxFactoryHelper.EscapedIdentifier(parameter.Name))
             )
             .ToArray();
         TypeParameterListSyntax = SyntaxFactoryHelper.TypeParameterListSyntax(TypeArguments);

@@ -26,6 +26,18 @@ internal static partial class SyntaxFactoryHelper
             ? TypeParameterList(SeparatedList(TypeParametersSyntax(typeParameters)))
             : null;
 
+    internal static TypeParameterListSyntax? TypeParameterListSyntax(
+        IReadOnlyList<IdentifierNameSyntax> typeParameterNames
+    ) =>
+        typeParameterNames.Count > 0
+            ? TypeParameterList(
+                SeparatedList(typeParameterNames.Select(it => TypeParameter(it.Identifier)))
+            )
+            : null;
+
+    internal static TypeSyntax ToNullableType(this TypeSyntax typeSyntax) =>
+        NullableType(typeSyntax);
+
     internal static NameSyntax WithMethodGenericArguments(
         IReadOnlyList<NameSyntax> genericArguments,
         string typeName

@@ -9,15 +9,6 @@ namespace Imposter.CodeGenerator.SyntaxHelpers.Builders;
 
 internal static class DefaultAttributes
 {
-#pragma warning disable CA1810
-    static DefaultAttributes()
-#pragma warning restore CA1810
-    {
-        DefaultTypeAttributes = [GeneratedCodeAttribute];
-    }
-
-    internal static readonly IReadOnlyList<AttributeListSyntax> DefaultTypeAttributes;
-
     private const string GeneratedCodeAttributeName =
         "global::System.CodeDom.Compiler.GeneratedCode";
     private static readonly AssemblyName ImposterGeneratorAssembly =
@@ -29,7 +20,7 @@ internal static class DefaultAttributes
         )
     );
 
-    internal static readonly AttributeListSyntax GeneratedCodeAttribute = AttributeList(
+    private static readonly AttributeListSyntax GeneratedCodeAttribute = AttributeList(
         SingletonSeparatedList(
             Attribute(IdentifierName(GeneratedCodeAttributeName))
                 .WithArgumentList(
@@ -48,4 +39,10 @@ internal static class DefaultAttributes
                 )
         )
     );
+
+    // Static fields initialize in declaration order, so this one stays below GeneratedCodeAttribute.
+    internal static readonly IReadOnlyList<AttributeListSyntax> DefaultTypeAttributes =
+    [
+        GeneratedCodeAttribute,
+    ];
 }

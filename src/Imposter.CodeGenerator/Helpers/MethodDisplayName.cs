@@ -4,7 +4,7 @@ namespace Imposter.CodeGenerator.Helpers;
 
 internal static class MethodDisplayName
 {
-    private static readonly SymbolDisplayFormat MethodDisplayFormatForDebuggerDisplayName = new(
+    private static readonly SymbolDisplayFormat MethodDisplayFormat = new(
         typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypes,
         genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
         memberOptions: SymbolDisplayMemberOptions.IncludeParameters
@@ -21,5 +21,5 @@ internal static class MethodDisplayName
     );
 
     internal static string ToFullDisplayName(this IMethodSymbol method) =>
-        method.ToDisplayString(MethodDisplayFormatForDebuggerDisplayName);
+        method.ToDisplayString(MethodDisplayFormat);
 }

@@ -84,7 +84,7 @@ internal readonly struct ImposterTargetMethodMetadata
 
     internal readonly ExplicitInterfaceSpecifierSyntax? ExplicitInterfaceSpecifier;
 
-    internal readonly IReadOnlyList<NameSyntax> GenericTypeArguments;
+    internal readonly IReadOnlyList<IdentifierNameSyntax> GenericTypeArguments;
 
     internal readonly TypeArgumentListSyntax? GenericTypeArgumentListSyntax;
 
@@ -92,7 +92,7 @@ internal readonly struct ImposterTargetMethodMetadata
 
     internal readonly IReadOnlyList<TypeParameterConstraintClauseSyntax> GenericTypeConstraintClauses;
 
-    internal readonly IReadOnlyList<NameSyntax> TargetGenericTypeArguments;
+    internal readonly IReadOnlyList<IdentifierNameSyntax> TargetGenericTypeArguments;
 
     internal readonly TypeParameterListSyntax? TargetGenericTypeParameterListSyntax;
 

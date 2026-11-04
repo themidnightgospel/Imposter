@@ -17,4 +17,10 @@ internal static partial class SyntaxFactoryHelper
             .WithModifiers(Token(SyntaxKind.PublicKeyword))
             .AddParameters(fields)
             .Build();
+
+    internal static ObjectCreationExpressionSyntax New(
+        this TypeSyntax type,
+        ArgumentListSyntax? arguments = null,
+        InitializerExpressionSyntax? initializer = null
+    ) => ObjectCreationExpression(type, arguments ?? EmptyArgumentListSyntax, initializer);
 }

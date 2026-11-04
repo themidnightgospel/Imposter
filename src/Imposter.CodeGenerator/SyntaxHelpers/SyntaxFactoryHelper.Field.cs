@@ -68,7 +68,16 @@ internal static partial class SyntaxFactoryHelper
             VariableDeclarationSyntax(typeSyntax, name, initializer)
         );
 
-    internal static VariableDeclarationSyntax VariableDeclarationSyntax(
+    internal static LocalDeclarationStatementSyntax LocalVariableDeclarationSyntax(
+        TypeSyntax typeSyntax,
+        string name,
+        ExpressionSyntax? initializer = null
+    ) =>
+        LocalDeclarationStatement(
+            VariableDeclarationSyntax(typeSyntax: typeSyntax, name: name, initializer: initializer)
+        );
+
+    private static VariableDeclarationSyntax VariableDeclarationSyntax(
         TypeSyntax typeSyntax,
         string name,
         ExpressionSyntax? initializer = null
@@ -82,14 +91,5 @@ internal static partial class SyntaxFactoryHelper
                     initializer is null ? null : EqualsValueClause(initializer)
                 )
             )
-        );
-
-    internal static LocalDeclarationStatementSyntax LocalVariableDeclarationSyntax(
-        TypeSyntax typeSyntax,
-        string name,
-        ExpressionSyntax? initializer = null
-    ) =>
-        LocalDeclarationStatement(
-            VariableDeclarationSyntax(typeSyntax: typeSyntax, name: name, initializer: initializer)
         );
 }
