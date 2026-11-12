@@ -21,24 +21,45 @@ public class InvocationBufferTests
     }
 
     [Fact]
-    public void GivenCapturedHead_WhenAppending_ShouldKeepOnlyCapturedEntries()
+    public void GivenCapturedHead_WhenAppendingOrClearing_ShouldKeepOnlyCapturedEntries()
     {
         var buffer = new InvocationBuffer<int>();
         buffer.Add(1, 10, null);
         var snapshot = buffer.GetEnumerator();
         var secondPass = snapshot;
         buffer.Add(2, 20, null);
+        buffer.Clear();
         buffer.Add(3, 30, null);
 
         snapshot.MoveNext().ShouldBeTrue();
         snapshot.Current.Value.ShouldBe(1);
+        InvocationBuffer<int>.MarkVerified(snapshot.Current);
         snapshot.Current.Sequence.ShouldBe(10);
         snapshot.MoveNext().ShouldBeFalse();
         secondPass.MoveNext().ShouldBeTrue();
-        secondPass.Current.Value.ShouldBe(1);
+        InvocationBuffer<int>.IsVerified(secondPass.Current).ShouldBeTrue();
         var current = buffer.GetEnumerator();
         current.MoveNext().ShouldBeTrue();
         current.Current.Value.ShouldBe(3);
+        InvocationBuffer<int>.IsVerified(current.Current).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void GivenMaterializedSetterRecords_WhenVerified_ShouldUpdateTheirOriginalCoverageOnly()
+    {
+        var setter = new TestSetter();
+        setter.Set(1);
+        var old = (IVerifiableInvocation)setter.Snapshot()[0];
+        old.IsVerified.ShouldBeFalse();
+        setter.Called(Arg<int>.Is(1), Count.Once());
+        old.IsVerified.ShouldBeTrue();
+        setter.ClearInvocations();
+        setter.Set(2);
+        old.MarkVerified();
+        setter.UncoveredInteractions().ShouldHaveSingleItem();
+        var current = (IVerifiableInvocation)setter.Snapshot()[0];
+        current.MarkVerified();
+        setter.UncoveredInteractions().ShouldBeEmpty();
     }
 
     [Fact]
@@ -71,9 +92,24 @@ public class InvocationBufferTests
     }
 
     [Fact]
-    public void GivenDetachedEntry_WhenCollecting_ShouldNotRetainUnrelatedLaterSegments()
+    public void GivenConcurrentCoverage_WhenMarked_ShouldKeepSequenceAndPayload()
     {
-        var (entry, laterValue) = CreateDetachedHistory();
+        var buffer = new InvocationBuffer<int>();
+        buffer.Add(42, long.MaxValue - 1, null);
+        var cursor = buffer.GetEnumerator();
+        cursor.MoveNext().ShouldBeTrue();
+        var entry = cursor.Current;
+        Parallel.For(0, 128, _ => InvocationBuffer<int>.MarkVerified(entry));
+        InvocationBuffer<int>.IsVerified(entry).ShouldBeTrue();
+        entry.Sequence.ShouldBe(long.MaxValue - 1);
+        entry.Value.ShouldBe(42);
+    }
+
+    [Fact]
+    public void GivenOldRecordAfterClear_WhenCollecting_ShouldNotRetainUnrelatedLaterSegments()
+    {
+        var (entry, laterValue) = CreateClearedHistory();
+        // Force collection so this test can distinguish unreachable values from retained history.
         GC.Collect();
         GC.WaitForPendingFinalizers();
         GC.Collect();
@@ -86,7 +122,7 @@ public class InvocationBufferTests
     private static (
         InvocationBuffer<object>.Entry Entry,
         WeakReference LaterValue
-    ) CreateDetachedHistory()
+    ) CreateClearedHistory()
     {
         var buffer = new InvocationBuffer<object>();
         buffer.Add(new object(), 1, null);
@@ -98,6 +134,7 @@ public class InvocationBufferTests
         var value = new object();
         var weak = new WeakReference(value);
         buffer.Add(value, 102, null);
+        buffer.Clear();
         return (entry, weak);
     }
 

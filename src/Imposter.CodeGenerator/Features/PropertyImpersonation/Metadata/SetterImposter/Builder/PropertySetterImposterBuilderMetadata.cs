@@ -13,6 +13,7 @@ internal readonly struct PropertySetterImposterBuilderMetadata
     internal readonly FieldMetadata SetterImposterField;
 
     internal readonly FieldMetadata? CriteriaField;
+    internal readonly FieldMetadata SetupField;
     internal readonly FieldMetadata RuntimeCriteriaField;
 
     public PropertySetterImposterBuilderMetadata(
@@ -28,6 +29,14 @@ internal readonly struct PropertySetterImposterBuilderMetadata
         RuntimeCriteriaField = new FieldMetadata(
             "_runtimeCriteria",
             WellKnownTypes.Imposter.Abstractions.Arg(property.NullableAwareValueTypeSyntax)
+        );
+        SetupField = new FieldMetadata(
+            "_setup",
+            property.IsPassedThrough
+                ? WellKnownTypes.Imposter.Abstractions.SetterSetup
+                : WellKnownTypes.Imposter.Abstractions.PropertySetterSetup(
+                    property.NullableAwareValueTypeSyntax
+                )
         );
         CriteriaField = property.AsArgType is { } argType
             ? property.UsesSharedRuntime

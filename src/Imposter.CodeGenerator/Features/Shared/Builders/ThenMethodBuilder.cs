@@ -1,4 +1,4 @@
-﻿using Imposter.CodeGenerator.Features.Shared.BuilderInterface;
+using Imposter.CodeGenerator.Features.Shared.BuilderInterface;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;

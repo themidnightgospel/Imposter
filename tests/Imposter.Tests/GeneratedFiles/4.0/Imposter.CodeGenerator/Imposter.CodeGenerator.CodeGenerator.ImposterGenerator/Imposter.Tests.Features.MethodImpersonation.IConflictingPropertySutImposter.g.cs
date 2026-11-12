@@ -45,6 +45,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface INamePropertyGetterContinuationBuilder : INamePropertyGetterCallbackBuilder
 		{
 			INamePropertyGetterFluentBuilder Then();
+			INamePropertyGetterContinuationBuilder Lenient();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -70,11 +71,27 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class NamePropertyBuilder : INamePropertyBuilder
+		internal class NamePropertyBuilder : INamePropertyBuilder, global::Imposter.Abstractions.IImposterVerificationSource
 		{
-			internal void ClearInvocations()
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
 			{
-				_getterImposterBuilder.ClearInvocations();
+				var findings = new global::System.Collections.Generic.List<string>();
+				findings.AddRange(((global::Imposter.Abstractions.IImposterVerificationSource)_getterImposterBuilder).Interactions());
+				return findings;
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+			{
+				var findings = new global::System.Collections.Generic.List<string>();
+				findings.AddRange(((global::Imposter.Abstractions.IImposterVerificationSource)_getterImposterBuilder).UncoveredInteractions());
+				return findings;
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+			{
+				var findings = new global::System.Collections.Generic.List<string>();
+				findings.AddRange(((global::Imposter.Abstractions.IImposterVerificationSource)_getterImposterBuilder).UnusedSetups());
+				return findings;
 			}
 
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
@@ -90,6 +107,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				_defaultPropertyBehaviour = new global::Imposter.Abstractions.PropertyValue<string>();
 				_invocationBehavior = invocationBehavior;
 				_getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.MethodImpersonation.IConflictingPropertySut.Name");
+			}
+
+			internal void ClearInvocations()
+			{
+				_getterImposterBuilder.ClearInvocations();
 			}
 
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -126,6 +148,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				INamePropertyGetterContinuationBuilder INamePropertyGetterCallbackBuilder.Callback(global::System.Action callback)
 				{
 					base.Callback(callback);
+					return this;
+				}
+
+				INamePropertyGetterContinuationBuilder INamePropertyGetterContinuationBuilder.Lenient()
+				{
+					base.MarkLenient();
 					return this;
 				}
 
@@ -169,6 +197,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface IValuePropertyGetterContinuationBuilder : IValuePropertyGetterCallbackBuilder
 		{
 			IValuePropertyGetterFluentBuilder Then();
+			IValuePropertyGetterContinuationBuilder Lenient();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -194,11 +223,27 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class ValuePropertyBuilder : IValuePropertyBuilder
+		internal class ValuePropertyBuilder : IValuePropertyBuilder, global::Imposter.Abstractions.IImposterVerificationSource
 		{
-			internal void ClearInvocations()
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
 			{
-				_getterImposterBuilder.ClearInvocations();
+				var findings = new global::System.Collections.Generic.List<string>();
+				findings.AddRange(((global::Imposter.Abstractions.IImposterVerificationSource)_getterImposterBuilder).Interactions());
+				return findings;
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+			{
+				var findings = new global::System.Collections.Generic.List<string>();
+				findings.AddRange(((global::Imposter.Abstractions.IImposterVerificationSource)_getterImposterBuilder).UncoveredInteractions());
+				return findings;
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+			{
+				var findings = new global::System.Collections.Generic.List<string>();
+				findings.AddRange(((global::Imposter.Abstractions.IImposterVerificationSource)_getterImposterBuilder).UnusedSetups());
+				return findings;
 			}
 
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
@@ -214,6 +259,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				_defaultPropertyBehaviour = new global::Imposter.Abstractions.PropertyValue<string>();
 				_invocationBehavior = invocationBehavior;
 				_getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.MethodImpersonation.IHasStringValue.Value");
+			}
+
+			internal void ClearInvocations()
+			{
+				_getterImposterBuilder.ClearInvocations();
 			}
 
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -250,6 +300,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				IValuePropertyGetterContinuationBuilder IValuePropertyGetterCallbackBuilder.Callback(global::System.Action callback)
 				{
 					base.Callback(callback);
+					return this;
+				}
+
+				IValuePropertyGetterContinuationBuilder IValuePropertyGetterContinuationBuilder.Lenient()
+				{
+					base.MarkLenient();
 					return this;
 				}
 
@@ -293,6 +349,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface IValue_1PropertyGetterContinuationBuilder : IValue_1PropertyGetterCallbackBuilder
 		{
 			IValue_1PropertyGetterFluentBuilder Then();
+			IValue_1PropertyGetterContinuationBuilder Lenient();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -318,11 +375,27 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class Value_1PropertyBuilder : IValue_1PropertyBuilder
+		internal class Value_1PropertyBuilder : IValue_1PropertyBuilder, global::Imposter.Abstractions.IImposterVerificationSource
 		{
-			internal void ClearInvocations()
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
 			{
-				_getterImposterBuilder.ClearInvocations();
+				var findings = new global::System.Collections.Generic.List<string>();
+				findings.AddRange(((global::Imposter.Abstractions.IImposterVerificationSource)_getterImposterBuilder).Interactions());
+				return findings;
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+			{
+				var findings = new global::System.Collections.Generic.List<string>();
+				findings.AddRange(((global::Imposter.Abstractions.IImposterVerificationSource)_getterImposterBuilder).UncoveredInteractions());
+				return findings;
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+			{
+				var findings = new global::System.Collections.Generic.List<string>();
+				findings.AddRange(((global::Imposter.Abstractions.IImposterVerificationSource)_getterImposterBuilder).UnusedSetups());
+				return findings;
 			}
 
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
@@ -338,6 +411,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				_defaultPropertyBehaviour = new global::Imposter.Abstractions.PropertyValue<int>();
 				_invocationBehavior = invocationBehavior;
 				_getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.MethodImpersonation.IHasIntValue.Value");
+			}
+
+			internal void ClearInvocations()
+			{
+				_getterImposterBuilder.ClearInvocations();
 			}
 
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -374,6 +452,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				IValue_1PropertyGetterContinuationBuilder IValue_1PropertyGetterCallbackBuilder.Callback(global::System.Action callback)
 				{
 					base.Callback(callback);
+					return this;
+				}
+
+				IValue_1PropertyGetterContinuationBuilder IValue_1PropertyGetterContinuationBuilder.Lenient()
+				{
+					base.MarkLenient();
 					return this;
 				}
 
@@ -449,6 +533,21 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			invocations.AddRange(_ValuePropertyBuilderField.Snapshot(false));
 			invocations.AddRange(_Value_1PropertyBuilderField.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyNoOtherCalls()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyNoOtherCalls(_NamePropertyBuilderField, _ValuePropertyBuilderField, _Value_1PropertyBuilderField);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyNoInteractions()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyNoInteractions(_NamePropertyBuilderField, _ValuePropertyBuilderField, _Value_1PropertyBuilderField);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyAllSetupsUsed()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyAllSetupsUsed(_NamePropertyBuilderField, _ValuePropertyBuilderField, _Value_1PropertyBuilderField);
 		}
 
 		void global::Imposter.Abstractions.IImposter.ClearInvocations()

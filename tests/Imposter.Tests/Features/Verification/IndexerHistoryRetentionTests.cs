@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using Imposter.Abstractions;
 using Shouldly;
 using Xunit;
@@ -24,7 +26,7 @@ namespace Imposter.Tests.Features.Verification
         }
     }
 
-    public class IndexerInvocationIdentityTests
+    public class IndexerHistoryRetentionTests
     {
         private readonly IndexerRetentionTargetImposter _sut = new();
 
@@ -42,15 +44,46 @@ namespace Imposter.Tests.Features.Verification
         }
 
         [Fact]
-        public void GivenOptionalIndexerKey_WhenReadingAndWriting_ShouldRetainValuesAndOrderedHistory()
+        public void GivenOptionalIndexerKey_WhenReadingAndWriting_ShouldRetainValuesAndHistory()
         {
             var sut = new IOptionalIndexerKeyTargetImposter();
             sut.Instance()[0] = 42;
             sut.Instance()[0].ShouldBe(42);
             sut[0].Setter().Invocations[0].Value.ShouldBe(42);
             sut[0].Getter().Invocations[0].Result.ShouldBe(42);
+            sut[0].Setter().Called(Count.Once());
+            sut[0].Getter().Called(Count.Once());
+            sut.VerifyNoOtherCalls();
             sut[0].Getter().Returns(17);
             sut.Instance()[0].ShouldBe(17);
+            sut.VerifyAllSetupsUsed();
+        }
+
+        [Fact]
+        public void GivenStoredIndexerValues_WhenHistoryIsCleared_ShouldReleaseUnrelatedResults()
+        {
+            var stored = new object();
+            var previousResult = RecordAndClear(_sut, stored);
+            // Force collection so this test can distinguish unreachable values from retained history.
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+
+            previousResult.IsAlive.ShouldBeFalse();
+            _sut.Instance()[1].ShouldBeSameAs(stored);
+            GC.KeepAlive(_sut);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static WeakReference RecordAndClear(
+            IndexerRetentionTargetImposter sut,
+            object stored
+        )
+        {
+            var result = sut.Instance()[0];
+            sut.Instance()[1] = stored;
+            sut.ClearInvocations();
+            return new WeakReference(result);
         }
     }
 }

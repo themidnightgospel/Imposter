@@ -34,8 +34,8 @@ public class GeneratedLocalNamedTypeParameterTests
             .Distinct()
             .OrderBy(name => name)
             .ToArray();
-        names.ShouldContain("head");
-        names.ShouldContain("current");
+        names.ShouldContain("snapshot");
+        names.ShouldContain("cursor");
         names.ShouldContain("invocationException");
         var adversarial = await GeneratorTestHelper.CreateContext(
             Source(names, methodGeneric),

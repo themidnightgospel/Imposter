@@ -4,19 +4,39 @@
 /// <typeparam name="THandler">The event delegate type.</typeparam>
 public sealed class EventSubscriptionInvocation<THandler> : InvocationRecord
 {
+    private readonly InvocationBuffer<THandler>.Entry _entry;
+
     /// <summary>Materializes a completed event interaction from compact history storage.</summary>
     /// <param name="member">The event name.</param>
-    /// <param name="entry">The completed entry and its captured values.</param>
+    /// <param name="entry">The completed entry and its shared verification coverage.</param>
     /// <param name="isSubscription">Whether the handler was added.</param>
     private EventSubscriptionInvocation(
         string member,
         InvocationBuffer<THandler>.Entry entry,
         bool isSubscription
     )
-        : base(entry.Sequence, entry.Exception)
+        : this(member, entry.Value, isSubscription, entry.Sequence, entry.Exception)
+    {
+        _entry = entry;
+    }
+
+    /// <summary>Creates a completed event interaction.</summary>
+    /// <param name="member">The event name.</param>
+    /// <param name="handler">The handler supplied to the event accessor.</param>
+    /// <param name="isSubscription">Whether the handler was added.</param>
+    /// <param name="sequence">The entry stamp.</param>
+    /// <param name="exception">The exception thrown by the accessor.</param>
+    private EventSubscriptionInvocation(
+        string member,
+        THandler handler,
+        bool isSubscription,
+        long sequence,
+        Exception? exception
+    )
+        : base(sequence, exception)
     {
         Member = member;
-        Handler = entry.Value;
+        Handler = handler;
         IsSubscription = isSubscription;
     }
 
@@ -29,7 +49,19 @@ public sealed class EventSubscriptionInvocation<THandler> : InvocationRecord
     /// <summary>Gets whether this invocation added the handler.</summary>
     public bool IsSubscription { get; }
 
-    /// <summary>Materializes an entry-ordered snapshot of completed interactions.</summary>
+    /// <inheritdoc />
+    protected override bool IsVerified => _entry.IsValid ? _entry.IsVerified : base.IsVerified;
+
+    /// <inheritdoc />
+    protected override void MarkVerified()
+    {
+        if (_entry.IsValid)
+            _entry.MarkVerified();
+        else
+            base.MarkVerified();
+    }
+
+    /// <summary>Materializes an entry-ordered snapshot without changing coverage.</summary>
     /// <param name="history">The event action history.</param>
     /// <param name="member">The event name.</param>
     /// <param name="isSubscription">Whether these interactions added handlers.</param>

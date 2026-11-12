@@ -18,16 +18,10 @@ internal static partial class PropertyImposterBuilder
         new ClassDeclarationBuilder(property.ImposterBuilder.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(property.ImposterBuilderInterface.Syntax))
-            .AddMember(
-                InvocationLifecycleBuilder.ClearChildren(
-                    property.Core.HasGetter
-                        ? property.ImposterBuilder.GetterImposterBuilderField.Name
-                        : null,
-                    property.Core.HasSetter
-                        ? property.ImposterBuilder.SetterImposterField.Name
-                        : null
-                )
+            .AddBaseType(
+                SimpleBaseType(WellKnownTypes.Imposter.Abstractions.IImposterVerificationSource)
             )
+            .AddMembers(BuildVerificationSources(property))
             .AddMember(BuildSnapshot(property))
             // The default (auto-property) behaviour stores the last value set so the getter can return it.
             .AddMember(
@@ -57,6 +51,16 @@ internal static partial class PropertyImposterBuilder
                     : null
             )
             .AddMember(BuildConstructor(property))
+            .AddMember(
+                InvocationLifecycleBuilder.ClearChildren(
+                    property.Core.HasGetter
+                        ? property.ImposterBuilder.GetterImposterBuilderField.Name
+                        : null,
+                    property.Core.HasSetter
+                        ? property.ImposterBuilder.SetterImposterField.Name
+                        : null
+                )
+            )
             .AddMember(
                 property.Core.HasGetter ? GetterImposterBuilderBuilder.Build(property) : null
             )

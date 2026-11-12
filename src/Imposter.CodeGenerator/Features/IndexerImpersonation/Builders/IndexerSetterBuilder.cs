@@ -111,6 +111,10 @@ internal static partial class IndexerSetterBuilder
             )
             .AddMember(BuildSetterConstructor(indexer))
             .AddMember(BuildSetterCallbackMethod(indexer))
+            .AddBaseType(
+                SimpleBaseType(WellKnownTypes.Imposter.Abstractions.IImposterVerificationSource)
+            )
+            .AddMembers(IndexerVerificationBuilder.Source(indexer, false))
             .AddMember(BuildSetterCalledMethod(indexer))
             .AddMember(BuildSetterSetMethod(indexer, baseCriteriaLoop, invokedBaseIdentifier))
             .AddMember(IndexerHistoryBuilder.Snapshot(indexer, false))
@@ -129,6 +133,7 @@ internal static partial class IndexerSetterBuilder
         var setter = indexer.SetterImplementation;
 
         return BuildImposterConstructor(
+            indexer,
             setter.Name,
             setter.DefaultBehaviourField,
             setter.InvocationBehaviorField.Name,
@@ -190,29 +195,6 @@ internal static partial class IndexerSetterBuilder
             IdentifierName(IndexerSetterImposterMetadata.HistoryArgumentsElementName)
         );
 
-        var invocationCountDeclaration = LocalVariableDeclarationSyntax(
-            WellKnownTypes.Int,
-            invocationCount.Identifier.Text,
-            NumericLiteral(0)
-        );
-        var countEntry = IdentifierName(indexer.Locals["entry"]);
-        var countLoop = LazyCollectionSyntaxHelper.UnlessNull(
-            ForEachStatement(
-                Var,
-                countEntry.Identifier,
-                invocationHistoryIdentifier,
-                Block(
-                    IfStatement(
-                        IdentifierName(setter.CriteriaParameterName)
-                            .Dot(IdentifierName(IndexerArgumentsCriteriaMetadata.MatchesMethodName))
-                            .Call(Argument(countEntry.Dot(IdentifierName("Arguments")))),
-                        PostfixUnaryExpression(SyntaxKind.PostIncrementExpression, invocationCount)
-                            .ToStatementSyntax()
-                    )
-                )
-            )
-        );
-
         var setDescription = "set "
             .StringLiteral()
             .Add(IdentifierName(indexer.SetterImplementation.PropertyDisplayNameField.Name))
@@ -239,9 +221,9 @@ internal static partial class IndexerSetterBuilder
             )
             .AddParameter(countParameter)
             .WithBody(
-                Block(
-                    invocationCountDeclaration,
-                    countLoop,
+                IndexerVerificationBuilder.BuildBody(
+                    indexer,
+                    false,
                     ThrowIfCountDoesNotMatch(
                         IdentifierName(countParameter.Identifier),
                         invocationCount,
@@ -250,7 +232,8 @@ internal static partial class IndexerSetterBuilder
                             entryIdentifier,
                             descriptionExpression,
                             IsHistoryNullable: true
-                        )
+                        ),
+                        indexer.Locals["performedInvocations"]
                     )
                 )
             )
@@ -383,6 +366,16 @@ internal static partial class IndexerSetterBuilder
                             IdentifierName(setter.RegistrationVariableName)
                                 .Dot(
                                     IdentifierName(
+                                        IndexerSetterImposterMetadata.RegistrationCriteriaElementName
+                                    )
+                                )
+                                .Dot(IdentifierName(indexer.ArgumentsCriteria.SetterUsedFieldName))
+                                .Assign(True)
+                        )
+                        .AddExpression(
+                            IdentifierName(setter.RegistrationVariableName)
+                                .Dot(
+                                    IdentifierName(
                                         IndexerSetterImposterMetadata.RegistrationCallbackElementName
                                     )
                                 )
@@ -439,6 +432,15 @@ internal static partial class IndexerSetterBuilder
                             .Dot(IdentifierName(IndexerArgumentsCriteriaMetadata.MatchesMethodName))
                             .Call(Argument(argumentsVariable)),
                         new BlockBuilder()
+                            .AddExpression(
+                                IdentifierName(setter.CriteriaParameterName)
+                                    .Dot(
+                                        IdentifierName(
+                                            indexer.ArgumentsCriteria.SetterUsedFieldName
+                                        )
+                                    )
+                                    .Assign(True)
+                            )
                             .AddStatement(
                                 IfStatement(
                                     IdentifierName(setter.BaseImplementationParameter.Name)
@@ -494,8 +496,6 @@ internal static partial class IndexerSetterBuilder
         }
         return null;
     }
-
-    // The history keeps the keys with the value, or the keys alone for a value passed through.
 
     private static MethodDeclarationSyntax BuildEnsureSetterConfiguredMethod(
         in ImposterIndexerMetadata indexer

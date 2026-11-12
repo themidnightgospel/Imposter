@@ -19,23 +19,11 @@ internal static class EventImposterBuilder
             .AddBaseType(SimpleBaseType(@event.BuilderInterface.TypeSyntax))
             .AddBaseType(SimpleBaseType(@event.BuilderInterface.SetupInterfaceTypeSyntax))
             .AddBaseType(SimpleBaseType(@event.BuilderInterface.VerificationInterfaceTypeSyntax))
-            .AddMembers(BuildFields(@event))
-            .AddMember(
-                InvocationLifecycleBuilder.Clear([
-                    InvocationLifecycleBuilder.ClearIfInitialized(
-                        @event.Builder.Fields.SubscribeHistory.Name
-                    ),
-                    InvocationLifecycleBuilder.ClearIfInitialized(
-                        @event.Builder.Fields.UnsubscribeHistory.Name
-                    ),
-                    InvocationLifecycleBuilder.ClearIfInitialized(
-                        @event.Builder.Fields.History.Name
-                    ),
-                    InvocationLifecycleBuilder.ClearIfInitialized(
-                        @event.Builder.Fields.HandlerInvocations.Name
-                    ),
-                ])
+            .AddBaseType(
+                SimpleBaseType(WellKnownTypes.Imposter.Abstractions.IImposterVerificationSource)
             )
+            .AddMembers(EventVerificationSourceBuilder.Build(@event))
+            .AddMembers(BuildFields(@event))
             .AddMember(EventHistoryBuilder.Build(@event, true, true))
             .AddMember(EventHistoryBuilder.Build(@event, false, true))
             .AddMember(
@@ -78,6 +66,22 @@ internal static class EventImposterBuilder
                     )
                     .Build()
             )
+            .AddMember(
+                InvocationLifecycleBuilder.Clear([
+                    InvocationLifecycleBuilder.ClearIfInitialized(
+                        @event.Builder.Fields.SubscribeHistory.Name
+                    ),
+                    InvocationLifecycleBuilder.ClearIfInitialized(
+                        @event.Builder.Fields.UnsubscribeHistory.Name
+                    ),
+                    InvocationLifecycleBuilder.ClearIfInitialized(
+                        @event.Builder.Fields.History.Name
+                    ),
+                    InvocationLifecycleBuilder.ClearIfInitialized(
+                        @event.Builder.Fields.HandlerInvocations.Name
+                    ),
+                ])
+            )
             .AddMember(EventImposterSubscriptionsBuilder.BuildSubscribeMethod(@event))
             .AddMember(EventImposterSubscriptionsBuilder.BuildUnsubscribeMethod(@event))
             .AddMember(EventImposterSubscriptionsBuilder.BuildCallbackMethod(@event))
@@ -110,9 +114,15 @@ internal static class EventImposterBuilder
 
         members.AddRange(EventImposterSubscriptionsBuilder.BuildFields(@event));
         members.AddRange(EventImposterRaiseBuilder.BuildFields(@event));
+        members.Add(SingleVariableField(@event.Builder.Fields.SubscribeUsed));
+        members.Add(SingleVariableField(@event.Builder.Fields.UnsubscribeUsed));
+        members.Add(SingleVariableField(@event.Builder.Fields.CallbacksUsed));
+        members.Add(SingleVariableField(@event.Builder.Fields.IsLenient));
+
         if (@event.Core.SupportsBaseImplementation)
         {
             members.Add(SingleVariableField(@event.Builder.Fields.UseBaseImplementation));
+            members.Add(SingleVariableField(@event.Builder.Fields.BaseUsed));
             members.Add(SingleVariableField(@event.Builder.Fields.EventDisplayName));
         }
 

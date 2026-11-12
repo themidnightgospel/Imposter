@@ -172,24 +172,33 @@ static void ExerciseVerificationLifecycle()
     Require(method.Invocations[0].Result == 1 && setter.Invocations[0].Value == 8, "typed history values");
 
     ExpectVerification(() => setter.Called(Count.Twice()), "count failure");
+    ExpectVerification(() => imposter.VerifyNoOtherCalls(), "failed count must not cover calls");
     method.Called(Count.Once());
     setter.Called(Count.Once());
+    imposter.VerifyNoOtherCalls();
+    imposter.VerifyAllSetupsUsed();
     Require(instance.Now() == 2 && instance.Offset == 8, "history inspection preserves outcome position and stored value");
     Require(snapshot.Count == 2 && method.Invocations.Count == 2, "snapshot membership stays stable after later calls");
     method.Called(Count.Twice());
     imposter.Offset.Getter().Called(Count.Once());
+    imposter.VerifyNoOtherCalls();
 
     imposter.ClearInvocations();
+    imposter.VerifyNoInteractions();
+    imposter.VerifyAllSetupsUsed();
     Require(snapshot.Count == 2 && method.Invocations.Count == 0, "detached snapshot after clear");
     setter.Called(Count.Never());
     imposter.Offset.Getter().Called(Count.Never());
     Require(instance.Now() == 3 && instance.Offset == 8, "clear preserves outcome position and stored value");
     method.Called(Count.Once());
     imposter.Offset.Getter().Called(Count.Once());
+    imposter.VerifyNoOtherCalls();
 
     imposter.Reset();
     Require(ReferenceEquals(instance, imposter.Instance()), "reset preserves instance identity");
     Require(method.Invocations.Count == 0 && snapshot.Count == 2, "reset detaches builders and preserves snapshots");
+    imposter.VerifyNoInteractions();
+    imposter.VerifyAllSetupsUsed();
     method.Returns(99);
     Require(instance.Now() == 0 && instance.Offset == 0, "reset discards state and old builder configuration");
 
@@ -207,6 +216,7 @@ static void ExerciseVerificationLifecycle()
     }
     Require(strict.Now().Invocations[0].Exception is MissingImposterException, "throwing call history");
     strict.Now().Called(Count.Once());
+    strict.VerifyNoOtherCalls();
 }
 
 static VerificationFailedException ExpectVerification(Action action, string scenario)

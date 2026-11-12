@@ -11,8 +11,6 @@ using Xunit;
 
 namespace Imposter.Tests.Features.CallAllocations
 {
-    // A call allocates only what the imposter keeps of it: its arguments and its history entry. With no callbacks
-    // registered, it allocates nothing to look for them. The budgets are 64-bit object sizes.
     public interface ISpanAdapterAllocationSut
     {
         bool Contains<T>(ReadOnlySpan<int> items, T item);
@@ -22,31 +20,6 @@ namespace Imposter.Tests.Features.CallAllocations
     // registered, it allocates nothing to look for them. The budgets are 64-bit object sizes.
     public class CallAllocationTests
     {
-        [Fact]
-        public void GivenGenericSpanCompatibleArrayPredicate_WhenCalled_ShouldKeepPrivateCopiesWithinBudget()
-        {
-            var sut = new ISpanAdapterAllocationSutImposter();
-            sut.Contains<object>(ReadOnlySpanArg<int>.Is(items => items[0] >= 0), Arg<object>.Any())
-                .Returns(true);
-            var instance = sut.Instance();
-            var items = new[] { 1, 2, 3, 4 };
-            instance.Contains<string>(items, "value").ShouldBeTrue();
-            AllocatedBytesPerCall(() => instance.Contains<string>(items, "value"))
-                .ShouldBeLessThanOrEqualTo(248);
-        }
-
-        [Fact]
-        public void GivenGenericSpanCompatibleSetup_WhenCalled_ShouldKeepAdapterCopiesWithinBudget()
-        {
-            var sut = new ISpanAdapterAllocationSutImposter();
-            sut.Contains<object>(ReadOnlySpanArg<int>.Any(), Arg<object>.Any()).Returns(true);
-            var instance = sut.Instance();
-            var items = new[] { 1, 2, 3, 4 };
-            instance.Contains<string>(items, "value").ShouldBeTrue();
-            AllocatedBytesPerCall(() => instance.Contains<string>(items, "value"))
-                .ShouldBeLessThanOrEqualTo(208);
-        }
-
         private const int Calls = 100;
 
         private readonly ICallAllocationSutImposter _sut = new ICallAllocationSutImposter();
@@ -88,9 +61,10 @@ namespace Imposter.Tests.Features.CallAllocations
         [Fact]
         public void GivenProperty_WhenConstructed_ShouldNotAllocateUnusedCollections()
         {
-            // No later verification/diagnostic state is included in the history foundation.
+            // The measured 304-byte fixture includes owner, diagnostic and coverage fields (previous ceiling: 280).
+            // Histories, callback collections and the getter verification lock remain lazy.
             AllocatedBytesPerCall(() => GC.KeepAlive(new IPropertyAllocationSutImposter()))
-                .ShouldBeLessThanOrEqualTo(280);
+                .ShouldBeLessThanOrEqualTo(304);
         }
 
         [Fact]
@@ -240,7 +214,7 @@ namespace Imposter.Tests.Features.CallAllocations
         // snapshot, while history retains a separate entry copy. Arbitrary predicates keep isolation.
         [Theory]
         [InlineData(0)]
-        [InlineData(1)]
+        [InlineData(2)]
         public void GivenGenericMethodWithSpan_WhenCalledWithItsOwnTypeArgument_ShouldNotCopyTheSpanForAnAdapter(
             int matcherKind
         )
@@ -260,16 +234,41 @@ namespace Imposter.Tests.Features.CallAllocations
         }
 
         [Fact]
-        public void GivenGenericSpanPredicate_WhenCalled_ShouldKeepSeparateCapturedArraysWithinBudget()
+        public void GivenGenericSpanArrayPredicate_WhenCalled_ShouldKeepIsolatedCopiesWithinBudget()
         {
             var sut = new ISpanParameterSutImposter();
-            sut.Contains<int>(ReadOnlySpanArg<int>.Is(values => values.Length == 4), Arg<int>.Any())
+            sut.Contains<int>(ReadOnlySpanArg<int>.Is(items => items.Length == 4), Arg<int>.Any())
                 .Returns(true);
             var instance = sut.Instance();
             var items = new[] { 1, 2, 3, 4 };
-
+            instance.Contains<int>(items, 2).ShouldBeTrue();
             AllocatedBytesPerCall(() => instance.Contains<int>(items, 2))
                 .ShouldBeLessThanOrEqualTo(176);
+        }
+
+        [Fact]
+        public void GivenGenericSpanCompatibleSetup_WhenCalled_ShouldKeepAdapterCopiesWithinBudget()
+        {
+            var sut = new ISpanAdapterAllocationSutImposter();
+            sut.Contains<object>(ReadOnlySpanArg<int>.Any(), Arg<object>.Any()).Returns(true);
+            var instance = sut.Instance();
+            var items = new[] { 1, 2, 3, 4 };
+            instance.Contains<string>(items, "value").ShouldBeTrue();
+            AllocatedBytesPerCall(() => instance.Contains<string>(items, "value"))
+                .ShouldBeLessThanOrEqualTo(208);
+        }
+
+        [Fact]
+        public void GivenGenericSpanCompatibleArrayPredicate_WhenCalled_ShouldKeepPrivateCopiesWithinBudget()
+        {
+            var sut = new ISpanAdapterAllocationSutImposter();
+            sut.Contains<object>(ReadOnlySpanArg<int>.Is(items => items[0] >= 0), Arg<object>.Any())
+                .Returns(true);
+            var instance = sut.Instance();
+            var items = new[] { 1, 2, 3, 4 };
+            instance.Contains<string>(items, "value").ShouldBeTrue();
+            AllocatedBytesPerCall(() => instance.Contains<string>(items, "value"))
+                .ShouldBeLessThanOrEqualTo(248);
         }
 
         // One node supplies captured keys for matching and retains result, exception and sequence.
@@ -403,7 +402,8 @@ namespace Imposter.Tests.Features.CallAllocations
             var indexerSetter = _sut[Arg<int>.Any()].Setter();
             var count = Count.Once();
 
-            // Warmed count checks allocate no lists, closures, or per-record objects.
+            // Warm-up includes the getter's lazily created verification lock. The call path
+            // and subsequent count checks allocate no lists, closures, or per-record objects.
             AllocatedBytesPerCall(() =>
                 {
                     method.Called(count);
@@ -452,7 +452,8 @@ namespace Imposter.Tests.Features.CallAllocations
                 .ShouldBeLessThanOrEqualTo(400);
         }
 
-        // Then() adds only its outcome step, sequence node and Returns closure.
+        // Then() adds a step, sequence node and Returns closure. Completeness tracking retains no
+        // diagnostic labels, so this three-step chain keeps the original 736-byte allocation ceiling.
         [Fact]
         public void GivenMethodSequence_WhenSetUp_ShouldOnlyAllocateEachStep()
         {

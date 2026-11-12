@@ -27,6 +27,12 @@ internal readonly struct EventImposterBuilderFieldsMetadata
 
     internal readonly FieldMetadata EventDisplayName;
 
+    internal readonly FieldMetadata SubscribeUsed;
+    internal readonly FieldMetadata UnsubscribeUsed;
+    internal readonly FieldMetadata CallbacksUsed;
+    internal readonly FieldMetadata BaseUsed;
+    internal readonly FieldMetadata IsLenient;
+
     internal readonly EventHistoryEntryMetadata HistoryEntry;
 
     internal readonly EventHandlerInvocationEntryMetadata HandlerInvocationEntry;
@@ -59,6 +65,21 @@ internal readonly struct EventImposterBuilderFieldsMetadata
             Token(SyntaxKind.ReadOnlyKeyword)
         );
         var fieldNames = core.CreateParameterNameSet();
+        SubscribeUsed = FieldMetadata.PrivateField(
+            fieldNames.Use("_subscribeUsed"),
+            WellKnownTypes.Int
+        );
+        UnsubscribeUsed = FieldMetadata.PrivateField(
+            fieldNames.Use("_unsubscribeUsed"),
+            WellKnownTypes.Int
+        );
+        CallbacksUsed = FieldMetadata.PrivateField(
+            fieldNames.Use("_callbacksUsed"),
+            WellKnownTypes.Int
+        );
+        BaseUsed = FieldMetadata.PrivateField(fieldNames.Use("_baseUsed"), WellKnownTypes.Bool);
+        IsLenient = FieldMetadata.PrivateField(fieldNames.Use("_isLenient"), WellKnownTypes.Bool);
+
         ActiveHandlers = new FieldMetadata(fieldNames.Use("_activeHandlers"), activeHandlersType);
         Callbacks = new FieldMetadata(fieldNames.Use("_callbacks"), callbackType);
         History = new FieldMetadata(fieldNames.Use("_history"), historyType);

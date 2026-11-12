@@ -16,7 +16,7 @@ internal readonly struct PropertyGetterImposterBuilderMetadata
 
     internal readonly FieldMetadata LastReturnValueField;
 
-    internal readonly FieldMetadata InvocationCountField;
+    internal readonly FieldMetadata VerificationField;
 
     internal readonly PropertyAccessorStateMetadata State;
 
@@ -46,7 +46,10 @@ internal readonly struct PropertyGetterImposterBuilderMetadata
             WellKnownTypes.Imposter.Abstractions.CallbackCollection(WellKnownTypes.System.Action)
         );
         LastReturnValueField = new FieldMetadata("_lastReturnValue", property.ReturnHandlerType);
-        InvocationCountField = new FieldMetadata("_invocationCount", WellKnownTypes.Int);
+        VerificationField = new FieldMetadata(
+            "_verification",
+            WellKnownTypes.Imposter.Abstractions.CounterVerification
+        );
         State = PropertyAccessorStateMetadata.Getter(defaultPropertyBehaviourMetadata);
         AddReturnValueMethod = new MethodMetadata("AddReturnValue", WellKnownTypes.Void);
         AddReturnValueParameter = new ParameterMetadata(

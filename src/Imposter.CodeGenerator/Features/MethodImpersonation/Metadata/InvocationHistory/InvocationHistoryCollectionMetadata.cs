@@ -17,6 +17,8 @@ internal readonly record struct InvocationHistoryCollectionMetadata
     internal const string NodeTypeName = "Node";
 
     internal const string NextFieldName = "Next";
+    internal const string VerifyMethodName = "Verify";
+    internal const string MarkVerifiedMethodName = "MarkVerified";
 
     internal readonly string Name;
 

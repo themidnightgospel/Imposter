@@ -80,7 +80,7 @@ namespace Imposter.Tests.Docs.InvocationHistory
 			internal readonly int capturedtimes;
 			internal readonly string? _result;
 			internal readonly global::System.Exception? _exception;
-			private readonly long _sequence;
+			private long _sequence;
 			public string Name
 			{
 				get
@@ -117,8 +117,23 @@ namespace Imposter.Tests.Docs.InvocationHistory
 			{
 				get
 				{
-					return _sequence;
+					return global::System.Threading.Volatile.Read(ref _sequence) & long.MaxValue;
 				}
+			}
+
+			internal override bool IsVerified
+			{
+				get
+				{
+					return global::System.Threading.Volatile.Read(ref _sequence) < 0;
+				}
+			}
+
+			internal override void MarkVerified()
+			{
+				if (IsVerified)
+					return;
+				global::System.Threading.Volatile.Write(ref _sequence, global::System.Threading.Volatile.Read(ref _sequence) | long.MinValue);
 			}
 
 			public override global::System.Exception? Exception
@@ -159,11 +174,26 @@ namespace Imposter.Tests.Docs.InvocationHistory
 		{
 			private HelloMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			public abstract class Node : global::Imposter.Abstractions.IImposterInvocation
+			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
 			{
 				public abstract string Member { get; }
 				public abstract long Sequence { get; }
 				public abstract global::System.Exception? Exception { get; }
+				internal abstract bool IsVerified { get; }
+
+				internal abstract void MarkVerified();
+				bool global::Imposter.Abstractions.IVerifiableInvocation.IsVerified
+				{
+					get
+					{
+						return IsVerified;
+					}
+				}
+
+				void global::Imposter.Abstractions.IVerifiableInvocation.MarkVerified()
+				{
+					MarkVerified();
+				}
 
 				internal HelloMethodInvocationHistoryCollection.Node? Next;
 			}
@@ -177,11 +207,6 @@ namespace Imposter.Tests.Docs.InvocationHistory
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
-			}
-
-			internal void Clear()
-			{
-				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(HelloMethodInvocationHistoryCollection.Node invocationHistory)
@@ -199,6 +224,32 @@ namespace Imposter.Tests.Docs.InvocationHistory
 					if (((IHelloMethodInvocationHistory)invocation).Matches(argumentsCriteria))
 						count++;
 					invocation = invocation.Next;
+				}
+
+				return count;
+			}
+
+			internal int Verify(global::Imposter.Abstractions.Count expected, HelloArgumentsCriteria criteria)
+			{
+				var head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				var entry = head;
+				var count = 0;
+				while (entry != null)
+				{
+					if (((IHelloMethodInvocationHistory)entry).Matches(criteria))
+						count++;
+					entry = entry.Next;
+				}
+
+				if (expected.Matches(count))
+				{
+					entry = head;
+					while (entry != null)
+					{
+						if (((IHelloMethodInvocationHistory)entry).Matches(criteria))
+							entry.MarkVerified();
+						entry = entry.Next;
+					}
 				}
 
 				return count;
@@ -231,6 +282,11 @@ namespace Imposter.Tests.Docs.InvocationHistory
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			public override string ToString()
 			{
 				var descriptions = new global::System.Collections.Generic.List<string?>();
@@ -252,6 +308,13 @@ namespace Imposter.Tests.Docs.InvocationHistory
 			internal HelloArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
+			internal volatile bool IsUsed;
+			internal volatile bool IsLenient;
+			public override string ToString()
+			{
+				return "Hello(" + "name: " + global::Imposter.Abstractions.MatcherDescription.Format(ArgumentsCriteria.name) + ", times: " + global::Imposter.Abstractions.MatcherDescription.Format(ArgumentsCriteria.times) + ")";
+			}
+
 			internal volatile bool HasConfiguredOutcome;
 			public HelloMethodInvocationImposterGroup(HelloArgumentsCriteria argumentsCriteria)
 			{
@@ -289,6 +352,8 @@ namespace Imposter.Tests.Docs.InvocationHistory
 					invocationImposter = MethodInvocationImposter.Default;
 				}
 
+				if (!this.IsUsed)
+					this.IsUsed = true;
 				return invocationImposter.Invoke(invocationBehavior, methodDisplayName, name, times);
 			}
 
@@ -369,6 +434,7 @@ namespace Imposter.Tests.Docs.InvocationHistory
 		public interface IHelloMethodInvocationImposterGroupContinuation : IHelloMethodInvocationImposterGroupCallback
 		{
 			IHelloMethodInvocationImposterGroup Then();
+			IHelloMethodInvocationImposterGroupContinuation Lenient();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -396,7 +462,7 @@ namespace Imposter.Tests.Docs.InvocationHistory
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class HelloMethodImposter
+		internal class HelloMethodImposter : global::Imposter.Abstractions.IImposterVerificationSource
 		{
 			private readonly global::Imposter.Abstractions.SetupCollection<HelloMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<HelloMethodInvocationImposterGroup>();
 			private readonly HelloMethodInvocationHistoryCollection _helloMethodInvocationHistoryCollection;
@@ -519,7 +585,7 @@ namespace Imposter.Tests.Docs.InvocationHistory
 
 				void HelloInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
 				{
-					var invocationCount = _helloMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+					var invocationCount = _helloMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
 					if (!count.Matches(invocationCount))
 					{
 						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _helloMethodInvocationHistoryCollection.ToString());
@@ -531,6 +597,12 @@ namespace Imposter.Tests.Docs.InvocationHistory
 					return _helloMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
 
+				IHelloMethodInvocationImposterGroupContinuation IHelloMethodInvocationImposterGroupContinuation.Lenient()
+				{
+					_invocationImposterGroup.IsLenient = true;
+					return this;
+				}
+
 				global::System.Collections.Generic.IReadOnlyList<HelloInvocation> HelloInvocationVerifier.Invocations
 				{
 					get
@@ -538,6 +610,25 @@ namespace Imposter.Tests.Docs.InvocationHistory
 						return _helloMethodInvocationHistoryCollection.MatchingInvocations(_argumentsCriteria);
 					}
 				}
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(_helloMethodInvocationHistoryCollection.Snapshot(), false);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(_helloMethodInvocationHistoryCollection.Snapshot(), true);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+			{
+				var findings = new global::System.Collections.Generic.List<string>();
+				foreach (var item in _invocationImposters)
+					if ((item.HasConfiguredOutcome && !item.IsUsed) && !item.IsLenient)
+						findings.Add(item.ToString());
+				return findings;
 			}
 		}
 
@@ -570,6 +661,21 @@ namespace Imposter.Tests.Docs.InvocationHistory
 			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
 			invocations.AddRange(_helloMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyNoOtherCalls()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyNoOtherCalls(_helloMethodImposter);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyNoInteractions()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyNoInteractions(_helloMethodImposter);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyAllSetupsUsed()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyAllSetupsUsed(_helloMethodImposter);
 		}
 
 		void global::Imposter.Abstractions.IImposter.ClearInvocations()

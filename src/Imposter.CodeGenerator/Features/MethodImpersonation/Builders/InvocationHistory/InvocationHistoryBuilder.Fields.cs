@@ -49,7 +49,7 @@ internal static partial class InvocationHistoryBuilder
             SingleVariableField(
                 WellKnownTypes.Long,
                 InvocationHistoryTypeMetadata.SequenceFieldName,
-                TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword))
+                TokenList(Token(SyntaxKind.PrivateKeyword))
             )
         );
         return fields;

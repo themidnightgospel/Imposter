@@ -68,7 +68,16 @@ internal static class EventImposterSubscriptionsBuilder
             .AddStatement(
                 UpdateActiveHandlers(@event, handlerIdentifier, method.ActiveHandlersOperation)
             )
-            .AddStatement(ForEachInterceptor(@event, interceptors, method.HandlerParameter.Name));
+            .AddStatement(
+                ForEachInterceptor(
+                    @event,
+                    interceptors,
+                    method.HandlerParameter.Name,
+                    history.Name == @event.Builder.Fields.SubscribeHistory.Name
+                        ? @event.Builder.Fields.SubscribeUsed.Name
+                        : @event.Builder.Fields.UnsubscribeUsed.Name
+                )
+            );
 
         if (method.BaseImplementationParameter is { } baseImplementation)
         {
@@ -182,20 +191,35 @@ internal static class EventImposterSubscriptionsBuilder
             .Call(Argument(handler))
             .ToStatementSyntax();
 
-    private static StatementSyntax ForEachInterceptor(
+    private static BlockSyntax ForEachInterceptor(
         in ImposterEventMetadata @event,
         in FieldMetadata interceptorsField,
-        string handlerIdentifier
+        string handlerIdentifier,
+        string usedCount
     ) =>
-        LazyCollectionSyntaxHelper.UnlessNull(
-            ForEachStatement(
-                Var,
-                Identifier(@event.Locals["interceptor"]),
-                IdentifierName(interceptorsField.Name),
-                Block(
-                    IdentifierName(@event.Locals["interceptor"])
-                        .Call(Argument(IdentifierName(handlerIdentifier)))
-                        .ToStatementSyntax()
+        Block(
+            LocalVariableDeclarationSyntax(
+                WellKnownTypes.Int,
+                @event.Locals["interceptorIndex"],
+                NumericLiteral(0)
+            ),
+            LazyCollectionSyntaxHelper.UnlessNull(
+                ForEachStatement(
+                    Var,
+                    Identifier(@event.Locals["interceptor"]),
+                    IdentifierName(interceptorsField.Name),
+                    Block(
+                        EventVerificationSourceBuilder.MarkUsed(
+                            usedCount,
+                            PrefixUnaryExpression(
+                                SyntaxKind.PreIncrementExpression,
+                                IdentifierName(@event.Locals["interceptorIndex"])
+                            )
+                        ),
+                        IdentifierName(@event.Locals["interceptor"])
+                            .Call(Argument(IdentifierName(handlerIdentifier)))
+                            .ToStatementSyntax()
+                    )
                 )
             )
         );
@@ -234,7 +258,10 @@ internal static class EventImposterSubscriptionsBuilder
         IdentifierNameSyntax baseImplementationIdentifier
     ) =>
         CallBaseImplementationIfUsed(
-            IdentifierName(@event.Builder.Fields.UseBaseImplementation.Name),
+            ParenthesizedExpression(
+                IdentifierName(@event.Builder.Fields.BaseUsed.Name)
+                    .Assign(IdentifierName(@event.Builder.Fields.UseBaseImplementation.Name))
+            ),
             baseImplementationIdentifier,
             Block(baseImplementationIdentifier.Call().ToStatementSyntax()),
             ThrowMissingImposter(@event.Builder.Fields.EventDisplayName.Name, " (event)")

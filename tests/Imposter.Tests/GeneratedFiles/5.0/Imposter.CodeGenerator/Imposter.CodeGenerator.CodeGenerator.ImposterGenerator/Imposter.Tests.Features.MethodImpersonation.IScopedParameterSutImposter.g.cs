@@ -101,7 +101,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal readonly byte[] capturedsource;
 			internal readonly int? _result;
 			internal readonly global::System.Exception? _exception;
-			private readonly long _sequence;
+			private long _sequence;
 			public global::System.ReadOnlyMemory<byte> Target
 			{
 				get
@@ -138,8 +138,23 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			{
 				get
 				{
-					return _sequence;
+					return global::System.Threading.Volatile.Read(ref _sequence) & long.MaxValue;
 				}
+			}
+
+			internal override bool IsVerified
+			{
+				get
+				{
+					return global::System.Threading.Volatile.Read(ref _sequence) < 0;
+				}
+			}
+
+			internal override void MarkVerified()
+			{
+				if (IsVerified)
+					return;
+				global::System.Threading.Volatile.Write(ref _sequence, global::System.Threading.Volatile.Read(ref _sequence) | long.MinValue);
 			}
 
 			public override global::System.Exception? Exception
@@ -180,11 +195,26 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		{
 			private CopyMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			public abstract class Node : global::Imposter.Abstractions.IImposterInvocation
+			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
 			{
 				public abstract string Member { get; }
 				public abstract long Sequence { get; }
 				public abstract global::System.Exception? Exception { get; }
+				internal abstract bool IsVerified { get; }
+
+				internal abstract void MarkVerified();
+				bool global::Imposter.Abstractions.IVerifiableInvocation.IsVerified
+				{
+					get
+					{
+						return IsVerified;
+					}
+				}
+
+				void global::Imposter.Abstractions.IVerifiableInvocation.MarkVerified()
+				{
+					MarkVerified();
+				}
 
 				internal CopyMethodInvocationHistoryCollection.Node? Next;
 			}
@@ -198,11 +228,6 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
-			}
-
-			internal void Clear()
-			{
-				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(CopyMethodInvocationHistoryCollection.Node invocationHistory)
@@ -220,6 +245,32 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					if (((ICopyMethodInvocationHistory)invocation).Matches(argumentsCriteria))
 						count++;
 					invocation = invocation.Next;
+				}
+
+				return count;
+			}
+
+			internal int Verify(global::Imposter.Abstractions.Count expected, CopyArgumentsCriteria criteria)
+			{
+				var head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				var entry = head;
+				var count = 0;
+				while (entry != null)
+				{
+					if (((ICopyMethodInvocationHistory)entry).Matches(criteria))
+						count++;
+					entry = entry.Next;
+				}
+
+				if (expected.Matches(count))
+				{
+					entry = head;
+					while (entry != null)
+					{
+						if (((ICopyMethodInvocationHistory)entry).Matches(criteria))
+							entry.MarkVerified();
+						entry = entry.Next;
+					}
 				}
 
 				return count;
@@ -252,6 +303,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			public override string ToString()
 			{
 				var descriptions = new global::System.Collections.Generic.List<string?>();
@@ -273,6 +329,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal CopyArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
+			internal volatile bool IsUsed;
+			internal volatile bool IsLenient;
+			public override string ToString()
+			{
+				return "Copy(" + "target: " + global::Imposter.Abstractions.MatcherDescription.Format(ArgumentsCriteria.target) + ", source: " + global::Imposter.Abstractions.MatcherDescription.Format(ArgumentsCriteria.source) + ")";
+			}
+
 			internal volatile bool HasConfiguredOutcome;
 			public CopyMethodInvocationImposterGroup(CopyArgumentsCriteria argumentsCriteria)
 			{
@@ -310,6 +373,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationImposter = MethodInvocationImposter.Default;
 				}
 
+				if (!this.IsUsed)
+					this.IsUsed = true;
 				return invocationImposter.Invoke(invocationBehavior, methodDisplayName, ref target, source);
 			}
 
@@ -390,6 +455,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface ICopyMethodInvocationImposterGroupContinuation : ICopyMethodInvocationImposterGroupCallback
 		{
 			ICopyMethodInvocationImposterGroup Then();
+			ICopyMethodInvocationImposterGroupContinuation Lenient();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -417,7 +483,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class CopyMethodImposter
+		internal class CopyMethodImposter : global::Imposter.Abstractions.IImposterVerificationSource
 		{
 			private readonly global::Imposter.Abstractions.SetupCollection<CopyMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<CopyMethodInvocationImposterGroup>();
 			private readonly CopyMethodInvocationHistoryCollection _copyMethodInvocationHistoryCollection;
@@ -540,7 +606,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				void CopyInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
 				{
-					var invocationCount = _copyMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+					var invocationCount = _copyMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
 					if (!count.Matches(invocationCount))
 					{
 						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _copyMethodInvocationHistoryCollection.ToString());
@@ -552,6 +618,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					return _copyMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
 
+				ICopyMethodInvocationImposterGroupContinuation ICopyMethodInvocationImposterGroupContinuation.Lenient()
+				{
+					_invocationImposterGroup.IsLenient = true;
+					return this;
+				}
+
 				global::System.Collections.Generic.IReadOnlyList<CopyInvocation> CopyInvocationVerifier.Invocations
 				{
 					get
@@ -559,6 +631,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
 						return _copyMethodInvocationHistoryCollection.MatchingInvocations(_argumentsCriteria);
 					}
 				}
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(_copyMethodInvocationHistoryCollection.Snapshot(), false);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(_copyMethodInvocationHistoryCollection.Snapshot(), true);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+			{
+				var findings = new global::System.Collections.Generic.List<string>();
+				foreach (var item in _invocationImposters)
+					if ((item.HasConfiguredOutcome && !item.IsUsed) && !item.IsLenient)
+						findings.Add(item.ToString());
+				return findings;
 			}
 		}
 
@@ -608,7 +699,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal readonly int[] capturedvalues;
 			internal readonly int[]? _result;
 			internal readonly global::System.Exception? _exception;
-			private readonly long _sequence;
+			private long _sequence;
 			public global::System.ReadOnlyMemory<int> Values
 			{
 				get
@@ -637,8 +728,23 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			{
 				get
 				{
-					return _sequence;
+					return global::System.Threading.Volatile.Read(ref _sequence) & long.MaxValue;
 				}
+			}
+
+			internal override bool IsVerified
+			{
+				get
+				{
+					return global::System.Threading.Volatile.Read(ref _sequence) < 0;
+				}
+			}
+
+			internal override void MarkVerified()
+			{
+				if (IsVerified)
+					return;
+				global::System.Threading.Volatile.Write(ref _sequence, global::System.Threading.Volatile.Read(ref _sequence) | long.MinValue);
 			}
 
 			public override global::System.Exception? Exception
@@ -678,11 +784,26 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		{
 			private FirstMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			public abstract class Node : global::Imposter.Abstractions.IImposterInvocation
+			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
 			{
 				public abstract string Member { get; }
 				public abstract long Sequence { get; }
 				public abstract global::System.Exception? Exception { get; }
+				internal abstract bool IsVerified { get; }
+
+				internal abstract void MarkVerified();
+				bool global::Imposter.Abstractions.IVerifiableInvocation.IsVerified
+				{
+					get
+					{
+						return IsVerified;
+					}
+				}
+
+				void global::Imposter.Abstractions.IVerifiableInvocation.MarkVerified()
+				{
+					MarkVerified();
+				}
 
 				internal FirstMethodInvocationHistoryCollection.Node? Next;
 			}
@@ -696,11 +817,6 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
-			}
-
-			internal void Clear()
-			{
-				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(FirstMethodInvocationHistoryCollection.Node invocationHistory)
@@ -718,6 +834,32 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					if (((IFirstMethodInvocationHistory)invocation).Matches(argumentsCriteria))
 						count++;
 					invocation = invocation.Next;
+				}
+
+				return count;
+			}
+
+			internal int Verify(global::Imposter.Abstractions.Count expected, FirstArgumentsCriteria criteria)
+			{
+				var head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				var entry = head;
+				var count = 0;
+				while (entry != null)
+				{
+					if (((IFirstMethodInvocationHistory)entry).Matches(criteria))
+						count++;
+					entry = entry.Next;
+				}
+
+				if (expected.Matches(count))
+				{
+					entry = head;
+					while (entry != null)
+					{
+						if (((IFirstMethodInvocationHistory)entry).Matches(criteria))
+							entry.MarkVerified();
+						entry = entry.Next;
+					}
 				}
 
 				return count;
@@ -750,6 +892,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			public override string ToString()
 			{
 				var descriptions = new global::System.Collections.Generic.List<string?>();
@@ -771,6 +918,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal FirstArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
+			internal volatile bool IsUsed;
+			internal volatile bool IsLenient;
+			public override string ToString()
+			{
+				return "First(" + "values: " + global::Imposter.Abstractions.MatcherDescription.Format(ArgumentsCriteria.values) + ")";
+			}
+
 			internal volatile bool HasConfiguredOutcome;
 			public FirstMethodInvocationImposterGroup(FirstArgumentsCriteria argumentsCriteria)
 			{
@@ -808,6 +962,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationImposter = MethodInvocationImposter.Default;
 				}
 
+				if (!this.IsUsed)
+					this.IsUsed = true;
 				return invocationImposter.Invoke(invocationBehavior, methodDisplayName, values);
 			}
 
@@ -888,6 +1044,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface IFirstMethodInvocationImposterGroupContinuation : IFirstMethodInvocationImposterGroupCallback
 		{
 			IFirstMethodInvocationImposterGroup Then();
+			IFirstMethodInvocationImposterGroupContinuation Lenient();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -915,7 +1072,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class FirstMethodImposter
+		internal class FirstMethodImposter : global::Imposter.Abstractions.IImposterVerificationSource
 		{
 			private readonly global::Imposter.Abstractions.SetupCollection<FirstMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<FirstMethodInvocationImposterGroup>();
 			private readonly FirstMethodInvocationHistoryCollection _firstMethodInvocationHistoryCollection;
@@ -1037,7 +1194,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				void FirstInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
 				{
-					var invocationCount = _firstMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+					var invocationCount = _firstMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
 					if (!count.Matches(invocationCount))
 					{
 						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _firstMethodInvocationHistoryCollection.ToString());
@@ -1049,6 +1206,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					return _firstMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
 
+				IFirstMethodInvocationImposterGroupContinuation IFirstMethodInvocationImposterGroupContinuation.Lenient()
+				{
+					_invocationImposterGroup.IsLenient = true;
+					return this;
+				}
+
 				global::System.Collections.Generic.IReadOnlyList<FirstInvocation> FirstInvocationVerifier.Invocations
 				{
 					get
@@ -1056,6 +1219,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
 						return _firstMethodInvocationHistoryCollection.MatchingInvocations(_argumentsCriteria);
 					}
 				}
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(_firstMethodInvocationHistoryCollection.Snapshot(), false);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(_firstMethodInvocationHistoryCollection.Snapshot(), true);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+			{
+				var findings = new global::System.Collections.Generic.List<string>();
+				foreach (var item in _invocationImposters)
+					if ((item.HasConfiguredOutcome && !item.IsUsed) && !item.IsLenient)
+						findings.Add(item.ToString());
+				return findings;
 			}
 		}
 
@@ -1105,7 +1287,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal readonly char[] capturedtext;
 			internal readonly char[]? _result;
 			internal readonly global::System.Exception? _exception;
-			private readonly long _sequence;
+			private long _sequence;
 			public global::System.ReadOnlyMemory<char> Text
 			{
 				get
@@ -1134,8 +1316,23 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			{
 				get
 				{
-					return _sequence;
+					return global::System.Threading.Volatile.Read(ref _sequence) & long.MaxValue;
 				}
+			}
+
+			internal override bool IsVerified
+			{
+				get
+				{
+					return global::System.Threading.Volatile.Read(ref _sequence) < 0;
+				}
+			}
+
+			internal override void MarkVerified()
+			{
+				if (IsVerified)
+					return;
+				global::System.Threading.Volatile.Write(ref _sequence, global::System.Threading.Volatile.Read(ref _sequence) | long.MinValue);
 			}
 
 			public override global::System.Exception? Exception
@@ -1175,11 +1372,26 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		{
 			private NameMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			public abstract class Node : global::Imposter.Abstractions.IImposterInvocation
+			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
 			{
 				public abstract string Member { get; }
 				public abstract long Sequence { get; }
 				public abstract global::System.Exception? Exception { get; }
+				internal abstract bool IsVerified { get; }
+
+				internal abstract void MarkVerified();
+				bool global::Imposter.Abstractions.IVerifiableInvocation.IsVerified
+				{
+					get
+					{
+						return IsVerified;
+					}
+				}
+
+				void global::Imposter.Abstractions.IVerifiableInvocation.MarkVerified()
+				{
+					MarkVerified();
+				}
 
 				internal NameMethodInvocationHistoryCollection.Node? Next;
 			}
@@ -1193,11 +1405,6 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
-			}
-
-			internal void Clear()
-			{
-				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(NameMethodInvocationHistoryCollection.Node invocationHistory)
@@ -1215,6 +1422,32 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					if (((INameMethodInvocationHistory)invocation).Matches(argumentsCriteria))
 						count++;
 					invocation = invocation.Next;
+				}
+
+				return count;
+			}
+
+			internal int Verify(global::Imposter.Abstractions.Count expected, NameArgumentsCriteria criteria)
+			{
+				var head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				var entry = head;
+				var count = 0;
+				while (entry != null)
+				{
+					if (((INameMethodInvocationHistory)entry).Matches(criteria))
+						count++;
+					entry = entry.Next;
+				}
+
+				if (expected.Matches(count))
+				{
+					entry = head;
+					while (entry != null)
+					{
+						if (((INameMethodInvocationHistory)entry).Matches(criteria))
+							entry.MarkVerified();
+						entry = entry.Next;
+					}
 				}
 
 				return count;
@@ -1247,6 +1480,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			public override string ToString()
 			{
 				var descriptions = new global::System.Collections.Generic.List<string?>();
@@ -1268,6 +1506,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal NameArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
+			internal volatile bool IsUsed;
+			internal volatile bool IsLenient;
+			public override string ToString()
+			{
+				return "Name(" + "text: " + global::Imposter.Abstractions.MatcherDescription.Format(ArgumentsCriteria.text) + ")";
+			}
+
 			internal volatile bool HasConfiguredOutcome;
 			public NameMethodInvocationImposterGroup(NameArgumentsCriteria argumentsCriteria)
 			{
@@ -1305,6 +1550,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationImposter = MethodInvocationImposter.Default;
 				}
 
+				if (!this.IsUsed)
+					this.IsUsed = true;
 				return invocationImposter.Invoke(invocationBehavior, methodDisplayName, text);
 			}
 
@@ -1385,6 +1632,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface INameMethodInvocationImposterGroupContinuation : INameMethodInvocationImposterGroupCallback
 		{
 			INameMethodInvocationImposterGroup Then();
+			INameMethodInvocationImposterGroupContinuation Lenient();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1412,7 +1660,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class NameMethodImposter
+		internal class NameMethodImposter : global::Imposter.Abstractions.IImposterVerificationSource
 		{
 			private readonly global::Imposter.Abstractions.SetupCollection<NameMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<NameMethodInvocationImposterGroup>();
 			private readonly NameMethodInvocationHistoryCollection _nameMethodInvocationHistoryCollection;
@@ -1534,7 +1782,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				void NameInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
 				{
-					var invocationCount = _nameMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+					var invocationCount = _nameMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
 					if (!count.Matches(invocationCount))
 					{
 						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _nameMethodInvocationHistoryCollection.ToString());
@@ -1546,6 +1794,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					return _nameMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
 
+				INameMethodInvocationImposterGroupContinuation INameMethodInvocationImposterGroupContinuation.Lenient()
+				{
+					_invocationImposterGroup.IsLenient = true;
+					return this;
+				}
+
 				global::System.Collections.Generic.IReadOnlyList<NameInvocation> NameInvocationVerifier.Invocations
 				{
 					get
@@ -1553,6 +1807,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
 						return _nameMethodInvocationHistoryCollection.MatchingInvocations(_argumentsCriteria);
 					}
 				}
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(_nameMethodInvocationHistoryCollection.Snapshot(), false);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(_nameMethodInvocationHistoryCollection.Snapshot(), true);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+			{
+				var findings = new global::System.Collections.Generic.List<string>();
+				foreach (var item in _invocationImposters)
+					if ((item.HasConfiguredOutcome && !item.IsUsed) && !item.IsLenient)
+						findings.Add(item.ToString());
+				return findings;
 			}
 		}
 
@@ -1602,7 +1875,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal readonly int capturedstart;
 			internal readonly int[]? _result;
 			internal readonly global::System.Exception? _exception;
-			private readonly long _sequence;
+			private long _sequence;
 			public int Start
 			{
 				get
@@ -1631,8 +1904,23 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			{
 				get
 				{
-					return _sequence;
+					return global::System.Threading.Volatile.Read(ref _sequence) & long.MaxValue;
 				}
+			}
+
+			internal override bool IsVerified
+			{
+				get
+				{
+					return global::System.Threading.Volatile.Read(ref _sequence) < 0;
+				}
+			}
+
+			internal override void MarkVerified()
+			{
+				if (IsVerified)
+					return;
+				global::System.Threading.Volatile.Write(ref _sequence, global::System.Threading.Volatile.Read(ref _sequence) | long.MinValue);
 			}
 
 			public override global::System.Exception? Exception
@@ -1672,11 +1960,26 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		{
 			private SliceMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			public abstract class Node : global::Imposter.Abstractions.IImposterInvocation
+			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
 			{
 				public abstract string Member { get; }
 				public abstract long Sequence { get; }
 				public abstract global::System.Exception? Exception { get; }
+				internal abstract bool IsVerified { get; }
+
+				internal abstract void MarkVerified();
+				bool global::Imposter.Abstractions.IVerifiableInvocation.IsVerified
+				{
+					get
+					{
+						return IsVerified;
+					}
+				}
+
+				void global::Imposter.Abstractions.IVerifiableInvocation.MarkVerified()
+				{
+					MarkVerified();
+				}
 
 				internal SliceMethodInvocationHistoryCollection.Node? Next;
 			}
@@ -1690,11 +1993,6 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
-			}
-
-			internal void Clear()
-			{
-				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(SliceMethodInvocationHistoryCollection.Node invocationHistory)
@@ -1712,6 +2010,32 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					if (((ISliceMethodInvocationHistory)invocation).Matches(argumentsCriteria))
 						count++;
 					invocation = invocation.Next;
+				}
+
+				return count;
+			}
+
+			internal int Verify(global::Imposter.Abstractions.Count expected, SliceArgumentsCriteria criteria)
+			{
+				var head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				var entry = head;
+				var count = 0;
+				while (entry != null)
+				{
+					if (((ISliceMethodInvocationHistory)entry).Matches(criteria))
+						count++;
+					entry = entry.Next;
+				}
+
+				if (expected.Matches(count))
+				{
+					entry = head;
+					while (entry != null)
+					{
+						if (((ISliceMethodInvocationHistory)entry).Matches(criteria))
+							entry.MarkVerified();
+						entry = entry.Next;
+					}
 				}
 
 				return count;
@@ -1744,6 +2068,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			public override string ToString()
 			{
 				var descriptions = new global::System.Collections.Generic.List<string?>();
@@ -1765,6 +2094,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal SliceArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
+			internal volatile bool IsUsed;
+			internal volatile bool IsLenient;
+			public override string ToString()
+			{
+				return "Slice(" + "start: " + global::Imposter.Abstractions.MatcherDescription.Format(ArgumentsCriteria.start) + ")";
+			}
+
 			internal volatile bool HasConfiguredOutcome;
 			public SliceMethodInvocationImposterGroup(SliceArgumentsCriteria argumentsCriteria)
 			{
@@ -1802,6 +2138,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationImposter = MethodInvocationImposter.Default;
 				}
 
+				if (!this.IsUsed)
+					this.IsUsed = true;
 				return invocationImposter.Invoke(invocationBehavior, methodDisplayName, ref start);
 			}
 
@@ -1882,6 +2220,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface ISliceMethodInvocationImposterGroupContinuation : ISliceMethodInvocationImposterGroupCallback
 		{
 			ISliceMethodInvocationImposterGroup Then();
+			ISliceMethodInvocationImposterGroupContinuation Lenient();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1909,7 +2248,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class SliceMethodImposter
+		internal class SliceMethodImposter : global::Imposter.Abstractions.IImposterVerificationSource
 		{
 			private readonly global::Imposter.Abstractions.SetupCollection<SliceMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<SliceMethodInvocationImposterGroup>();
 			private readonly SliceMethodInvocationHistoryCollection _sliceMethodInvocationHistoryCollection;
@@ -2031,7 +2370,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				void SliceInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
 				{
-					var invocationCount = _sliceMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+					var invocationCount = _sliceMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
 					if (!count.Matches(invocationCount))
 					{
 						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _sliceMethodInvocationHistoryCollection.ToString());
@@ -2043,6 +2382,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					return _sliceMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
 
+				ISliceMethodInvocationImposterGroupContinuation ISliceMethodInvocationImposterGroupContinuation.Lenient()
+				{
+					_invocationImposterGroup.IsLenient = true;
+					return this;
+				}
+
 				global::System.Collections.Generic.IReadOnlyList<SliceInvocation> SliceInvocationVerifier.Invocations
 				{
 					get
@@ -2050,6 +2395,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
 						return _sliceMethodInvocationHistoryCollection.MatchingInvocations(_argumentsCriteria);
 					}
 				}
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(_sliceMethodInvocationHistoryCollection.Snapshot(), false);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(_sliceMethodInvocationHistoryCollection.Snapshot(), true);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+			{
+				var findings = new global::System.Collections.Generic.List<string>();
+				foreach (var item in _invocationImposters)
+					if ((item.HasConfiguredOutcome && !item.IsUsed) && !item.IsLenient)
+						findings.Add(item.ToString());
+				return findings;
 			}
 		}
 
@@ -2109,6 +2473,21 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			invocations.AddRange(_copyMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_firstMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyNoOtherCalls()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyNoOtherCalls(_nameMethodImposter, _sliceMethodImposter, _copyMethodImposter, _firstMethodImposter);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyNoInteractions()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyNoInteractions(_nameMethodImposter, _sliceMethodImposter, _copyMethodImposter, _firstMethodImposter);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyAllSetupsUsed()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyAllSetupsUsed(_nameMethodImposter, _sliceMethodImposter, _copyMethodImposter, _firstMethodImposter);
 		}
 
 		void global::Imposter.Abstractions.IImposter.ClearInvocations()

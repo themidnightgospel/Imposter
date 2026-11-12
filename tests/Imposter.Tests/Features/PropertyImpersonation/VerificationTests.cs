@@ -1,5 +1,4 @@
-﻿using System;
-using Imposter.Abstractions;
+﻿using Imposter.Abstractions;
 using Shouldly;
 using Xunit;
 
@@ -28,12 +27,12 @@ namespace Imposter.Tests.Features.PropertyImpersonation
         {
             _sut.Instance().Age.ShouldBe(0);
 
-            var exception = Should.Throw<Exception>(() =>
+            var exception = Should.Throw<VerificationFailedException>(() =>
                 _sut.Age.Getter().Called(Count.Exactly(2))
             );
-            exception.Message.ShouldContain(
-                "Invocation was expected to be performed exactly 2 time(s) but instead was performed 1 times."
-            );
+            exception.Message.ShouldContain("exactly 2 time(s)");
+            exception.Message.ShouldContain("performed 1 times");
+            exception.PerformedInvocations.ShouldBe("1 read(s)");
         }
 
         [Fact]

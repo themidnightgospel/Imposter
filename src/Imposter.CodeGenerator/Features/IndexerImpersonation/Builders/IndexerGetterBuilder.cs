@@ -90,6 +90,10 @@ internal static partial class IndexerGetterBuilder
             .AddMember(IndexerHistoryBuilder.Matching(indexer, true))
             .AddMember(BuildFindGetterInvocationImposterMethod(indexer))
             .AddMember(BuildGetOrCreateMethod(indexer))
+            .AddBaseType(
+                SimpleBaseType(WellKnownTypes.Imposter.Abstractions.IImposterVerificationSource)
+            )
+            .AddMembers(IndexerVerificationBuilder.Source(indexer, true))
             .AddMember(BuildGetterCalledMethod(indexer))
             .AddMember(BuildPropertyDisplayNameProperty(getter))
             .AddMember(BuildGetterBuilder(indexer))
@@ -101,6 +105,7 @@ internal static partial class IndexerGetterBuilder
         in ImposterIndexerMetadata indexer
     ) =>
         BuildImposterConstructor(
+            indexer,
             indexer.GetterImplementation.Name,
             indexer.GetterImplementation.DefaultBehaviourField,
             indexer.GetterImplementation.InvocationBehaviorField.Name,
@@ -211,7 +216,7 @@ internal static partial class IndexerGetterBuilder
                         )
                 )
             ),
-            ReturnDefaultNonNullable,
+            IndexerHistoryBuilder.Return(indexer, DefaultNonNullable),
         ];
     }
 
@@ -348,29 +353,6 @@ internal static partial class IndexerGetterBuilder
         var count = IdentifierName(countParameter.Name);
         var invocationCount = IdentifierName(indexer.Locals["invocationCount"]);
 
-        var invocationCountDeclaration = LocalVariableDeclarationSyntax(
-            WellKnownTypes.Int,
-            invocationCount.Identifier.Text,
-            NumericLiteral(0)
-        );
-        var countEntry = IdentifierName(indexer.Locals["entry"]);
-        var countLoop = LazyCollectionSyntaxHelper.UnlessNull(
-            ForEachStatement(
-                Var,
-                countEntry.Identifier,
-                invocationHistory,
-                Block(
-                    IfStatement(
-                        IdentifierName(getter.CriteriaParameterName)
-                            .Dot(IdentifierName(IndexerArgumentsCriteriaMetadata.MatchesMethodName))
-                            .Call(Argument(countEntry.Dot(IdentifierName("Arguments")))),
-                        PostfixUnaryExpression(SyntaxKind.PostIncrementExpression, invocationCount)
-                            .ToStatementSyntax()
-                    )
-                )
-            )
-        );
-
         var entry = IdentifierName(indexer.Locals["entry"]);
         var entryDescription = "get "
             .StringLiteral()
@@ -387,9 +369,9 @@ internal static partial class IndexerGetterBuilder
             )
             .AddParameter(ParameterSyntax(countParameter))
             .WithBody(
-                Block(
-                    invocationCountDeclaration,
-                    countLoop,
+                IndexerVerificationBuilder.BuildBody(
+                    indexer,
+                    true,
                     ThrowIfCountDoesNotMatch(
                         count,
                         invocationCount,
@@ -398,7 +380,8 @@ internal static partial class IndexerGetterBuilder
                             entry,
                             entryDescription,
                             IsHistoryNullable: true
-                        )
+                        ),
+                        indexer.Locals["performedInvocations"]
                     )
                 )
             )

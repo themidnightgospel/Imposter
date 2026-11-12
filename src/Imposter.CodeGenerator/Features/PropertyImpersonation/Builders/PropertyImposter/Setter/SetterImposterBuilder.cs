@@ -16,11 +16,11 @@ internal static partial class SetterImposterBuilder
         if (!property.Core.IsPassedThrough)
             return BuildShared(property);
         var setter = property.SetterImposter;
+        var setupType = WellKnownTypes.Imposter.Abstractions.SetterSetup;
+        var tupleType = WellKnownTypes.System.Tuple(setupType, property.Core.SetterCallbackType);
         var callbacks = new FieldMetadata(
             setter.CallbacksField.Name,
-            WellKnownTypes.Imposter.Abstractions.CallbackCollection(
-                property.Core.SetterCallbackType
-            )
+            WellKnownTypes.Imposter.Abstractions.CallbackCollection(tupleType)
         );
         var mode = PropertyAccessorStateMetadata.InvocationBehaviorParameter;
         var displayName = PropertyAccessorStateMetadata.PropertyDisplayNameParameter;
@@ -84,16 +84,28 @@ internal static partial class SetterImposterBuilder
             .AddMember(
                 new MethodDeclarationBuilder(WellKnownTypes.Void, setter.CallbackMethod.Name)
                     .AddModifier(Token(SyntaxKind.InternalKeyword))
+                    .AddParameter(ParameterSyntax(setupType, "setup"))
                     .AddParameter(ParameterSyntax(setter.CallbackMethod.CallbackParameter))
                     .WithBody(
                         Block(
-                            IdentifierName("Register").Call().ToStatementSyntax(),
+                            IdentifierName("Register")
+                                .Call(Argument(IdentifierName("setup")))
+                                .ToStatementSyntax(),
                             LazyCollectionSyntaxHelper
                                 .EnsureInitialized(callbacks.Name)
                                 .Dot(IdentifierName("Add"))
                                 .Call(
                                     Argument(
-                                        IdentifierName(setter.CallbackMethod.CallbackParameter.Name)
+                                        tupleType.New(
+                                            ArgumentListSyntax([
+                                                Argument(IdentifierName("setup")),
+                                                Argument(
+                                                    IdentifierName(
+                                                        setter.CallbackMethod.CallbackParameter.Name
+                                                    )
+                                                ),
+                                            ])
+                                        )
                                     )
                                 )
                                 .ToStatementSyntax()
@@ -119,7 +131,17 @@ internal static partial class SetterImposterBuilder
                     Var,
                     Identifier(property.Core.Locals["setterRegistration"]),
                     IdentifierName(setter.CallbacksField.Name),
-                    Block(callback.Call(Argument(value)).ToStatementSyntax())
+                    Block(
+                        callback
+                            .Dot(IdentifierName("Item1"))
+                            .Dot(IdentifierName("MarkUsed"))
+                            .Call()
+                            .ToStatementSyntax(),
+                        callback
+                            .Dot(IdentifierName("Item2"))
+                            .Call(Argument(value))
+                            .ToStatementSyntax()
+                    )
                 )
             ),
         };

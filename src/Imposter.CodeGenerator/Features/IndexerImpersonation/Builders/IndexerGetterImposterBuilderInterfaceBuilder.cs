@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata.GetterImposterBuilderInterface;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -27,10 +28,16 @@ internal static class IndexerGetterImposterBuilderInterfaceBuilder
                 indexer.GetterBuilderInterface.CallbackMethod
             ),
             ContinuationInterface(
-                indexer.GetterBuilderInterface.ContinuationInterfaceName,
-                indexer.GetterBuilderInterface.CallbackInterfaceTypeSyntax,
-                indexer.GetterBuilderInterface.ThenMethod
-            ),
+                    indexer.GetterBuilderInterface.ContinuationInterfaceName,
+                    indexer.GetterBuilderInterface.CallbackInterfaceTypeSyntax,
+                    indexer.GetterBuilderInterface.ThenMethod
+                )
+                .AddMembers(
+                    InterfaceMethod(
+                        indexer.GetterBuilderInterface.ContinuationInterfaceTypeSyntax,
+                        VerificationSourceNames.LenientMethodName
+                    )
+                ),
             VerificationInterface(
                     indexer.GetterBuilderInterface.VerificationInterfaceName,
                     indexer.GetterBuilderInterface.CalledMethod

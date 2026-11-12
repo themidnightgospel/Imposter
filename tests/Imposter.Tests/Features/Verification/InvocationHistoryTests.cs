@@ -38,17 +38,17 @@ namespace Imposter.Tests.Features.Verification
         private readonly IInvocationHistoryTargetImposter _sut = new();
 
         [Fact]
-        public void GivenThrowingGenericValueReturn_WhenRecorded_ShouldRetainDefaultResult()
+        public void GivenThrowingGenericValueTypeCall_WhenInspectingHistory_ShouldExposeDefaultResultAndException()
         {
             var failure = new InvalidOperationException("failed");
             _sut.Echo<int>(Arg<int>.Any()).Throws(failure);
             Should
-                .Throw<InvalidOperationException>(() => _sut.Instance().Echo(42))
+                .Throw<InvalidOperationException>(() => _sut.Instance().Echo(7))
                 .ShouldBeSameAs(failure);
-            var invocation = _sut.Echo<int>(Arg<int>.Any()).Invocations.ShouldHaveSingleItem();
-            invocation.Value.ShouldBe(42);
-            invocation.Result.ShouldBe(0);
-            invocation.Exception.ShouldBeSameAs(failure);
+            var record = _sut.Echo<int>(Arg<int>.Any()).Invocations.ShouldHaveSingleItem();
+            record.Value.ShouldBe(7);
+            record.Result.ShouldBe(0);
+            record.Exception.ShouldBeSameAs(failure);
         }
 
         [Fact]
@@ -205,6 +205,18 @@ namespace Imposter.Tests.Features.Verification
         }
 
         [Fact]
+        public void GivenSnapshot_WhenHistoryIsClearedOrReset_ShouldKeepSnapshot()
+        {
+            _sut.Instance().Outer();
+            var snapshot = _sut.Outer().Invocations;
+            _sut.ClearInvocations();
+            _sut.Invocations().ShouldBeEmpty();
+            snapshot.Single().Member.ShouldBe("Outer");
+            _sut.Reset();
+            snapshot.Single().Member.ShouldBe("Outer");
+        }
+
+        [Fact]
         public void GivenAccessorAndEventInteractions_WhenInspectingHistory_ShouldIncludeOnlyParticipatingMembers()
         {
             var instance = _sut.Instance();
@@ -237,6 +249,10 @@ namespace Imposter.Tests.Features.Verification
             subscriptions[1].IsSubscription.ShouldBeFalse();
             _sut.Changed.Subscriptions.Single().Handler.ShouldBeSameAs(handler);
             _sut.Changed.Unsubscriptions.Single().Handler.ShouldBeSameAs(handler);
+            var subscriptionSnapshot = _sut.Changed.Subscriptions;
+            _sut.ClearInvocations();
+            _sut.Changed.Subscriptions.ShouldBeEmpty();
+            subscriptionSnapshot.Single().IsSubscription.ShouldBeTrue();
         }
 
         [Fact]
@@ -264,9 +280,11 @@ namespace Imposter.Tests.Features.Verification
             _sut.Instance().Read(in value);
             value = 8;
             _sut.Instance().Read(in value);
-            _sut.Read(8).Invocations.Single().Value.ShouldBe(8);
             _sut.Instance().Fetch().ShouldBeSameAs(source.Task);
-            _sut.Read(5).Invocations.Single().Value.ShouldBe(5);
+            var invocation = _sut.Read(5).Invocations.Single();
+            invocation.Value.ShouldBe(5);
+            invocation.Value.ShouldNotBe(value);
+            _sut.Read(8).Invocations.Single().Value.ShouldBe(8);
             _sut.Fetch().Invocations.Single().Result.ShouldBeSameAs(source.Task);
             source.SetResult(9);
         }

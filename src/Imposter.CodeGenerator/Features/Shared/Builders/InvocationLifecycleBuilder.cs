@@ -4,7 +4,6 @@ using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.Shared.Builders;
@@ -25,11 +24,6 @@ internal static class InvocationLifecycleBuilder
 
     internal static MethodDeclarationSyntax ClearChildren(params string?[] fieldNames) =>
         Clear(fieldNames.Where(name => name is not null).Select(name => ClearChild(name!)));
-
-    internal static StatementSyntax ClearCounter(string fieldName) =>
-        InterlockedSyntaxHelper
-            .InterlockedExchange(fieldName, NumericLiteral(0))
-            .ToStatementSyntax();
 
     internal static StatementSyntax ClearIfInitialized(string fieldName) =>
         ConditionalAccessExpression(

@@ -78,6 +78,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
             value.ShouldBe(12);
             _sut.AdaptRef<object>(5, 7).Called(Count.Once());
             _sut.AdaptRef<string>(5, 7).Called(Count.Never());
+            _sut.VerifyAllSetupsUsed();
         }
 
         [Fact]
@@ -97,6 +98,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
             value.ShouldBe(7);
             _sut.AdaptOut<object>(OutArg<int>.Any(), 7).Called(Count.Once());
             _sut.AdaptOut<string>(OutArg<int>.Any(), 7).Called(Count.Never());
+            _sut.VerifyAllSetupsUsed();
         }
 
         [Fact]

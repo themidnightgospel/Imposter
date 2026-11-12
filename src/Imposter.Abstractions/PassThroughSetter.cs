@@ -5,10 +5,11 @@ namespace Imposter.Abstractions;
 /// <summary>Stores verification state for setters with values that cannot be retained.</summary>
 /// <typeparam name="TInvocation">The generated invocation record without a retained value.</typeparam>
 [EditorBrowsable(EditorBrowsableState.Never)]
-public abstract class PassThroughSetter<TInvocation>
+public abstract class PassThroughSetter<TInvocation> : IImposterVerificationSource
     where TInvocation : InvocationRecord
 {
     private InvocationHistory<TInvocation>? _history;
+    private SetupCollection<SetterSetup>? _setups;
     private readonly ImposterMode _mode;
     private readonly string _member;
     private bool _configured;
@@ -21,27 +22,23 @@ public abstract class PassThroughSetter<TInvocation>
         _member = member;
     }
 
-    /// <summary>Records that a setter callback has been configured.</summary>
-    public void Register() => _configured = true;
-
-    /// <summary>Configures delegation to the base setter.</summary>
-    public void UseBaseImplementation()
+    /// <summary>Registers an outcome on a setup chain.</summary>
+    public void Register(SetterSetup setup)
     {
+        if (Interlocked.CompareExchange(ref setup.State.Registered, 1, 0) == 0)
+            LazyInitializer.EnsureInitialized(ref _setups)!.Push(setup);
         _configured = true;
-        _useBase = true;
     }
 
-    /// <summary>Reports whether the base setter should run.</summary>
-    protected bool ShouldUseBase() => _useBase;
+    /// <summary>Configures unconditional base setter delegation.</summary>
+    public void UseBaseImplementation() => UseBaseImplementation(new SetterSetup());
 
-    /// <summary>Verifies the number of assignments.</summary>
-    public void Called(Count count)
+    /// <summary>Configures base setter delegation.</summary>
+    public void UseBaseImplementation(SetterSetup setup)
     {
-        var actual = 0;
-        for (var record = _history?.Head; record is not null; record = (TInvocation?)record.Next)
-            actual++;
-        if (!count.Matches(actual))
-            throw new VerificationFailedException(count, actual);
+        setup.State.UsesBase = true;
+        Register(setup);
+        _useBase = true;
     }
 
     /// <summary>Checks explicit setup requirements.</summary>
@@ -49,6 +46,18 @@ public abstract class PassThroughSetter<TInvocation>
     {
         if (_mode == ImposterMode.Explicit && !_configured)
             throw new MissingImposterException(_member);
+    }
+
+    /// <summary>Marks base setup execution and returns whether to delegate.</summary>
+    protected bool ShouldUseBase()
+    {
+        if (!_useBase)
+            return false;
+        if (_setups is not null)
+            foreach (var setup in _setups)
+                if (setup.State.UsesBase)
+                    setup.MarkUsed();
+        return true;
     }
 
     /// <summary>Creates the generated member-specific record.</summary>
@@ -60,7 +69,7 @@ public abstract class PassThroughSetter<TInvocation>
             .EnsureInitialized(ref _history)!
             .Push(CreateInvocation(sequence, exception));
 
-    /// <summary>Clears recorded interactions while preserving configured behavior.</summary>
+    /// <summary>Clears history without modifying setups.</summary>
     public void ClearInvocations() => _history?.Clear();
 
     /// <summary>Returns a detached ordered snapshot.</summary>
@@ -84,4 +93,51 @@ public abstract class PassThroughSetter<TInvocation>
                 result.Add((TRecord)(object)record);
         return InvocationSnapshots.Order(result, orderBySequence);
     }
+
+    /// <summary>Verifies and covers the observed setter calls.</summary>
+    public void Called(Count count)
+    {
+        var head = _history?.Head;
+        var actual = 0;
+        for (var record = head; record is not null; record = (TInvocation?)record.Next)
+            actual++;
+        if (!count.Matches(actual))
+            throw new VerificationFailedException(count, actual);
+        for (var record = head; record is not null; record = (TInvocation?)record.Next)
+            ((IVerifiableInvocation)record).MarkVerified();
+    }
+
+    /// <inheritdoc/>
+    public IEnumerable<string> Interactions()
+    {
+        if (_history is not null)
+            foreach (var record in _history)
+                yield return Describe(record);
+    }
+
+    /// <inheritdoc/>
+    public IEnumerable<string> UncoveredInteractions()
+    {
+        for (var record = _history?.Head; record is not null; record = (TInvocation?)record.Next)
+        {
+            if (!((IVerifiableInvocation)record).IsVerified)
+                yield return Describe(record);
+        }
+    }
+
+    /// <inheritdoc/>
+    public IEnumerable<string> UnusedSetups()
+    {
+        if (_setups is null)
+            yield break;
+        foreach (var setup in _setups)
+            if (Volatile.Read(ref setup.State.Used) == 0 && !setup.State.IsLenient)
+                yield return "set " + _member + "(value: <not captured>)";
+    }
+
+    private static string Describe(TInvocation record) =>
+        "set "
+        + record.Member
+        + "(value: <not captured>)"
+        + (record.Exception is null ? string.Empty : " threw " + record.Exception);
 }

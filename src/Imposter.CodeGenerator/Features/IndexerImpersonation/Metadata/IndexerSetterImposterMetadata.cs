@@ -66,6 +66,7 @@ internal readonly struct IndexerSetterImposterMetadata
         CriteriaParameterName = names.Use("criteria");
         SetterSuffix = " (setter)";
         EnsureSetterConfiguredMethodName = names.Use("EnsureSetterConfigured");
+
         CallbacksField = new FieldMetadata(
             names.Use("_callbacks"),
             WellKnownTypes.Imposter.Abstractions.CallbackCollection(BuildRegistrationTuple(indexer))

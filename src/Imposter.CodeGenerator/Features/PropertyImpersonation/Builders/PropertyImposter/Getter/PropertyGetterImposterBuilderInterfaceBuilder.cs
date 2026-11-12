@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.GetterImposterBuilderInterface;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -27,10 +28,16 @@ internal static class PropertyGetterImposterBuilderInterfaceBuilder
                 property.GetterImposterBuilderInterface.CallbackMethod
             ),
             ContinuationInterface(
-                property.GetterImposterBuilderInterface.ContinuationInterfaceName,
-                property.GetterImposterBuilderInterface.CallbackInterfaceTypeSyntax,
-                property.GetterImposterBuilderInterface.ThenMethod
-            ),
+                    property.GetterImposterBuilderInterface.ContinuationInterfaceName,
+                    property.GetterImposterBuilderInterface.CallbackInterfaceTypeSyntax,
+                    property.GetterImposterBuilderInterface.ThenMethod
+                )
+                .AddMembers(
+                    InterfaceMethod(
+                        property.GetterImposterBuilderInterface.ContinuationInterfaceTypeSyntax,
+                        VerificationSourceNames.LenientMethodName
+                    )
+                ),
             VerificationInterface(
                 property.GetterImposterBuilderInterface.VerificationInterfaceName,
                 property.GetterImposterBuilderInterface.CalledMethod

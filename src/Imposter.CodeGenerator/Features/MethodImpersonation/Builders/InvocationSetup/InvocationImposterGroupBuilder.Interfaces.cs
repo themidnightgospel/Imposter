@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -43,6 +44,12 @@ internal static partial class InvocationImposterGroupBuilder
                 SimpleBaseType(method.MethodInvocationImposterGroup.CallbackInterface.Syntax)
             )
             .AddMember(BuildThenInterfaceMethod(method))
+            .AddMember(
+                InterfaceMethod(
+                    method.MethodInvocationImposterGroup.ContinuationInterface.Syntax,
+                    VerificationSourceNames.LenientMethodName
+                )
+            )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .Build();
 

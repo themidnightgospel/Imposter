@@ -84,6 +84,7 @@ internal readonly ref struct ImposterPropertyCoreMetadata
         _scopeNames = ScopeNames.In(property.ContainingType).ToArray();
         Locals = new LocalNamesMetadata(
             new NameSet(_scopeNames),
+            "findings",
             "assignmentValue",
             "assignmentCapturedValue",
             "assignmentSequence",

@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Imposter.Abstractions;
 using Shouldly;
 using Xunit;
-using static Imposter.Tests.Features.Verification.PerformedInvocationTestHelper;
 
 namespace Imposter.Tests.Features.Verification
 {
@@ -61,6 +60,7 @@ namespace Imposter.Tests.Features.Verification
                 new[]
                 {
                     $"SomethingHappened handler invoked handler: <{typeof(EventHandler).FullName}> sender: <{typeof(EventPerformedInvocationExceptionMessageTests).FullName}> e: <{typeof(EventArgs).FullName}>",
+                    $"SomethingHappened handler invoked handler: <{typeof(EventHandler).FullName}> sender: <{typeof(EventPerformedInvocationExceptionMessageTests).FullName}> e: <{typeof(EventArgs).FullName}>",
                 }
             );
             exception.MessageShouldDescribeCounts(expectedCount, 1);
@@ -105,6 +105,36 @@ namespace Imposter.Tests.Features.Verification
                     $"SomethingHappened unsubscribed handler: <{typeof(EventHandler).FullName}>",
                 }
             );
+            exception.MessageShouldDescribeCounts(expectedCount, 1);
+        }
+
+        [Fact]
+        public void GivenFilteredRaises_WhenVerificationFails_ShouldShowHistoryWithoutReevaluatingMatcher()
+        {
+            var sut = PerformedInvocationSutFactory.CreateEventSut();
+            sut.SomethingHappened.Raise("wanted", EventArgs.Empty);
+            sut.SomethingHappened.Raise("other", EventArgs.Empty);
+            var evaluations = 0;
+            var criterion = Arg<object?>.Is(sender =>
+            {
+                evaluations++;
+                return Equals(sender, "wanted");
+            });
+            var expectedCount = Count.Twice();
+            var exception = Should.Throw<VerificationFailedException>(() =>
+                sut.SomethingHappened.Raised(criterion, Arg<EventArgs>.Any(), expectedCount)
+            );
+
+            evaluations.ShouldBe(2);
+            exception
+                .ReadEntries()
+                .ShouldBe(
+                    new[]
+                    {
+                        $"SomethingHappened raised sender: <wanted> e: <{typeof(EventArgs).FullName}>",
+                        $"SomethingHappened raised sender: <other> e: <{typeof(EventArgs).FullName}>",
+                    }
+                );
             exception.MessageShouldDescribeCounts(expectedCount, 1);
         }
 

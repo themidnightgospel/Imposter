@@ -1,4 +1,5 @@
 ﻿using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -9,7 +10,7 @@ namespace Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.Propert
 
 internal static partial class SetterImposterBuilderBuilder
 {
-    private static MemberDeclarationSyntax[] BuildInvocationProperty(
+    private static MemberDeclarationSyntax[] BuildSharedVerificationMembers(
         in ImposterPropertyMetadata property
     )
     {
@@ -48,6 +49,23 @@ internal static partial class SetterImposterBuilderBuilder
                                 )
                                 .Call(arguments)
                         )
+                    )
+                )
+                .Build(),
+            new MethodDeclarationBuilder(
+                property.SetterImposterBuilderInterface.ContinuationInterfaceTypeSyntax,
+                VerificationSourceNames.LenientMethodName
+            )
+                .WithExplicitInterfaceSpecifier(
+                    property.SetterImposterBuilderInterface.ContinuationInterfaceTypeSyntax
+                )
+                .WithBody(
+                    Block(
+                        IdentifierName(property.SetterImposter.Builder.SetupField.Name)
+                            .Dot(IdentifierName(VerificationSourceNames.LenientMethodName))
+                            .Call()
+                            .ToStatementSyntax(),
+                        ReturnThis
                     )
                 )
                 .Build(),

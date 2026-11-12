@@ -113,9 +113,9 @@ public class VerificationTypeParameterCollisionTests
             _ = imposter.Instance().Fetch();
             imposter.Match<int>(ReadOnlySpanArg<int>.Any(), Arg<int[]>.Any()).Returns(true);
             _ = imposter.Instance().Match<int>(new[] { 1 });
-            imposter.Number.Setter(Arg<int>.Any()).Callback(_ => { });
-            imposter.Buffer.Setter(SpanArg<byte>.Any()).Callback(_ => { });
-            imposter.Current.Setter().Callback(_ => { });
+            imposter.Number.Setter(Arg<int>.Any()).Callback(_ => { }).Lenient();
+            imposter.Buffer.Setter(SpanArg<byte>.Any()).Callback(_ => { }).Lenient();
+            imposter.Current.Setter().Callback(_ => { }).Lenient();
             imposter.Instance().Number = 4;
             imposter.Instance().Buffer = new byte[] { 1 };
             imposter.Instance().Current = new Cursor();
@@ -126,6 +126,10 @@ public class VerificationTypeParameterCollisionTests
             _ = imposter.Current.Setter().Invocations;
             _ = imposter[1].Setter().Invocations;
             _ = imposter.Invocations();
+            imposter.ClearInvocations();
+            imposter.VerifyNoInteractions();
+            imposter.Reset();
+            imposter.VerifyAllSetupsUsed();
             """,
             nameof(
                 GivenGenericTargetParametersNamedLikeVerificationHelpers_WhenUsingAllMemberKinds_ShouldCompile
@@ -153,6 +157,8 @@ public class VerificationTypeParameterCollisionTests
             imposter.Number.Setter(Arg<int>.Any()).UseBaseImplementation();
             imposter.Number.Setter(Arg<int>.Any()).Called(Count.Never());
             _ = imposter.Number.Setter(Arg<int>.Any()).Invocations;
+            imposter.ClearInvocations();
+            imposter.Reset();
             """,
             nameof(
                 GivenGenericClassParametersNamedLikeInitCaptureLocals_WhenGeneratingBaseInitAssignment_ShouldCompile

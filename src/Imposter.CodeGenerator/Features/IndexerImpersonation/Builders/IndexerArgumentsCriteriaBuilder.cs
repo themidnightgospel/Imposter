@@ -39,6 +39,23 @@ internal static class IndexerArgumentsCriteriaBuilder
                 : null
         );
         classBuilder = classBuilder.AddMember(BuildConstructor(indexer));
+        if (indexer.Core.HasSetter)
+        {
+            classBuilder = classBuilder.AddMember(
+                SingleVariableField(
+                    WellKnownTypes.Bool,
+                    indexer.ArgumentsCriteria.SetterLenientFieldName,
+                    TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.VolatileKeyword))
+                )
+            );
+            classBuilder = classBuilder.AddMember(
+                SingleVariableField(
+                    WellKnownTypes.Bool,
+                    indexer.ArgumentsCriteria.SetterUsedFieldName,
+                    TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.VolatileKeyword))
+                )
+            );
+        }
         classBuilder = classBuilder.AddMember(BuildMatchesMethod(indexer));
 
         return classBuilder.Build();
@@ -63,10 +80,13 @@ internal static class IndexerArgumentsCriteriaBuilder
 
     private static MethodDeclarationSyntax BuildMatchesMethod(in ImposterIndexerMetadata indexer)
     {
-        var argumentsParam = ParameterSyntax(indexer.Arguments.TypeSyntax, "arguments");
+        var argumentsName = indexer.Locals["arguments"];
+        var argumentsParam = ParameterSyntax(indexer.Arguments.TypeSyntax, argumentsName);
         var comparison = indexer
-            .Core.MatchedParameters.Select(ParameterComparison)
-            .DefaultIfEmpty(True)
+            .Core.MatchedParameters.Select(parameter =>
+                ParameterComparison(parameter, argumentsName)
+            )
+            .DefaultIfEmpty<ExpressionSyntax>(True)
             .Aggregate((all, next) => all.And(next));
 
         return new MethodDeclarationBuilder(
@@ -79,9 +99,12 @@ internal static class IndexerArgumentsCriteriaBuilder
             .Build();
     }
 
-    private static ExpressionSyntax ParameterComparison(IndexerParameterMetadata parameter) =>
+    private static InvocationExpressionSyntax ParameterComparison(
+        IndexerParameterMetadata parameter,
+        string argumentsName
+    ) =>
         ThisExpression()
             .Dot(IdentifierName(parameter.FieldName))
             .Dot(IdentifierName("Matches"))
-            .Call(Argument(IdentifierName("arguments").Dot(IdentifierName(parameter.FieldName))));
+            .Call(Argument(IdentifierName(argumentsName).Dot(IdentifierName(parameter.FieldName))));
 }

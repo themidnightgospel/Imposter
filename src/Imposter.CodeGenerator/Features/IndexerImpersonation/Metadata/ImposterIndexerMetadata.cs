@@ -71,15 +71,26 @@ internal readonly ref struct ImposterIndexerMetadata
         Core = new ImposterIndexerCoreMetadata(indexer, uniqueName);
         Locals = new LocalNamesMetadata(
             Core.CreateParameterNameSet(),
+            "cursor",
+            "snapshot",
             "invocationCount",
             "entry",
+            "performedInvocations",
             "criteria",
             "arguments",
             "value",
             "sequence",
             "exception",
+            "setup",
+            "unused",
             "matches",
-            "obj"
+            "parent",
+            "nextReturnValue",
+            "obj",
+            "builder",
+            "defaultBehaviour",
+            "invocationBehavior",
+            "propertyDisplayName"
         );
         GetterRecord = new IndexerInvocationMetadata(Core, true);
         SetterRecord = new IndexerInvocationMetadata(Core, false);

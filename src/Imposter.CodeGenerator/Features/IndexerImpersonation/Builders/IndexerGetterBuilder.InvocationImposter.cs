@@ -24,9 +24,48 @@ internal static partial class IndexerGetterBuilder
         return new ClassDeclarationBuilder(invocation.Name)
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddModifier(Token(SyntaxKind.SealedKeyword))
+            .AddMember(
+                SingleVariableField(
+                    WellKnownTypes.Bool,
+                    "IsUsed",
+                    TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.VolatileKeyword))
+                )
+            )
+            .AddMember(
+                SingleVariableField(
+                    WellKnownTypes.Bool,
+                    "IsLenient",
+                    TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.VolatileKeyword))
+                )
+            )
             .AddMember(SinglePrivateReadonlyVariableField(invocation.DefaultBehaviourField))
             .AddMember(LazyCollectionSyntaxHelper.Field(invocation.ReturnValuesField))
-            .AddMember(LazyCollectionSyntaxHelper.Field(invocation.CallbacksField))
+            .AddMember(
+                LazyCollectionSyntaxHelper
+                    .Field(invocation.CallbacksField)
+                    .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
+            )
+            .AddMember(
+                new MethodDeclarationBuilder(WellKnownTypes.String, "ToString")
+                    .AddModifier(Token(SyntaxKind.PublicKeyword))
+                    .AddModifier(Token(SyntaxKind.OverrideKeyword))
+                    .WithBody(
+                        Block(
+                            ReturnStatement(
+                                "get "
+                                    .StringLiteral()
+                                    .Add(IdentifierName(invocation.PropertyDisplayNameField.Name))
+                                    .Add(
+                                        ExpectedIndices(
+                                            indexer,
+                                            IdentifierName(invocation.CriteriaField.Name)
+                                        )
+                                    )
+                            )
+                        )
+                    )
+                    .Build()
+            )
             .AddMember(
                 SingleVariableField(invocation.PropertyDisplayNameField, SyntaxKind.PrivateKeyword)
             )
@@ -77,15 +116,15 @@ internal static partial class IndexerGetterBuilder
     {
         var getter = indexer.GetterImplementation;
         var invocation = getter.Invocation;
-        var parent = IdentifierName("parent");
+        var parent = IdentifierName(indexer.Locals["parent"]);
 
         return new ConstructorBuilder(invocation.Name)
             .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
-            .AddParameter(ParameterSyntax(getter.TypeSyntax, "parent"))
+            .AddParameter(ParameterSyntax(getter.TypeSyntax, indexer.Locals["parent"]))
             .AddParameter(
                 ParameterSyntax(
                     indexer.DefaultIndexerBehaviour.TypeSyntax,
-                    DefaultBehaviourParameterName
+                    indexer.Locals["defaultBehaviour"]
                 )
             )
             .AddParameter(
@@ -96,7 +135,7 @@ internal static partial class IndexerGetterBuilder
                     .AddStatement(
                         ThisExpression()
                             .Dot(IdentifierName(invocation.DefaultBehaviourField.Name))
-                            .Assign(IdentifierName(DefaultBehaviourParameterName))
+                            .Assign(IdentifierName(indexer.Locals["defaultBehaviour"]))
                             .ToStatementSyntax()
                     )
                     .AddStatement(
@@ -196,6 +235,10 @@ internal static partial class IndexerGetterBuilder
                             Identifier(IndexerGetterImposterMetadata.CallbackVariableName),
                             IdentifierName(getter.Invocation.CallbacksField.Name),
                             Block(
+                                ThisExpression()
+                                    .Dot(IdentifierName("IsUsed"))
+                                    .Assign(True)
+                                    .ToStatementSyntax(),
                                 IdentifierName(IndexerGetterImposterMetadata.CallbackVariableName)
                                     .Call(
                                         BuildDelegateInvocationArguments(
@@ -256,7 +299,14 @@ internal static partial class IndexerGetterBuilder
             )
             .AddParameters(PassedThroughKeyParameters(indexer, indexer.GetterPassedThroughKeyNames))
             .AddParameter(ParameterSyntax(getter.BaseImplementationParameter))
-            .WithBody(Block(invokeCallbacks, generatorDeclaration, returnGenerated))
+            .WithBody(
+                Block(
+                    ThisExpression().Dot(IdentifierName("IsUsed")).Assign(True).ToStatementSyntax(),
+                    invokeCallbacks,
+                    generatorDeclaration,
+                    returnGenerated
+                )
+            )
             .Build();
     }
 
@@ -266,7 +316,7 @@ internal static partial class IndexerGetterBuilder
     {
         var getter = indexer.GetterImplementation;
         var invocation = getter.Invocation;
-        var nextReturnValue = IdentifierName("nextReturnValue");
+        var nextReturnValue = IdentifierName(indexer.Locals["nextReturnValue"]);
 
         var declareNextReturnValue = LocalVariableDeclarationSyntax(
             Var,

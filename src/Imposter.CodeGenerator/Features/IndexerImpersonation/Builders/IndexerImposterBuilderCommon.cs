@@ -15,10 +15,6 @@ namespace Imposter.CodeGenerator.Features.IndexerImpersonation.Builders;
 
 internal static class IndexerImposterBuilderCommon
 {
-    internal const string DefaultBehaviourParameterName = "defaultBehaviour";
-    internal const string InvocationBehaviorParameterName = "invocationBehavior";
-    internal const string PropertyDisplayNameParameterName = "propertyDisplayName";
-
     internal static ClassDeclarationBuilder AccessorBuilder(
         in IndexerAccessorBuilderMetadata builder,
         TypeSyntax imposterType,
@@ -50,10 +46,12 @@ internal static class IndexerImposterBuilderCommon
         NameSyntax verificationInterface,
         in CalledMethodMetadata called,
         string imposterMethodName
-    ) =>
-        new MethodDeclarationBuilder(called.ReturnType, called.Name)
+    )
+    {
+        var method = new MethodDeclarationBuilder(called.ReturnType, called.Name)
             .WithExplicitInterfaceSpecifier(verificationInterface)
-            .AddParameter(ParameterSyntax(called.CountParameter))
+            .AddParameter(ParameterSyntax(called.CountParameter));
+        return method
             .WithBody(
                 Block(
                     IdentifierName(builder.ImposterFieldName)
@@ -66,6 +64,28 @@ internal static class IndexerImposterBuilderCommon
                 )
             )
             .Build();
+    }
+
+    internal static BinaryExpressionSyntax ExpectedIndices(
+        in ImposterIndexerMetadata indexer,
+        ExpressionSyntax criteria
+    )
+    {
+        ExpressionSyntax description = "[".StringLiteral();
+        var first = true;
+        foreach (var parameter in indexer.Core.MatchedParameters)
+        {
+            description = description
+                .Add(((first ? "" : ", ") + parameter.Name + ": ").StringLiteral())
+                .Add(
+                    WellKnownTypes
+                        .Imposter.Abstractions.MatcherDescription.Dot(IdentifierName("Format"))
+                        .Call(Argument(criteria.Dot(IdentifierName(parameter.FieldName))))
+                );
+            first = false;
+        }
+        return description.Add("]".StringLiteral());
+    }
 
     private static ArgumentListSyntax BuildIndexerArgumentsArgumentList(
         in ImposterIndexerMetadata indexer
@@ -160,6 +180,7 @@ internal static class IndexerImposterBuilderCommon
     }
 
     internal static ConstructorDeclarationSyntax BuildImposterConstructor(
+        in ImposterIndexerMetadata indexer,
         string className,
         in FieldMetadata? defaultBehaviourField,
         string invocationBehaviorFieldName,
@@ -172,7 +193,7 @@ internal static class IndexerImposterBuilderCommon
         if (defaultBehaviourField is { } field)
         {
             constructor.AddParameter(
-                new ParameterMetadata(DefaultBehaviourParameterName, field.Type),
+                new ParameterMetadata(indexer.Locals["defaultBehaviour"], field.Type),
                 field.Name
             );
         }
@@ -180,13 +201,13 @@ internal static class IndexerImposterBuilderCommon
         return constructor
             .AddParameter(
                 new ParameterMetadata(
-                    InvocationBehaviorParameterName,
+                    indexer.Locals["invocationBehavior"],
                     WellKnownTypes.Imposter.Abstractions.ImposterMode
                 ),
                 invocationBehaviorFieldName
             )
             .AddParameter(
-                new ParameterMetadata(PropertyDisplayNameParameterName, WellKnownTypes.String),
+                new ParameterMetadata(indexer.Locals["propertyDisplayName"], WellKnownTypes.String),
                 propertyDisplayNameFieldName
             )
             .Build();

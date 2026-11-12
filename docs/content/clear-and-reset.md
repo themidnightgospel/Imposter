@@ -45,8 +45,8 @@ Use `ClearInvocations()` between test phases when the configured behavior should
 
 | State | `ClearInvocations()` | `Reset()` |
 | --- | --- | --- |
-| Invocation history | Cleared | Cleared |
-| Setups | Kept | Cleared |
+| Invocation history and verification coverage | Cleared | Cleared |
+| Setups, their usage and leniency | Kept | Cleared |
 | Position in sequential outcomes | Kept | Cleared with the setup |
 | Stored property and indexer values | Kept | Cleared |
 | Imposter-owned event subscriptions | Kept | Cleared |

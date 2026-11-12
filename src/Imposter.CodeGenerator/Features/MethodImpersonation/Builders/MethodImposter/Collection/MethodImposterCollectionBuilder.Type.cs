@@ -20,6 +20,9 @@ internal static partial class MethodImposterCollectionBuilder
 
         return new ClassDeclarationBuilder(method.MethodImposter.Collection.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddBaseType(
+                SimpleBaseType(WellKnownTypes.Imposter.Abstractions.IImposterVerificationSource)
+            )
             .AddMembers(
                 MethodImposterStateBuilder.BuildMembers(
                     method,
@@ -42,6 +45,7 @@ internal static partial class MethodImposterCollectionBuilder
             )
             .AddMember(BuildAddNewMethod(method))
             .AddMember(BuildGetImposterWithMatchingInvocationImposterGroup(method))
+            .AddMembers(MethodVerificationSourceBuilder.Build(method, true))
             .Build();
     }
 

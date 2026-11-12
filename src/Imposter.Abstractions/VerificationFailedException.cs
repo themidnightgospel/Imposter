@@ -1,7 +1,7 @@
 ﻿namespace Imposter.Abstractions;
 
 /// <summary>
-/// Exception thrown when verification of an expected invocation count fails.
+/// Exception thrown when invocation or setup verification fails.
 /// </summary>
 /// <remarks>
 /// Typically thrown by verification helpers such as <c>.Called(Count.Exactly(n))</c> when the actual invocation
@@ -9,8 +9,22 @@
 /// </remarks>
 public class VerificationFailedException : Exception
 {
+    internal VerificationFailedException(string expected, string findings, string findingsHeading)
+        : base(
+            "Expected "
+                + expected
+                + Environment.NewLine
+                + findingsHeading
+                + ":"
+                + Environment.NewLine
+                + findings
+        )
+    {
+        PerformedInvocations = findings;
+    }
+
     /// <summary>
-    /// Gets the textual representation of the invocations that were performed prior to the verification failure.
+    /// Gets the findings explaining the failure, such as interactions or unused setups.
     /// </summary>
     public string? PerformedInvocations { get; }
 

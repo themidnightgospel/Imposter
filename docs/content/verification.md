@@ -63,6 +63,8 @@ Counts always apply to *matching* invocations only (based on your `Arg<T>` / `Ou
 
 See also:
 
+- [Verification completeness](verification-completeness.md) — check uncovered interactions, unused setups and several imposters together.
+
 - [Methods ▸ Verification](methods/verification.md) — method-focused examples.
 - [Key API Reference](key-api-reference.md#verification-counts) — quick signature list.
 

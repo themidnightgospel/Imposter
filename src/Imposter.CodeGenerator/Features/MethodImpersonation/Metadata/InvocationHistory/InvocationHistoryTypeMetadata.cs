@@ -22,6 +22,7 @@ internal readonly record struct InvocationHistoryTypeMetadata
     internal const string ResultPropertyName = "Result";
     internal const string ExceptionPropertyName = "Exception";
     internal const string SequencePropertyName = "Sequence";
+    internal const string IsVerifiedPropertyName = "IsVerified";
     internal readonly string SequenceVariableName;
     internal readonly IReadOnlyDictionary<string, string> ArgumentProperties;
 
@@ -49,6 +50,11 @@ internal readonly record struct InvocationHistoryTypeMetadata
             method
                 .Model.Parameters.Select(p => p.Name)
                 .Concat(method.Model.TypeParameters.Select(p => p.Name))
+                .Concat(
+                    method.TargetGenericTypeArguments.Select(parameter =>
+                        parameter.Identifier.ValueText
+                    )
+                )
                 .Concat(
                     method.TargetGenericTypeArguments.Select(parameter =>
                         parameter.Identifier.ValueText
@@ -84,6 +90,8 @@ internal readonly record struct InvocationHistoryTypeMetadata
                 "Sequence",
                 "Member",
                 "Next",
+                "IsVerified",
+                "MarkVerified",
                 "ToString",
                 "Equals",
                 "GetHashCode",

@@ -42,6 +42,21 @@ namespace Imposter.Tests.Shared
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
 		}
 
+		void global::Imposter.Abstractions.IImposter.VerifyNoOtherCalls()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyNoOtherCalls();
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyNoInteractions()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyNoInteractions();
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyAllSetupsUsed()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyAllSetupsUsed();
+		}
+
 		void global::Imposter.Abstractions.IImposter.ClearInvocations()
 		{
 		}
