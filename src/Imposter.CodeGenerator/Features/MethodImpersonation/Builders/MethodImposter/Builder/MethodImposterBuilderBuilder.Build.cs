@@ -1,4 +1,5 @@
 ﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -46,6 +47,41 @@ internal static partial class MethodImposterBuilderBuilder
             .AddMembers(ImplementInvocationImposterGroupInterface(method))
             .AddMember(BuildCalledMethod(method))
             .AddMember(BuildCallCountMethod(method))
+            .AddMember(
+                new PropertyDeclarationBuilder(
+                    WellKnownTypes.System.Collections.Generic.IReadOnlyList(
+                        method.InvocationHistory.Syntax
+                    ),
+                    "Invocations"
+                )
+                    .WithExplicitInterfaceSpecifier(
+                        ExplicitInterfaceSpecifier(method.InvocationVerifierInterface.Syntax)
+                    )
+                    .WithGetterBody(
+                        Block(
+                            ReturnStatement(
+                                IdentifierName(method.InvocationHistory.Collection.AsField.Name)
+                                    .Dot(method.WithGenericArguments("MatchingInvocations"))
+                                    .Call(
+                                        method.Parameters.HasInputParameters
+                                            ? ArgumentListSyntax([
+                                                Argument(
+                                                    IdentifierName(
+                                                        method
+                                                            .MethodImposter
+                                                            .Builder
+                                                            .ArgumentsCriteriaField
+                                                            .Name
+                                                    )
+                                                ),
+                                            ])
+                                            : EmptyArgumentListSyntax
+                                    )
+                            )
+                        )
+                    )
+                    .Build()
+            )
             .Build();
     }
 }

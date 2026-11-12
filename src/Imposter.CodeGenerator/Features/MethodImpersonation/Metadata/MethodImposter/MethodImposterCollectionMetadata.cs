@@ -13,6 +13,7 @@ internal readonly record struct MethodImposterCollectionMetadata(
     // A generic method's collection keeps a method imposter per type argument: AddNew adds one, and
     // GetImposterWithMatchingInvocationImposterGroup finds the one whose setups match a call.
     internal const string ImpostersFieldName = "_imposters";
+    internal const string CanReuseCapturedSpansFieldName = "CanReuseCapturedSpans";
 
     internal const string AddNewMethodName = "AddNew";
 

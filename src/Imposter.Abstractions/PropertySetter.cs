@@ -1,7 +1,27 @@
-﻿using System.Collections.Concurrent;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace Imposter.Abstractions;
+
+/// <summary>A recorded property assignment, including a failed assignment.</summary>
+/// <typeparam name="T">The stored value type.</typeparam>
+[EditorBrowsable(EditorBrowsableState.Never)]
+public abstract class PropertySetterInvocation<T> : InvocationRecord
+{
+    /// <summary>The assigned value.</summary>
+    protected internal T StoredValue { get; }
+
+    /// <summary>Creates a completed property assignment record.</summary>
+    protected PropertySetterInvocation(T value, long sequence, Exception? exception)
+        : base(sequence, exception) => StoredValue = value;
+
+    /// <summary>Formats the assignment without invoking user callbacks.</summary>
+    public override string ToString() =>
+        "set "
+        + Member
+        + " = "
+        + StoredValue
+        + (Exception is null ? string.Empty : " threw " + Exception);
+}
 
 /// <summary>Implements callbacks, history and invocation for generated property setters.</summary>
 /// <typeparam name="T">The property's value type.</typeparam>
@@ -10,17 +30,14 @@ namespace Imposter.Abstractions;
 public class PropertySetter<T>
 {
     private CallbackCollection<(Arg<T> Criteria, Action<T> Callback)>? _callbacks;
-    private ConcurrentStack<T>? _invocationHistory;
+    private InvocationBuffer<T>? _invocationHistory;
     private readonly PropertyValue<T>? _defaultValue;
     private readonly ImposterMode _mode;
     private readonly string _displayName;
     private bool _hasConfiguredSetter;
     private bool _useBaseImplementation;
 
-    /// <summary>Constructor</summary>
-    /// <param name="defaultValue">The value shared with the getter, if present.</param>
-    /// <param name="mode">Whether an explicit setup is required.</param>
-    /// <param name="displayName">The property name used in diagnostics.</param>
+    /// <summary>Creates the setter state.</summary>
     protected PropertySetter(PropertyValue<T>? defaultValue, ImposterMode mode, string displayName)
     {
         _defaultValue = defaultValue;
@@ -29,27 +46,27 @@ public class PropertySetter<T>
     }
 
     /// <summary>Registers a callback for matching assignments.</summary>
-    /// <param name="criteria">The values to match.</param>
-    /// <param name="callback">The callback to invoke.</param>
     public void Callback(Arg<T> criteria, Action<T> callback)
     {
         LazyInitializer.EnsureInitialized(ref _callbacks)!.Add((criteria, callback));
         _hasConfiguredSetter = true;
     }
 
-    /// <summary>Verifies matching assignments, formatting history only on failure.</summary>
-    /// <param name="criteria">The values to match.</param>
-    /// <param name="count">The expected count.</param>
+    /// <summary>Verifies the number of matching assignments.</summary>
     public void Called(Arg<T> criteria, Count count)
     {
-        var history = _invocationHistory;
-        var actual = history is not null ? history.Count(criteria.Matches) : 0;
+        var snapshot = _invocationHistory?.GetEnumerator() ?? default;
+        var cursor = snapshot;
+        var actual = 0;
+        while (cursor.MoveNext())
+            if (criteria.Matches(cursor.Current.Value))
+                actual++;
         if (count.Matches(actual))
             return;
         var performed = new List<string>();
-        if (history is not null)
-            foreach (var value in history)
-                performed.Add("set " + _displayName + " = <" + (value?.ToString() ?? "null") + ">");
+        cursor = snapshot;
+        while (cursor.MoveNext())
+            performed.Add(Describe(cursor.Current));
         throw new VerificationFailedException(
             count,
             actual,
@@ -64,36 +81,115 @@ public class PropertySetter<T>
         _useBaseImplementation = true;
     }
 
-    /// <summary>Records an assignment and invokes callbacks before updating the property.</summary>
-    /// <param name="value">The assigned value.</param>
-    /// <param name="baseImplementation">The base setter, when available.</param>
+    private MissingImposterException MissingImposter() => new(_displayName + " (setter)");
+
+    /// <summary>Performs an assignment and records its outcome.</summary>
     public void Set(T value, Action<T>? baseImplementation = null)
     {
-        if (!RecordAndShouldCallBase(value))
-            return;
-        if (baseImplementation is null)
-            throw MissingImposter();
-        baseImplementation(value);
+        var sequence = InvocationSequence.Next();
+        var capturedValue = CaptureInvocationValue(value);
+        Exception? failure = null;
+        try
+        {
+            if (!RecordAndShouldCallBase(value))
+                return;
+            if (baseImplementation is null)
+                throw MissingImposter();
+            baseImplementation(value);
+        }
+        catch (Exception exception)
+        {
+            failure = exception;
+            throw;
+        }
+        finally
+        {
+            RecordInvocation(capturedValue, sequence, failure);
+        }
     }
 
-    /// <summary>Records an assignment, invokes callbacks, and updates enabled storage unless the base accessor is configured.</summary>
-    /// <param name="value">The assigned value.</param>
-    /// <returns>Whether the caller should invoke the base set or init accessor.</returns>
+    /// <summary>Runs the assignment behavior; generated init accessors record its complete outcome themselves.</summary>
     protected bool RecordAndShouldCallBase(T value)
     {
         if (_mode == ImposterMode.Explicit && !_hasConfiguredSetter)
             throw MissingImposter();
-        LazyInitializer.EnsureInitialized(ref _invocationHistory)!.Push(value);
         if (_callbacks is not null)
             foreach (var registration in _callbacks)
                 if (registration.Criteria.Matches(value))
+                {
                     registration.Callback(value);
+                }
         if (_useBaseImplementation)
+        {
             return true;
+        }
         if (_defaultValue is { IsOn: true })
             _defaultValue.Write(value);
         return false;
     }
 
-    private MissingImposterException MissingImposter() => new(_displayName + " (setter)");
+    /// <summary>Records the result of an assignment, including generated direct base init assignments.</summary>
+    public void RecordInvocation(T value, long sequence, Exception? exception) =>
+        LazyInitializer.EnsureInitialized(ref _invocationHistory)!.Add(value, sequence, exception);
+
+    /// <summary>Captures an entry value; generated span setters override this to isolate mutable storage.</summary>
+    public virtual T CaptureInvocationValue(T value) => value;
+
+    /// <summary>Creates the generated property's concrete invocation record.</summary>
+    protected virtual PropertySetterInvocation<T> CreateInvocation(
+        T value,
+        long sequence,
+        Exception? exception
+    ) => new RuntimeInvocation(_displayName, value, sequence, exception);
+
+    /// <summary>Returns an entry-ordered snapshot of assignments.</summary>
+    public IReadOnlyList<IImposterInvocation> Snapshot() =>
+        MatchingInvocations<IImposterInvocation>(Arg<T>.Any());
+
+    /// <summary>Returns assignments, optionally leaving ordering to an enclosing aggregate.</summary>
+    /// <param name="orderBySequence">Whether to order this snapshot by entry stamp.</param>
+    public IReadOnlyList<IImposterInvocation> Snapshot(bool orderBySequence) =>
+        MatchingInvocations<IImposterInvocation>(Arg<T>.Any(), orderBySequence);
+
+    /// <summary>Returns matching assignments as the generated record type.</summary>
+    public IReadOnlyList<TInvocation> MatchingInvocations<TInvocation>(Arg<T> criteria)
+        where TInvocation : IImposterInvocation => MatchingInvocations<TInvocation>(criteria, true);
+
+    private IReadOnlyList<TInvocation> MatchingInvocations<TInvocation>(
+        Arg<T> criteria,
+        bool orderBySequence
+    )
+        where TInvocation : IImposterInvocation
+    {
+        var result = new List<TInvocation>();
+        var history = _invocationHistory;
+        if (history is not null)
+            foreach (var entry in history)
+                if (criteria.Matches(entry.Value))
+                {
+                    var invocation = CreateInvocation(entry.Value, entry.Sequence, entry.Exception);
+                    IImposterInvocation record = invocation;
+                    result.Add((TInvocation)record);
+                }
+        return InvocationSnapshots.Order(result, orderBySequence);
+    }
+
+    private sealed class RuntimeInvocation(
+        string member,
+        T value,
+        long sequence,
+        Exception? exception
+    ) : PropertySetterInvocation<T>(value, sequence, exception)
+    {
+        public override string Member => member;
+    }
+
+    private string Describe(InvocationBuffer<T>.Entry invocation) =>
+        "set "
+        + _displayName
+        + " = "
+        + "<"
+        + (invocation.Value?.ToString() ?? "null")
+        + ">"
+        + (invocation.Exception is null ? string.Empty : " threw " + invocation.Exception);
 }

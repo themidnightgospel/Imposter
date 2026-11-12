@@ -18,6 +18,11 @@ internal static class DefaultIndexerBehaviourBuilder
         return new ClassDeclarationBuilder(indexer.DefaultIndexerBehaviour.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddMember(
+                indexer.DefaultIndexerBehaviour.BackingField is not null
+                    ? IndexerStoredKeyBuilder.Build(indexer)
+                    : null
+            )
+            .AddMember(
                 SingleVariableField(
                     indexer.DefaultIndexerBehaviour.IsOnBackingField,
                     SyntaxKind.PrivateKeyword,
@@ -59,11 +64,14 @@ internal static class DefaultIndexerBehaviourBuilder
 
     private static MethodDeclarationSyntax BuildGetMethod(in ImposterIndexerMetadata indexer)
     {
-        var argumentsParam = ParameterSyntax(indexer.Arguments.TypeSyntax, "arguments");
+        var argumentsParam = ParameterSyntax(
+            indexer.Arguments.TypeSyntax,
+            indexer.Locals["arguments"]
+        );
         var baseImplementationParam = ParameterSyntax(
             indexer.DefaultIndexerBehaviour.GetBaseImplementationParameter
         );
-        var valueIdentifier = IdentifierName("value");
+        var valueIdentifier = IdentifierName(indexer.Locals["value"]);
 
         // Without a setter, or for a value passed through, nothing is kept: use the base getter or the default.
         var returnKeptValue = indexer.DefaultIndexerBehaviour.BackingField is { } backingField
@@ -75,7 +83,7 @@ internal static class DefaultIndexerBehaviourBuilder
                             .Dot(IdentifierName("TryGetValue"))
                             .Call(
                                 ArgumentListSyntax([
-                                    Argument(IdentifierName("arguments")),
+                                    Argument(StoredKey(indexer)),
                                     Argument(
                                         null,
                                         Token(SyntaxKind.OutKeyword),
@@ -146,8 +154,12 @@ internal static class DefaultIndexerBehaviourBuilder
             DefaultIndexerBehaviourMetadata.SetMethodName
         )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddParameter(ParameterSyntax(indexer.Arguments.TypeSyntax, "arguments"))
-            .AddParameter(ParameterSyntax(indexer.Core.NullableAwareValueTypeSyntax, "value"))
+            .AddParameter(
+                ParameterSyntax(indexer.Arguments.TypeSyntax, indexer.Locals["arguments"])
+            )
+            .AddParameter(
+                ParameterSyntax(indexer.Core.NullableAwareValueTypeSyntax, indexer.Locals["value"])
+            )
             .WithBody(
                 Block(
                     ElementAccessExpression(
@@ -155,12 +167,24 @@ internal static class DefaultIndexerBehaviourBuilder
                         )
                         .WithArgumentList(
                             BracketedArgumentList(
-                                SingletonSeparatedList(Argument(IdentifierName("arguments")))
+                                SingletonSeparatedList(Argument(StoredKey(indexer)))
                             )
                         )
-                        .Assign(IdentifierName("value"))
+                        .Assign(IdentifierName(indexer.Locals["value"]))
                         .ToStatementSyntax()
                 )
             )
             .Build();
+
+    private static ObjectCreationExpressionSyntax StoredKey(in ImposterIndexerMetadata indexer)
+    {
+        var arguments = IdentifierName(indexer.Locals["arguments"]);
+        return indexer.DefaultIndexerBehaviour.StoredKeyType.New(
+            ArgumentListSyntax(
+                indexer.Core.MatchedParameters.Select(parameter =>
+                    parameter.ForwardingArgument(arguments.Dot(IdentifierName(parameter.FieldName)))
+                )
+            )
+        );
+    }
 }

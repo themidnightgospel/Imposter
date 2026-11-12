@@ -13,10 +13,10 @@ using global::Imposter.Tests.Features.MethodImpersonation;
 namespace Imposter.Tests.Features.MethodImpersonation
 {
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-	public sealed class ScopedParameterClassImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.ScopedParameterClass>
+	public sealed class ScopedParameterClassImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.ScopedParameterClass>
 	{
 		private readonly NameMethodImposter _nameMethodImposter;
-		private readonly NameMethodInvocationHistoryCollection _nameMethodInvocationHistoryCollection = new NameMethodInvocationHistoryCollection();
+		private readonly NameMethodInvocationHistoryCollection _nameMethodInvocationHistoryCollection;
 		public INameMethodImposterBuilder Name(global::Imposter.Abstractions.ReadOnlySpanArg<char> text)
 		{
 			return new NameMethodImposter.Builder(_nameMethodImposter, _nameMethodInvocationHistoryCollection, new NameArgumentsCriteria(text));
@@ -63,32 +63,74 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface INameMethodInvocationHistory
+		internal interface INameMethodInvocationHistory
 		{
 			bool Matches(NameArgumentsCriteria criteria);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class NameMethodInvocationHistory : NameMethodInvocationHistoryCollection.Node, INameMethodInvocationHistory
+		public sealed class NameInvocation : NameMethodInvocationHistoryCollection.Node, INameMethodInvocationHistory
 		{
 			internal readonly char[] capturedtext;
-			internal readonly char[]? Result;
-			internal readonly global::System.Exception? Exception;
-			public NameMethodInvocationHistory(char[] capturedtext, char[]? Result, global::System.Exception? Exception)
+			internal readonly char[]? _result;
+			internal readonly global::System.Exception? _exception;
+			private readonly long _sequence;
+			public global::System.ReadOnlyMemory<char> Text
 			{
-				this.capturedtext = capturedtext;
-				this.Result = Result;
-				this.Exception = Exception;
+				get
+				{
+					return capturedtext;
+				}
 			}
 
-			public bool Matches(NameArgumentsCriteria criteria)
+			public global::System.ReadOnlyMemory<char> Result
+			{
+				get
+				{
+					return _result;
+				}
+			}
+
+			public override string Member
+			{
+				get
+				{
+					return "Name";
+				}
+			}
+
+			public override long Sequence
+			{
+				get
+				{
+					return _sequence;
+				}
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public NameInvocation(char[] capturedtext, char[]? result, global::System.Exception? exception, long sequence)
+			{
+				this.capturedtext = capturedtext;
+				this._result = result;
+				this._exception = exception;
+				this._sequence = sequence;
+			}
+
+			bool INameMethodInvocationHistory.Matches(NameArgumentsCriteria criteria)
 			{
 				return criteria.MatchesCaptured(capturedtext);
 			}
 
 			public override string ToString()
 			{
-				return "Name(" + global::System.String.Join(", ", new[] { "text: " + FormatValue(capturedtext) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Name(" + global::System.String.Join(", ", new[] { "text: " + FormatValue(capturedtext) }) + ")" + " => " + FormatValue(_result) + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -98,12 +140,16 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class NameMethodInvocationHistoryCollection
+		public class NameMethodInvocationHistoryCollection
 		{
 			private NameMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IImposterInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+
 				internal NameMethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -136,6 +182,33 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, orderBySequence);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<NameInvocation> MatchingInvocations(NameArgumentsCriteria criteria)
+			{
+				var result = new global::System.Collections.Generic.List<NameInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((INameMethodInvocationHistory)entry).Matches(criteria))
+						result.Add((NameInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
 			}
 
 			public override string ToString()
@@ -310,6 +383,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<NameInvocation> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -342,26 +416,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public global::System.ReadOnlySpan<char> Invoke(scoped global::System.ReadOnlySpan<char> text, NameDelegate? baseImplementation = null)
 			{
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
 				char[] capturedtext = text.ToArray();
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedtext);
-				if (matchingInvocationImposterGroup == default)
-				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-					{
-						throw new global::Imposter.Abstractions.MissingImposterException("virtual ReadOnlySpan<char> ScopedParameterClass.Name(scoped ReadOnlySpan<char> text)");
-					}
-
-					matchingInvocationImposterGroup = NameMethodInvocationImposterGroup.Default;
-				}
-
 				try
 				{
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedtext);
+					if (matchingInvocationImposterGroup == default)
+					{
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("virtual ReadOnlySpan<char> ScopedParameterClass.Name(scoped ReadOnlySpan<char> text)");
+						matchingInvocationImposterGroup = NameMethodInvocationImposterGroup.Default;
+					}
+
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual ReadOnlySpan<char> ScopedParameterClass.Name(scoped ReadOnlySpan<char> text)", text, baseImplementation);
-					_nameMethodInvocationHistoryCollection.Add(new NameMethodInvocationHistory(capturedtext, result.ToArray(), default));
+					_nameMethodInvocationHistoryCollection.Add(new NameInvocation(capturedtext, result.ToArray(), default, invocationSequence));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_nameMethodInvocationHistoryCollection.RecordFailure(new NameMethodInvocationHistory(capturedtext, default !, ex)))
+				catch (global::System.Exception ex)
 				{
+					_nameMethodInvocationHistoryCollection.RecordFailure(new NameInvocation(capturedtext, default !, ex, invocationSequence));
 					throw;
 				}
 			}
@@ -459,13 +532,29 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				{
 					return _nameMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
+
+				global::System.Collections.Generic.IReadOnlyList<NameInvocation> NameInvocationVerifier.Invocations
+				{
+					get
+					{
+						return _nameMethodInvocationHistoryCollection.MatchingInvocations(_argumentsCriteria);
+					}
+				}
 			}
 		}
 
 		public ScopedParameterClassImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._nameMethodInvocationHistoryCollection = new NameMethodInvocationHistoryCollection();
 			this._nameMethodImposter = new NameMethodImposter(_nameMethodInvocationHistoryCollection, invocationBehavior);
 			this._imposterInstance = new ImposterTargetInstance(this);
+		}
+
+		global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> global::Imposter.Abstractions.IImposter.Invocations()
+		{
+			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+			invocations.AddRange(_nameMethodInvocationHistoryCollection.Snapshot(false));
+			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

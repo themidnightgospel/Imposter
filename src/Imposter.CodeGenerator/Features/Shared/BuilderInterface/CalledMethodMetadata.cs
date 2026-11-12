@@ -1,4 +1,5 @@
-﻿using Imposter.CodeGenerator.SyntaxHelpers;
+﻿using Imposter.CodeGenerator.Helpers;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Imposter.CodeGenerator.Features.Shared.BuilderInterface;
@@ -12,9 +13,12 @@ internal readonly struct CalledMethodMetadata
 
     internal readonly ParameterMetadata CountParameter;
 
-    public CalledMethodMetadata()
+    public CalledMethodMetadata(NameSet names)
     {
         ReturnType = WellKnownTypes.Void;
-        CountParameter = new ParameterMetadata("count", WellKnownTypes.Imposter.Abstractions.Count);
+        CountParameter = new ParameterMetadata(
+            names.Use("count"),
+            WellKnownTypes.Imposter.Abstractions.Count
+        );
     }
 }

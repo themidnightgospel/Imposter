@@ -12,7 +12,7 @@ public class PropertyRuntimeTests
     private readonly PropertyValue<int> _value = new();
 
     [Fact]
-    public void GivenExplicitAccessors_WhenOnlyGetterCallbackConfigured_ShouldRejectAndNotRecord()
+    public void GivenExplicitAccessors_WhenOnlyGetterCallbackConfigured_ShouldRejectAndRecordFailures()
     {
         var getter = new Getter<int>(_value, ImposterMode.Explicit);
         var setter = new Setter<int>(_value, ImposterMode.Explicit);
@@ -24,7 +24,7 @@ public class PropertyRuntimeTests
             .Throw<MissingImposterException>(() => setter.Set(1))
             .Message.ShouldContain("Value (setter)");
         getter.Verify(Count.Never());
-        setter.Called(Arg<int>.Any(), Count.Never());
+        setter.Called(Arg<int>.Any(), Count.Once());
         setter.Callback(Arg<int>.Is(1), _ => { });
         setter.Set(2); // A setup configures the setter even when its criteria do not match.
         setter.Called(Arg<int>.Is(2), Count.Once());
@@ -108,7 +108,7 @@ public class PropertyRuntimeTests
     }
 
     [Fact]
-    public void GivenBaseInitSetter_WhenAssigning_ShouldRunCallbacksAndRecordBeforeRequestingBaseAssignment()
+    public void GivenBaseInitSetter_WhenAssigning_ShouldLetGeneratedAccessorRecordAfterBaseAssignment()
     {
         var setter = new Setter<int>(_value);
         var callbackValue = 0;
@@ -116,6 +116,9 @@ public class PropertyRuntimeTests
         setter.UseBaseImplementation();
         setter.AssignInit(3).ShouldBeTrue();
         callbackValue.ShouldBe(3);
+        setter.Called(Arg<int>.Is(3), Count.Never());
+        // The generated init accessor records only after its direct base assignment completes.
+        setter.RecordInvocation(3, InvocationSequence.Next(), null);
         setter.Called(Arg<int>.Is(3), Count.Once());
         new Getter<int>(_value).Get().ShouldBe(0);
     }

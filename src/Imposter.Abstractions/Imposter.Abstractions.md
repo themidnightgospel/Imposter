@@ -54,6 +54,12 @@ Public API for consumers and the generator. Lives in `src/Imposter.Abstractions`
 
 ## How It’s Used
 
+- `IImposter` provides invocation snapshots.
+- `IImposterInvocation` supplies member identity, a process-wide entry sequence, and synchronous exceptions. Generated method/accessor records provide typed captures. `EventSubscriptionInvocation<THandler>` represents event add/remove accessors. Property getters retain counters and do not enter the ordered history.
+- `InvocationHistory<T>` publishes indexer and custom ref-struct setter records through an intrusive list; generated method histories use an equivalent typed node chain. Shared property setters and event accessors use compact `InvocationBuffer<T>` storage and materialize records on inspection. Snapshots materialize and sort on demand; they keep membership after later calls, but ordinary reference arguments are not copied. Span captures expose `ReadOnlyMemory<T>` over their recorded array.
+- Generic dispatch records the caller's type arguments and captures entry values before evaluating setup predicates. Its inner method implementations and compatible-type adapters skip recording so one interaction produces exactly one record. Output values are recorded after conversion, and synchronous exceptions still propagate modified ref/out arguments to the caller.
+- Generic span calls retain an entry array separate from matcher arrays. Exact-type dispatch and compatible adapters with method-independent span element types can refresh and reuse lookup arrays when every configured span matcher is built-in and does not expose arrays to user predicates. Arbitrary array predicates disable reuse for that imposter. The four-int exact-type fixtures have ceilings of 144 bytes for built-in matchers and 176 bytes for array predicates; compatible-type adapters have ceilings of 208 and 248 bytes respectively. See the invocation-history performance table and CallAllocationTests for measured scope and other costs.
+
 - Include `Imposter.Abstractions` in consumer projects to reference the attribute and argument matching types.
 - The generator uses these types at compile time to discover targets and glue behaviour contracts.
 
@@ -62,3 +68,8 @@ Public API for consumers and the generator. Lives in `src/Imposter.Abstractions`
 - Build: `dotnet build src/Imposter.Abstractions/Imposter.Abstractions.csproj`
 - Tests: see `Imposter_codex/modules/Tests.md` (contains tests referencing abstractions).
 
+
+## Internal setter history storage
+
+
+`PropertySetter<T>` appends compact values and sequence stamps to `InvocationBuffer<T>` and materializes public typed records only when inspected. Entries occupy 32-slot segments with separate integer publication links; exception columns are allocated only when a segment contains a failed assignment. Slot reservation, directory growth, and publication are lock-free. A captured enumerator follows the immutable publication chain visible when enumeration starts. Materialized records copy the captured value, sequence, and exception. Span setters isolate the entry array from mutable callbacks and property storage. `PassThroughSetter<TInvocation>` supplies history for custom ref-struct setters without retaining their unstoreable values. Generated init accessors record after direct base assignment, including failures.

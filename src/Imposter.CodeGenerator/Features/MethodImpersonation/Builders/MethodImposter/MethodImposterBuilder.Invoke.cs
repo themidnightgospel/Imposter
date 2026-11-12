@@ -17,39 +17,86 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.MethodImp
 
 internal static partial class MethodImposterBuilder
 {
-    private static MethodDeclarationSyntax InvokeMethod(in ImposterTargetMethodMetadata method) =>
+    private static MethodDeclarationSyntax InvokeMethod(
+        in ImposterTargetMethodMetadata method,
+        bool recordHistory = true,
+        bool reuseCapturedSpans = false
+    ) =>
         new MethodDeclarationBuilder(
             method.NullableAwareReturnTypeSyntax,
-            MethodImposterInvokeMethodMetadata.Name
+            reuseCapturedSpans
+                ? method.MethodImposter.InvokeWithCapturedSpansMethodName
+                : MethodImposterInvokeMethodMetadata.Name
         )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
-            .WithParameterList(InvokeSignatureBuilder.MethodImposterParameters(method))
+            .WithParameterList(
+                reuseCapturedSpans
+                    ? InvokeSignatureBuilder.WithCapturedSpans(method)
+                    : InvokeSignatureBuilder.MethodImposterParameters(method)
+            )
             .WithBody(
                 new BlockBuilder()
-                    .AddStatements(DeclareCapturedArguments(method))
-                    .AddStatement(DeclareMatchingInvocationImposterGroupVariable(method))
-                    .AddStatement(EnsureMatchingInvocationImposterGroup(method))
                     .AddStatement(
-                        TryStatement(
-                            new BlockBuilder()
-                                .AddStatement(InvokeMatchingInvocationImposterGroup(method))
-                                .AddStatement(RecordInvocation(method))
-                                .AddStatement(ReturnResultStatement(method))
-                                .Build(),
-                            SingletonList(
-                                CatchClause(
-                                    CatchDeclaration(
-                                        WellKnownTypes.System.Exception,
-                                        Identifier(
-                                            method.MethodImposter.InvokeMethod.ExceptionVariableName
-                                        )
-                                    ),
-                                    CatchFilterClause(RecordFailure(method)),
-                                    Block(ThrowStatement())
-                                )
-                            ),
-                            default!
+                        recordHistory
+                            ? LocalVariableDeclarationSyntax(
+                                WellKnownTypes.Long,
+                                method.InvocationHistory.SequenceVariableName,
+                                WellKnownTypes
+                                    .Imposter.Abstractions.InvocationSequence.Dot(
+                                        IdentifierName("Next")
+                                    )
+                                    .Call()
+                            )
+                            : null
+                    )
+                    .AddStatements(DeclareCapturedArguments(method, reuseCapturedSpans))
+                    .AddStatements(
+                        method.Parameters.OutputParameters.Select(parameter =>
+                            IdentifierName(SyntaxFactoryHelper.EscapeKeyword(parameter.Name))
+                                .Assign(DefaultNonNullable)
+                                .ToStatementSyntax()
                         )
+                    )
+                    .AddStatement(
+                        recordHistory
+                            ? TryStatement(
+                                new BlockBuilder()
+                                    .AddStatement(
+                                        DeclareMatchingInvocationImposterGroupVariable(method)
+                                    )
+                                    .AddStatement(EnsureMatchingInvocationImposterGroup(method))
+                                    .AddStatement(InvokeMatchingInvocationImposterGroup(method))
+                                    .AddStatement(RecordInvocation(method))
+                                    .AddStatement(ReturnResultStatement(method))
+                                    .Build(),
+                                SingletonList(
+                                    CatchClause(
+                                        CatchDeclaration(
+                                            WellKnownTypes.System.Exception,
+                                            Identifier(
+                                                method
+                                                    .MethodImposter
+                                                    .InvokeMethod
+                                                    .ExceptionVariableName
+                                            )
+                                        ),
+                                        null,
+                                        Block(
+                                            RecordFailure(method).ToStatementSyntax(),
+                                            ThrowStatement()
+                                        )
+                                    )
+                                ),
+                                default!
+                            )
+                            : new BlockBuilder()
+                                .AddStatement(
+                                    DeclareMatchingInvocationImposterGroupVariable(method)
+                                )
+                                .AddStatement(EnsureMatchingInvocationImposterGroup(method))
+                                .AddStatement(InvokeMatchingInvocationImposterGroup(method))
+                                .AddStatement(ReturnResultStatement(method))
+                                .Build()
                     )
                     .Build()
             )
@@ -65,16 +112,32 @@ internal static partial class MethodImposterBuilder
     }
 
     private static IEnumerable<StatementSyntax> DeclareCapturedArguments(
-        in ImposterTargetMethodMetadata method
+        in ImposterTargetMethodMetadata method,
+        bool reuseCapturedSpans
     )
     {
         var names = method.InvocationHistory.ArgumentFields;
         return method.Parameters.InputParameterMetadata.Select(p =>
-            LocalVariableDeclarationSyntax(
-                p.NullableAwareKeptTypeSyntax,
-                names[p.Name],
-                p.KeptValue
-            )
+            reuseCapturedSpans && p.IsSpan
+                ? (StatementSyntax)IfStatement(
+                    BinaryExpression(
+                        SyntaxKind.EqualsExpression,
+                        IdentifierName(names[p.Name]).Dot(IdentifierName("Length")),
+                        IdentifierName(p.Name).Dot(IdentifierName("Length"))
+                    ),
+                    IdentifierName(p.Name)
+                        .Dot(IdentifierName("CopyTo"))
+                        .Call(Argument(IdentifierName(names[p.Name])))
+                        .ToStatementSyntax(),
+                    ElseClause(
+                        IdentifierName(names[p.Name]).Assign(p.KeptValue).ToStatementSyntax()
+                    )
+                )
+                : LocalVariableDeclarationSyntax(
+                    p.NullableAwareKeptTypeSyntax,
+                    names[p.Name],
+                    p.KeptValue
+                )
         );
     }
 
@@ -94,7 +157,7 @@ internal static partial class MethodImposterBuilder
             )
             .ToStatementSyntax();
 
-    // The filter records the failed invocation before the stack unwinds.
+    // The catch records final out values after user finally blocks have completed.
     private static InvocationExpressionSyntax RecordFailure(
         in ImposterTargetMethodMetadata method
     ) =>
@@ -124,10 +187,15 @@ internal static partial class MethodImposterBuilder
         ExpressionSyntax exception
     )
     {
-        List<ArgumentSyntax> arguments =
-        [
-            .. CapturedArgumentsBuilder.CapturedValues(method).Arguments,
-        ];
+        var arguments = new List<ArgumentSyntax>();
+        foreach (var parameter in method.Parameters.MatchedParameterMetadata)
+            arguments.Add(
+                Argument(
+                    parameter.Model.RefKind == Microsoft.CodeAnalysis.RefKind.Out
+                        ? parameter.KeptValue
+                        : IdentifierName(method.InvocationHistory.ArgumentFields[parameter.Name])
+                )
+            );
 
         if (method.KeepsResult)
         {
@@ -135,6 +203,7 @@ internal static partial class MethodImposterBuilder
         }
 
         arguments.Add(Argument(exception));
+        arguments.Add(Argument(IdentifierName(method.InvocationHistory.SequenceVariableName)));
 
         return method.InvocationHistory.Syntax.New(ArgumentListSyntax(arguments));
     }
@@ -191,9 +260,13 @@ internal static partial class MethodImposterBuilder
         return IfStatement(
             matchingIdentifier.IsDefault(),
             Block(
-                ThrowIfExplicit(
-                    IdentifierName(method.MethodImposter.InvocationBehaviorFieldName),
-                    method.DisplayName.StringLiteral()
+                IfStatement(
+                    IsExplicit(IdentifierName(method.MethodImposter.InvocationBehaviorFieldName)),
+                    ThrowStatement(
+                        WellKnownTypes.Imposter.Abstractions.MissingImposterException.New(
+                            method.DisplayName.StringLiteral().ToSingleArgumentList()
+                        )
+                    )
                 ),
                 matchingIdentifier.Assign(defaultGroup).ToStatementSyntax()
             )

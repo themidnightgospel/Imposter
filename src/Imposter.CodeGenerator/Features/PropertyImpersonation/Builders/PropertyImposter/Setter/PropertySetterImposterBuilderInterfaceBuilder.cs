@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -31,10 +32,7 @@ internal static class PropertySetterImposterBuilderInterfaceBuilder
                 property.SetterImposterBuilderInterface.ThenMethod
             ),
             BuildFluentInterface(property),
-            VerificationInterface(
-                property.SetterImposterBuilderInterface.VerificationInterfaceName,
-                property.SetterImposterBuilderInterface.CalledMethod
-            ),
+            BuildVerificationInterface(property),
             BuildBuilderInterface(property),
         };
 
@@ -46,7 +44,34 @@ internal static class PropertySetterImposterBuilderInterfaceBuilder
             members.Add(BuildUseBaseImplementationEntryInterface(property));
         }
 
+        members.Add(
+            property.Core.IsPassedThrough
+                ? SetterImposterBuilder.BuildPassThroughInvocationRecord(property)
+                : SetterImposterBuilder.BuildInvocationRecord(property)
+        );
+
         return members.ToArray();
+    }
+
+    private static InterfaceDeclarationSyntax BuildVerificationInterface(
+        in ImposterPropertyMetadata property
+    )
+    {
+        var result = VerificationInterface(
+            property.SetterImposterBuilderInterface.VerificationInterfaceName,
+            property.SetterImposterBuilderInterface.CalledMethod
+        );
+        result = result.AddMembers(
+            new PropertyDeclarationBuilder(
+                WellKnownTypes.System.Collections.Generic.IReadOnlyList(
+                    property.SetterImposter.InvocationTypeSyntax
+                ),
+                "Invocations"
+            )
+                .WithGetter()
+                .Build()
+        );
+        return result;
     }
 
     private static InterfaceDeclarationSyntax BuildBuilderInterface(

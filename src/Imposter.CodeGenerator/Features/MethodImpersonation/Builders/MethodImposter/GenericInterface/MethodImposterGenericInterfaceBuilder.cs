@@ -44,6 +44,17 @@ internal static class MethodImposterGenericInterfaceBuilder
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(method.MethodImposter.Interface.Syntax))
             .AddMember(invokeMethod)
+            .AddMember(
+                method.CanReuseCapturedSpansAcrossAdapters
+                    ? new MethodDeclarationBuilder(
+                        method.NullableAwareReturnTypeSyntax,
+                        method.MethodImposter.InvokeWithCapturedSpansMethodName
+                    )
+                        .WithParameterList(InvokeSignatureBuilder.WithCapturedSpans(method))
+                        .WithSemicolon()
+                        .Build()
+                    : null
+            )
             .AddMember(hasMatchingGroupMethod)
             .Build();
     }

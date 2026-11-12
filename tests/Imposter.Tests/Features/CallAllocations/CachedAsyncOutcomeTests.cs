@@ -39,6 +39,40 @@ namespace Imposter.Tests.Features.CallAllocations
             count.ShouldBe(0);
             key.ShouldBe(7);
             extra.ShouldBe(9);
+            var history = _sut.GetByReferenceAsync(
+                Arg<int>.Any(),
+                OutArg<int>.Any(),
+                Arg<int>.Any()
+            ).Invocations;
+            history[0].Result.ShouldBeSameAs(first);
+            history[0].Exception.ShouldBeNull();
+            history[0].Key.ShouldBe(7);
+            history[0].Count.ShouldBe(0);
+            history[0].Extra.ShouldBe(9);
+        }
+
+        [Fact]
+        public void GivenSynchronousTaskFailure_WhenInspectingHistory_ShouldPreserveExceptionAndDefaultResult()
+        {
+            var failure = new InvalidOperationException("synchronous");
+            _sut.GetAsync(Arg<int>.Any()).Throws(failure);
+            Should
+                .Throw<InvalidOperationException>(() => _sut.Instance().GetAsync(7))
+                .ShouldBeSameAs(failure);
+            var invocation = _sut.GetAsync(Arg<int>.Any()).Invocations[0];
+            invocation.Exception.ShouldBeSameAs(failure);
+            invocation.Result.ShouldBeNull();
+        }
+
+        [Fact]
+        public void GivenNullTaskResult_WhenInspectingHistory_ShouldKeepNullWithoutException()
+        {
+            Task<int> nullTask = null!;
+            _sut.GetAsync(Arg<int>.Any()).Returns(nullTask);
+            _sut.Instance().GetAsync(7).ShouldBeNull();
+            var invocation = _sut.GetAsync(Arg<int>.Any()).Invocations[0];
+            invocation.Result.ShouldBeNull();
+            invocation.Exception.ShouldBeNull();
         }
 
         [Fact]

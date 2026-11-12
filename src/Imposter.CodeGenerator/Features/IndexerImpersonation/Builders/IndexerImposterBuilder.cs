@@ -15,6 +15,7 @@ internal static class IndexerImposterBuilder
 {
     internal static ClassDeclarationSyntax Build(in ImposterIndexerMetadata indexer)
     {
+        var orderBySequence = indexer.Core.CreateParameterNameSet().Use("orderBySequence");
         var classBuilder = new ClassDeclarationBuilder(indexer.Builder.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddMember(
@@ -41,6 +42,51 @@ internal static class IndexerImposterBuilder
                     : null
             )
             .AddMember(BuildConstructor(indexer))
+            .AddMember(
+                new MethodDeclarationBuilder(
+                    WellKnownTypes.System.Collections.Generic.IReadOnlyList(
+                        WellKnownTypes.Imposter.Abstractions.IImposterInvocation
+                    ),
+                    "Snapshot"
+                )
+                    .AddModifier(Token(SyntaxKind.InternalKeyword))
+                    .AddParameter(
+                        ParameterSyntax(WellKnownTypes.Bool, orderBySequence)
+                            .WithDefault(EqualsValueClause(True))
+                    )
+                    .WithBody(
+                        Block(
+                            ReturnStatement(
+                                WellKnownTypes
+                                    .Imposter.Abstractions.InvocationSnapshots.Dot(
+                                        IdentifierName("Combine")
+                                    )
+                                    .Call([
+                                        Argument(
+                                            indexer.Core.HasGetter
+                                                ? IdentifierName(
+                                                        indexer.Builder.GetterImposterField.Name
+                                                    )
+                                                    .Dot(IdentifierName("Snapshot"))
+                                                    .Call(Argument(False))
+                                                : Null
+                                        ),
+                                        Argument(
+                                            indexer.Core.HasSetter
+                                                ? IdentifierName(
+                                                        indexer.Builder.SetterImposterField.Name
+                                                    )
+                                                    .Dot(IdentifierName("Snapshot"))
+                                                    .Call(Argument(False))
+                                                : Null
+                                        ),
+                                        Argument(IdentifierName(orderBySequence)),
+                                    ])
+                            )
+                        )
+                    )
+                    .Build()
+            )
             .AddMember(indexer.Core.HasGetter ? BuildCreateGetterMethod(indexer) : null)
             .AddMember(indexer.Core.HasSetter ? BuildCreateSetterMethod(indexer) : null)
             .AddMember(BuildInvocationBuilder(indexer))

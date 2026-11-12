@@ -31,7 +31,10 @@ internal static partial class SyntaxFactoryHelper
     // Preserves the parameter's ref kind when forwarding a variable. Explicit `in` keeps an `in` overload selected
     // over a by-value overload and avoids CS9192/CS9195 for `ref readonly` parameters.
     internal static ArgumentSyntax ForwardingArgument(string variableName, RefKind refKind) =>
-        Argument(null, Token(ForwardingKeyword(refKind)), IdentifierName(variableName));
+        ForwardingArgument(IdentifierName(variableName), refKind);
+
+    internal static ArgumentSyntax ForwardingArgument(ExpressionSyntax variable, RefKind refKind) =>
+        Argument(null, Token(ForwardingKeyword(refKind)), variable);
 
     private static SyntaxKind ForwardingKeyword(RefKind refKind) =>
         refKind switch

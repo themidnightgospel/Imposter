@@ -13,10 +13,10 @@ using global::Imposter.Tests.Features.MethodImpersonation;
 namespace Imposter.Tests.Features.MethodImpersonation
 {
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-	internal sealed class IClosedGenericSutImposter<TInput, TOutput> : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSut<TInput, TOutput>>, IClosedGenericSutImposter<TInput, TOutput>.IClosedGenericSutSetup
+	internal sealed class IClosedGenericSutImposter<TInput, TOutput> : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSut<TInput, TOutput>>, IClosedGenericSutImposter<TInput, TOutput>.IClosedGenericSutSetup
 	{
 		private readonly GenericMethodMethodImposter _genericMethodMethodImposter;
-		private readonly GenericMethodMethodInvocationHistoryCollection _genericMethodMethodInvocationHistoryCollection = new GenericMethodMethodInvocationHistoryCollection();
+		private readonly GenericMethodMethodInvocationHistoryCollection _genericMethodMethodInvocationHistoryCollection;
 		public IGenericMethodMethodImposterBuilder GenericMethod(global::Imposter.Abstractions.Arg<TInput> age)
 		{
 			return new GenericMethodMethodImposter.Builder(_genericMethodMethodImposter, _genericMethodMethodInvocationHistoryCollection, new GenericMethodArgumentsCriteria(age));
@@ -63,32 +63,74 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IGenericMethodMethodInvocationHistory
+		internal interface IGenericMethodMethodInvocationHistory
 		{
 			bool Matches(GenericMethodArgumentsCriteria criteria);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class GenericMethodMethodInvocationHistory : GenericMethodMethodInvocationHistoryCollection.Node, IGenericMethodMethodInvocationHistory
+		public sealed class GenericMethodInvocation : GenericMethodMethodInvocationHistoryCollection.Node, IGenericMethodMethodInvocationHistory
 		{
 			internal readonly TInput capturedage;
-			internal readonly TOutput? Result;
-			internal readonly global::System.Exception? Exception;
-			public GenericMethodMethodInvocationHistory(TInput capturedage, TOutput? Result, global::System.Exception? Exception)
+			internal readonly TOutput? _result;
+			internal readonly global::System.Exception? _exception;
+			private readonly long _sequence;
+			public TInput Age
 			{
-				this.capturedage = capturedage;
-				this.Result = Result;
-				this.Exception = Exception;
+				get
+				{
+					return capturedage;
+				}
 			}
 
-			public bool Matches(GenericMethodArgumentsCriteria criteria)
+			public TOutput? Result
+			{
+				get
+				{
+					return _result;
+				}
+			}
+
+			public override string Member
+			{
+				get
+				{
+					return "GenericMethod";
+				}
+			}
+
+			public override long Sequence
+			{
+				get
+				{
+					return _sequence;
+				}
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public GenericMethodInvocation(TInput capturedage, TOutput? result, global::System.Exception? exception, long sequence)
+			{
+				this.capturedage = capturedage;
+				this._result = result;
+				this._exception = exception;
+				this._sequence = sequence;
+			}
+
+			bool IGenericMethodMethodInvocationHistory.Matches(GenericMethodArgumentsCriteria criteria)
 			{
 				return criteria.MatchesCaptured(capturedage);
 			}
 
 			public override string ToString()
 			{
-				return "GenericMethod(" + global::System.String.Join(", ", new[] { "age: " + FormatValue(capturedage) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "GenericMethod(" + global::System.String.Join(", ", new[] { "age: " + FormatValue(capturedage) }) + ")" + " => " + FormatValue(_result) + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -98,12 +140,16 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class GenericMethodMethodInvocationHistoryCollection
+		public class GenericMethodMethodInvocationHistoryCollection
 		{
 			private GenericMethodMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IImposterInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+
 				internal GenericMethodMethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -136,6 +182,33 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, orderBySequence);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<GenericMethodInvocation> MatchingInvocations(GenericMethodArgumentsCriteria criteria)
+			{
+				var result = new global::System.Collections.Generic.List<GenericMethodInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((IGenericMethodMethodInvocationHistory)entry).Matches(criteria))
+						result.Add((GenericMethodInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
 			}
 
 			public override string ToString()
@@ -294,6 +367,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<GenericMethodInvocation> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -326,26 +400,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public TOutput Invoke(TInput age)
 			{
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
 				TInput capturedage = age;
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedage);
-				if (matchingInvocationImposterGroup == default)
-				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-					{
-						throw new global::Imposter.Abstractions.MissingImposterException("TOutput IClosedGenericSut<TInput, TOutput>.GenericMethod(TInput age)");
-					}
-
-					matchingInvocationImposterGroup = GenericMethodMethodInvocationImposterGroup.Default;
-				}
-
 				try
 				{
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedage);
+					if (matchingInvocationImposterGroup == default)
+					{
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("TOutput IClosedGenericSut<TInput, TOutput>.GenericMethod(TInput age)");
+						matchingInvocationImposterGroup = GenericMethodMethodInvocationImposterGroup.Default;
+					}
+
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "TOutput IClosedGenericSut<TInput, TOutput>.GenericMethod(TInput age)", age);
-					_genericMethodMethodInvocationHistoryCollection.Add(new GenericMethodMethodInvocationHistory(capturedage, result, default));
+					_genericMethodMethodInvocationHistoryCollection.Add(new GenericMethodInvocation(capturedage, result, default, invocationSequence));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_genericMethodMethodInvocationHistoryCollection.RecordFailure(new GenericMethodMethodInvocationHistory(capturedage, default !, ex)))
+				catch (global::System.Exception ex)
 				{
+					_genericMethodMethodInvocationHistoryCollection.RecordFailure(new GenericMethodInvocation(capturedage, default !, ex, invocationSequence));
 					throw;
 				}
 			}
@@ -436,6 +509,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				{
 					return _genericMethodMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
+
+				global::System.Collections.Generic.IReadOnlyList<GenericMethodInvocation> GenericMethodInvocationVerifier.Invocations
+				{
+					get
+					{
+						return _genericMethodMethodInvocationHistoryCollection.MatchingInvocations(_argumentsCriteria);
+					}
+				}
 			}
 		}
 
@@ -457,8 +538,16 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 		public IClosedGenericSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._genericMethodMethodInvocationHistoryCollection = new GenericMethodMethodInvocationHistoryCollection();
 			this._genericMethodMethodImposter = new GenericMethodMethodImposter(_genericMethodMethodInvocationHistoryCollection, invocationBehavior);
 			this._imposterInstance = new ImposterTargetInstance(this);
+		}
+
+		global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> global::Imposter.Abstractions.IImposter.Invocations()
+		{
+			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+			invocations.AddRange(_genericMethodMethodInvocationHistoryCollection.Snapshot(false));
+			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

@@ -90,11 +90,19 @@ internal readonly ref struct ImposterInstanceBuilder
             : null;
         var setterArguments = new List<ArgumentSyntax>
         {
-            Argument(property.Core.KeptValue(IdentifierName("value"))),
+            Argument(
+                property.Core.SetterRequiresDirectBaseAssignment && !property.Core.IsPassedThrough
+                    ? IdentifierName(property.Core.Locals["assignmentValue"])
+                    : property.Core.KeptValue(IdentifierName("value"))
+            ),
         };
         if (basePropertyAccess is not null && !property.Core.SetterRequiresDirectBaseAssignment)
         {
-            setterArguments.Add(Argument(BaseSetterLambda(basePropertyAccess)));
+            setterArguments.Add(
+                Argument(
+                    BaseSetterLambda(basePropertyAccess, property.Core.Locals["baseSetterValue"])
+                )
+            );
         }
 
         var setterCall = MemberBuilder(property.BuilderField.Name)
@@ -110,6 +118,75 @@ internal readonly ref struct ImposterInstanceBuilder
             )
             : Block(setterCall.ToStatementSyntax());
 
+        if (property.Core.SetterRequiresDirectBaseAssignment)
+        {
+            var setter = MemberBuilder(property.BuilderField.Name)
+                .Dot(IdentifierName(property.ImposterBuilder.SetterImposterField.Name));
+            var sequence = IdentifierName(property.Core.Locals["assignmentSequence"]);
+            var failure = IdentifierName(property.Core.Locals["assignmentFailure"]);
+            var caught = IdentifierName(property.Core.Locals["assignmentException"]);
+            var recordArguments = new List<ArgumentSyntax>();
+            if (!property.Core.IsPassedThrough)
+                recordArguments.Add(
+                    Argument(IdentifierName(property.Core.Locals["assignmentCapturedValue"]))
+                );
+            recordArguments.Add(Argument(sequence));
+            recordArguments.Add(Argument(failure));
+            var statements = new List<StatementSyntax>();
+            if (!property.Core.IsPassedThrough)
+            {
+                statements.Add(
+                    LocalVariableDeclarationSyntax(
+                        Var,
+                        property.Core.Locals["assignmentValue"],
+                        property.Core.KeptValue(IdentifierName("value"))
+                    )
+                );
+                statements.Add(
+                    LocalVariableDeclarationSyntax(
+                        Var,
+                        property.Core.Locals["assignmentCapturedValue"],
+                        setter
+                            .Dot(IdentifierName("CaptureInvocationValue"))
+                            .Call(Argument(IdentifierName(property.Core.Locals["assignmentValue"])))
+                    )
+                );
+            }
+            statements.AddRange([
+                LocalVariableDeclarationSyntax(
+                    Var,
+                    sequence.Identifier.Text,
+                    WellKnownTypes
+                        .Imposter.Abstractions.InvocationSequence.Dot(IdentifierName("Next"))
+                        .Call()
+                ),
+                LocalVariableDeclarationSyntax(
+                    WellKnownTypes.System.Exception.ToNullableType(),
+                    failure.Identifier.Text,
+                    Null
+                ),
+                TryStatement(
+                    setterBody,
+                    SingletonList(
+                        CatchClause(
+                            CatchDeclaration(WellKnownTypes.System.Exception, caught.Identifier),
+                            null,
+                            Block(failure.Assign(caught).ToStatementSyntax(), ThrowStatement())
+                        )
+                    ),
+                    FinallyClause(
+                        Block(
+                            setter
+                                .Dot(IdentifierName("RecordInvocation"))
+                                .Call(ArgumentListSyntax(recordArguments))
+                                .ToStatementSyntax()
+                        )
+                    )
+                ),
+            ]);
+            setterBody = Block(statements);
+        }
+
         return WithConstructorFallback(
             setterBody,
             ConstructorDispatchBuilder.SetterFallback(
@@ -119,21 +196,18 @@ internal readonly ref struct ImposterInstanceBuilder
     }
 
     private static ParenthesizedLambdaExpressionSyntax BaseSetterLambda(
-        ExpressionSyntax basePropertyAccess
+        ExpressionSyntax basePropertyAccess,
+        string valueParameterName
     )
     {
-        const string BaseSetterValueParameterName = "baseSetterValue";
-
         return ParenthesizedLambdaExpression()
             .WithParameterList(
-                ParameterList(
-                    SingletonSeparatedList(Parameter(Identifier(BaseSetterValueParameterName)))
-                )
+                ParameterList(SingletonSeparatedList(Parameter(Identifier(valueParameterName))))
             )
             .WithBlock(
                 Block(
                     basePropertyAccess
-                        .Assign(IdentifierName(BaseSetterValueParameterName))
+                        .Assign(IdentifierName(valueParameterName))
                         .ToStatementSyntax()
                 )
             );
@@ -154,7 +228,8 @@ internal readonly ref struct ImposterInstanceBuilder
         }
 
         var parameters = indexer.Core.Parameters.Select(parameter =>
-            ParameterSyntaxIncludingNullable(parameter.Model)
+            // Indexer defaults have no effect (CS1066); keys are always supplied explicitly.
+            ParameterSyntaxIncludingNullable(parameter.Model).WithDefault(null)
         );
         _imposterInstanceBuilder.AddMember(
             IndexerDeclaration(indexer.Core.NullableAwareTypeSyntax)
@@ -604,6 +679,14 @@ internal readonly ref struct ImposterInstanceBuilder
                     ? ReturnStatement(invokeMethodInvocationExpression)
                     : invokeMethodInvocationExpression.ToStatementSyntax()
             );
+            if (imposterMethod.Model.IsGenericMethod)
+                body = GenericMethodHistoryBuilder.Build(
+                    imposterMethod,
+                    IdentifierName(imposterFieldName)
+                        .Dot(IdentifierName(imposterMethod.ImposterField.Name)),
+                    invokeArguments,
+                    imposterFieldName
+                );
             if (isClass)
             {
                 body = ConstructorDispatchBuilder.WithFallback(

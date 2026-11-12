@@ -84,7 +84,7 @@ internal readonly struct PropertyGetterImposterBuilderInterfaceMetadata
             CallbackInterfaceTypeSyntax,
             WellKnownTypes.System.Action
         );
-        CalledMethod = new CalledMethodMetadata();
+        CalledMethod = new CalledMethodMetadata(property.CreateNameSet());
         ThenMethod = new ThenMethodMetadata(
             FluentInterfaceTypeSyntax,
             ContinuationInterfaceTypeSyntax

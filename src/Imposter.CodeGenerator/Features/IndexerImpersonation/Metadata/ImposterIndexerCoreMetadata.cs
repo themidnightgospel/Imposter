@@ -11,6 +11,8 @@ internal readonly ref struct ImposterIndexerCoreMetadata
 {
     internal const string BaseImplementationParameterName = "baseImplementation";
 
+    private readonly string[] _scopeNames;
+
     internal readonly string UniqueName;
 
     internal readonly bool HasGetter;
@@ -83,6 +85,7 @@ internal readonly ref struct ImposterIndexerCoreMetadata
 
     internal ImposterIndexerCoreMetadata(PropertyModel indexer, string uniqueName)
     {
+        _scopeNames = ScopeNames.In(indexer.ContainingType).ToArray();
         UniqueName = uniqueName;
         HasGetter = indexer.Getter is not null;
         HasSetter = indexer.Setter is not null;
@@ -124,7 +127,11 @@ internal readonly ref struct ImposterIndexerCoreMetadata
         BaseSetterType = HasGeneratedValueDelegates
             ? Delegates.BaseSetterDelegateType
             : WellKnownTypes.System.Action;
-        ParameterSyntaxes = Parameters.Select(parameter => parameter.ParameterSyntax).ToArray();
+        // Internal accessor helpers append required value/base parameters. Optional defaults belong
+        // to the target indexer declaration, and must not precede those helper-only parameters.
+        ParameterSyntaxes = Parameters
+            .Select(parameter => parameter.ParameterSyntax.WithDefault(null))
+            .ToArray();
         ParameterArguments = Parameters
             .Select(parameter => parameter.ForwardingArgument(parameter.Name))
             .ToArray();
@@ -139,7 +146,7 @@ internal readonly ref struct ImposterIndexerCoreMetadata
         SyntaxFactoryHelper.KeptValue(value, _valueSpan, _valueType);
 
     internal NameSet CreateParameterNameSet() =>
-        new(Parameters.Select(parameter => parameter.Name));
+        new(Parameters.Select(parameter => parameter.Name).Concat(_scopeNames));
 
     // An accessor's optional base implementation, which the imposter calls when it's set up to use it.
     internal ParameterMetadata GetterBaseImplementationParameter(string name) =>

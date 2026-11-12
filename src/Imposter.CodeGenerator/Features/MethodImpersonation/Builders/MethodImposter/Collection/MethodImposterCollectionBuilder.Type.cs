@@ -1,4 +1,5 @@
-﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+﻿using System.Linq;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -26,6 +27,19 @@ internal static partial class MethodImposterCollectionBuilder
                 )
             )
             .AddMember(BuildImpostersField(method))
+            .AddMember(
+                method.Parameters.InputParameterMetadata.Any(parameter => parameter.IsSpan)
+                    ? SyntaxFactoryHelper.SingleVariableField(
+                        WellKnownTypes.Bool,
+                        MethodImposterCollectionMetadata.CanReuseCapturedSpansFieldName,
+                        TokenList(
+                            Token(SyntaxKind.InternalKeyword),
+                            Token(SyntaxKind.VolatileKeyword)
+                        ),
+                        LiteralExpression(SyntaxKind.TrueLiteralExpression)
+                    )
+                    : null
+            )
             .AddMember(BuildAddNewMethod(method))
             .AddMember(BuildGetImposterWithMatchingInvocationImposterGroup(method))
             .Build();

@@ -12,7 +12,7 @@ internal static class InvocationHistoryInterfaceBuilder
 {
     internal static MemberDeclarationSyntax Build(in ImposterTargetMethodMetadata method) =>
         new InterfaceDeclarationBuilder(method.InvocationHistory.Interface.Name)
-            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddMember(BuildMatchesMethod(method))
             .Build();
 

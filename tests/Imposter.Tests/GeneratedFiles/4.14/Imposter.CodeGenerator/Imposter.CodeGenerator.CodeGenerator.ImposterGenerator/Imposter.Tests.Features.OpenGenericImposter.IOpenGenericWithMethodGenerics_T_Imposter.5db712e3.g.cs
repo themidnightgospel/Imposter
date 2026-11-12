@@ -13,14 +13,14 @@ using global::Imposter.Tests.Features.OpenGenericImposter;
 namespace Imposter.Tests.Features.OpenGenericImposter
 {
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-	public sealed class IOpenGenericWithMethodGenericsImposter<T> : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.OpenGenericImposter.IOpenGenericWithMethodGenerics<T>>, IOpenGenericWithMethodGenericsImposter<T>.IOpenGenericWithMethodGenericsSetup
+	public sealed class IOpenGenericWithMethodGenericsImposter<T> : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.OpenGenericImposter.IOpenGenericWithMethodGenerics<T>>, IOpenGenericWithMethodGenericsImposter<T>.IOpenGenericWithMethodGenericsSetup
 	{
 		private readonly DoSomethingMethodImposterCollection _doSomethingMethodImposterCollection;
 		private readonly TransformMethodImposterCollection _transformMethodImposterCollection;
 		private readonly MapMethodImposterCollection _mapMethodImposterCollection;
-		private readonly DoSomethingMethodInvocationHistoryCollection _doSomethingMethodInvocationHistoryCollection = new DoSomethingMethodInvocationHistoryCollection();
-		private readonly TransformMethodInvocationHistoryCollection _transformMethodInvocationHistoryCollection = new TransformMethodInvocationHistoryCollection();
-		private readonly MapMethodInvocationHistoryCollection _mapMethodInvocationHistoryCollection = new MapMethodInvocationHistoryCollection();
+		private readonly DoSomethingMethodInvocationHistoryCollection _doSomethingMethodInvocationHistoryCollection;
+		private readonly TransformMethodInvocationHistoryCollection _transformMethodInvocationHistoryCollection;
+		private readonly MapMethodInvocationHistoryCollection _mapMethodInvocationHistoryCollection;
 		public IDoSomethingMethodImposterBuilder<TArg> DoSomething<TArg>(global::Imposter.Abstractions.Arg<TArg> arg)
 		{
 			return new DoSomethingMethodImposter<TArg>.Builder(_doSomethingMethodImposterCollection, _doSomethingMethodInvocationHistoryCollection, new DoSomethingArgumentsCriteria<TArg>(arg));
@@ -89,30 +89,64 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IDoSomethingMethodInvocationHistory
+		internal interface IDoSomethingMethodInvocationHistory
 		{
 			bool Matches<TArgTarget>(DoSomethingArgumentsCriteria<TArgTarget> criteria);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class DoSomethingMethodInvocationHistory<TArg> : DoSomethingMethodInvocationHistoryCollection.Node, IDoSomethingMethodInvocationHistory
+		public sealed class DoSomethingInvocation<TArg> : DoSomethingMethodInvocationHistoryCollection.Node, IDoSomethingMethodInvocationHistory
 		{
 			internal readonly TArg capturedarg;
-			internal readonly global::System.Exception? Exception;
-			public DoSomethingMethodInvocationHistory(TArg capturedarg, global::System.Exception? Exception)
+			internal readonly global::System.Exception? _exception;
+			private readonly long _sequence;
+			public TArg Arg
 			{
-				this.capturedarg = capturedarg;
-				this.Exception = Exception;
+				get
+				{
+					return capturedarg;
+				}
 			}
 
-			public bool Matches<TArgTarget>(DoSomethingArgumentsCriteria<TArgTarget> criteria)
+			public override string Member
+			{
+				get
+				{
+					return "DoSomething";
+				}
+			}
+
+			public override long Sequence
+			{
+				get
+				{
+					return _sequence;
+				}
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public DoSomethingInvocation(TArg capturedarg, global::System.Exception? exception, long sequence)
+			{
+				this.capturedarg = capturedarg;
+				this._exception = exception;
+				this._sequence = sequence;
+			}
+
+			bool IDoSomethingMethodInvocationHistory.Matches<TArgTarget>(DoSomethingArgumentsCriteria<TArgTarget> criteria)
 			{
 				return (typeof(TArgTarget) == typeof(TArg)) && ((DoSomethingArgumentsCriteria<TArg>)(object)criteria).MatchesCaptured(capturedarg);
 			}
 
 			public override string ToString()
 			{
-				return "DoSomething(" + global::System.String.Join(", ", new[] { "arg: " + FormatValue(capturedarg) }) + ")" + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "DoSomething(" + global::System.String.Join(", ", new[] { "arg: " + FormatValue(capturedarg) }) + ")" + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -122,12 +156,16 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class DoSomethingMethodInvocationHistoryCollection
+		public class DoSomethingMethodInvocationHistoryCollection
 		{
 			private DoSomethingMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IImposterInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+
 				internal DoSomethingMethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -160,6 +198,33 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				}
 
 				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, orderBySequence);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<DoSomethingInvocation<TArg>> MatchingInvocations<TArg>(DoSomethingArgumentsCriteria<TArg> criteria)
+			{
+				var result = new global::System.Collections.Generic.List<DoSomethingInvocation<TArg>>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((IDoSomethingMethodInvocationHistory)entry).Matches<TArg>(criteria))
+						result.Add((DoSomethingInvocation<TArg>)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
 			}
 
 			public override string ToString()
@@ -353,6 +418,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<DoSomethingInvocation<TArg>> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -428,25 +494,16 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			public void Invoke(TArg arg)
 			{
 				TArg capturedarg = arg;
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedarg);
-				if (matchingInvocationImposterGroup == default)
 				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedarg);
+					if (matchingInvocationImposterGroup == default)
 					{
-						throw new global::Imposter.Abstractions.MissingImposterException("void IOpenGenericWithMethodGenerics<T>.DoSomething<TArg>(TArg arg)");
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("void IOpenGenericWithMethodGenerics<T>.DoSomething<TArg>(TArg arg)");
+						matchingInvocationImposterGroup = DoSomethingMethodInvocationImposterGroup<TArg>.Default;
 					}
 
-					matchingInvocationImposterGroup = DoSomethingMethodInvocationImposterGroup<TArg>.Default;
-				}
-
-				try
-				{
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void IOpenGenericWithMethodGenerics<T>.DoSomething<TArg>(TArg arg)", arg);
-					_doSomethingMethodInvocationHistoryCollection.Add(new DoSomethingMethodInvocationHistory<TArg>(capturedarg, default));
-				}
-				catch (global::System.Exception ex) when (_doSomethingMethodInvocationHistoryCollection.RecordFailure(new DoSomethingMethodInvocationHistory<TArg>(capturedarg, ex)))
-				{
-					throw;
 				}
 			}
 
@@ -523,6 +580,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				{
 					return _doSomethingMethodInvocationHistoryCollection.Count<TArg>(_argumentsCriteria);
 				}
+
+				global::System.Collections.Generic.IReadOnlyList<DoSomethingInvocation<TArg>> DoSomethingInvocationVerifier<TArg>.Invocations
+				{
+					get
+					{
+						return _doSomethingMethodInvocationHistoryCollection.MatchingInvocations<TArg>(_argumentsCriteria);
+					}
+				}
 			}
 		}
 
@@ -573,32 +638,74 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IMapMethodInvocationHistory
+		internal interface IMapMethodInvocationHistory
 		{
 			bool Matches<TSourceTarget, TResultTarget>(MapArgumentsCriteria<TSourceTarget, TResultTarget> criteria);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class MapMethodInvocationHistory<TSource, TResult> : MapMethodInvocationHistoryCollection.Node, IMapMethodInvocationHistory
+		public sealed class MapInvocation<TSource, TResult> : MapMethodInvocationHistoryCollection.Node, IMapMethodInvocationHistory
 		{
 			internal readonly TSource capturedsource;
-			internal readonly TResult? Result;
-			internal readonly global::System.Exception? Exception;
-			public MapMethodInvocationHistory(TSource capturedsource, TResult? Result, global::System.Exception? Exception)
+			internal readonly TResult? _result;
+			internal readonly global::System.Exception? _exception;
+			private readonly long _sequence;
+			public TSource Source
 			{
-				this.capturedsource = capturedsource;
-				this.Result = Result;
-				this.Exception = Exception;
+				get
+				{
+					return capturedsource;
+				}
 			}
 
-			public bool Matches<TSourceTarget, TResultTarget>(MapArgumentsCriteria<TSourceTarget, TResultTarget> criteria)
+			public TResult? Result
+			{
+				get
+				{
+					return _result;
+				}
+			}
+
+			public override string Member
+			{
+				get
+				{
+					return "Map";
+				}
+			}
+
+			public override long Sequence
+			{
+				get
+				{
+					return _sequence;
+				}
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public MapInvocation(TSource capturedsource, TResult? result, global::System.Exception? exception, long sequence)
+			{
+				this.capturedsource = capturedsource;
+				this._result = result;
+				this._exception = exception;
+				this._sequence = sequence;
+			}
+
+			bool IMapMethodInvocationHistory.Matches<TSourceTarget, TResultTarget>(MapArgumentsCriteria<TSourceTarget, TResultTarget> criteria)
 			{
 				return ((typeof(TSourceTarget) == typeof(TSource)) && (typeof(TResultTarget) == typeof(TResult))) && ((MapArgumentsCriteria<TSource, TResult>)(object)criteria).MatchesCaptured(capturedsource);
 			}
 
 			public override string ToString()
 			{
-				return "Map(" + global::System.String.Join(", ", new[] { "source: " + FormatValue(capturedsource) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Map(" + global::System.String.Join(", ", new[] { "source: " + FormatValue(capturedsource) }) + ")" + " => " + FormatValue(_result) + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -608,12 +715,16 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class MapMethodInvocationHistoryCollection
+		public class MapMethodInvocationHistoryCollection
 		{
 			private MapMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IImposterInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+
 				internal MapMethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -646,6 +757,33 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				}
 
 				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, orderBySequence);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<MapInvocation<TSource, TResult>> MatchingInvocations<TSource, TResult>(MapArgumentsCriteria<TSource, TResult> criteria)
+			{
+				var result = new global::System.Collections.Generic.List<MapInvocation<TSource, TResult>>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((IMapMethodInvocationHistory)entry).Matches<TSource, TResult>(criteria))
+						result.Add((MapInvocation<TSource, TResult>)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
 			}
 
 			public override string ToString()
@@ -851,6 +989,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<MapInvocation<TSource, TResult>> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -927,26 +1066,17 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			public TResult Invoke(TSource source)
 			{
 				TSource capturedsource = source;
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedsource);
-				if (matchingInvocationImposterGroup == default)
 				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedsource);
+					if (matchingInvocationImposterGroup == default)
 					{
-						throw new global::Imposter.Abstractions.MissingImposterException("TResult IOpenGenericWithMethodGenerics<T>.Map<TSource, TResult>(TSource source)");
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("TResult IOpenGenericWithMethodGenerics<T>.Map<TSource, TResult>(TSource source)");
+						matchingInvocationImposterGroup = MapMethodInvocationImposterGroup<TSource, TResult>.Default;
 					}
 
-					matchingInvocationImposterGroup = MapMethodInvocationImposterGroup<TSource, TResult>.Default;
-				}
-
-				try
-				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "TResult IOpenGenericWithMethodGenerics<T>.Map<TSource, TResult>(TSource source)", source);
-					_mapMethodInvocationHistoryCollection.Add(new MapMethodInvocationHistory<TSource, TResult>(capturedsource, result, default));
 					return result;
-				}
-				catch (global::System.Exception ex) when (_mapMethodInvocationHistoryCollection.RecordFailure(new MapMethodInvocationHistory<TSource, TResult>(capturedsource, default !, ex)))
-				{
-					throw;
 				}
 			}
 
@@ -1037,6 +1167,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				{
 					return _mapMethodInvocationHistoryCollection.Count<TSource, TResult>(_argumentsCriteria);
 				}
+
+				global::System.Collections.Generic.IReadOnlyList<MapInvocation<TSource, TResult>> MapInvocationVerifier<TSource, TResult>.Invocations
+				{
+					get
+					{
+						return _mapMethodInvocationHistoryCollection.MatchingInvocations<TSource, TResult>(_argumentsCriteria);
+					}
+				}
 			}
 		}
 
@@ -1087,32 +1225,74 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface ITransformMethodInvocationHistory
+		internal interface ITransformMethodInvocationHistory
 		{
 			bool Matches<TArgTarget>(TransformArgumentsCriteria<TArgTarget> criteria);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class TransformMethodInvocationHistory<TArg> : TransformMethodInvocationHistoryCollection.Node, ITransformMethodInvocationHistory
+		public sealed class TransformInvocation<TArg> : TransformMethodInvocationHistoryCollection.Node, ITransformMethodInvocationHistory
 		{
 			internal readonly T capturedinput;
-			internal readonly TArg? Result;
-			internal readonly global::System.Exception? Exception;
-			public TransformMethodInvocationHistory(T capturedinput, TArg? Result, global::System.Exception? Exception)
+			internal readonly TArg? _result;
+			internal readonly global::System.Exception? _exception;
+			private readonly long _sequence;
+			public T Input
 			{
-				this.capturedinput = capturedinput;
-				this.Result = Result;
-				this.Exception = Exception;
+				get
+				{
+					return capturedinput;
+				}
 			}
 
-			public bool Matches<TArgTarget>(TransformArgumentsCriteria<TArgTarget> criteria)
+			public TArg? Result
+			{
+				get
+				{
+					return _result;
+				}
+			}
+
+			public override string Member
+			{
+				get
+				{
+					return "Transform";
+				}
+			}
+
+			public override long Sequence
+			{
+				get
+				{
+					return _sequence;
+				}
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public TransformInvocation(T capturedinput, TArg? result, global::System.Exception? exception, long sequence)
+			{
+				this.capturedinput = capturedinput;
+				this._result = result;
+				this._exception = exception;
+				this._sequence = sequence;
+			}
+
+			bool ITransformMethodInvocationHistory.Matches<TArgTarget>(TransformArgumentsCriteria<TArgTarget> criteria)
 			{
 				return (typeof(TArgTarget) == typeof(TArg)) && ((TransformArgumentsCriteria<TArg>)(object)criteria).MatchesCaptured(capturedinput);
 			}
 
 			public override string ToString()
 			{
-				return "Transform(" + global::System.String.Join(", ", new[] { "input: " + FormatValue(capturedinput) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Transform(" + global::System.String.Join(", ", new[] { "input: " + FormatValue(capturedinput) }) + ")" + " => " + FormatValue(_result) + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -1122,12 +1302,16 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class TransformMethodInvocationHistoryCollection
+		public class TransformMethodInvocationHistoryCollection
 		{
 			private TransformMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IImposterInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+
 				internal TransformMethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -1160,6 +1344,33 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				}
 
 				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, orderBySequence);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<TransformInvocation<TArg>> MatchingInvocations<TArg>(TransformArgumentsCriteria<TArg> criteria)
+			{
+				var result = new global::System.Collections.Generic.List<TransformInvocation<TArg>>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((ITransformMethodInvocationHistory)entry).Matches<TArg>(criteria))
+						result.Add((TransformInvocation<TArg>)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
 			}
 
 			public override string ToString()
@@ -1365,6 +1576,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<TransformInvocation<TArg>> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1441,26 +1653,17 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			public TArg Invoke(T input)
 			{
 				T capturedinput = input;
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedinput);
-				if (matchingInvocationImposterGroup == default)
 				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedinput);
+					if (matchingInvocationImposterGroup == default)
 					{
-						throw new global::Imposter.Abstractions.MissingImposterException("TArg IOpenGenericWithMethodGenerics<T>.Transform<TArg>(T input)");
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("TArg IOpenGenericWithMethodGenerics<T>.Transform<TArg>(T input)");
+						matchingInvocationImposterGroup = TransformMethodInvocationImposterGroup<TArg>.Default;
 					}
 
-					matchingInvocationImposterGroup = TransformMethodInvocationImposterGroup<TArg>.Default;
-				}
-
-				try
-				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "TArg IOpenGenericWithMethodGenerics<T>.Transform<TArg>(T input)", input);
-					_transformMethodInvocationHistoryCollection.Add(new TransformMethodInvocationHistory<TArg>(capturedinput, result, default));
 					return result;
-				}
-				catch (global::System.Exception ex) when (_transformMethodInvocationHistoryCollection.RecordFailure(new TransformMethodInvocationHistory<TArg>(capturedinput, default !, ex)))
-				{
-					throw;
 				}
 			}
 
@@ -1551,6 +1754,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				{
 					return _transformMethodInvocationHistoryCollection.Count<TArg>(_argumentsCriteria);
 				}
+
+				global::System.Collections.Generic.IReadOnlyList<TransformInvocation<TArg>> TransformInvocationVerifier<TArg>.Invocations
+				{
+					get
+					{
+						return _transformMethodInvocationHistoryCollection.MatchingInvocations<TArg>(_argumentsCriteria);
+					}
+				}
 			}
 		}
 
@@ -1584,10 +1795,22 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 		public IOpenGenericWithMethodGenericsImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._doSomethingMethodInvocationHistoryCollection = new DoSomethingMethodInvocationHistoryCollection();
+			this._transformMethodInvocationHistoryCollection = new TransformMethodInvocationHistoryCollection();
+			this._mapMethodInvocationHistoryCollection = new MapMethodInvocationHistoryCollection();
 			this._doSomethingMethodImposterCollection = new DoSomethingMethodImposterCollection(_doSomethingMethodInvocationHistoryCollection, invocationBehavior);
 			this._transformMethodImposterCollection = new TransformMethodImposterCollection(_transformMethodInvocationHistoryCollection, invocationBehavior);
 			this._mapMethodImposterCollection = new MapMethodImposterCollection(_mapMethodInvocationHistoryCollection, invocationBehavior);
 			this._imposterInstance = new ImposterTargetInstance(this);
+		}
+
+		global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> global::Imposter.Abstractions.IImposter.Invocations()
+		{
+			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+			invocations.AddRange(_doSomethingMethodInvocationHistoryCollection.Snapshot(false));
+			invocations.AddRange(_transformMethodInvocationHistoryCollection.Snapshot(false));
+			invocations.AddRange(_mapMethodInvocationHistoryCollection.Snapshot(false));
+			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1601,17 +1824,68 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public void DoSomething<TArg>(TArg arg)
 			{
-				_imposter._doSomethingMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<TArg>(arg).Invoke(arg);
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
+				global::System.Exception? invocationException = null;
+				TArg capturedarg = arg;
+				try
+				{
+					_imposter._doSomethingMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<TArg>(arg).Invoke(arg);
+				}
+				catch (global::System.Exception caughtInvocationException)
+				{
+					invocationException = caughtInvocationException;
+					throw;
+				}
+				finally
+				{
+					_imposter._doSomethingMethodInvocationHistoryCollection.Add(new DoSomethingInvocation<TArg>(capturedarg, invocationException, invocationSequence));
+				}
 			}
 
 			public TArg Transform<TArg>(T input)
 			{
-				return _imposter._transformMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<TArg>(input).Invoke(input);
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
+				global::System.Exception? invocationException = null;
+				T capturedinput = input;
+				TArg? invocationResult = default !;
+				try
+				{
+					var returnedValue = _imposter._transformMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<TArg>(input).Invoke(input);
+					invocationResult = returnedValue;
+					return returnedValue;
+				}
+				catch (global::System.Exception caughtInvocationException)
+				{
+					invocationException = caughtInvocationException;
+					throw;
+				}
+				finally
+				{
+					_imposter._transformMethodInvocationHistoryCollection.Add(new TransformInvocation<TArg>(capturedinput, invocationResult, invocationException, invocationSequence));
+				}
 			}
 
 			public TResult Map<TSource, TResult>(TSource source)
 			{
-				return _imposter._mapMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<TSource, TResult>(source).Invoke(source);
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
+				global::System.Exception? invocationException = null;
+				TSource capturedsource = source;
+				TResult? invocationResult = default !;
+				try
+				{
+					var returnedValue = _imposter._mapMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<TSource, TResult>(source).Invoke(source);
+					invocationResult = returnedValue;
+					return returnedValue;
+				}
+				catch (global::System.Exception caughtInvocationException)
+				{
+					invocationException = caughtInvocationException;
+					throw;
+				}
+				finally
+				{
+					_imposter._mapMethodInvocationHistoryCollection.Add(new MapInvocation<TSource, TResult>(capturedsource, invocationResult, invocationException, invocationSequence));
+				}
 			}
 		}
 	}

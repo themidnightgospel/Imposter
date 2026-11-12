@@ -58,7 +58,7 @@ internal readonly struct IndexerSetterImposterBuilderInterfaceMetadata
             CallbackInterfaceTypeSyntax,
             delegatesMetadata.SetterCallbackDelegateType
         );
-        CalledMethod = new CalledMethodMetadata();
+        CalledMethod = new CalledMethodMetadata(core.CreateParameterNameSet());
         ThenMethod = new ThenMethodMetadata(
             FluentInterfaceTypeSyntax,
             ContinuationInterfaceTypeSyntax

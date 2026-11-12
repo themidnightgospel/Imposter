@@ -10,6 +10,8 @@ internal readonly struct PropertySetterImposterMetadata
     internal readonly string Name;
 
     internal readonly NameSyntax TypeSyntax;
+    internal readonly string InvocationTypeName;
+    internal readonly NameSyntax InvocationTypeSyntax;
 
     internal readonly FieldMetadata CallbacksField;
 
@@ -43,6 +45,8 @@ internal readonly struct PropertySetterImposterMetadata
     {
         Name = "SetterImposter";
         TypeSyntax = SyntaxFactory.IdentifierName(Name);
+        InvocationTypeName = property.UniqueName + "SetterInvocation";
+        InvocationTypeSyntax = SyntaxFactory.IdentifierName(InvocationTypeName);
         CallbackTupleType = property.AsArgType is { } argType
             ? WellKnownTypes.System.Tuple(argType, property.SetterCallbackType)
             : null;

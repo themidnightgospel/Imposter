@@ -89,16 +89,10 @@ internal static partial class SyntaxFactoryHelper
 
     private static IEnumerable<TypeParameterConstraintClauseSyntax> EnumerateTypeParameterConstraintClauses(
         IEnumerable<TypeParameterModel> typeParameters
-    )
-    {
-        foreach (var constraintClause in typeParameters.Select(TryBuildConstraintClause))
-        {
-            if (constraintClause is not null)
-            {
-                yield return constraintClause;
-            }
-        }
-    }
+    ) =>
+        typeParameters
+            .Select(TryBuildConstraintClause)
+            .OfType<TypeParameterConstraintClauseSyntax>();
 
     private static TypeParameterConstraintClauseSyntax? TryBuildConstraintClause(
         TypeParameterModel typeParameter

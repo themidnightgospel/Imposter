@@ -196,6 +196,10 @@ namespace Imposter.Tests.Features.CallAllocations
             }
             value.ShouldBe(99);
             observed.ShouldBe(new[] { 7 });
+            if (readOnly)
+                sut.GenericIn<int>(7).Called(Count.Once());
+            else
+                sut.Generic<int>(7).Called(Count.Once());
         }
 
         [Fact]
@@ -218,6 +222,60 @@ namespace Imposter.Tests.Features.CallAllocations
             values.ShouldBe(new[] { 1, 2 });
             sut.Match<string>("value", ReadOnlySpanArg<int>.Is(1, 2)).Called(Count.Once());
             sut.Match<object>(Arg<object>.Any(), ReadOnlySpanArg<int>.Any()).Called(Count.Never());
+        }
+
+        [Fact]
+        public void GivenSpanPredicateRetainsItsArray_WhenMatchedTwice_ShouldKeepIndependentEvaluationArrays()
+        {
+            var sut = new IHistoryCaptureSutImposter();
+            var snapshots = new List<int[]>();
+            sut.Match<string>(
+                    "value",
+                    ReadOnlySpanArg<int>.Is(elements =>
+                    {
+                        snapshots.Add(elements);
+                        if (snapshots.Count == 1)
+                            elements[0] = 99;
+                        else
+                        {
+                            snapshots[0][1] = 100;
+                            elements.ShouldBe(new[] { 1, 2 });
+                        }
+                        return true;
+                    })
+                )
+                .Returns(true);
+            sut.Instance().Match<string>("value", new[] { 1, 2 }).ShouldBeTrue();
+            snapshots.Count.ShouldBe(2);
+            snapshots[1].ShouldNotBeSameAs(snapshots[0]);
+            sut.Match<string>("value", ReadOnlySpanArg<int>.Is(1, 2))
+                .Invocations[0]
+                .Values.ToArray()
+                .ShouldBe(new[] { 1, 2 });
+        }
+
+        [Fact]
+        public void GivenSafeSpanMatcherAndMutatingOtherPredicate_WhenMatchedAgain_ShouldRefreshTheLookupCopy()
+        {
+            var sut = new IHistoryCaptureSutImposter();
+            var values = new[] { 1, 2 };
+            var evaluations = 0;
+            sut.Match<string>(
+                    Arg<string>.Is(_ =>
+                    {
+                        if (++evaluations == 1)
+                            values[0] = 9;
+                        return true;
+                    }),
+                    ReadOnlySpanArg<int>.Is(1, 2)
+                )
+                .Returns(true);
+            sut.Instance().Match<string>("value", values).ShouldBeFalse();
+            evaluations.ShouldBe(2);
+            sut.Match<string>("value", ReadOnlySpanArg<int>.Is(1, 2))
+                .Invocations[0]
+                .Values.ToArray()
+                .ShouldBe(new[] { 1, 2 });
         }
 
         [Fact]

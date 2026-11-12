@@ -23,20 +23,95 @@ internal static partial class InvocationHistoryBuilder
             method.GenericTypeParameterListSyntax
         )
             .AddConstraintClauses(method.GenericTypeConstraintClauses)
-            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddModifier(Token(SyntaxKind.SealedKeyword))
             .AddBaseType(SimpleBaseType(method.InvocationHistory.Collection.NodeSyntax))
             .AddBaseType(SimpleBaseType(method.InvocationHistory.Interface.Syntax))
-            .AddMembers(fields)
-            .AddMember(
-                SyntaxFactoryHelper.BuildConstructorAndInitializeMembers(
-                    method.InvocationHistory.Name,
-                    fields
-                )
-            )
+            .AddMembers(BuildStoredFields(method, fields))
+            .AddMembers(BuildPublicProperties(method))
+            .AddMember(BuildHistoryConstructor(method, fields))
             .AddMember(BuildMatchesMethod(method))
             .AddMember(BuildToStringMethod(method))
             .AddMember(FormatValueMethodBuilder.Build())
             .Build();
+    }
+
+    private static MemberDeclarationSyntax[] BuildPublicProperties(
+        in ImposterTargetMethodMetadata method
+    )
+    {
+        var properties = new System.Collections.Generic.List<MemberDeclarationSyntax>();
+        foreach (var parameter in method.Parameters.MatchedParameterMetadata)
+        {
+            TypeSyntax type = parameter.NullableAwareKeptTypeSyntax;
+            if (parameter.Model.Span is { } span)
+                type = WellKnownTypes.System.ReadOnlyMemory(
+                    SyntaxFactoryHelper.TypeSyntaxIncludingNullable(span.ElementType)
+                );
+            properties.Add(
+                PublicProperty(
+                    type,
+                    method.InvocationHistory.ArgumentProperties[parameter.Name],
+                    IdentifierName(method.InvocationHistory.ArgumentFields[parameter.Name])
+                )
+            );
+        }
+        if (method.KeepsResult)
+        {
+            TypeSyntax resultType = method.ReturnType.KeptTypeSyntax;
+            ExpressionSyntax result = IdentifierName(InvocationHistoryTypeMetadata.ResultFieldName);
+            if (method.ReturnType.IsAwaitable)
+            {
+                resultType =
+                    resultType is NullableTypeSyntax ? resultType : NullableType(resultType);
+                if (method.ReturnType.IsValueTask)
+                    result = ConditionalExpression(
+                        IdentifierName(InvocationHistoryTypeMetadata.ExceptionFieldName).IsNull(),
+                        CastExpression(resultType, result),
+                        SyntaxFactoryHelper.Null
+                    );
+            }
+            if (method.Model.ReturnType.Span is { } span)
+                resultType = WellKnownTypes.System.ReadOnlyMemory(
+                    SyntaxFactoryHelper.TypeSyntaxIncludingNullable(span.ElementType)
+                );
+            properties.Add(PublicProperty(resultType, "Result", result));
+        }
+        properties.Add(
+            PublicProperty(WellKnownTypes.String, "Member", method.Model.Name.StringLiteral(), true)
+        );
+        properties.Add(
+            PublicProperty(
+                WellKnownTypes.Long,
+                "Sequence",
+                IdentifierName(InvocationHistoryTypeMetadata.SequenceFieldName),
+                true
+            )
+        );
+        properties.Add(
+            PublicProperty(
+                WellKnownTypes.System.Exception.ToNullableType(),
+                "Exception",
+                IdentifierName(InvocationHistoryTypeMetadata.ExceptionFieldName),
+                true
+            )
+        );
+        return properties.ToArray();
+    }
+
+    private static PropertyDeclarationSyntax PublicProperty(
+        TypeSyntax type,
+        string name,
+        ExpressionSyntax value,
+        bool isOverride = false
+    )
+    {
+        var builder = new PropertyDeclarationBuilder(type, name).AddModifier(
+            Token(SyntaxKind.PublicKeyword)
+        );
+        if (isOverride)
+            builder.AddModifier(Token(SyntaxKind.OverrideKeyword));
+        return builder.WithGetterBody(Block(ReturnStatement(value))).Build();
     }
 
     private static MethodDeclarationSyntax BuildToStringMethod(

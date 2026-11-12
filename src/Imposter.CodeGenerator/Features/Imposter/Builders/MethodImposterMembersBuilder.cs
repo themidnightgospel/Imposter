@@ -22,10 +22,10 @@ internal static class MethodImposterMembersBuilder
         in ImposterGenerationContext imposterGenerationContext
     ) =>
         imposterGenerationContext.Imposter.Methods.Select(method =>
-            SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(
+            SyntaxFactoryHelper.SingleVariableField(
                 method.InvocationHistory.Collection.Syntax,
                 method.InvocationHistory.Collection.AsField.Name,
-                method.InvocationHistory.Collection.Syntax.New()
+                TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword))
             )
         );
 

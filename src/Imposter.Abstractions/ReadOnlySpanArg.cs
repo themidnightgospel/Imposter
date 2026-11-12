@@ -20,10 +20,16 @@ public sealed class ReadOnlySpanArg<T>
     private static readonly ReadOnlySpanArg<T> AnyInstance = new(_ => true);
 
     private readonly Func<T[], bool> _matches;
+    private readonly T[]? _expected;
 
-    private ReadOnlySpanArg(Func<T[], bool> matches)
+    private ReadOnlySpanArg(
+        Func<T[], bool> matches,
+        T[]? expected = null,
+        string? description = null
+    )
     {
         _matches = matches;
+        _expected = expected;
     }
 
     /// <summary>
@@ -31,6 +37,11 @@ public sealed class ReadOnlySpanArg<T>
     /// </summary>
     /// <param name="elements">The span argument's elements.</param>
     public bool Matches(T[] elements) => _matches(elements);
+
+    /// <summary>Indicates whether matching keeps the captured array private to the generated imposter.</summary>
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public bool CanReuseCapturedArray =>
+        _expected is not null || ReferenceEquals(_matches, AnyInstance._matches);
 
     /// <summary>
     /// Matches any span.
@@ -53,8 +64,11 @@ public sealed class ReadOnlySpanArg<T>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="expected"/> or <paramref name="comparer"/> is <see langword="null"/>.
     /// </exception>
-    public static ReadOnlySpanArg<T> Is(T[] expected, IEqualityComparer<T> comparer) =>
-        new(SpanElementMatchers.SequenceEqualTo(expected, comparer));
+    public static ReadOnlySpanArg<T> Is(T[] expected, IEqualityComparer<T> comparer)
+    {
+        var matcher = SpanElementMatchers.SequenceEqualTo(expected, comparer, out var elements);
+        return new(matcher, elements);
+    }
 
     /// <summary>
     /// Matches a span whose elements satisfy <paramref name="predicate"/>.

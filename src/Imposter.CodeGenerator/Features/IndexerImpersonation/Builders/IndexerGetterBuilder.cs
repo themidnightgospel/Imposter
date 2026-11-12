@@ -78,6 +78,8 @@ internal static partial class IndexerGetterBuilder
             .AddMember(SinglePrivateReadonlyVariableField(getter.PropertyDisplayNameField))
             .AddMember(BuildGetterConstructor(indexer))
             .AddMember(BuildGetterGetMethod(indexer))
+            .AddMember(IndexerHistoryBuilder.Snapshot(indexer, true))
+            .AddMember(IndexerHistoryBuilder.Matching(indexer, true))
             .AddMember(BuildFindGetterInvocationImposterMethod(indexer))
             .AddMember(BuildGetOrCreateMethod(indexer))
             .AddMember(BuildGetterCalledMethod(indexer))
@@ -107,7 +109,8 @@ internal static partial class IndexerGetterBuilder
             getter.SetupVariableName,
             IdentifierName(getter.FindGetterInvocationImposterMethodName).Call(Argument(arguments))
         );
-        var invokeSetup = ReturnStatement(
+        var invokeSetup = IndexerHistoryBuilder.Return(
+            indexer,
             setup
                 .Dot(IdentifierName(InvokeMethodName))
                 .Call(
@@ -116,15 +119,6 @@ internal static partial class IndexerGetterBuilder
                         Argument(IdentifierName(getter.BaseImplementationParameter.Name)),
                     ])
                 )
-        );
-        var recordInvocation = FinallyClause(
-            Block(
-                LazyCollectionSyntaxHelper
-                    .EnsureInitialized(getter.InvocationHistoryField.Name)
-                    .Dot(ConcurrentStackSyntaxHelper.Push)
-                    .Call(Argument(arguments))
-                    .ToStatementSyntax()
-            )
         );
 
         return new MethodDeclarationBuilder(
@@ -137,25 +131,20 @@ internal static partial class IndexerGetterBuilder
                 ParameterSyntax(getter.BaseImplementationParameter),
             ])
             .WithBody(
-                Block(
-                    CreateArgumentsDeclaration(indexer, getter.ArgumentsVariableName),
-                    TryStatement(
-                        Block(
-                            List<StatementSyntax>([
-                                findSetup,
-                                IfStatement(
-                                    setup
-                                        .IsNotNull()
-                                        .And(
-                                            setup.Dot(IdentifierName(HasConfiguredReturnFieldName))
-                                        ),
-                                    invokeSetup
-                                ),
-                                .. WithoutConfiguredReturn(indexer),
-                            ])
-                        ),
-                        default,
-                        recordInvocation
+                IndexerHistoryBuilder.BuildBody(
+                    indexer,
+                    true,
+                    Block(
+                        List<StatementSyntax>([
+                            findSetup,
+                            IfStatement(
+                                setup
+                                    .IsNotNull()
+                                    .And(setup.Dot(IdentifierName(HasConfiguredReturnFieldName))),
+                                invokeSetup
+                            ),
+                            .. WithoutConfiguredReturn(indexer),
+                        ])
                     )
                 )
             )
@@ -178,7 +167,13 @@ internal static partial class IndexerGetterBuilder
             IfStatement(
                 IsExplicit(IdentifierName(getter.InvocationBehaviorField.Name)),
                 Block(
-                    ThrowMissingImposter(getter.PropertyDisplayNameField.Name, getter.GetterSuffix)
+                    ThrowStatement(
+                        WellKnownTypes.Imposter.Abstractions.MissingImposterException.New(
+                            IdentifierName(getter.PropertyDisplayNameField.Name)
+                                .Add(getter.GetterSuffix.StringLiteral())
+                                .ToSingleArgumentList()
+                        )
+                    )
                 )
             ),
             IfStatement(
@@ -196,7 +191,8 @@ internal static partial class IndexerGetterBuilder
                 defaultBehaviour.Dot(
                     IdentifierName(indexer.DefaultIndexerBehaviour.IsOnPropertyName)
                 ),
-                ReturnStatement(
+                IndexerHistoryBuilder.Return(
+                    indexer,
                     defaultBehaviour
                         .Dot(IdentifierName(DefaultIndexerBehaviourMetadata.GetMethodName))
                         .Call(
@@ -342,33 +338,36 @@ internal static partial class IndexerGetterBuilder
         var invocationHistory = IdentifierName(getter.InvocationHistoryField.Name);
         var countParameter = indexer.GetterBuilderInterface.CalledMethod.CountParameter;
         var count = IdentifierName(countParameter.Name);
-        var invocationCount = IdentifierName("invocationCount");
+        var invocationCount = IdentifierName(indexer.Locals["invocationCount"]);
 
         var invocationCountDeclaration = LocalVariableDeclarationSyntax(
             WellKnownTypes.Int,
             invocationCount.Identifier.Text,
-            LazyCollectionSyntaxHelper.CountOrZero(
+            NumericLiteral(0)
+        );
+        var countEntry = IdentifierName(indexer.Locals["entry"]);
+        var countLoop = LazyCollectionSyntaxHelper.UnlessNull(
+            ForEachStatement(
+                Var,
+                countEntry.Identifier,
                 invocationHistory,
-                invocationHistory
-                    .Dot(IdentifierName("Count"))
-                    .Call(
-                        Argument(
-                            IdentifierName(getter.CriteriaParameterName)
-                                .Dot(
-                                    IdentifierName(
-                                        IndexerArgumentsCriteriaMetadata.MatchesMethodName
-                                    )
-                                )
-                        )
+                Block(
+                    IfStatement(
+                        IdentifierName(getter.CriteriaParameterName)
+                            .Dot(IdentifierName(IndexerArgumentsCriteriaMetadata.MatchesMethodName))
+                            .Call(Argument(countEntry.Dot(IdentifierName("Arguments")))),
+                        PostfixUnaryExpression(SyntaxKind.PostIncrementExpression, invocationCount)
+                            .ToStatementSyntax()
                     )
+                )
             )
         );
 
-        var entry = IdentifierName("entry");
+        var entry = IdentifierName(indexer.Locals["entry"]);
         var entryDescription = "get "
             .StringLiteral()
             .Add(IdentifierName(getter.PropertyDisplayNameField.Name))
-            .Add(BuildIndices(indexer, entry));
+            .Add(BuildIndices(indexer, entry.Dot(IdentifierName("Arguments"))));
 
         return new MethodDeclarationBuilder(
             WellKnownTypes.Void,
@@ -382,6 +381,7 @@ internal static partial class IndexerGetterBuilder
             .WithBody(
                 Block(
                     invocationCountDeclaration,
+                    countLoop,
                     ThrowIfCountDoesNotMatch(
                         count,
                         invocationCount,

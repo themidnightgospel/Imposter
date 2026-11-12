@@ -1,4 +1,5 @@
-﻿using Imposter.CodeGenerator.Helpers;
+﻿using System.Linq;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
@@ -8,6 +9,12 @@ namespace Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
 
 internal readonly ref struct ImposterPropertyCoreMetadata
 {
+    private readonly string[] _scopeNames;
+
+    internal readonly LocalNamesMetadata Locals;
+
+    internal NameSet CreateNameSet() => new(_scopeNames);
+
     internal readonly string Name;
 
     internal readonly bool HasGetter;
@@ -74,6 +81,21 @@ internal readonly ref struct ImposterPropertyCoreMetadata
 
     internal ImposterPropertyCoreMetadata(PropertyModel property, string uniqueName)
     {
+        _scopeNames = ScopeNames.In(property.ContainingType).ToArray();
+        Locals = new LocalNamesMetadata(
+            new NameSet(_scopeNames),
+            "assignmentValue",
+            "assignmentCapturedValue",
+            "assignmentSequence",
+            "assignmentFailure",
+            "assignmentException",
+            "baseSetterValue",
+            "setterSequence",
+            "setterException",
+            "setterFailure",
+            "setterRegistration",
+            "setterValue"
+        );
         UniqueName = uniqueName;
         HasGetter = property.Getter is not null;
         HasSetter = property.Setter is not null;

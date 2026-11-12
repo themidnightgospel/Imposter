@@ -13,12 +13,12 @@ using global::Imposter.Tests.Features.OpenGenericImposter;
 namespace Imposter.Tests.Features.OpenGenericImposter
 {
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-	public sealed class OpenGenericPairClassImposter<TKey, TValue> : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.OpenGenericImposter.OpenGenericPairClass<TKey, TValue>> where TKey : class where TValue : class
+	public sealed class OpenGenericPairClassImposter<TKey, TValue> : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.OpenGenericImposter.OpenGenericPairClass<TKey, TValue>> where TKey : class where TValue : class
 	{
 		private readonly ResolveMethodImposter _resolveMethodImposter;
 		private readonly DescribePairMethodImposter _describePairMethodImposter;
-		private readonly ResolveMethodInvocationHistoryCollection _resolveMethodInvocationHistoryCollection = new ResolveMethodInvocationHistoryCollection();
-		private readonly DescribePairMethodInvocationHistoryCollection _describePairMethodInvocationHistoryCollection = new DescribePairMethodInvocationHistoryCollection();
+		private readonly ResolveMethodInvocationHistoryCollection _resolveMethodInvocationHistoryCollection;
+		private readonly DescribePairMethodInvocationHistoryCollection _describePairMethodInvocationHistoryCollection;
 		public IResolveMethodImposterBuilder Resolve(global::Imposter.Abstractions.Arg<TKey> key, global::Imposter.Abstractions.Arg<TValue> defaultValue)
 		{
 			return new ResolveMethodImposter.Builder(_resolveMethodImposter, _resolveMethodInvocationHistoryCollection, new ResolveArgumentsCriteria(key, defaultValue));
@@ -74,34 +74,84 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IDescribePairMethodInvocationHistory
+		internal interface IDescribePairMethodInvocationHistory
 		{
 			bool Matches(DescribePairArgumentsCriteria criteria);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class DescribePairMethodInvocationHistory : DescribePairMethodInvocationHistoryCollection.Node, IDescribePairMethodInvocationHistory
+		public sealed class DescribePairInvocation : DescribePairMethodInvocationHistoryCollection.Node, IDescribePairMethodInvocationHistory
 		{
 			internal readonly TKey capturedkey;
 			internal readonly TValue capturedvalue;
-			internal readonly string? Result;
-			internal readonly global::System.Exception? Exception;
-			public DescribePairMethodInvocationHistory(TKey capturedkey, TValue capturedvalue, string? Result, global::System.Exception? Exception)
+			internal readonly string? _result;
+			internal readonly global::System.Exception? _exception;
+			private readonly long _sequence;
+			public TKey Key
+			{
+				get
+				{
+					return capturedkey;
+				}
+			}
+
+			public TValue Value
+			{
+				get
+				{
+					return capturedvalue;
+				}
+			}
+
+			public string? Result
+			{
+				get
+				{
+					return _result;
+				}
+			}
+
+			public override string Member
+			{
+				get
+				{
+					return "DescribePair";
+				}
+			}
+
+			public override long Sequence
+			{
+				get
+				{
+					return _sequence;
+				}
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public DescribePairInvocation(TKey capturedkey, TValue capturedvalue, string? result, global::System.Exception? exception, long sequence)
 			{
 				this.capturedkey = capturedkey;
 				this.capturedvalue = capturedvalue;
-				this.Result = Result;
-				this.Exception = Exception;
+				this._result = result;
+				this._exception = exception;
+				this._sequence = sequence;
 			}
 
-			public bool Matches(DescribePairArgumentsCriteria criteria)
+			bool IDescribePairMethodInvocationHistory.Matches(DescribePairArgumentsCriteria criteria)
 			{
 				return criteria.MatchesCaptured(capturedkey, capturedvalue);
 			}
 
 			public override string ToString()
 			{
-				return "DescribePair(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(capturedkey), "value: " + FormatValue(capturedvalue) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "DescribePair(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(capturedkey), "value: " + FormatValue(capturedvalue) }) + ")" + " => " + FormatValue(_result) + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -111,12 +161,16 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class DescribePairMethodInvocationHistoryCollection
+		public class DescribePairMethodInvocationHistoryCollection
 		{
 			private DescribePairMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IImposterInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+
 				internal DescribePairMethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -149,6 +203,33 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				}
 
 				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, orderBySequence);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<DescribePairInvocation> MatchingInvocations(DescribePairArgumentsCriteria criteria)
+			{
+				var result = new global::System.Collections.Generic.List<DescribePairInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((IDescribePairMethodInvocationHistory)entry).Matches(criteria))
+						result.Add((DescribePairInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
 			}
 
 			public override string ToString()
@@ -323,6 +404,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<DescribePairInvocation> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -355,27 +437,26 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public string Invoke(TKey key, TValue value, DescribePairDelegate? baseImplementation = null)
 			{
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
 				TKey capturedkey = key;
 				TValue capturedvalue = value;
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedkey, capturedvalue);
-				if (matchingInvocationImposterGroup == default)
-				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-					{
-						throw new global::Imposter.Abstractions.MissingImposterException("virtual string OpenGenericPairClass<TKey, TValue>.DescribePair(TKey key, TValue value)");
-					}
-
-					matchingInvocationImposterGroup = DescribePairMethodInvocationImposterGroup.Default;
-				}
-
 				try
 				{
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedkey, capturedvalue);
+					if (matchingInvocationImposterGroup == default)
+					{
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("virtual string OpenGenericPairClass<TKey, TValue>.DescribePair(TKey key, TValue value)");
+						matchingInvocationImposterGroup = DescribePairMethodInvocationImposterGroup.Default;
+					}
+
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual string OpenGenericPairClass<TKey, TValue>.DescribePair(TKey key, TValue value)", key, value, baseImplementation);
-					_describePairMethodInvocationHistoryCollection.Add(new DescribePairMethodInvocationHistory(capturedkey, capturedvalue, result, default));
+					_describePairMethodInvocationHistoryCollection.Add(new DescribePairInvocation(capturedkey, capturedvalue, result, default, invocationSequence));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_describePairMethodInvocationHistoryCollection.RecordFailure(new DescribePairMethodInvocationHistory(capturedkey, capturedvalue, default !, ex)))
+				catch (global::System.Exception ex)
 				{
+					_describePairMethodInvocationHistoryCollection.RecordFailure(new DescribePairInvocation(capturedkey, capturedvalue, default !, ex, invocationSequence));
 					throw;
 				}
 			}
@@ -473,6 +554,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				{
 					return _describePairMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
+
+				global::System.Collections.Generic.IReadOnlyList<DescribePairInvocation> DescribePairInvocationVerifier.Invocations
+				{
+					get
+					{
+						return _describePairMethodInvocationHistoryCollection.MatchingInvocations(_argumentsCriteria);
+					}
+				}
 			}
 		}
 
@@ -515,34 +604,84 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IResolveMethodInvocationHistory
+		internal interface IResolveMethodInvocationHistory
 		{
 			bool Matches(ResolveArgumentsCriteria criteria);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class ResolveMethodInvocationHistory : ResolveMethodInvocationHistoryCollection.Node, IResolveMethodInvocationHistory
+		public sealed class ResolveInvocation : ResolveMethodInvocationHistoryCollection.Node, IResolveMethodInvocationHistory
 		{
 			internal readonly TKey capturedkey;
 			internal readonly TValue captureddefaultValue;
-			internal readonly TValue? Result;
-			internal readonly global::System.Exception? Exception;
-			public ResolveMethodInvocationHistory(TKey capturedkey, TValue captureddefaultValue, TValue? Result, global::System.Exception? Exception)
+			internal readonly TValue? _result;
+			internal readonly global::System.Exception? _exception;
+			private readonly long _sequence;
+			public TKey Key
+			{
+				get
+				{
+					return capturedkey;
+				}
+			}
+
+			public TValue DefaultValue
+			{
+				get
+				{
+					return captureddefaultValue;
+				}
+			}
+
+			public TValue? Result
+			{
+				get
+				{
+					return _result;
+				}
+			}
+
+			public override string Member
+			{
+				get
+				{
+					return "Resolve";
+				}
+			}
+
+			public override long Sequence
+			{
+				get
+				{
+					return _sequence;
+				}
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public ResolveInvocation(TKey capturedkey, TValue captureddefaultValue, TValue? result, global::System.Exception? exception, long sequence)
 			{
 				this.capturedkey = capturedkey;
 				this.captureddefaultValue = captureddefaultValue;
-				this.Result = Result;
-				this.Exception = Exception;
+				this._result = result;
+				this._exception = exception;
+				this._sequence = sequence;
 			}
 
-			public bool Matches(ResolveArgumentsCriteria criteria)
+			bool IResolveMethodInvocationHistory.Matches(ResolveArgumentsCriteria criteria)
 			{
 				return criteria.MatchesCaptured(capturedkey, captureddefaultValue);
 			}
 
 			public override string ToString()
 			{
-				return "Resolve(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(capturedkey), "defaultValue: " + FormatValue(captureddefaultValue) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Resolve(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(capturedkey), "defaultValue: " + FormatValue(captureddefaultValue) }) + ")" + " => " + FormatValue(_result) + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -552,12 +691,16 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class ResolveMethodInvocationHistoryCollection
+		public class ResolveMethodInvocationHistoryCollection
 		{
 			private ResolveMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IImposterInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+
 				internal ResolveMethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -590,6 +733,33 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				}
 
 				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, orderBySequence);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<ResolveInvocation> MatchingInvocations(ResolveArgumentsCriteria criteria)
+			{
+				var result = new global::System.Collections.Generic.List<ResolveInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((IResolveMethodInvocationHistory)entry).Matches(criteria))
+						result.Add((ResolveInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
 			}
 
 			public override string ToString()
@@ -764,6 +934,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<ResolveInvocation> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -796,27 +967,26 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public TValue Invoke(TKey key, TValue defaultValue, ResolveDelegate? baseImplementation = null)
 			{
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
 				TKey capturedkey = key;
 				TValue captureddefaultValue = defaultValue;
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedkey, captureddefaultValue);
-				if (matchingInvocationImposterGroup == default)
-				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-					{
-						throw new global::Imposter.Abstractions.MissingImposterException("virtual TValue OpenGenericPairClass<TKey, TValue>.Resolve(TKey key, TValue defaultValue)");
-					}
-
-					matchingInvocationImposterGroup = ResolveMethodInvocationImposterGroup.Default;
-				}
-
 				try
 				{
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedkey, captureddefaultValue);
+					if (matchingInvocationImposterGroup == default)
+					{
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("virtual TValue OpenGenericPairClass<TKey, TValue>.Resolve(TKey key, TValue defaultValue)");
+						matchingInvocationImposterGroup = ResolveMethodInvocationImposterGroup.Default;
+					}
+
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual TValue OpenGenericPairClass<TKey, TValue>.Resolve(TKey key, TValue defaultValue)", key, defaultValue, baseImplementation);
-					_resolveMethodInvocationHistoryCollection.Add(new ResolveMethodInvocationHistory(capturedkey, captureddefaultValue, result, default));
+					_resolveMethodInvocationHistoryCollection.Add(new ResolveInvocation(capturedkey, captureddefaultValue, result, default, invocationSequence));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_resolveMethodInvocationHistoryCollection.RecordFailure(new ResolveMethodInvocationHistory(capturedkey, captureddefaultValue, default !, ex)))
+				catch (global::System.Exception ex)
 				{
+					_resolveMethodInvocationHistoryCollection.RecordFailure(new ResolveInvocation(capturedkey, captureddefaultValue, default !, ex, invocationSequence));
 					throw;
 				}
 			}
@@ -914,6 +1084,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				{
 					return _resolveMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
+
+				global::System.Collections.Generic.IReadOnlyList<ResolveInvocation> ResolveInvocationVerifier.Invocations
+				{
+					get
+					{
+						return _resolveMethodInvocationHistoryCollection.MatchingInvocations(_argumentsCriteria);
+					}
+				}
 			}
 		}
 
@@ -987,6 +1165,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		public interface ICurrentPairPropertySetterVerifier
 		{
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<CurrentPairSetterInvocation> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1001,6 +1180,30 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public sealed class CurrentPairSetterInvocation : global::Imposter.Abstractions.PropertySetterInvocation<global::System.Collections.Generic.KeyValuePair<TKey, TValue>>
+		{
+			public override string Member
+			{
+				get
+				{
+					return "CurrentPair";
+				}
+			}
+
+			public global::System.Collections.Generic.KeyValuePair<TKey, TValue> Value
+			{
+				get
+				{
+					return StoredValue;
+				}
+			}
+
+			internal CurrentPairSetterInvocation(global::System.Collections.Generic.KeyValuePair<TKey, TValue> setterValue, long setterSequence, global::System.Exception? setterException) : base((global::System.Collections.Generic.KeyValuePair<TKey, TValue>)setterValue, setterSequence, setterException)
+			{
+			}
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ICurrentPairPropertyBuilder
 		{
 			ICurrentPairPropertyGetterBuilder Getter();
@@ -1011,6 +1214,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class CurrentPairPropertyBuilder : ICurrentPairPropertyBuilder
 		{
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+			{
+				return _setterImposter.Snapshot(orderBySequence);
+			}
+
 			private readonly global::Imposter.Abstractions.PropertyValue<global::System.Collections.Generic.KeyValuePair<TKey, TValue>> _defaultPropertyBehaviour;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			internal SetterImposter _setterImposter;
@@ -1095,26 +1303,39 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				{
 				}
 
+				protected override global::Imposter.Abstractions.PropertySetterInvocation<global::System.Collections.Generic.KeyValuePair<TKey, TValue>> CreateInvocation(global::System.Collections.Generic.KeyValuePair<TKey, TValue> setterValue, long setterSequence, global::System.Exception? setterException)
+				{
+					return new CurrentPairSetterInvocation((global::System.Collections.Generic.KeyValuePair<TKey, TValue>)setterValue, setterSequence, setterException);
+				}
+
 				[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 				internal class Builder : ICurrentPairPropertySetterBuilder, ICurrentPairPropertySetterFluentBuilder, ICurrentPairPropertySetterUseBaseImplementationBuilder
 				{
 					private readonly SetterImposter _setterImposter;
-					private readonly global::Imposter.Abstractions.Arg<global::System.Collections.Generic.KeyValuePair<TKey, TValue>> _criteria;
-					internal Builder(SetterImposter _setterImposter, global::Imposter.Abstractions.Arg<global::System.Collections.Generic.KeyValuePair<TKey, TValue>> _criteria)
+					private readonly global::Imposter.Abstractions.Arg<global::System.Collections.Generic.KeyValuePair<TKey, TValue>> _runtimeCriteria;
+					internal Builder(SetterImposter _setterImposter, global::Imposter.Abstractions.Arg<global::System.Collections.Generic.KeyValuePair<TKey, TValue>> _runtimeCriteria)
 					{
 						this._setterImposter = _setterImposter;
-						this._criteria = _criteria;
+						this._runtimeCriteria = _runtimeCriteria;
+					}
+
+					global::System.Collections.Generic.IReadOnlyList<CurrentPairSetterInvocation> ICurrentPairPropertySetterVerifier.Invocations
+					{
+						get
+						{
+							return _setterImposter.MatchingInvocations<CurrentPairSetterInvocation>(_runtimeCriteria);
+						}
 					}
 
 					ICurrentPairPropertySetterContinuationBuilder ICurrentPairPropertySetterCallbackBuilder.Callback(global::System.Action<global::System.Collections.Generic.KeyValuePair<TKey, TValue>> callback)
 					{
-						_setterImposter.Callback(_criteria, callback);
+						_setterImposter.Callback(_runtimeCriteria, callback);
 						return this;
 					}
 
 					void ICurrentPairPropertySetterVerifier.Called(global::Imposter.Abstractions.Count count)
 					{
-						_setterImposter.Called(_criteria, count);
+						_setterImposter.Called(_runtimeCriteria, count);
 					}
 
 					ICurrentPairPropertySetterUseBaseImplementationBuilder ICurrentPairPropertySetterContinuationBuilder.Then()
@@ -1154,38 +1375,104 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		public delegate void IndexerIndexerGetterCallback(TKey key);
 		public delegate void IndexerIndexerSetterCallback(TKey key, TValue value);
 		public delegate global::System.Exception IndexerIndexerExceptionGenerator(TKey key);
-		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class IndexerIndexerArguments : global::System.IEquatable<IndexerIndexerArguments>
+		internal readonly struct IndexerIndexerArguments
 		{
-			public TKey key;
+			internal readonly TKey key;
 			internal IndexerIndexerArguments(TKey key)
 			{
 				this.key = key;
 			}
+		}
 
-			public bool Equals(IndexerIndexerArguments? other)
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public sealed class IndexerGetterInvocation : global::Imposter.Abstractions.InvocationRecord
+		{
+			private static string FormatValue(object? value)
 			{
-				if (other == null)
-				{
-					return false;
-				}
-
-				return global::System.Collections.Generic.EqualityComparer<TKey>.Default.Equals(key, other.key);
+				return "<" + (value?.ToString() ?? "null") + ">";
 			}
 
-			public override bool Equals(object? obj)
+			public override string Member
 			{
-				return obj is IndexerIndexerArguments other && Equals(other);
+				get
+				{
+					return "Indexer (getter)";
+				}
 			}
 
-			public override int GetHashCode()
+			internal readonly IndexerIndexerArguments Arguments;
+			public TKey Key
 			{
-				unchecked
+				get
 				{
-					var hash = 17;
-					hash = hash * 31 + global::System.Collections.Generic.EqualityComparer<TKey>.Default.GetHashCode(key!);
-					return hash;
+					return Arguments.key;
 				}
+			}
+
+			private readonly TValue _value;
+			public TValue? Result
+			{
+				get
+				{
+					return Exception == null ? (TValue?)_value : default(TValue?);
+				}
+			}
+
+			internal IndexerGetterInvocation(IndexerIndexerArguments arguments, TValue value, long sequence, global::System.Exception? exception) : base(sequence, exception)
+			{
+				Arguments = arguments;
+				_value = value;
+			}
+
+			public override string ToString()
+			{
+				return "get " + Member + "(" + "key: " + FormatValue(Arguments.key) + ")" + (Exception == null ? " => " + FormatValue(_value) : "") + (Exception == null ? "" : " threw " + FormatValue(Exception));
+			}
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public sealed class IndexerSetterInvocation : global::Imposter.Abstractions.InvocationRecord
+		{
+			private static string FormatValue(object? value)
+			{
+				return "<" + (value?.ToString() ?? "null") + ">";
+			}
+
+			public override string Member
+			{
+				get
+				{
+					return "Indexer (setter)";
+				}
+			}
+
+			internal readonly IndexerIndexerArguments Arguments;
+			public TKey Key
+			{
+				get
+				{
+					return Arguments.key;
+				}
+			}
+
+			private readonly TValue _value;
+			public TValue Value
+			{
+				get
+				{
+					return _value;
+				}
+			}
+
+			internal IndexerSetterInvocation(IndexerIndexerArguments arguments, TValue value, long sequence, global::System.Exception? exception) : base(sequence, exception)
+			{
+				Arguments = arguments;
+				_value = value;
+			}
+
+			public override string ToString()
+			{
+				return "set " + Member + "(" + "key: " + FormatValue(Arguments.key) + ")" + " = " + FormatValue(_value) + (Exception == null ? "" : " threw " + FormatValue(Exception));
 			}
 		}
 
@@ -1214,6 +1501,35 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			internal class DefaultIndexerIndexerBehaviour
 			{
+				internal readonly struct StoredKey : global::System.IEquatable<StoredKey>
+				{
+					internal readonly TKey key;
+					internal StoredKey(TKey key)
+					{
+						this.key = key;
+					}
+
+					public bool Equals(StoredKey other)
+					{
+						return global::System.Collections.Generic.EqualityComparer<TKey>.Default.Equals(key, other.key);
+					}
+
+					public override bool Equals(object? obj)
+					{
+						return obj is StoredKey other && Equals(other);
+					}
+
+					public override int GetHashCode()
+					{
+						unchecked
+						{
+							var hash = 17;
+							hash = hash * 31 + global::System.Collections.Generic.EqualityComparer<TKey>.Default.GetHashCode(key!);
+							return hash;
+						}
+					}
+				}
+
 				private bool _isOn = true;
 				internal bool IsOn
 				{
@@ -1228,10 +1544,10 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					}
 				}
 
-				private global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArguments, TValue>? BackingField;
+				private global::System.Collections.Concurrent.ConcurrentDictionary<StoredKey, TValue>? BackingField;
 				internal TValue Get(IndexerIndexerArguments arguments, global::System.Func<TValue>? baseImplementation = null)
 				{
-					if ((BackingField != null) && BackingField.TryGetValue(arguments, out var value))
+					if ((BackingField != null) && BackingField.TryGetValue(new StoredKey(arguments.key), out var value))
 						return value;
 					if (baseImplementation != null)
 						return baseImplementation();
@@ -1240,7 +1556,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				internal void Set(IndexerIndexerArguments arguments, TValue value)
 				{
-					global::System.Threading.LazyInitializer.EnsureInitialized(ref BackingField)[arguments] = value;
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref BackingField)[new StoredKey(arguments.key)] = value;
 				}
 			}
 
@@ -1248,6 +1564,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			{
 				this._getterImposter = new GetterImposter(_IndexerDefaultIndexerBehaviour, invocationBehavior, propertyDisplayName);
 				this._setterImposter = new SetterImposter(_IndexerDefaultIndexerBehaviour, invocationBehavior, propertyDisplayName);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+			{
+				return global::Imposter.Abstractions.InvocationSnapshots.Combine(_getterImposter.Snapshot(false), _setterImposter.Snapshot(false), orderBySequence);
 			}
 
 			internal IIndexerIndexerGetterBuilder CreateGetter(IndexerIndexerArgumentsCriteria criteria)
@@ -1297,7 +1618,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			{
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
 				private readonly global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter> _getterInvocationImposters = new global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter>();
-				private global::System.Collections.Concurrent.ConcurrentStack<IndexerIndexerArguments>? _invocationHistory;
+				private global::Imposter.Abstractions.InvocationHistory<IndexerGetterInvocation>? _invocationHistory;
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 				private readonly string _propertyDisplayName;
 				internal GetterImposter(DefaultIndexerIndexerBehaviour defaultBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName)
@@ -1309,12 +1630,15 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				internal TValue Get(TKey key, global::System.Func<TValue>? baseImplementation = null)
 				{
+					long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
+					global::System.Exception? invocationException = null;
+					TValue invocationResult = default !;
 					IndexerIndexerArguments arguments = new IndexerIndexerArguments(key);
 					try
 					{
 						var getterInvocationImposter = FindGetterInvocationImposter(arguments);
 						if ((getterInvocationImposter != null) && getterInvocationImposter.HasConfiguredReturn)
-							return getterInvocationImposter.Invoke(arguments, baseImplementation);
+							return invocationResult = getterInvocationImposter.Invoke(arguments, baseImplementation);
 						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
 						{
 							throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
@@ -1323,13 +1647,33 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 						if (getterInvocationImposter != null)
 							getterInvocationImposter.InvokeCallbacks(arguments);
 						if (_defaultBehaviour.IsOn)
-							return _defaultBehaviour.Get(arguments, baseImplementation);
+							return invocationResult = _defaultBehaviour.Get(arguments, baseImplementation);
 						return default !;
+					}
+					catch (global::System.Exception caughtInvocationException)
+					{
+						invocationException = caughtInvocationException;
+						throw;
 					}
 					finally
 					{
-						global::System.Threading.LazyInitializer.EnsureInitialized(ref _invocationHistory).Push(arguments);
+						global::System.Threading.LazyInitializer.EnsureInitialized(ref _invocationHistory).Push(new IndexerGetterInvocation(arguments, invocationResult, invocationSequence, invocationException));
 					}
+				}
+
+				internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+				{
+					return global::Imposter.Abstractions.InvocationSnapshots.Copy(_invocationHistory, orderBySequence);
+				}
+
+				internal global::System.Collections.Generic.IReadOnlyList<IndexerGetterInvocation> MatchingInvocations(IndexerIndexerArgumentsCriteria criteria)
+				{
+					var matches = new global::System.Collections.Generic.List<IndexerGetterInvocation>();
+					if (_invocationHistory != null)
+						foreach (var entry in _invocationHistory)
+							if (criteria.Matches(entry.Arguments))
+								matches.Add(entry);
+					return global::Imposter.Abstractions.InvocationSnapshots.Order(matches);
 				}
 
 				private GetterInvocationImposter? FindGetterInvocationImposter(IndexerIndexerArguments arguments)
@@ -1366,7 +1710,16 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				private void Called(IndexerIndexerArgumentsCriteria criteria, global::Imposter.Abstractions.Count count)
 				{
-					int invocationCount = _invocationHistory != null ? _invocationHistory.Count(criteria.Matches) : 0;
+					int invocationCount = 0;
+					if (_invocationHistory != null)
+					{
+						foreach (var entry in _invocationHistory)
+						{
+							if (criteria.Matches(entry.Arguments))
+								invocationCount++;
+						}
+					}
+
 					if (!count.Matches(invocationCount))
 					{
 						var performedInvocations = new global::System.Collections.Generic.List<string>();
@@ -1374,7 +1727,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 						{
 							foreach (var entry in _invocationHistory)
 							{
-								performedInvocations.Add("get " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(entry.key) }) + "]");
+								performedInvocations.Add("get " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(entry.Arguments.key) }) + "]");
 							}
 						}
 
@@ -1396,6 +1749,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					}
 
 					private GetterInvocationImposter InvocationImposter => _imposter.GetOrCreate(_criteria);
+
+					global::System.Collections.Generic.IReadOnlyList<IndexerGetterInvocation> IIndexerIndexerGetterVerifier.Invocations
+					{
+						get
+						{
+							return _imposter.MatchingInvocations(_criteria);
+						}
+					}
 
 					IIndexerIndexerGetterContinuationBuilder IIndexerIndexerGetterOutcomeBuilder.Returns(TValue value)
 					{
@@ -1541,7 +1902,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			private sealed class SetterImposter
 			{
 				private global::Imposter.Abstractions.CallbackCollection<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)>? _callbacks;
-				private global::System.Collections.Concurrent.ConcurrentStack<(IndexerIndexerArguments Arguments, TValue Value)>? _invocationHistory;
+				private global::Imposter.Abstractions.InvocationHistory<IndexerSetterInvocation>? _invocationHistory;
 				private global::Imposter.Abstractions.CallbackCollection<IndexerIndexerArgumentsCriteria>? _baseCriteria;
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
@@ -1562,7 +1923,16 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				public void Called(IndexerIndexerArgumentsCriteria criteria, global::Imposter.Abstractions.Count count)
 				{
-					int invocationCount = _invocationHistory != null ? _invocationHistory.Count(entry => criteria.Matches(entry.Arguments)) : 0;
+					int invocationCount = 0;
+					if (_invocationHistory != null)
+					{
+						foreach (var entry in _invocationHistory)
+						{
+							if (criteria.Matches(entry.Arguments))
+								invocationCount++;
+						}
+					}
+
 					if (!count.Matches(invocationCount))
 					{
 						var performedInvocations = new global::System.Collections.Generic.List<string>();
@@ -1580,45 +1950,73 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 				internal void Set(TKey key, TValue value, global::System.Action? baseImplementation = null)
 				{
-					EnsureSetterConfigured();
+					long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
+					global::System.Exception? invocationException = null;
 					IndexerIndexerArguments arguments = new IndexerIndexerArguments(key);
-					global::System.Threading.LazyInitializer.EnsureInitialized(ref _invocationHistory).Push((arguments, value));
-					bool matchedCallback = false;
-					if (_callbacks != null)
+					try
 					{
-						foreach (var registration in _callbacks)
+						EnsureSetterConfigured();
+						bool matchedCallback = false;
+						if (_callbacks != null)
 						{
-							if (registration.Criteria.Matches(arguments))
+							foreach (var registration in _callbacks)
 							{
-								registration.Callback(arguments.key, value);
-								matchedCallback = true;
-							}
-						}
-					}
-
-					bool invokedBaseImplementation = false;
-					if (_baseCriteria != null)
-					{
-						foreach (var criteria in _baseCriteria)
-						{
-							if (criteria.Matches(arguments))
-							{
-								if (baseImplementation == null)
+								if (registration.Criteria.Matches(arguments))
 								{
-									throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
+									registration.Callback(arguments.key, value);
+									matchedCallback = true;
 								}
-
-								baseImplementation();
-								invokedBaseImplementation = true;
-								break;
 							}
 						}
-					}
 
-					if (!invokedBaseImplementation && (!matchedCallback && _defaultBehaviour.IsOn))
-					{
-						_defaultBehaviour.Set(arguments, value);
+						bool invokedBaseImplementation = false;
+						if (_baseCriteria != null)
+						{
+							foreach (var criteria in _baseCriteria)
+							{
+								if (criteria.Matches(arguments))
+								{
+									if (baseImplementation == null)
+									{
+										throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
+									}
+
+									baseImplementation();
+									invokedBaseImplementation = true;
+									break;
+								}
+							}
+						}
+
+						if (!invokedBaseImplementation && (!matchedCallback && _defaultBehaviour.IsOn))
+						{
+							_defaultBehaviour.Set(arguments, value);
+						}
 					}
+					catch (global::System.Exception caughtInvocationException)
+					{
+						invocationException = caughtInvocationException;
+						throw;
+					}
+					finally
+					{
+						global::System.Threading.LazyInitializer.EnsureInitialized(ref _invocationHistory).Push(new IndexerSetterInvocation(arguments, value, invocationSequence, invocationException));
+					}
+				}
+
+				internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+				{
+					return global::Imposter.Abstractions.InvocationSnapshots.Copy(_invocationHistory, orderBySequence);
+				}
+
+				internal global::System.Collections.Generic.IReadOnlyList<IndexerSetterInvocation> MatchingInvocations(IndexerIndexerArgumentsCriteria criteria)
+				{
+					var matches = new global::System.Collections.Generic.List<IndexerSetterInvocation>();
+					if (_invocationHistory != null)
+						foreach (var entry in _invocationHistory)
+							if (criteria.Matches(entry.Arguments))
+								matches.Add(entry);
+					return global::Imposter.Abstractions.InvocationSnapshots.Order(matches);
 				}
 
 				private void EnsureSetterConfigured()
@@ -1655,6 +2053,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						_setterImposter.Callback(_criteria, callback);
 						return this;
+					}
+
+					global::System.Collections.Generic.IReadOnlyList<IndexerSetterInvocation> IIndexerIndexerSetterVerifier.Invocations
+					{
+						get
+						{
+							return _setterImposter.MatchingInvocations(_criteria);
+						}
 					}
 
 					void IIndexerIndexerSetterVerifier.Called(global::Imposter.Abstractions.Count count)
@@ -1710,6 +2116,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		public interface IIndexerIndexerGetterVerifier
 		{
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<IndexerGetterInvocation> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1743,6 +2150,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		public interface IIndexerIndexerSetterVerifier
 		{
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<IndexerSetterInvocation> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1760,11 +2168,23 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 		public OpenGenericPairClassImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._resolveMethodInvocationHistoryCollection = new ResolveMethodInvocationHistoryCollection();
+			this._describePairMethodInvocationHistoryCollection = new DescribePairMethodInvocationHistoryCollection();
 			this._resolveMethodImposter = new ResolveMethodImposter(_resolveMethodInvocationHistoryCollection, invocationBehavior);
 			this._describePairMethodImposter = new DescribePairMethodImposter(_describePairMethodInvocationHistoryCollection, invocationBehavior);
 			this._CurrentPairPropertyBuilderField = new CurrentPairPropertyBuilder(invocationBehavior);
 			this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.OpenGenericImposter.OpenGenericPairClass<TKey, TValue>.this[TKey key]");
 			this._imposterInstance = new ImposterTargetInstance(this);
+		}
+
+		global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> global::Imposter.Abstractions.IImposter.Invocations()
+		{
+			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+			invocations.AddRange(_resolveMethodInvocationHistoryCollection.Snapshot(false));
+			invocations.AddRange(_describePairMethodInvocationHistoryCollection.Snapshot(false));
+			invocations.AddRange(_CurrentPairPropertyBuilderField.Snapshot(false));
+			invocations.AddRange(_IndexerIndexer.Snapshot(false));
+			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

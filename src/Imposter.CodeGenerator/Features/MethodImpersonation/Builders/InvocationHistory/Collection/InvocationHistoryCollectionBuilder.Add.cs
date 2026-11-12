@@ -15,8 +15,8 @@ internal static partial class InvocationHistoryCollectionBuilder
     // without allocating another node. Published entries and links never change, so readers keep a stable snapshot.
     internal static MethodDeclarationSyntax BuildAddMethod(in ImposterTargetMethodMetadata method)
     {
-        var head = IdentifierName("head");
-        var entry = IdentifierName("invocationHistory");
+        var head = IdentifierName(method.Locals["head"]);
+        var entry = IdentifierName(method.Locals["invocationHistory"]);
         var field = IdentifierName(InvocationHistoryCollectionMetadata.HeadFieldName);
         return new MethodDeclarationBuilder(
             WellKnownTypes.Void,
@@ -24,13 +24,16 @@ internal static partial class InvocationHistoryCollectionBuilder
         )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(
-                ParameterSyntax(method.InvocationHistory.Collection.NodeSyntax, "invocationHistory")
+                ParameterSyntax(
+                    method.InvocationHistory.Collection.NodeSyntax,
+                    method.Locals["invocationHistory"]
+                )
             )
             .WithBody(
                 Block(
                     LocalVariableDeclarationSyntax(
                         method.InvocationHistory.Collection.NodeSyntax.ToNullableType(),
-                        "head",
+                        method.Locals["head"],
                         null
                     ),
                     DoStatement(
@@ -59,8 +62,7 @@ internal static partial class InvocationHistoryCollectionBuilder
             .Build();
     }
 
-    // Filters run before stack unwinding: the history is visible to finally blocks in user delegates.
-    // Always decline to handle the exception, so its original dispatch continues without a rethrow.
+    // The caller records the failure after user finally blocks have completed and then rethrows.
     internal static MethodDeclarationSyntax BuildRecordFailureMethod(
         in ImposterTargetMethodMetadata method
     ) =>
@@ -70,12 +72,15 @@ internal static partial class InvocationHistoryCollectionBuilder
         )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(
-                ParameterSyntax(method.InvocationHistory.Collection.NodeSyntax, "invocationHistory")
+                ParameterSyntax(
+                    method.InvocationHistory.Collection.NodeSyntax,
+                    method.Locals["invocationHistory"]
+                )
             )
             .WithBody(
                 Block(
                     IdentifierName(InvocationHistoryCollectionMetadata.AddMethodName)
-                        .Call(Argument(IdentifierName("invocationHistory")))
+                        .Call(Argument(IdentifierName(method.Locals["invocationHistory"])))
                         .ToStatementSyntax(),
                     ReturnStatement(False)
                 )

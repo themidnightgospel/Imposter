@@ -70,20 +70,9 @@ internal readonly struct IndexerSetterImposterMetadata
             names.Use("_callbacks"),
             WellKnownTypes.Imposter.Abstractions.CallbackCollection(BuildRegistrationTuple(indexer))
         );
-        // A value passed through can't be kept, so the history keeps the keys alone.
-        TypeSyntax invocationHistoryEntryType = !indexer.Core.IsValuePassedThrough
-            ? TupleType(
-                SeparatedList<TupleElementSyntax>([
-                    TupleElement(indexer.Arguments.TypeSyntax)
-                        .WithIdentifier(Identifier(HistoryArgumentsElementName)),
-                    TupleElement(indexer.Core.NullableAwareKeptTypeSyntax)
-                        .WithIdentifier(Identifier(HistoryValueElementName)),
-                ])
-            )
-            : indexer.Arguments.TypeSyntax;
         InvocationHistoryField = new FieldMetadata(
             names.Use("_invocationHistory"),
-            WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(invocationHistoryEntryType)
+            WellKnownTypes.Imposter.Abstractions.InvocationHistory(indexer.SetterRecord.Type)
         );
         DefaultBehaviourField = !indexer.Core.IsValuePassedThrough
             ? new FieldMetadata(

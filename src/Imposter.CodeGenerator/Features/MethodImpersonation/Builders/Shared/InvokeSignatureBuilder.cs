@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -20,6 +21,19 @@ internal static class InvokeSignatureBuilder
                 ParameterSyntax(method.MethodImposter.InvokeMethod.BaseInvocationParameter)
             )
             : method.Parameters.ParameterListSyntaxIncludingNullable;
+
+    internal static ParameterListSyntax WithCapturedSpans(in ImposterTargetMethodMetadata method)
+    {
+        var names = method.InvocationHistory.ArgumentFields;
+        return ParameterListSyntax([
+            .. method
+                .Parameters.InputParameterMetadata.Where(parameter => parameter.IsSpan)
+                .Select(parameter =>
+                    ParameterSyntax(parameter.NullableAwareKeptTypeSyntax, names[parameter.Name])
+                ),
+            .. MethodImposterParameters(method).Parameters,
+        ]);
+    }
 
     // The group's and the invocation imposter's, which also take the imposter's mode and the method's display name to
     // report a missing imposter.

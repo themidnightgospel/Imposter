@@ -26,6 +26,13 @@ public class GeneratedMemberNamedTypeParameterTests
     [InlineData("Default")]
     [InlineData("Exception")]
     [InlineData("Result")]
+    [InlineData("Member")]
+    [InlineData("Sequence")]
+    [InlineData("Invocations")]
+    [InlineData("Called")]
+    [InlineData("CallCount")]
+    [InlineData("_sequence")]
+    [InlineData("GetInvocation")]
     [InlineData("FormatValue")]
     [InlineData("HasMatchingInvocationImposterGroup")]
     [InlineData("Equals")]
@@ -35,7 +42,7 @@ public class GeneratedMemberNamedTypeParameterTests
     {
         await AssertInterfaceCompiles(
             $"public interface IService {{ {name} Get<{name}>({name} value, int count); }}",
-            "imposter.Get<string>(Arg<string>.Any(), Arg<int>.Any()).Returns(\"result\"); _ = imposter.Instance().Get(\"value\", 1);",
+            "imposter.Get<string>(Arg<string>.Any(), Arg<int>.Any()).Returns(\"result\"); _ = imposter.Instance().Get(\"value\", 1); _ = imposter.Get<string>(Arg<string>.Any(), Arg<int>.Any()).Invocations[0].Result;",
             $"{nameof(GivenMethodTypeParameterNamedLikeAGeneratedMember_WhenUsed_ShouldCompile)}_{name}"
         );
     }

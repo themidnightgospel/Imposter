@@ -13,6 +13,7 @@ internal readonly struct DefaultIndexerBehaviourMetadata
     internal readonly string Name;
 
     internal readonly NameSyntax TypeSyntax;
+    internal readonly NameSyntax StoredKeyType;
 
     internal readonly string IsOnPropertyName;
 
@@ -30,6 +31,7 @@ internal readonly struct DefaultIndexerBehaviourMetadata
     {
         Name = $"Default{core.UniqueName}IndexerBehaviour";
         TypeSyntax = IdentifierName(Name);
+        StoredKeyType = IdentifierName(core.CreateParameterNameSet().Use("StoredKey"));
         IsOnPropertyName = "IsOn";
         IsOnBackingField = new FieldMetadata("_isOn", WellKnownTypes.Bool);
         BackingField =
@@ -38,7 +40,7 @@ internal readonly struct DefaultIndexerBehaviourMetadata
                 : new FieldMetadata(
                     "BackingField",
                     WellKnownTypes.System.Collections.Concurrent.ConcurrentDictionary(
-                        arguments.TypeSyntax,
+                        StoredKeyType,
                         core.NullableAwareValueTypeSyntax
                     )
                 );

@@ -33,7 +33,7 @@ internal readonly ref struct ImposterPropertyMetadata
 
     internal readonly DefaultPropertyBehaviourMetadata DefaultPropertyBehaviour;
 
-    // The runtime types the accessors derive from; set only when Core.UsesSharedRuntime.
+    // The runtime types the accessors derive from; set when the property value can be retained.
     internal readonly SharedPropertyMetadata SharedRuntime;
 
     internal readonly SyntaxTokenList ImposterInstanceModifiers;
@@ -55,7 +55,7 @@ internal readonly ref struct ImposterPropertyMetadata
         Core = new ImposterPropertyCoreMetadata(property, uniqueName);
 
         DefaultPropertyBehaviour = new DefaultPropertyBehaviourMetadata(Core);
-        SharedRuntime = Core.UsesSharedRuntime ? new SharedPropertyMetadata(Core) : default;
+        SharedRuntime = !Core.IsPassedThrough ? new SharedPropertyMetadata(Core) : default;
         var defaultPropertyBehaviourField = new FieldMetadata(
             "_defaultPropertyBehaviour",
             DefaultPropertyBehaviour.TypeSyntax

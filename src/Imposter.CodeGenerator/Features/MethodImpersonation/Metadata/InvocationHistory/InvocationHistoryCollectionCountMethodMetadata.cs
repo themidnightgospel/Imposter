@@ -1,21 +1,18 @@
-﻿using System.Linq;
-using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
-using Imposter.CodeGenerator.Helpers;
+﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 
 namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationHistory;
 
 internal readonly struct InvocationHistoryCollectionCountMethodMetadata
 {
     internal const string Name = "Count";
-    internal const string ArgumentsCriteriaParameterName = "argumentsCriteria";
+    internal readonly string ArgumentsCriteriaParameterName;
     internal readonly string CountVariableName;
     internal readonly string InvocationVariableName;
 
     internal InvocationHistoryCollectionCountMethodMetadata(in ImposterTargetMethodMetadata method)
     {
-        var names = new NameSet(
-            method.Model.TypeParameters.Select(p => p.Name).Append(ArgumentsCriteriaParameterName)
-        );
+        var names = method.ReservedParameterNames.CreateNameSet();
+        ArgumentsCriteriaParameterName = names.Use("argumentsCriteria");
         CountVariableName = names.Use("count");
         InvocationVariableName = names.Use("invocation");
     }

@@ -1,15 +1,9 @@
 ﻿using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
-using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.SetterImposter;
-using Imposter.CodeGenerator.Features.Shared.Builders;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Imposter.CodeGenerator.Features.Shared.Builders.FormatValueMethodBuilder;
-using static Imposter.CodeGenerator.Features.Shared.Builders.MissingImposterBuilder;
-using static Imposter.CodeGenerator.Features.Shared.Builders.VerificationFailedBuilder;
-using static Imposter.CodeGenerator.SyntaxHelpers.InterlockedSyntaxHelper;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -19,316 +13,199 @@ internal static partial class SetterImposterBuilder
 {
     internal static ClassDeclarationSyntax Build(in ImposterPropertyMetadata property)
     {
-        if (property.Core.UsesSharedRuntime)
-        {
+        if (!property.Core.IsPassedThrough)
             return BuildShared(property);
-        }
-
-        return new ClassDeclarationBuilder(property.SetterImposter.Name)
+        var setter = property.SetterImposter;
+        var callbacks = new FieldMetadata(
+            setter.CallbacksField.Name,
+            WellKnownTypes.Imposter.Abstractions.CallbackCollection(
+                property.Core.SetterCallbackType
+            )
+        );
+        var mode = PropertyAccessorStateMetadata.InvocationBehaviorParameter;
+        var displayName = PropertyAccessorStateMetadata.PropertyDisplayNameParameter;
+        return new ClassDeclarationBuilder(setter.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddMember(LazyCollectionSyntaxHelper.Field(property.SetterImposter.CallbacksField))
-            .AddMember(BuildInvocationsField(property.SetterImposter))
-            .AddMembers(
-                PropertyAccessorStateBuilder.Fields(property, property.SetterImposter.State)
-            )
-            .AddMember(
-                property.Core.SetterSupportsBaseImplementation
-                    ? SingleVariableField(
-                        property.SetterImposter.UseBaseImplementationField,
-                        SyntaxKind.PrivateKeyword
+            .AddBaseType(
+                SimpleBaseType(
+                    WellKnownTypes.Imposter.Abstractions.PassThroughSetter(
+                        setter.InvocationTypeSyntax
                     )
-                    : null
-            )
-            .AddMember(
-                PropertyAccessorStateBuilder.Constructor(
-                    property.SetterImposter.Name,
-                    property,
-                    property.SetterImposter.State
                 )
             )
-            .AddMember(BuildSetterCallbackMethod(property.SetterImposter))
-            .AddMember(BuildSetterCalledMethod(property.SetterImposter))
+            .AddMember(LazyCollectionSyntaxHelper.Field(callbacks))
             .AddMember(
-                property.Core.SetterSupportsBaseImplementation
-                    ? BuildUseBaseImplementationMethod(property.SetterImposter)
-                    : null
+                new ConstructorBuilder(setter.Name)
+                    .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
+                    .AddParameter(ParameterSyntax(mode))
+                    .AddParameter(ParameterSyntax(displayName))
+                    .WithInitializer(
+                        ConstructorInitializer(
+                            SyntaxKind.BaseConstructorInitializer,
+                            ArgumentListSyntax([
+                                Argument(IdentifierName(mode.Name)),
+                                Argument(IdentifierName(displayName.Name)),
+                            ])
+                        )
+                    )
+                    .Build()
             )
-            .AddMember(BuildSetMethod(property))
             .AddMember(
-                PropertyAccessorStateBuilder.EnsureConfiguredMethod(property.SetterImposter.State)
+                new MethodDeclarationBuilder(setter.InvocationTypeSyntax, "CreateInvocation")
+                    .AddModifier(Token(SyntaxKind.ProtectedKeyword))
+                    .AddModifier(Token(SyntaxKind.OverrideKeyword))
+                    .AddParameter(
+                        ParameterSyntax(WellKnownTypes.Long, property.Core.Locals["setterSequence"])
+                    )
+                    .AddParameter(
+                        ParameterSyntax(
+                            WellKnownTypes.System.Exception.ToNullableType(),
+                            property.Core.Locals["setterException"]
+                        )
+                    )
+                    .WithBody(
+                        Block(
+                            ReturnStatement(
+                                setter.InvocationTypeSyntax.New(
+                                    ArgumentListSyntax([
+                                        Argument(
+                                            IdentifierName(property.Core.Locals["setterSequence"])
+                                        ),
+                                        Argument(
+                                            IdentifierName(property.Core.Locals["setterException"])
+                                        ),
+                                    ])
+                                )
+                            )
+                        )
+                    )
+                    .Build()
             )
             .AddMember(
-                property.SetterImposter.InvocationHistoryField is null
-                    ? null
-                    : FormatValueMethodBuilder.Build()
+                new MethodDeclarationBuilder(WellKnownTypes.Void, setter.CallbackMethod.Name)
+                    .AddModifier(Token(SyntaxKind.InternalKeyword))
+                    .AddParameter(ParameterSyntax(setter.CallbackMethod.CallbackParameter))
+                    .WithBody(
+                        Block(
+                            IdentifierName("Register").Call().ToStatementSyntax(),
+                            LazyCollectionSyntaxHelper
+                                .EnsureInitialized(callbacks.Name)
+                                .Dot(IdentifierName("Add"))
+                                .Call(
+                                    Argument(
+                                        IdentifierName(setter.CallbackMethod.CallbackParameter.Name)
+                                    )
+                                )
+                                .ToStatementSyntax()
+                        )
+                    )
+                    .Build()
             )
+            .AddMember(BuildPassThroughSet(property))
             .AddMember(SetterImposterBuilderBuilder.Build(property))
             .Build();
     }
 
-    private static FieldDeclarationSyntax BuildInvocationsField(
-        in PropertySetterImposterMetadata setterImposter
-    ) =>
-        setterImposter.InvocationHistoryField is { } invocationHistory
-            ? LazyCollectionSyntaxHelper.Field(invocationHistory)
-            : SingleVariableField(setterImposter.InvocationCountField, SyntaxKind.PrivateKeyword);
-
-    private static MethodDeclarationSyntax BuildUseBaseImplementationMethod(
-        in PropertySetterImposterMetadata setterImposter
-    ) =>
-        new MethodDeclarationBuilder(
-            setterImposter.UseBaseImplementationMethod.ReturnType,
-            setterImposter.UseBaseImplementationMethod.Name
-        )
-            .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .WithBody(
-                Block(
-                    IdentifierName(setterImposter.State.HasConfiguredField.Name)
-                        .Assign(True)
-                        .ToStatementSyntax(),
-                    IdentifierName(setterImposter.UseBaseImplementationField.Name)
-                        .Assign(True)
-                        .ToStatementSyntax()
-                )
-            )
-            .Build();
-
-    private static MethodDeclarationSyntax BuildSetMethod(in ImposterPropertyMetadata property)
+    private static MethodDeclarationSyntax BuildPassThroughSet(in ImposterPropertyMetadata property)
     {
-        var setterImposter = property.SetterImposter;
-        var baseImplementationIdentifier = IdentifierName(
-            setterImposter.SetMethod.BaseImplementationParameter.Name
-        );
-        var bodyStatements = new List<StatementSyntax>
+        var setter = property.SetterImposter;
+        var value = IdentifierName(setter.SetMethod.ValueParameter.Name);
+        var callback = IdentifierName(property.Core.Locals["setterRegistration"]);
+        var statements = new List<StatementSyntax>
         {
-            IdentifierName(setterImposter.State.EnsureConfiguredMethodName)
-                .Call()
-                .ToStatementSyntax(),
-            TrackSetterInvocation(setterImposter),
-            InvokeCallbacks(setterImposter),
-        };
-
-        bodyStatements.AddRange(
-            SetBackingField(
-                setterImposter,
-                baseImplementationIdentifier,
-                property.Core.SetterSupportsBaseImplementation,
-                property.Core.KeepsValue
-            )
-        );
-
-        if (setterImposter.SetMethod.RequiresDirectBaseAssignment)
-        {
-            bodyStatements.Add(ReturnStatement(False));
-        }
-
-        var baseImplementationParameter = setterImposter.SetMethod.BaseImplementationParameter;
-
-        return new MethodDeclarationBuilder(
-            setterImposter.SetMethod.ReturnType,
-            setterImposter.SetMethod.Name
-        )
-            .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddParameter(ParameterSyntax(setterImposter.SetMethod.ValueParameter))
-            .AddParameter(
-                !setterImposter.SetMethod.RequiresDirectBaseAssignment
-                    ? ParameterSyntax(baseImplementationParameter)
-                    : null
-            )
-            .WithBody(Block(bodyStatements.ToArray()))
-            .Build();
-
-        static IEnumerable<StatementSyntax> SetBackingField(
-            in PropertySetterImposterMetadata setterImposter,
-            ExpressionSyntax baseImplementationIdentifier,
-            bool setterSupportsBaseImplementation,
-            bool keepsValue
-        )
-        {
-            var defaultPropertyBehaviour = IdentifierName(
-                setterImposter.State.DefaultPropertyBehaviourField.Name
-            );
-
-            var defaultBehaviourPath = IfStatement(
-                defaultPropertyBehaviour.Dot(
-                    IdentifierName(DefaultPropertyBehaviourMetadata.IsOnPropertyName)
-                ),
-                Block(
-                    defaultPropertyBehaviour
-                        .Dot(IdentifierName(DefaultPropertyBehaviourMetadata.WriteMethodName))
-                        .Call(
-                            Argument(IdentifierName(setterImposter.SetMethod.ValueParameter.Name))
-                        )
-                        .ToStatementSyntax()
-                )
-            );
-
-            var statements = new List<StatementSyntax>();
-
-            if (setterImposter.SetMethod.RequiresDirectBaseAssignment)
-            {
-                // An init-only base assignment must execute in the generated init accessor,
-                // after configuration checks, invocation tracking and callbacks have completed.
-                statements.Add(
-                    IfStatement(
-                        IdentifierName(setterImposter.UseBaseImplementationField.Name),
-                        Block(ReturnStatement(True))
-                    )
-                );
-            }
-            else if (setterSupportsBaseImplementation)
-            {
-                var baseImplementationCall = baseImplementationIdentifier.Call(
-                    Argument(IdentifierName(setterImposter.SetMethod.ValueParameter.Name))
-                );
-                var baseImplementationPath = CallBaseImplementationIfUsed(
-                    IdentifierName(setterImposter.UseBaseImplementationField.Name),
-                    baseImplementationIdentifier,
-                    Block(baseImplementationCall.ToStatementSyntax(), ReturnVoid),
-                    PropertyAccessorStateBuilder.ThrowMissingImposter(setterImposter.State)
-                );
-
-                statements.Add(baseImplementationPath);
-            }
-
-            if (keepsValue)
-            {
-                statements.Add(defaultBehaviourPath);
-            }
-
-            return statements;
-        }
-
-        static StatementSyntax InvokeCallbacks(in PropertySetterImposterMetadata setterImposter)
-        {
-            var callbacks = IdentifierName(setterImposter.CallbacksField.Name);
-            var value = IdentifierName(setterImposter.SetMethod.ValueParameter.Name);
-            var invokeCallback = IdentifierName("setterCallback")
-                .Call(Argument(value))
-                .ToStatementSyntax();
-
-            return LazyCollectionSyntaxHelper.UnlessNull(
-                setterImposter.CallbackTupleType is null
-                    ? ForEachStatement(
-                        type: Var,
-                        identifier: Identifier("setterCallback"),
-                        expression: callbacks,
-                        statement: Block(invokeCallback)
-                    )
-                    : CriteriaCallbacksLoop(callbacks, value, invokeCallback)
-            );
-        }
-
-        // A callback with criteria runs only for a value they match.
-        static ForEachVariableStatementSyntax CriteriaCallbacksLoop(
-            IdentifierNameSyntax callbacks,
-            IdentifierNameSyntax value,
-            StatementSyntax invokeCallback
-        ) =>
-            ForEachVariableStatement(
-                variable: DeclarationExpression(
+            IdentifierName("EnsureConfigured").Call().ToStatementSyntax(),
+            LazyCollectionSyntaxHelper.UnlessNull(
+                ForEachStatement(
                     Var,
-                    ParenthesizedVariableDesignation(
-                        Token(SyntaxKind.OpenParenToken),
-                        SeparatedList<VariableDesignationSyntax>([
-                            SingleVariableDesignation(Identifier("criteria")),
-                            SingleVariableDesignation(Identifier("setterCallback")),
-                        ]),
-                        Token(SyntaxKind.CloseParenToken)
-                    )
-                ),
-                callbacks,
-                Block(
-                    IfStatement(
-                        IdentifierName("criteria")
-                            .Dot(IdentifierName("Matches"))
-                            .Call(Argument(value)),
-                        invokeCallback
+                    Identifier(property.Core.Locals["setterRegistration"]),
+                    IdentifierName(setter.CallbacksField.Name),
+                    Block(callback.Call(Argument(value)).ToStatementSyntax())
+                )
+            ),
+        };
+        if (setter.SetMethod.RequiresDirectBaseAssignment)
+            statements.Add(ReturnStatement(IdentifierName("ShouldUseBase").Call()));
+        else if (property.Core.SetterSupportsBaseImplementation)
+            statements.Add(
+                IfStatement(
+                    IdentifierName("ShouldUseBase").Call(),
+                    Block(
+                        PostfixUnaryExpression(
+                                SyntaxKind.SuppressNullableWarningExpression,
+                                IdentifierName(setter.SetMethod.BaseImplementationParameter.Name)
+                            )
+                            .Call(Argument(value))
+                            .ToStatementSyntax()
                     )
                 )
             );
-
-        // A value passed through can't be kept, so the setter only counts it.
-        static StatementSyntax TrackSetterInvocation(
-            in PropertySetterImposterMetadata setterImposter
-        ) =>
-            (
-                setterImposter.InvocationHistoryField is { } invocationHistory
-                    ? LazyCollectionSyntaxHelper
-                        .EnsureInitialized(invocationHistory.Name)
-                        .Dot(ConcurrentStackSyntaxHelper.Push)
-                        .Call(
-                            Argument(IdentifierName(setterImposter.SetMethod.ValueParameter.Name))
-                        )
-                    : InterlockedIncrement(setterImposter.InvocationCountField.Name)
-            ).ToStatementSyntax();
-    }
-
-    private static MethodDeclarationSyntax BuildSetterCalledMethod(
-        in PropertySetterImposterMetadata setterImposter
-    )
-    {
-        var called = setterImposter.CalledMethod;
-        var count = IdentifierName(called.CountParameter.Name);
-        var method = new MethodDeclarationBuilder(called.ReturnType, called.Name);
-
-        if (
-            called.CriteriaParameter is not { } criteria
-            || setterImposter.InvocationHistoryField is not { } invocationHistoryField
+        var builder = new MethodDeclarationBuilder(
+            setter.SetMethod.ReturnType,
+            setter.SetMethod.Name
         )
-        {
-            // A value passed through isn't kept, so Called counts every set.
-            var setCount = IdentifierName(setterImposter.InvocationCountField.Name);
-
-            return method
-                .AddParameter(ParameterSyntax(called.CountParameter))
-                .WithBody(
-                    Block(
-                        IfStatement(
-                            CountDoesNotMatch(count, setCount),
-                            ThrowVerificationFailed(count, setCount)
-                        )
-                    )
-                )
-                .Build();
-        }
-
-        var invocationHistory = IdentifierName(invocationHistoryField.Name);
-        var invocationCount = IdentifierName(called.InvocationCountVariableName);
-        var value = IdentifierName("value");
-        var valueDescription = "set "
-            .StringLiteral()
-            .Add(IdentifierName(PropertyAccessorStateMetadata.PropertyDisplayNameField.Name))
-            .Add(" = ".StringLiteral())
-            .Add(Invocation(value));
-
-        return method
-            .AddParameter(ParameterSyntax(criteria))
-            .AddParameter(ParameterSyntax(called.CountParameter))
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddParameter(ParameterSyntax(setter.SetMethod.ValueParameter));
+        if (!setter.SetMethod.RequiresDirectBaseAssignment)
+            builder.AddParameter(ParameterSyntax(setter.SetMethod.BaseImplementationParameter));
+        if (setter.SetMethod.RequiresDirectBaseAssignment)
+            return builder.WithBody(Block(statements)).Build();
+        return builder
             .WithBody(
                 Block(
                     LocalVariableDeclarationSyntax(
                         Var,
-                        invocationCount.Identifier.Text,
-                        LazyCollectionSyntaxHelper.CountOrZero(
-                            invocationHistory,
-                            invocationHistory
-                                .Dot(IdentifierName("Count"))
-                                .Call(
-                                    Argument(
-                                        IdentifierName(criteria.Name).Dot(IdentifierName("Matches"))
+                        property.Core.Locals["setterSequence"],
+                        WellKnownTypes
+                            .Imposter.Abstractions.InvocationSequence.Dot(IdentifierName("Next"))
+                            .Call()
+                    ),
+                    LocalVariableDeclarationSyntax(
+                        WellKnownTypes.System.Exception.ToNullableType(),
+                        property.Core.Locals["setterFailure"],
+                        Null
+                    ),
+                    TryStatement(
+                        Block(statements),
+                        SingletonList(
+                            CatchClause()
+                                .WithDeclaration(
+                                    CatchDeclaration(
+                                        WellKnownTypes.System.Exception,
+                                        Identifier(property.Core.Locals["setterException"])
                                     )
                                 )
-                        )
-                    ),
-                    ThrowIfCountDoesNotMatch(
-                        count,
-                        invocationCount,
-                        new PerformedInvocations(
-                            invocationHistory,
-                            value,
-                            valueDescription,
-                            IsHistoryNullable: true
+                                .WithBlock(
+                                    Block(
+                                        IdentifierName(property.Core.Locals["setterFailure"])
+                                            .Assign(
+                                                IdentifierName(
+                                                    property.Core.Locals["setterException"]
+                                                )
+                                            )
+                                            .ToStatementSyntax(),
+                                        ThrowStatement()
+                                    )
+                                )
+                        ),
+                        FinallyClause(
+                            Block(
+                                IdentifierName("RecordInvocation")
+                                    .Call(
+                                        ArgumentListSyntax([
+                                            Argument(
+                                                IdentifierName(
+                                                    property.Core.Locals["setterSequence"]
+                                                )
+                                            ),
+                                            Argument(
+                                                IdentifierName(
+                                                    property.Core.Locals["setterFailure"]
+                                                )
+                                            ),
+                                        ])
+                                    )
+                                    .ToStatementSyntax()
+                            )
                         )
                     )
                 )
@@ -336,44 +213,42 @@ internal static partial class SetterImposterBuilder
             .Build();
     }
 
-    private static MethodDeclarationSyntax BuildSetterCallbackMethod(
-        in PropertySetterImposterMetadata setterImposter
-    )
-    {
-        var callbackMethod = setterImposter.CallbackMethod;
-        var callback = IdentifierName(callbackMethod.CallbackParameter.Name);
-        // A callback is queued with its criteria, unless the value is passed through and can't be matched.
-        ExpressionSyntax queuedCallback =
-            callbackMethod.CriteriaParameter is { } criteria
-            && setterImposter.CallbackTupleType is { } tupleType
-                ? tupleType.New(
-                    ArgumentListSyntax([
-                        Argument(IdentifierName(criteria.Name)),
-                        Argument(callback),
-                    ])
-                )
-                : callback;
-
-        return new MethodDeclarationBuilder(callbackMethod.ReturnType, callbackMethod.Name)
-            .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddParameter(
-                callbackMethod.CriteriaParameter is null
-                    ? null
-                    : ParameterSyntax(callbackMethod.CriteriaParameter.Value)
+    internal static ClassDeclarationSyntax BuildPassThroughInvocationRecord(
+        in ImposterPropertyMetadata property
+    ) =>
+        new ClassDeclarationBuilder(property.SetterImposter.InvocationTypeName)
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddModifier(Token(SyntaxKind.SealedKeyword))
+            .AddBaseType(SimpleBaseType(WellKnownTypes.Imposter.Abstractions.InvocationRecord))
+            .AddMember(
+                new PropertyDeclarationBuilder(WellKnownTypes.String, "Member")
+                    .AddModifier(Token(SyntaxKind.PublicKeyword))
+                    .AddModifier(Token(SyntaxKind.OverrideKeyword))
+                    .WithGetterBody(Block(ReturnStatement(property.Core.Name.StringLiteral())))
+                    .Build()
             )
-            .AddParameter(ParameterSyntax(callbackMethod.CallbackParameter))
-            .WithBody(
-                Block(
-                    LazyCollectionSyntaxHelper
-                        .EnsureInitialized(setterImposter.CallbacksField.Name)
-                        .Dot(IdentifierName("Add"))
-                        .Call(Argument(queuedCallback))
-                        .ToStatementSyntax(),
-                    IdentifierName(setterImposter.State.HasConfiguredField.Name)
-                        .Assign(True)
-                        .ToStatementSyntax()
-                )
+            .AddMember(
+                new ConstructorBuilder(property.SetterImposter.InvocationTypeName)
+                    .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
+                    .AddParameter(
+                        ParameterSyntax(WellKnownTypes.Long, property.Core.Locals["setterSequence"])
+                    )
+                    .AddParameter(
+                        ParameterSyntax(
+                            WellKnownTypes.System.Exception.ToNullableType(),
+                            property.Core.Locals["setterException"]
+                        )
+                    )
+                    .WithInitializer(
+                        ConstructorInitializer(
+                            SyntaxKind.BaseConstructorInitializer,
+                            ArgumentListSyntax([
+                                Argument(IdentifierName(property.Core.Locals["setterSequence"])),
+                                Argument(IdentifierName(property.Core.Locals["setterException"])),
+                            ])
+                        )
+                    )
+                    .Build()
             )
             .Build();
-    }
 }

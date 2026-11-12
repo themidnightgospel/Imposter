@@ -581,7 +581,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
         [Fact]
         public void GivenGenericRefParamMethodSetupWithNullValue_WhenMethodIsInvoked_ShouldReturnNull()
         {
-            _sut.GenericRefParam<string?, string?>(Arg<string?>.Any()).Returns((string?)null);
+            string? nullValue = null;
+            _sut.GenericRefParam<string?, string?>(Arg<string?>.Any()).Returns(nullValue);
 
             var refValue = "test";
             var result = _sut.Instance().GenericRefParam<string?, string?>(ref refValue);

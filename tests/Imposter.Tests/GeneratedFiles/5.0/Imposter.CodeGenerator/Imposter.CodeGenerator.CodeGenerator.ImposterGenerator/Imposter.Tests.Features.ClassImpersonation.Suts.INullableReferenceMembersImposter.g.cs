@@ -13,12 +13,12 @@ using global::Imposter.Tests.Features.ClassImpersonation.Suts;
 namespace Imposter.Tests.Features.ClassImpersonation.Suts
 {
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-	public sealed class INullableReferenceMembersImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.INullableReferenceMembers>, INullableReferenceMembersImposter.INullableReferenceMembersSetup
+	public sealed class INullableReferenceMembersImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.INullableReferenceMembers>, INullableReferenceMembersImposter.INullableReferenceMembersSetup
 	{
 		private readonly FindMethodImposter _findMethodImposter;
 		private readonly FindAsyncMethodImposter _findAsyncMethodImposter;
-		private readonly FindMethodInvocationHistoryCollection _findMethodInvocationHistoryCollection = new FindMethodInvocationHistoryCollection();
-		private readonly FindAsyncMethodInvocationHistoryCollection _findAsyncMethodInvocationHistoryCollection = new FindAsyncMethodInvocationHistoryCollection();
+		private readonly FindMethodInvocationHistoryCollection _findMethodInvocationHistoryCollection;
+		private readonly FindAsyncMethodInvocationHistoryCollection _findAsyncMethodInvocationHistoryCollection;
 		public IFindMethodImposterBuilder Find(global::Imposter.Abstractions.Arg<string?> key)
 		{
 			return new FindMethodImposter.Builder(_findMethodImposter, _findMethodInvocationHistoryCollection, new FindArgumentsCriteria(key));
@@ -70,32 +70,74 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IFindMethodInvocationHistory
+		internal interface IFindMethodInvocationHistory
 		{
 			bool Matches(FindArgumentsCriteria criteria);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class FindMethodInvocationHistory : FindMethodInvocationHistoryCollection.Node, IFindMethodInvocationHistory
+		public sealed class FindInvocation : FindMethodInvocationHistoryCollection.Node, IFindMethodInvocationHistory
 		{
 			internal readonly string? capturedkey;
-			internal readonly string? Result;
-			internal readonly global::System.Exception? Exception;
-			public FindMethodInvocationHistory(string? capturedkey, string? Result, global::System.Exception? Exception)
+			internal readonly string? _result;
+			internal readonly global::System.Exception? _exception;
+			private readonly long _sequence;
+			public string? Key
 			{
-				this.capturedkey = capturedkey;
-				this.Result = Result;
-				this.Exception = Exception;
+				get
+				{
+					return capturedkey;
+				}
 			}
 
-			public bool Matches(FindArgumentsCriteria criteria)
+			public string? Result
+			{
+				get
+				{
+					return _result;
+				}
+			}
+
+			public override string Member
+			{
+				get
+				{
+					return "Find";
+				}
+			}
+
+			public override long Sequence
+			{
+				get
+				{
+					return _sequence;
+				}
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public FindInvocation(string? capturedkey, string? result, global::System.Exception? exception, long sequence)
+			{
+				this.capturedkey = capturedkey;
+				this._result = result;
+				this._exception = exception;
+				this._sequence = sequence;
+			}
+
+			bool IFindMethodInvocationHistory.Matches(FindArgumentsCriteria criteria)
 			{
 				return criteria.MatchesCaptured(capturedkey);
 			}
 
 			public override string ToString()
 			{
-				return "Find(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(capturedkey) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Find(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(capturedkey) }) + ")" + " => " + FormatValue(_result) + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -105,12 +147,16 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class FindMethodInvocationHistoryCollection
+		public class FindMethodInvocationHistoryCollection
 		{
 			private FindMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IImposterInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+
 				internal FindMethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -143,6 +189,33 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				}
 
 				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, orderBySequence);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<FindInvocation> MatchingInvocations(FindArgumentsCriteria criteria)
+			{
+				var result = new global::System.Collections.Generic.List<FindInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((IFindMethodInvocationHistory)entry).Matches(criteria))
+						result.Add((FindInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
 			}
 
 			public override string ToString()
@@ -301,6 +374,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<FindInvocation> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -333,26 +407,25 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			public string? Invoke(string? key)
 			{
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
 				string? capturedkey = key;
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedkey);
-				if (matchingInvocationImposterGroup == default)
-				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-					{
-						throw new global::Imposter.Abstractions.MissingImposterException("string? INullableReferenceMembers.Find(string? key)");
-					}
-
-					matchingInvocationImposterGroup = FindMethodInvocationImposterGroup.Default;
-				}
-
 				try
 				{
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedkey);
+					if (matchingInvocationImposterGroup == default)
+					{
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("string? INullableReferenceMembers.Find(string? key)");
+						matchingInvocationImposterGroup = FindMethodInvocationImposterGroup.Default;
+					}
+
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "string? INullableReferenceMembers.Find(string? key)", key);
-					_findMethodInvocationHistoryCollection.Add(new FindMethodInvocationHistory(capturedkey, result, default));
+					_findMethodInvocationHistoryCollection.Add(new FindInvocation(capturedkey, result, default, invocationSequence));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_findMethodInvocationHistoryCollection.RecordFailure(new FindMethodInvocationHistory(capturedkey, default !, ex)))
+				catch (global::System.Exception ex)
 				{
+					_findMethodInvocationHistoryCollection.RecordFailure(new FindInvocation(capturedkey, default !, ex, invocationSequence));
 					throw;
 				}
 			}
@@ -443,6 +516,14 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				{
 					return _findMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
+
+				global::System.Collections.Generic.IReadOnlyList<FindInvocation> FindInvocationVerifier.Invocations
+				{
+					get
+					{
+						return _findMethodInvocationHistoryCollection.MatchingInvocations(_argumentsCriteria);
+					}
+				}
 			}
 		}
 
@@ -481,32 +562,88 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IFindAsyncMethodInvocationHistory
+		internal interface IFindAsyncMethodInvocationHistory
 		{
 			bool Matches(FindAsyncArgumentsCriteria criteria);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class FindAsyncMethodInvocationHistory : FindAsyncMethodInvocationHistoryCollection.Node, IFindAsyncMethodInvocationHistory
+		public sealed class FindAsyncInvocation : FindAsyncMethodInvocationHistoryCollection.Node, IFindAsyncMethodInvocationHistory
 		{
 			internal readonly string? capturedkey;
-			internal readonly global::System.Threading.Tasks.Task<string?> Result;
-			internal readonly global::System.Exception? Exception;
-			public FindAsyncMethodInvocationHistory(string? capturedkey, global::System.Threading.Tasks.Task<string?> Result, global::System.Exception? Exception)
+			private readonly long _sequence;
+			private readonly object? _outcome;
+			private global::System.Threading.Tasks.Task<string?> _result
 			{
-				this.capturedkey = capturedkey;
-				this.Result = Result;
-				this.Exception = Exception;
+				get
+				{
+					return (_outcome as global::System.Threading.Tasks.Task<string?>)!;
+				}
 			}
 
-			public bool Matches(FindAsyncArgumentsCriteria criteria)
+			private global::System.Exception? _exception
+			{
+				get
+				{
+					return _outcome as global::System.Exception;
+				}
+			}
+
+			public string? Key
+			{
+				get
+				{
+					return capturedkey;
+				}
+			}
+
+			public global::System.Threading.Tasks.Task<string?>? Result
+			{
+				get
+				{
+					return _result;
+				}
+			}
+
+			public override string Member
+			{
+				get
+				{
+					return "FindAsync";
+				}
+			}
+
+			public override long Sequence
+			{
+				get
+				{
+					return _sequence;
+				}
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public FindAsyncInvocation(string? capturedkey, global::System.Threading.Tasks.Task<string?> result, global::System.Exception? exception, long sequence)
+			{
+				this.capturedkey = capturedkey;
+				this._sequence = sequence;
+				this._outcome = exception != null ? exception : (object?)result;
+			}
+
+			bool IFindAsyncMethodInvocationHistory.Matches(FindAsyncArgumentsCriteria criteria)
 			{
 				return criteria.MatchesCaptured(capturedkey);
 			}
 
 			public override string ToString()
 			{
-				return "FindAsync(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(capturedkey) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "FindAsync(" + global::System.String.Join(", ", new[] { "key: " + FormatValue(capturedkey) }) + ")" + " => " + FormatValue(_result) + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -516,12 +653,16 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class FindAsyncMethodInvocationHistoryCollection
+		public class FindAsyncMethodInvocationHistoryCollection
 		{
 			private FindAsyncMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IImposterInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+
 				internal FindAsyncMethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -554,6 +695,33 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				}
 
 				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, orderBySequence);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<FindAsyncInvocation> MatchingInvocations(FindAsyncArgumentsCriteria criteria)
+			{
+				var result = new global::System.Collections.Generic.List<FindAsyncInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((IFindAsyncMethodInvocationHistory)entry).Matches(criteria))
+						result.Add((FindAsyncInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
 			}
 
 			public override string ToString()
@@ -652,7 +820,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 						}
 
 						if (callbackTasks != null)
-							result = global::Imposter.Abstractions.AsyncCallbacks.CompleteAfter(result, callbackTasks);
+							result = global::Imposter.Abstractions.AsyncCallbacks.CompleteAfter(result!, callbackTasks);
 					}
 
 					return result;
@@ -740,6 +908,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<FindAsyncInvocation> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -772,26 +941,25 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			public global::System.Threading.Tasks.Task<string?> Invoke(string? key)
 			{
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
 				string? capturedkey = key;
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedkey);
-				if (matchingInvocationImposterGroup == default)
-				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-					{
-						throw new global::Imposter.Abstractions.MissingImposterException("Task<string?> INullableReferenceMembers.FindAsync(string? key)");
-					}
-
-					matchingInvocationImposterGroup = FindAsyncMethodInvocationImposterGroup.Default;
-				}
-
 				try
 				{
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedkey);
+					if (matchingInvocationImposterGroup == default)
+					{
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("Task<string?> INullableReferenceMembers.FindAsync(string? key)");
+						matchingInvocationImposterGroup = FindAsyncMethodInvocationImposterGroup.Default;
+					}
+
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "Task<string?> INullableReferenceMembers.FindAsync(string? key)", key);
-					_findAsyncMethodInvocationHistoryCollection.Add(new FindAsyncMethodInvocationHistory(capturedkey, result, default));
+					_findAsyncMethodInvocationHistoryCollection.Add(new FindAsyncInvocation(capturedkey, result, default, invocationSequence));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_findAsyncMethodInvocationHistoryCollection.RecordFailure(new FindAsyncMethodInvocationHistory(capturedkey, default !, ex)))
+				catch (global::System.Exception ex)
 				{
+					_findAsyncMethodInvocationHistoryCollection.RecordFailure(new FindAsyncInvocation(capturedkey, default !, ex, invocationSequence));
 					throw;
 				}
 			}
@@ -896,6 +1064,14 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				{
 					return _findAsyncMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
+
+				global::System.Collections.Generic.IReadOnlyList<FindAsyncInvocation> FindAsyncInvocationVerifier.Invocations
+				{
+					get
+					{
+						return _findAsyncMethodInvocationHistoryCollection.MatchingInvocations(_argumentsCriteria);
+					}
+				}
 			}
 		}
 
@@ -923,9 +1099,19 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 		public INullableReferenceMembersImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._findMethodInvocationHistoryCollection = new FindMethodInvocationHistoryCollection();
+			this._findAsyncMethodInvocationHistoryCollection = new FindAsyncMethodInvocationHistoryCollection();
 			this._findMethodImposter = new FindMethodImposter(_findMethodInvocationHistoryCollection, invocationBehavior);
 			this._findAsyncMethodImposter = new FindAsyncMethodImposter(_findAsyncMethodInvocationHistoryCollection, invocationBehavior);
 			this._imposterInstance = new ImposterTargetInstance(this);
+		}
+
+		global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> global::Imposter.Abstractions.IImposter.Invocations()
+		{
+			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+			invocations.AddRange(_findMethodInvocationHistoryCollection.Snapshot(false));
+			invocations.AddRange(_findAsyncMethodInvocationHistoryCollection.Snapshot(false));
+			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

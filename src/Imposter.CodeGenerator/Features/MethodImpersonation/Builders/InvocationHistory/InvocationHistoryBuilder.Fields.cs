@@ -15,7 +15,7 @@ internal static partial class InvocationHistoryBuilder
     {
         var fields = new List<FieldDeclarationSyntax>();
 
-        foreach (var parameter in method.Parameters.InputParameterMetadata)
+        foreach (var parameter in method.Parameters.MatchedParameterMetadata)
         {
             fields.Add(
                 SingleVariableField(
@@ -45,6 +45,13 @@ internal static partial class InvocationHistoryBuilder
             )
         );
 
+        fields.Add(
+            SingleVariableField(
+                WellKnownTypes.Long,
+                InvocationHistoryTypeMetadata.SequenceFieldName,
+                TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword))
+            )
+        );
         return fields;
     }
 }

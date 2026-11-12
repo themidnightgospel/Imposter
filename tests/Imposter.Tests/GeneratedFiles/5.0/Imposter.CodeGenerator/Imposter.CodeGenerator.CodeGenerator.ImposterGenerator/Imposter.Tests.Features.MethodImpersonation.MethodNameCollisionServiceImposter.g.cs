@@ -13,16 +13,16 @@ using global::Imposter.Tests.Features.MethodImpersonation;
 namespace Imposter.Tests.Features.MethodImpersonation
 {
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-	public sealed class MethodNameCollisionServiceImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.MethodNameCollisionService>
+	public sealed class MethodNameCollisionServiceImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.MethodNameCollisionService>
 	{
 		private readonly InvokeMethodImposter _invokeMethodImposter;
 		private readonly AdaptRefMethodImposterCollection _adaptRefMethodImposterCollection;
 		private readonly AdaptOutMethodImposterCollection _adaptOutMethodImposterCollection;
 		private readonly VerifyMethodImposterCollection _verifyMethodImposterCollection;
-		private readonly InvokeMethodInvocationHistoryCollection _invokeMethodInvocationHistoryCollection = new InvokeMethodInvocationHistoryCollection();
-		private readonly AdaptRefMethodInvocationHistoryCollection _adaptRefMethodInvocationHistoryCollection = new AdaptRefMethodInvocationHistoryCollection();
-		private readonly AdaptOutMethodInvocationHistoryCollection _adaptOutMethodInvocationHistoryCollection = new AdaptOutMethodInvocationHistoryCollection();
-		private readonly VerifyMethodInvocationHistoryCollection _verifyMethodInvocationHistoryCollection = new VerifyMethodInvocationHistoryCollection();
+		private readonly InvokeMethodInvocationHistoryCollection _invokeMethodInvocationHistoryCollection;
+		private readonly AdaptRefMethodInvocationHistoryCollection _adaptRefMethodInvocationHistoryCollection;
+		private readonly AdaptOutMethodInvocationHistoryCollection _adaptOutMethodInvocationHistoryCollection;
+		private readonly VerifyMethodInvocationHistoryCollection _verifyMethodInvocationHistoryCollection;
 		public IInvokeMethodImposterBuilder Invoke(global::Imposter.Abstractions.Arg<int> invocationBehavior, global::Imposter.Abstractions.Arg<string> methodDisplayName, global::Imposter.Abstractions.Arg<int> invocationImposter)
 		{
 			return new InvokeMethodImposter.Builder(_invokeMethodImposter, _invokeMethodInvocationHistoryCollection, new InvokeArgumentsCriteria(invocationBehavior, methodDisplayName, invocationImposter));
@@ -98,32 +98,84 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IAdaptOutMethodInvocationHistory
+		internal interface IAdaptOutMethodInvocationHistory
 		{
 			bool Matches<TTarget>(AdaptOutArgumentsCriteria<TTarget> criteria);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class AdaptOutMethodInvocationHistory<T> : AdaptOutMethodInvocationHistoryCollection.Node, IAdaptOutMethodInvocationHistory
+		public sealed class AdaptOutInvocation<T> : AdaptOutMethodInvocationHistoryCollection.Node, IAdaptOutMethodInvocationHistory
 		{
+			internal readonly int capturedvalue;
 			internal readonly int capturedvalueAdapted;
-			internal readonly T? Result;
-			internal readonly global::System.Exception? Exception;
-			public AdaptOutMethodInvocationHistory(int capturedvalueAdapted, T? Result, global::System.Exception? Exception)
+			internal readonly T? _result;
+			internal readonly global::System.Exception? _exception;
+			private readonly long _sequence;
+			public int Value
 			{
-				this.capturedvalueAdapted = capturedvalueAdapted;
-				this.Result = Result;
-				this.Exception = Exception;
+				get
+				{
+					return capturedvalue;
+				}
 			}
 
-			public bool Matches<TTarget>(AdaptOutArgumentsCriteria<TTarget> criteria)
+			public int ValueAdapted
+			{
+				get
+				{
+					return capturedvalueAdapted;
+				}
+			}
+
+			public T? Result
+			{
+				get
+				{
+					return _result;
+				}
+			}
+
+			public override string Member
+			{
+				get
+				{
+					return "AdaptOut";
+				}
+			}
+
+			public override long Sequence
+			{
+				get
+				{
+					return _sequence;
+				}
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public AdaptOutInvocation(int capturedvalue, int capturedvalueAdapted, T? result, global::System.Exception? exception, long sequence)
+			{
+				this.capturedvalue = capturedvalue;
+				this.capturedvalueAdapted = capturedvalueAdapted;
+				this._result = result;
+				this._exception = exception;
+				this._sequence = sequence;
+			}
+
+			bool IAdaptOutMethodInvocationHistory.Matches<TTarget>(AdaptOutArgumentsCriteria<TTarget> criteria)
 			{
 				return (typeof(TTarget) == typeof(T)) && ((AdaptOutArgumentsCriteria<T>)(object)criteria).MatchesCaptured(capturedvalueAdapted);
 			}
 
 			public override string ToString()
 			{
-				return "AdaptOut(" + global::System.String.Join(", ", new[] { "valueAdapted: " + FormatValue(capturedvalueAdapted) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "AdaptOut(" + global::System.String.Join(", ", new[] { "valueAdapted: " + FormatValue(capturedvalueAdapted) }) + ")" + " => " + FormatValue(_result) + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -133,12 +185,16 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class AdaptOutMethodInvocationHistoryCollection
+		public class AdaptOutMethodInvocationHistoryCollection
 		{
 			private AdaptOutMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IImposterInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+
 				internal AdaptOutMethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -171,6 +227,33 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, orderBySequence);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<AdaptOutInvocation<T>> MatchingInvocations<T>(AdaptOutArgumentsCriteria<T> criteria)
+			{
+				var result = new global::System.Collections.Generic.List<AdaptOutInvocation<T>>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((IAdaptOutMethodInvocationHistory)entry).Matches<T>(criteria))
+						result.Add((AdaptOutInvocation<T>)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
 			}
 
 			public override string ToString()
@@ -383,6 +466,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<AdaptOutInvocation<T>> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -425,10 +509,16 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				public TTarget Invoke(out int value, int valueAdapted)
 				{
-					int valueAdapted_1;
-					var result = _target.Invoke(out valueAdapted_1, global::Imposter.Abstractions.TypeCaster.Cast<int, int>(valueAdapted));
-					value = global::Imposter.Abstractions.TypeCaster.Cast<int, int>(valueAdapted_1);
-					return global::Imposter.Abstractions.TypeCaster.Cast<T, TTarget>(result);
+					int valueAdapted_1 = default !;
+					try
+					{
+						var result = _target.Invoke(out valueAdapted_1, global::Imposter.Abstractions.TypeCaster.Cast<int, int>(valueAdapted));
+						return global::Imposter.Abstractions.TypeCaster.Cast<T, TTarget>(result);
+					}
+					finally
+					{
+						value = global::Imposter.Abstractions.TypeCaster.Cast<int, int>(valueAdapted_1);
+					}
 				}
 
 				public bool HasMatchingInvocationImposterGroup(in int valueAdapted)
@@ -461,26 +551,18 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			public T Invoke(out int value, int valueAdapted)
 			{
 				int capturedvalueAdapted = valueAdapted;
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedvalueAdapted);
-				if (matchingInvocationImposterGroup == default)
+				value = default !;
 				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedvalueAdapted);
+					if (matchingInvocationImposterGroup == default)
 					{
-						throw new global::Imposter.Abstractions.MissingImposterException("abstract T MethodNameCollisionService.AdaptOut<T>(out int value, int valueAdapted)");
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("abstract T MethodNameCollisionService.AdaptOut<T>(out int value, int valueAdapted)");
+						matchingInvocationImposterGroup = AdaptOutMethodInvocationImposterGroup<T>.Default;
 					}
 
-					matchingInvocationImposterGroup = AdaptOutMethodInvocationImposterGroup<T>.Default;
-				}
-
-				try
-				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "abstract T MethodNameCollisionService.AdaptOut<T>(out int value, int valueAdapted)", out value, valueAdapted);
-					_adaptOutMethodInvocationHistoryCollection.Add(new AdaptOutMethodInvocationHistory<T>(capturedvalueAdapted, result, default));
 					return result;
-				}
-				catch (global::System.Exception ex) when (_adaptOutMethodInvocationHistoryCollection.RecordFailure(new AdaptOutMethodInvocationHistory<T>(capturedvalueAdapted, default !, ex)))
-				{
-					throw;
 				}
 			}
 
@@ -571,6 +653,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				{
 					return _adaptOutMethodInvocationHistoryCollection.Count<T>(_argumentsCriteria);
 				}
+
+				global::System.Collections.Generic.IReadOnlyList<AdaptOutInvocation<T>> AdaptOutInvocationVerifier<T>.Invocations
+				{
+					get
+					{
+						return _adaptOutMethodInvocationHistoryCollection.MatchingInvocations<T>(_argumentsCriteria);
+					}
+				}
 			}
 		}
 
@@ -625,34 +715,84 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IAdaptRefMethodInvocationHistory
+		internal interface IAdaptRefMethodInvocationHistory
 		{
 			bool Matches<TTarget>(AdaptRefArgumentsCriteria<TTarget> criteria);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class AdaptRefMethodInvocationHistory<T> : AdaptRefMethodInvocationHistoryCollection.Node, IAdaptRefMethodInvocationHistory
+		public sealed class AdaptRefInvocation<T> : AdaptRefMethodInvocationHistoryCollection.Node, IAdaptRefMethodInvocationHistory
 		{
 			internal readonly int capturedvalue;
 			internal readonly int capturedvalueAdapted;
-			internal readonly T? Result;
-			internal readonly global::System.Exception? Exception;
-			public AdaptRefMethodInvocationHistory(int capturedvalue, int capturedvalueAdapted, T? Result, global::System.Exception? Exception)
+			internal readonly T? _result;
+			internal readonly global::System.Exception? _exception;
+			private readonly long _sequence;
+			public int Value
+			{
+				get
+				{
+					return capturedvalue;
+				}
+			}
+
+			public int ValueAdapted
+			{
+				get
+				{
+					return capturedvalueAdapted;
+				}
+			}
+
+			public T? Result
+			{
+				get
+				{
+					return _result;
+				}
+			}
+
+			public override string Member
+			{
+				get
+				{
+					return "AdaptRef";
+				}
+			}
+
+			public override long Sequence
+			{
+				get
+				{
+					return _sequence;
+				}
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public AdaptRefInvocation(int capturedvalue, int capturedvalueAdapted, T? result, global::System.Exception? exception, long sequence)
 			{
 				this.capturedvalue = capturedvalue;
 				this.capturedvalueAdapted = capturedvalueAdapted;
-				this.Result = Result;
-				this.Exception = Exception;
+				this._result = result;
+				this._exception = exception;
+				this._sequence = sequence;
 			}
 
-			public bool Matches<TTarget>(AdaptRefArgumentsCriteria<TTarget> criteria)
+			bool IAdaptRefMethodInvocationHistory.Matches<TTarget>(AdaptRefArgumentsCriteria<TTarget> criteria)
 			{
 				return (typeof(TTarget) == typeof(T)) && ((AdaptRefArgumentsCriteria<T>)(object)criteria).MatchesCaptured(capturedvalue, capturedvalueAdapted);
 			}
 
 			public override string ToString()
 			{
-				return "AdaptRef(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(capturedvalue), "valueAdapted: " + FormatValue(capturedvalueAdapted) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "AdaptRef(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(capturedvalue), "valueAdapted: " + FormatValue(capturedvalueAdapted) }) + ")" + " => " + FormatValue(_result) + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -662,12 +802,16 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class AdaptRefMethodInvocationHistoryCollection
+		public class AdaptRefMethodInvocationHistoryCollection
 		{
 			private AdaptRefMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IImposterInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+
 				internal AdaptRefMethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -700,6 +844,33 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, orderBySequence);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<AdaptRefInvocation<T>> MatchingInvocations<T>(AdaptRefArgumentsCriteria<T> criteria)
+			{
+				var result = new global::System.Collections.Generic.List<AdaptRefInvocation<T>>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((IAdaptRefMethodInvocationHistory)entry).Matches<T>(criteria))
+						result.Add((AdaptRefInvocation<T>)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
 			}
 
 			public override string ToString()
@@ -905,6 +1076,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<AdaptRefInvocation<T>> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -948,9 +1120,15 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				public TTarget Invoke(ref int value, int valueAdapted)
 				{
 					int valueAdapted_1 = global::Imposter.Abstractions.TypeCaster.Cast<int, int>(value);
-					var result = _target.Invoke(ref valueAdapted_1, global::Imposter.Abstractions.TypeCaster.Cast<int, int>(valueAdapted));
-					value = global::Imposter.Abstractions.TypeCaster.Cast<int, int>(valueAdapted_1);
-					return global::Imposter.Abstractions.TypeCaster.Cast<T, TTarget>(result);
+					try
+					{
+						var result = _target.Invoke(ref valueAdapted_1, global::Imposter.Abstractions.TypeCaster.Cast<int, int>(valueAdapted));
+						return global::Imposter.Abstractions.TypeCaster.Cast<T, TTarget>(result);
+					}
+					finally
+					{
+						value = global::Imposter.Abstractions.TypeCaster.Cast<int, int>(valueAdapted_1);
+					}
 				}
 
 				public bool HasMatchingInvocationImposterGroup(in int value, in int valueAdapted)
@@ -984,26 +1162,17 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			{
 				int capturedvalue = value;
 				int capturedvalueAdapted = valueAdapted;
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedvalue, capturedvalueAdapted);
-				if (matchingInvocationImposterGroup == default)
 				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedvalue, capturedvalueAdapted);
+					if (matchingInvocationImposterGroup == default)
 					{
-						throw new global::Imposter.Abstractions.MissingImposterException("abstract T MethodNameCollisionService.AdaptRef<T>(ref int value, int valueAdapted)");
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("abstract T MethodNameCollisionService.AdaptRef<T>(ref int value, int valueAdapted)");
+						matchingInvocationImposterGroup = AdaptRefMethodInvocationImposterGroup<T>.Default;
 					}
 
-					matchingInvocationImposterGroup = AdaptRefMethodInvocationImposterGroup<T>.Default;
-				}
-
-				try
-				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "abstract T MethodNameCollisionService.AdaptRef<T>(ref int value, int valueAdapted)", ref value, valueAdapted);
-					_adaptRefMethodInvocationHistoryCollection.Add(new AdaptRefMethodInvocationHistory<T>(capturedvalue, capturedvalueAdapted, result, default));
 					return result;
-				}
-				catch (global::System.Exception ex) when (_adaptRefMethodInvocationHistoryCollection.RecordFailure(new AdaptRefMethodInvocationHistory<T>(capturedvalue, capturedvalueAdapted, default !, ex)))
-				{
-					throw;
 				}
 			}
 
@@ -1094,6 +1263,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				{
 					return _adaptRefMethodInvocationHistoryCollection.Count<T>(_argumentsCriteria);
 				}
+
+				global::System.Collections.Generic.IReadOnlyList<AdaptRefInvocation<T>> AdaptRefInvocationVerifier<T>.Invocations
+				{
+					get
+					{
+						return _adaptRefMethodInvocationHistoryCollection.MatchingInvocations<T>(_argumentsCriteria);
+					}
+				}
 			}
 		}
 
@@ -1140,36 +1317,94 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IInvokeMethodInvocationHistory
+		internal interface IInvokeMethodInvocationHistory
 		{
 			bool Matches(InvokeArgumentsCriteria criteria);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class InvokeMethodInvocationHistory : InvokeMethodInvocationHistoryCollection.Node, IInvokeMethodInvocationHistory
+		public sealed class InvokeInvocation : InvokeMethodInvocationHistoryCollection.Node, IInvokeMethodInvocationHistory
 		{
 			internal readonly int capturedinvocationBehavior;
 			internal readonly string capturedmethodDisplayName;
 			internal readonly int capturedinvocationImposter;
-			internal readonly int? Result;
-			internal readonly global::System.Exception? Exception;
-			public InvokeMethodInvocationHistory(int capturedinvocationBehavior, string capturedmethodDisplayName, int capturedinvocationImposter, int? Result, global::System.Exception? Exception)
+			internal readonly int? _result;
+			internal readonly global::System.Exception? _exception;
+			private readonly long _sequence;
+			public int InvocationBehavior
+			{
+				get
+				{
+					return capturedinvocationBehavior;
+				}
+			}
+
+			public string MethodDisplayName
+			{
+				get
+				{
+					return capturedmethodDisplayName;
+				}
+			}
+
+			public int InvocationImposter
+			{
+				get
+				{
+					return capturedinvocationImposter;
+				}
+			}
+
+			public int? Result
+			{
+				get
+				{
+					return _result;
+				}
+			}
+
+			public override string Member
+			{
+				get
+				{
+					return "Invoke";
+				}
+			}
+
+			public override long Sequence
+			{
+				get
+				{
+					return _sequence;
+				}
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public InvokeInvocation(int capturedinvocationBehavior, string capturedmethodDisplayName, int capturedinvocationImposter, int? result, global::System.Exception? exception, long sequence)
 			{
 				this.capturedinvocationBehavior = capturedinvocationBehavior;
 				this.capturedmethodDisplayName = capturedmethodDisplayName;
 				this.capturedinvocationImposter = capturedinvocationImposter;
-				this.Result = Result;
-				this.Exception = Exception;
+				this._result = result;
+				this._exception = exception;
+				this._sequence = sequence;
 			}
 
-			public bool Matches(InvokeArgumentsCriteria criteria)
+			bool IInvokeMethodInvocationHistory.Matches(InvokeArgumentsCriteria criteria)
 			{
 				return criteria.MatchesCaptured(capturedinvocationBehavior, capturedmethodDisplayName, capturedinvocationImposter);
 			}
 
 			public override string ToString()
 			{
-				return "Invoke(" + global::System.String.Join(", ", new[] { "invocationBehavior: " + FormatValue(capturedinvocationBehavior), "methodDisplayName: " + FormatValue(capturedmethodDisplayName), "invocationImposter: " + FormatValue(capturedinvocationImposter) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Invoke(" + global::System.String.Join(", ", new[] { "invocationBehavior: " + FormatValue(capturedinvocationBehavior), "methodDisplayName: " + FormatValue(capturedmethodDisplayName), "invocationImposter: " + FormatValue(capturedinvocationImposter) }) + ")" + " => " + FormatValue(_result) + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -1179,12 +1414,16 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class InvokeMethodInvocationHistoryCollection
+		public class InvokeMethodInvocationHistoryCollection
 		{
 			private InvokeMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IImposterInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+
 				internal InvokeMethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -1217,6 +1456,33 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, orderBySequence);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<InvokeInvocation> MatchingInvocations(InvokeArgumentsCriteria criteria)
+			{
+				var result = new global::System.Collections.Generic.List<InvokeInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((IInvokeMethodInvocationHistory)entry).Matches(criteria))
+						result.Add((InvokeInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
 			}
 
 			public override string ToString()
@@ -1391,6 +1657,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<InvokeInvocation> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1423,28 +1690,27 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public int Invoke(int invocationBehavior, string methodDisplayName, int invocationImposter, InvokeDelegate? baseImplementation = null)
 			{
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
 				int capturedinvocationBehavior = invocationBehavior;
 				string capturedmethodDisplayName = methodDisplayName;
 				int capturedinvocationImposter = invocationImposter;
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedinvocationBehavior, capturedmethodDisplayName, capturedinvocationImposter);
-				if (matchingInvocationImposterGroup == default)
-				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-					{
-						throw new global::Imposter.Abstractions.MissingImposterException("virtual int MethodNameCollisionService.Invoke(int invocationBehavior, string methodDisplayName, int invocationImposter)");
-					}
-
-					matchingInvocationImposterGroup = InvokeMethodInvocationImposterGroup.Default;
-				}
-
 				try
 				{
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedinvocationBehavior, capturedmethodDisplayName, capturedinvocationImposter);
+					if (matchingInvocationImposterGroup == default)
+					{
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("virtual int MethodNameCollisionService.Invoke(int invocationBehavior, string methodDisplayName, int invocationImposter)");
+						matchingInvocationImposterGroup = InvokeMethodInvocationImposterGroup.Default;
+					}
+
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual int MethodNameCollisionService.Invoke(int invocationBehavior, string methodDisplayName, int invocationImposter)", invocationBehavior, methodDisplayName, invocationImposter, baseImplementation);
-					_invokeMethodInvocationHistoryCollection.Add(new InvokeMethodInvocationHistory(capturedinvocationBehavior, capturedmethodDisplayName, capturedinvocationImposter, result, default));
+					_invokeMethodInvocationHistoryCollection.Add(new InvokeInvocation(capturedinvocationBehavior, capturedmethodDisplayName, capturedinvocationImposter, result, default, invocationSequence));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_invokeMethodInvocationHistoryCollection.RecordFailure(new InvokeMethodInvocationHistory(capturedinvocationBehavior, capturedmethodDisplayName, capturedinvocationImposter, default !, ex)))
+				catch (global::System.Exception ex)
 				{
+					_invokeMethodInvocationHistoryCollection.RecordFailure(new InvokeInvocation(capturedinvocationBehavior, capturedmethodDisplayName, capturedinvocationImposter, default !, ex, invocationSequence));
 					throw;
 				}
 			}
@@ -1542,6 +1808,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				{
 					return _invokeMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
+
+				global::System.Collections.Generic.IReadOnlyList<InvokeInvocation> InvokeInvocationVerifier.Invocations
+				{
+					get
+					{
+						return _invokeMethodInvocationHistoryCollection.MatchingInvocations(_argumentsCriteria);
+					}
+				}
 			}
 		}
 
@@ -1592,32 +1866,74 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IVerifyMethodInvocationHistory
+		internal interface IVerifyMethodInvocationHistory
 		{
 			bool Matches<CalledTarget>(VerifyArgumentsCriteria<CalledTarget> criteria);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class VerifyMethodInvocationHistory<Called> : VerifyMethodInvocationHistoryCollection.Node, IVerifyMethodInvocationHistory
+		public sealed class VerifyInvocation<Called> : VerifyMethodInvocationHistoryCollection.Node, IVerifyMethodInvocationHistory
 		{
 			internal readonly Called capturedvalue;
-			internal readonly Called? Result;
-			internal readonly global::System.Exception? Exception;
-			public VerifyMethodInvocationHistory(Called capturedvalue, Called? Result, global::System.Exception? Exception)
+			internal readonly Called? _result;
+			internal readonly global::System.Exception? _exception;
+			private readonly long _sequence;
+			public Called Value
 			{
-				this.capturedvalue = capturedvalue;
-				this.Result = Result;
-				this.Exception = Exception;
+				get
+				{
+					return capturedvalue;
+				}
 			}
 
-			public bool Matches<CalledTarget>(VerifyArgumentsCriteria<CalledTarget> criteria)
+			public Called? Result
+			{
+				get
+				{
+					return _result;
+				}
+			}
+
+			public override string Member
+			{
+				get
+				{
+					return "Verify";
+				}
+			}
+
+			public override long Sequence
+			{
+				get
+				{
+					return _sequence;
+				}
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public VerifyInvocation(Called capturedvalue, Called? result, global::System.Exception? exception, long sequence)
+			{
+				this.capturedvalue = capturedvalue;
+				this._result = result;
+				this._exception = exception;
+				this._sequence = sequence;
+			}
+
+			bool IVerifyMethodInvocationHistory.Matches<CalledTarget>(VerifyArgumentsCriteria<CalledTarget> criteria)
 			{
 				return (typeof(CalledTarget) == typeof(Called)) && ((VerifyArgumentsCriteria<Called>)(object)criteria).MatchesCaptured(capturedvalue);
 			}
 
 			public override string ToString()
 			{
-				return "Verify(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(capturedvalue) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Verify(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(capturedvalue) }) + ")" + " => " + FormatValue(_result) + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -1627,12 +1943,16 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class VerifyMethodInvocationHistoryCollection
+		public class VerifyMethodInvocationHistoryCollection
 		{
 			private VerifyMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IImposterInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+
 				internal VerifyMethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -1665,6 +1985,33 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, orderBySequence);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<VerifyInvocation<Called>> MatchingInvocations<Called>(VerifyArgumentsCriteria<Called> criteria)
+			{
+				var result = new global::System.Collections.Generic.List<VerifyInvocation<Called>>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((IVerifyMethodInvocationHistory)entry).Matches<Called>(criteria))
+						result.Add((VerifyInvocation<Called>)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
 			}
 
 			public override string ToString()
@@ -1886,6 +2233,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<VerifyInvocation<Called_1>> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1962,26 +2310,17 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			public Called Invoke(Called value, VerifyDelegate<Called>? baseImplementation = null)
 			{
 				Called capturedvalue = value;
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedvalue);
-				if (matchingInvocationImposterGroup == default)
 				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedvalue);
+					if (matchingInvocationImposterGroup == default)
 					{
-						throw new global::Imposter.Abstractions.MissingImposterException("virtual Called MethodNameCollisionService.Verify<Called>(Called value)");
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("virtual Called MethodNameCollisionService.Verify<Called>(Called value)");
+						matchingInvocationImposterGroup = VerifyMethodInvocationImposterGroup<Called>.Default;
 					}
 
-					matchingInvocationImposterGroup = VerifyMethodInvocationImposterGroup<Called>.Default;
-				}
-
-				try
-				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual Called MethodNameCollisionService.Verify<Called>(Called value)", value, baseImplementation);
-					_verifyMethodInvocationHistoryCollection.Add(new VerifyMethodInvocationHistory<Called>(capturedvalue, result, default));
 					return result;
-				}
-				catch (global::System.Exception ex) when (_verifyMethodInvocationHistoryCollection.RecordFailure(new VerifyMethodInvocationHistory<Called>(capturedvalue, default !, ex)))
-				{
-					throw;
 				}
 			}
 
@@ -2079,16 +2418,38 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				{
 					return _verifyMethodInvocationHistoryCollection.Count<Called>(_argumentsCriteria);
 				}
+
+				global::System.Collections.Generic.IReadOnlyList<VerifyInvocation<Called>> VerifyInvocationVerifier<Called>.Invocations
+				{
+					get
+					{
+						return _verifyMethodInvocationHistoryCollection.MatchingInvocations<Called>(_argumentsCriteria);
+					}
+				}
 			}
 		}
 
 		public MethodNameCollisionServiceImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._invokeMethodInvocationHistoryCollection = new InvokeMethodInvocationHistoryCollection();
+			this._adaptRefMethodInvocationHistoryCollection = new AdaptRefMethodInvocationHistoryCollection();
+			this._adaptOutMethodInvocationHistoryCollection = new AdaptOutMethodInvocationHistoryCollection();
+			this._verifyMethodInvocationHistoryCollection = new VerifyMethodInvocationHistoryCollection();
 			this._invokeMethodImposter = new InvokeMethodImposter(_invokeMethodInvocationHistoryCollection, invocationBehavior);
 			this._adaptRefMethodImposterCollection = new AdaptRefMethodImposterCollection(_adaptRefMethodInvocationHistoryCollection, invocationBehavior);
 			this._adaptOutMethodImposterCollection = new AdaptOutMethodImposterCollection(_adaptOutMethodInvocationHistoryCollection, invocationBehavior);
 			this._verifyMethodImposterCollection = new VerifyMethodImposterCollection(_verifyMethodInvocationHistoryCollection, invocationBehavior);
 			this._imposterInstance = new ImposterTargetInstance(this);
+		}
+
+		global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> global::Imposter.Abstractions.IImposter.Invocations()
+		{
+			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+			invocations.AddRange(_invokeMethodInvocationHistoryCollection.Snapshot(false));
+			invocations.AddRange(_adaptRefMethodInvocationHistoryCollection.Snapshot(false));
+			invocations.AddRange(_adaptOutMethodInvocationHistoryCollection.Snapshot(false));
+			invocations.AddRange(_verifyMethodInvocationHistoryCollection.Snapshot(false));
+			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -2117,7 +2478,26 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					return default !;
 				}
 
-				return _imposter._adaptRefMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<T>(value, valueAdapted).Invoke(ref value, valueAdapted);
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
+				global::System.Exception? invocationException = null;
+				int capturedvalue = value;
+				int capturedvalueAdapted = valueAdapted;
+				T? invocationResult = default !;
+				try
+				{
+					var returnedValue = _imposter._adaptRefMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<T>(value, valueAdapted).Invoke(ref value, valueAdapted);
+					invocationResult = returnedValue;
+					return returnedValue;
+				}
+				catch (global::System.Exception caughtInvocationException)
+				{
+					invocationException = caughtInvocationException;
+					throw;
+				}
+				finally
+				{
+					_imposter._adaptRefMethodInvocationHistoryCollection.Add(new AdaptRefInvocation<T>(capturedvalue, capturedvalueAdapted, invocationResult, invocationException, invocationSequence));
+				}
 			}
 
 			public override T AdaptOut<T>(out int value, int valueAdapted)
@@ -2128,7 +2508,26 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					return default !;
 				}
 
-				return _imposter._adaptOutMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<T>(valueAdapted).Invoke(out value, valueAdapted);
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
+				global::System.Exception? invocationException = null;
+				int capturedvalueAdapted = valueAdapted;
+				value = default !;
+				T? invocationResult = default !;
+				try
+				{
+					var returnedValue = _imposter._adaptOutMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<T>(valueAdapted).Invoke(out value, valueAdapted);
+					invocationResult = returnedValue;
+					return returnedValue;
+				}
+				catch (global::System.Exception caughtInvocationException)
+				{
+					invocationException = caughtInvocationException;
+					throw;
+				}
+				finally
+				{
+					_imposter._adaptOutMethodInvocationHistoryCollection.Add(new AdaptOutInvocation<T>(value, capturedvalueAdapted, invocationResult, invocationException, invocationSequence));
+				}
 			}
 
 			public override Called Verify<Called>(Called value)
@@ -2138,7 +2537,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					return base.Verify<Called>(value);
 				}
 
-				return _imposter._verifyMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<Called>(value).Invoke(value, base.Verify<Called>);
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
+				global::System.Exception? invocationException = null;
+				Called capturedvalue = value;
+				Called? invocationResult = default !;
+				try
+				{
+					var returnedValue = _imposter._verifyMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<Called>(value).Invoke(value, base.Verify<Called>);
+					invocationResult = returnedValue;
+					return returnedValue;
+				}
+				catch (global::System.Exception caughtInvocationException)
+				{
+					invocationException = caughtInvocationException;
+					throw;
+				}
+				finally
+				{
+					_imposter._verifyMethodInvocationHistoryCollection.Add(new VerifyInvocation<Called>(capturedvalue, invocationResult, invocationException, invocationSequence));
+				}
 			}
 		}
 	}

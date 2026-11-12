@@ -5,19 +5,90 @@ using Imposter.Tests.Features.MethodImpersonation;
 using Shouldly;
 using Xunit;
 
+[assembly: GenerateImposter(
+    typeof(Imposter.Tests.Features.CallAllocations.ISpanAdapterAllocationSut)
+)]
+
 namespace Imposter.Tests.Features.CallAllocations
 {
     // A call allocates only what the imposter keeps of it: its arguments and its history entry. With no callbacks
     // registered, it allocates nothing to look for them. The budgets are 64-bit object sizes.
+    public interface ISpanAdapterAllocationSut
+    {
+        bool Contains<T>(ReadOnlySpan<int> items, T item);
+    }
+
+    // A call allocates only what the imposter keeps of it: its arguments and its history entry. With no callbacks
+    // registered, it allocates nothing to look for them. The budgets are 64-bit object sizes.
     public class CallAllocationTests
     {
+        [Fact]
+        public void GivenGenericSpanCompatibleArrayPredicate_WhenCalled_ShouldKeepPrivateCopiesWithinBudget()
+        {
+            var sut = new ISpanAdapterAllocationSutImposter();
+            sut.Contains<object>(ReadOnlySpanArg<int>.Is(items => items[0] >= 0), Arg<object>.Any())
+                .Returns(true);
+            var instance = sut.Instance();
+            var items = new[] { 1, 2, 3, 4 };
+            instance.Contains<string>(items, "value").ShouldBeTrue();
+            AllocatedBytesPerCall(() => instance.Contains<string>(items, "value"))
+                .ShouldBeLessThanOrEqualTo(248);
+        }
+
+        [Fact]
+        public void GivenGenericSpanCompatibleSetup_WhenCalled_ShouldKeepAdapterCopiesWithinBudget()
+        {
+            var sut = new ISpanAdapterAllocationSutImposter();
+            sut.Contains<object>(ReadOnlySpanArg<int>.Any(), Arg<object>.Any()).Returns(true);
+            var instance = sut.Instance();
+            var items = new[] { 1, 2, 3, 4 };
+            instance.Contains<string>(items, "value").ShouldBeTrue();
+            AllocatedBytesPerCall(() => instance.Contains<string>(items, "value"))
+                .ShouldBeLessThanOrEqualTo(208);
+        }
+
         private const int Calls = 100;
 
         private readonly ICallAllocationSutImposter _sut = new ICallAllocationSutImposter();
 
+        [Theory]
+        [InlineData(100)]
+        [InlineData(4096)]
+        public void GivenEvent_WhenSubscribingAndUnsubscribing_ShouldStayWithinOriginalHistoryBudget(
+            int measuredCalls
+        )
+        {
+            var sut = new IEventAllocationSutImposter();
+            var instance = sut.Instance();
+            EventHandler handler = (_, __) => { };
+            for (var i = 0; i < Calls; i++)
+            {
+                instance.Changed += handler;
+                instance.Changed -= handler;
+            }
+
+            long subscribedBytes = 0;
+            long unsubscribedBytes = 0;
+            for (var i = 0; i < measuredCalls; i++)
+            {
+                var before = GC.GetAllocatedBytesForCurrentThread();
+                instance.Changed += handler;
+                subscribedBytes += GC.GetAllocatedBytesForCurrentThread() - before;
+                before = GC.GetAllocatedBytesForCurrentThread();
+                instance.Changed -= handler;
+                unsubscribedBytes += GC.GetAllocatedBytesForCurrentThread() - before;
+            }
+
+            // Baseline history nodes used 32 B per accessor; subscribing one handler also publishes
+            // a 32 B handler state and 32 B invocation-list array. Include all segment/directory growth.
+            (subscribedBytes / measuredCalls).ShouldBeLessThanOrEqualTo(96);
+            (unsubscribedBytes / measuredCalls).ShouldBeLessThanOrEqualTo(32);
+        }
+
         [Fact]
         public void GivenProperty_WhenConstructed_ShouldNotAllocateUnusedCollections()
         {
+            // No later verification/diagnostic state is included in the history foundation.
             AllocatedBytesPerCall(() => GC.KeepAlive(new IPropertyAllocationSutImposter()))
                 .ShouldBeLessThanOrEqualTo(280);
         }
@@ -123,7 +194,7 @@ namespace Imposter.Tests.Features.CallAllocations
             AllocatedBytesPerCall(() => _ = instance.Value).ShouldBe(0);
         }
 
-        // The setter keeps the value in its history: a 32-byte stack node.
+        // Compact segmented setter history retains values and sequence/coverage; failure columns stay lazy.
         [Fact]
         public void GivenPropertySetterWithoutCallbacks_WhenCalled_ShouldOnlyAllocateItsHistory()
         {
@@ -132,27 +203,27 @@ namespace Imposter.Tests.Features.CallAllocations
             AllocatedBytesPerCall(() => instance.Value = 1).ShouldBeLessThanOrEqualTo(32);
         }
 
-        // One entry keeps the argument, result, exception and next link (48 bytes).
+        // One 56-byte entry keeps the argument, result, exception, sequence/coverage word and next link.
         [Fact]
         public void GivenMethodWithoutCallbacks_WhenCalled_ShouldOnlyAllocateItsArgumentsAndHistory()
         {
             _sut.Square(Arg<int>.Any()).Returns(4);
             var instance = _sut.Instance();
 
-            AllocatedBytesPerCall(() => instance.Square(2)).ShouldBeLessThanOrEqualTo(48);
+            AllocatedBytesPerCall(() => instance.Square(2)).ShouldBeLessThanOrEqualTo(56);
         }
 
-        // One entry keeps the argument, exception and next link (40 bytes).
+        // One 48-byte entry keeps the argument, exception, sequence/coverage word and next link.
         [Fact]
         public void GivenVoidMethodWithoutCallbacks_WhenCalled_ShouldOnlyAllocateItsArgumentsAndHistory()
         {
             _sut.Log(Arg<string>.Any());
             var instance = _sut.Instance();
 
-            AllocatedBytesPerCall(() => instance.Log("value")).ShouldBeLessThanOrEqualTo(40);
+            AllocatedBytesPerCall(() => instance.Log("value")).ShouldBeLessThanOrEqualTo(48);
         }
 
-        // The entry keeps the argument, result, exception and next link (48 bytes).
+        // The 56-byte entry keeps the argument, result, exception, sequence/coverage word and next link.
         // Setups with the call's own type arguments need no adapter or converted arguments.
         // Checking candidate setups must not allocate enumerators, even when the newest setup does not match.
         [Fact]
@@ -162,24 +233,46 @@ namespace Imposter.Tests.Features.CallAllocations
             _sut.Echo<string>("miss").Returns("other");
             var instance = _sut.Instance();
 
-            AllocatedBytesPerCall(() => instance.Echo("match")).ShouldBeLessThanOrEqualTo(48);
+            AllocatedBytesPerCall(() => instance.Echo("match")).ShouldBeLessThanOrEqualTo(56);
         }
 
-        // The history entry and two four-item span snapshots: one for generic lookup and one captured before
-        // the outcome. No arguments objects, stack nodes or adapter copy. The budget includes both arrays.
-        [Fact]
-        public void GivenGenericMethodWithSpan_WhenCalledWithItsOwnTypeArgument_ShouldNotCopyTheSpanForAnAdapter()
+        // Safe matchers keep their arrays private: lookup and invocation matching reuse one
+        // snapshot, while history retains a separate entry copy. Arbitrary predicates keep isolation.
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        public void GivenGenericMethodWithSpan_WhenCalledWithItsOwnTypeArgument_ShouldNotCopyTheSpanForAnAdapter(
+            int matcherKind
+        )
         {
             var sut = new ISpanParameterSutImposter();
-            sut.Contains<int>(ReadOnlySpanArg<int>.Any(), Arg<int>.Any()).Returns(true);
+            var matcher = matcherKind switch
+            {
+                0 => ReadOnlySpanArg<int>.Any(),
+                _ => ReadOnlySpanArg<int>.Is(1, 2, 3, 4),
+            };
+            sut.Contains<int>(matcher, Arg<int>.Any()).Returns(true);
             var instance = sut.Instance();
             var items = new[] { 1, 2, 3, 4 };
 
             AllocatedBytesPerCall(() => instance.Contains<int>(items, 2))
-                .ShouldBeLessThanOrEqualTo(136);
+                .ShouldBeLessThanOrEqualTo(144);
         }
 
-        // The arguments (24 bytes) and their history stack node (32).
+        [Fact]
+        public void GivenGenericSpanPredicate_WhenCalled_ShouldKeepSeparateCapturedArraysWithinBudget()
+        {
+            var sut = new ISpanParameterSutImposter();
+            sut.Contains<int>(ReadOnlySpanArg<int>.Is(values => values.Length == 4), Arg<int>.Any())
+                .Returns(true);
+            var instance = sut.Instance();
+            var items = new[] { 1, 2, 3, 4 };
+
+            AllocatedBytesPerCall(() => instance.Contains<int>(items, 2))
+                .ShouldBeLessThanOrEqualTo(176);
+        }
+
+        // One node supplies captured keys for matching and retains result, exception and sequence.
         [Fact]
         public void GivenIndexerGetterWithoutCallbacks_WhenCalled_ShouldOnlyAllocateItsArgumentsAndHistory()
         {
@@ -189,7 +282,7 @@ namespace Imposter.Tests.Features.CallAllocations
             AllocatedBytesPerCall(() => _ = instance[1]).ShouldBeLessThanOrEqualTo(56);
         }
 
-        // The arguments (24 bytes) and the history stack node that keeps them with the value (40).
+        // One node supplies captured keys for matching and retains assigned value, exception and sequence.
         [Fact]
         public void GivenIndexerSetterWithoutCallbacks_WhenCalled_ShouldOnlyAllocateItsArgumentsAndHistory()
         {
@@ -219,7 +312,7 @@ namespace Imposter.Tests.Features.CallAllocations
             var instance = sut.Instance();
             // Do not await faults here: exception dispatch is runtime work, not generator allocation.
             AllocatedBytesPerCall(() => _ = instance.GetAsync(1)).ShouldBeLessThanOrEqualTo(48);
-            AllocatedBytesPerCall(() => _ = instance.PeekAsync(1)).ShouldBeLessThanOrEqualTo(56);
+            AllocatedBytesPerCall(() => _ = instance.PeekAsync(1)).ShouldBeLessThanOrEqualTo(64);
         }
 
         [Fact]
@@ -231,8 +324,10 @@ namespace Imposter.Tests.Features.CallAllocations
             var instance = sut.Instance();
             var key = 7;
             var extra = 9;
+            // A Task result and a synchronous exception share one slot, leaving room for the
+            // final out value and entry stamp within the original record plus eight bytes.
             AllocatedBytesPerCall(() => _ = instance.GetByReferenceAsync(ref key, out _, in extra))
-                .ShouldBeLessThanOrEqualTo(48);
+                .ShouldBeLessThanOrEqualTo(56);
         }
 
         [Fact]
@@ -292,15 +387,60 @@ namespace Imposter.Tests.Features.CallAllocations
             AllocatedBytesPerCall(() => verification.Called(count)).ShouldBe(withOneCall);
         }
 
-        // The arguments (24 bytes), the history entry (40) and its stack node (32): running the callbacks allocates
-        // nothing.
+        [Fact]
+        public void GivenRecordedMemberInteractions_WhenVerifyingCachedHandles_ShouldNotAllocate()
+        {
+            var instance = _sut.Instance();
+            instance.Square(1);
+            instance.Value = 1;
+            _ = instance.Value;
+            instance[1] = 1;
+            _ = instance[1];
+            var method = _sut.Square(Arg<int>.Any());
+            var propertyGetter = _sut.Value.Getter();
+            var propertySetter = _sut.Value.Setter(Arg<int>.Any());
+            var indexerGetter = _sut[Arg<int>.Any()].Getter();
+            var indexerSetter = _sut[Arg<int>.Any()].Setter();
+            var count = Count.Once();
+
+            // Warmed count checks allocate no lists, closures, or per-record objects.
+            AllocatedBytesPerCall(() =>
+                {
+                    method.Called(count);
+                    propertyGetter.Called(count);
+                    propertySetter.Called(count);
+                    indexerGetter.Called(count);
+                    indexerSetter.Called(count);
+                })
+                .ShouldBe(0);
+        }
+
+        [Fact]
+        public void GivenEventSubscriptions_WhenVerifyingCachedCriteria_ShouldNotAllocate()
+        {
+            var sut = new IEventAllocationSutImposter();
+            EventHandler handler = (_, __) => { };
+            sut.Instance().Changed += handler;
+            sut.Instance().Changed -= handler;
+            var criteria = Arg<EventHandler>.Any();
+            var count = Count.Once();
+
+            AllocatedBytesPerCall(() =>
+                {
+                    sut.Changed.Subscribed(criteria, count);
+                    sut.Changed.Unsubscribed(criteria, count);
+                })
+                .ShouldBe(0);
+        }
+
+        // The 56-byte record is the only call allocation; invoking callbacks adds no objects.
         [Fact]
         public void GivenMethodWithCallback_WhenCalled_ShouldOnlyAllocateItsArgumentsAndHistory()
         {
             _sut.Square(Arg<int>.Any()).Returns(4).Callback(_ => { });
             var instance = _sut.Instance();
 
-            AllocatedBytesPerCall(() => instance.Square(2)).ShouldBeLessThanOrEqualTo(48);
+            AllocatedBytesPerCall(() => instance.Square(2)).ShouldBeLessThanOrEqualTo(56);
         }
 
         // A setup keeps its builder, group, step and Returns closure, and the steps' sequence. A queue for the steps
@@ -312,7 +452,7 @@ namespace Imposter.Tests.Features.CallAllocations
                 .ShouldBeLessThanOrEqualTo(400);
         }
 
-        // Each Then() adds only its step, the step's node in the sequence and its Returns closure.
+        // Then() adds only its outcome step, sequence node and Returns closure.
         [Fact]
         public void GivenMethodSequence_WhenSetUp_ShouldOnlyAllocateEachStep()
         {

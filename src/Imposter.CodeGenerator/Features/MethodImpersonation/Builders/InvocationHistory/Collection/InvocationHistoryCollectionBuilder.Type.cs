@@ -16,7 +16,7 @@ internal static partial class InvocationHistoryCollectionBuilder
         var historyType = method.InvocationHistory.Collection.NodeSyntax.ToNullableType();
 
         return new ClassDeclarationBuilder(method.InvocationHistory.Collection.Name)
-            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddMember(
                 SingleVariableField(
                     historyType,
@@ -26,8 +26,35 @@ internal static partial class InvocationHistoryCollectionBuilder
             )
             .AddMember(
                 new ClassDeclarationBuilder(InvocationHistoryCollectionMetadata.NodeTypeName)
-                    .AddModifier(Token(SyntaxKind.InternalKeyword))
+                    .AddModifier(Token(SyntaxKind.PublicKeyword))
                     .AddModifier(Token(SyntaxKind.AbstractKeyword))
+                    .AddBaseType(
+                        SimpleBaseType(WellKnownTypes.Imposter.Abstractions.IImposterInvocation)
+                    )
+                    .AddMember(
+                        new PropertyDeclarationBuilder(WellKnownTypes.String, "Member")
+                            .AddModifier(Token(SyntaxKind.PublicKeyword))
+                            .AddModifier(Token(SyntaxKind.AbstractKeyword))
+                            .WithGetter()
+                            .Build()
+                    )
+                    .AddMember(
+                        new PropertyDeclarationBuilder(WellKnownTypes.Long, "Sequence")
+                            .AddModifier(Token(SyntaxKind.PublicKeyword))
+                            .AddModifier(Token(SyntaxKind.AbstractKeyword))
+                            .WithGetter()
+                            .Build()
+                    )
+                    .AddMember(
+                        new PropertyDeclarationBuilder(
+                            WellKnownTypes.System.Exception.ToNullableType(),
+                            "Exception"
+                        )
+                            .AddModifier(Token(SyntaxKind.PublicKeyword))
+                            .AddModifier(Token(SyntaxKind.AbstractKeyword))
+                            .WithGetter()
+                            .Build()
+                    )
                     .AddMember(
                         SingleVariableField(
                             historyType,
@@ -40,11 +67,15 @@ internal static partial class InvocationHistoryCollectionBuilder
             .AddMember(BuildAddMethod(method))
             .AddMember(BuildRecordFailureMethod(method))
             .AddMember(BuildCountMethod(method))
-            .AddMember(BuildToStringMethod())
+            .AddMember(BuildSnapshotMethod(method, false))
+            .AddMember(BuildSnapshotMethod(method, true))
+            .AddMember(BuildToStringMethod(method))
             .Build();
     }
 
-    private static MethodDeclarationSyntax BuildToStringMethod() =>
+    private static MethodDeclarationSyntax BuildToStringMethod(
+        in ImposterTargetMethodMetadata method
+    ) =>
         new MethodDeclarationBuilder(WellKnownTypes.String, "ToString")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddModifier(Token(SyntaxKind.OverrideKeyword))
@@ -53,7 +84,7 @@ internal static partial class InvocationHistoryCollectionBuilder
                     .AddStatement(
                         LocalVariableDeclarationSyntax(
                             Var,
-                            "descriptions",
+                            method.Locals["descriptions"],
                             WellKnownTypes
                                 .System.Collections.Generic.List(
                                     WellKnownTypes.String.ToNullableType()
@@ -63,12 +94,12 @@ internal static partial class InvocationHistoryCollectionBuilder
                     )
                     .AddStatements(
                         ForEachEntry(
-                            "invocation",
-                            IdentifierName("descriptions")
+                            method.Locals["invocation"],
+                            IdentifierName(method.Locals["descriptions"])
                                 .Dot(IdentifierName("Add"))
                                 .Call(
                                     Argument(
-                                        IdentifierName("invocation")
+                                        IdentifierName(method.Locals["invocation"])
                                             .Dot(IdentifierName("ToString"))
                                             .Call()
                                     )
@@ -76,7 +107,11 @@ internal static partial class InvocationHistoryCollectionBuilder
                                 .ToStatementSyntax()
                         )
                     )
-                    .AddStatement(ReturnStatement(JoinWithNewLines(IdentifierName("descriptions"))))
+                    .AddStatement(
+                        ReturnStatement(
+                            JoinWithNewLines(IdentifierName(method.Locals["descriptions"]))
+                        )
+                    )
                     .Build()
             )
             .Build();

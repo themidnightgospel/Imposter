@@ -13,12 +13,12 @@ using global::Imposter.Tests.Features.MethodImpersonation;
 namespace Imposter.Tests.Features.MethodImpersonation
 {
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-	public sealed class AllowsRefStructClassImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.AllowsRefStructClass>
+	public sealed class AllowsRefStructClassImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.AllowsRefStructClass>
 	{
 		private readonly MeasureMethodImposterCollection _measureMethodImposterCollection;
 		private readonly EchoMethodImposterCollection _echoMethodImposterCollection;
-		private readonly MeasureMethodInvocationHistoryCollection _measureMethodInvocationHistoryCollection = new MeasureMethodInvocationHistoryCollection();
-		private readonly EchoMethodInvocationHistoryCollection _echoMethodInvocationHistoryCollection = new EchoMethodInvocationHistoryCollection();
+		private readonly MeasureMethodInvocationHistoryCollection _measureMethodInvocationHistoryCollection;
+		private readonly EchoMethodInvocationHistoryCollection _echoMethodInvocationHistoryCollection;
 		public IMeasureMethodImposterBuilder<T> Measure<T>(global::Imposter.Abstractions.Arg<int> scale)
 			where T : allows ref struct
 		{
@@ -44,30 +44,55 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public delegate global::System.Exception EchoExceptionGeneratorDelegate<T>(T value)
 			where T : allows ref struct;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IEchoMethodInvocationHistory
+		internal interface IEchoMethodInvocationHistory
 		{
 			bool Matches<TTarget>()
 				where TTarget : allows ref struct;
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class EchoMethodInvocationHistory<T> : EchoMethodInvocationHistoryCollection.Node, IEchoMethodInvocationHistory where T : allows ref struct
+		public sealed class EchoInvocation<T> : EchoMethodInvocationHistoryCollection.Node, IEchoMethodInvocationHistory where T : allows ref struct
 		{
-			internal readonly global::System.Exception? Exception;
-			public EchoMethodInvocationHistory(global::System.Exception? Exception)
+			internal readonly global::System.Exception? _exception;
+			private readonly long _sequence;
+			public override string Member
 			{
-				this.Exception = Exception;
+				get
+				{
+					return "Echo";
+				}
 			}
 
-			public bool Matches<TTarget>()
-				where TTarget : allows ref struct
+			public override long Sequence
+			{
+				get
+				{
+					return _sequence;
+				}
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public EchoInvocation(global::System.Exception? exception, long sequence)
+			{
+				this._exception = exception;
+				this._sequence = sequence;
+			}
+
+			bool IEchoMethodInvocationHistory.Matches<TTarget>()
 			{
 				return typeof(TTarget) == typeof(T);
 			}
 
 			public override string ToString()
 			{
-				return "Echo(" + "" + ")" + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Echo(" + "" + ")" + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -77,12 +102,16 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class EchoMethodInvocationHistoryCollection
+		public class EchoMethodInvocationHistoryCollection
 		{
 			private EchoMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IImposterInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+
 				internal EchoMethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -116,6 +145,34 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, orderBySequence);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<EchoInvocation<T>> MatchingInvocations<T>()
+				where T : allows ref struct
+			{
+				var result = new global::System.Collections.Generic.List<EchoInvocation<T>>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((IEchoMethodInvocationHistory)entry).Matches<T>())
+						result.Add((EchoInvocation<T>)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
 			}
 
 			public override string ToString()
@@ -330,6 +387,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<EchoInvocation<T>> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -372,26 +430,17 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public T Invoke(T value, EchoDelegate<T>? baseImplementation = null)
 			{
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup();
-				if (matchingInvocationImposterGroup == default)
 				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup();
+					if (matchingInvocationImposterGroup == default)
 					{
-						throw new global::Imposter.Abstractions.MissingImposterException("virtual T AllowsRefStructClass.Echo<T>(T value)");
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("virtual T AllowsRefStructClass.Echo<T>(T value)");
+						matchingInvocationImposterGroup = EchoMethodInvocationImposterGroup<T>.Default;
 					}
 
-					matchingInvocationImposterGroup = EchoMethodInvocationImposterGroup<T>.Default;
-				}
-
-				try
-				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual T AllowsRefStructClass.Echo<T>(T value)", value, baseImplementation);
-					_echoMethodInvocationHistoryCollection.Add(new EchoMethodInvocationHistory<T>(default));
 					return result;
-				}
-				catch (global::System.Exception ex) when (_echoMethodInvocationHistoryCollection.RecordFailure(new EchoMethodInvocationHistory<T>(ex)))
-				{
-					throw;
 				}
 			}
 
@@ -480,6 +529,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				{
 					return _echoMethodInvocationHistoryCollection.Count<T>();
 				}
+
+				global::System.Collections.Generic.IReadOnlyList<EchoInvocation<T>> EchoInvocationVerifier<T>.Invocations
+				{
+					get
+					{
+						return _echoMethodInvocationHistoryCollection.MatchingInvocations<T>();
+					}
+				}
 			}
 		}
 
@@ -531,34 +588,75 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IMeasureMethodInvocationHistory
+		internal interface IMeasureMethodInvocationHistory
 		{
 			bool Matches<TTarget>(MeasureArgumentsCriteria<TTarget> criteria)
 				where TTarget : allows ref struct;
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class MeasureMethodInvocationHistory<T> : MeasureMethodInvocationHistoryCollection.Node, IMeasureMethodInvocationHistory where T : allows ref struct
+		public sealed class MeasureInvocation<T> : MeasureMethodInvocationHistoryCollection.Node, IMeasureMethodInvocationHistory where T : allows ref struct
 		{
 			internal readonly int capturedscale;
-			internal readonly int? Result;
-			internal readonly global::System.Exception? Exception;
-			public MeasureMethodInvocationHistory(int capturedscale, int? Result, global::System.Exception? Exception)
+			internal readonly int? _result;
+			internal readonly global::System.Exception? _exception;
+			private readonly long _sequence;
+			public int Scale
 			{
-				this.capturedscale = capturedscale;
-				this.Result = Result;
-				this.Exception = Exception;
+				get
+				{
+					return capturedscale;
+				}
 			}
 
-			public bool Matches<TTarget>(MeasureArgumentsCriteria<TTarget> criteria)
-				where TTarget : allows ref struct
+			public int? Result
+			{
+				get
+				{
+					return _result;
+				}
+			}
+
+			public override string Member
+			{
+				get
+				{
+					return "Measure";
+				}
+			}
+
+			public override long Sequence
+			{
+				get
+				{
+					return _sequence;
+				}
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public MeasureInvocation(int capturedscale, int? result, global::System.Exception? exception, long sequence)
+			{
+				this.capturedscale = capturedscale;
+				this._result = result;
+				this._exception = exception;
+				this._sequence = sequence;
+			}
+
+			bool IMeasureMethodInvocationHistory.Matches<TTarget>(MeasureArgumentsCriteria<TTarget> criteria)
 			{
 				return (typeof(TTarget) == typeof(T)) && ((MeasureArgumentsCriteria<T>)(object)criteria).MatchesCaptured(capturedscale);
 			}
 
 			public override string ToString()
 			{
-				return "Measure(" + global::System.String.Join(", ", new[] { "scale: " + FormatValue(capturedscale) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Measure(" + global::System.String.Join(", ", new[] { "scale: " + FormatValue(capturedscale) }) + ")" + " => " + FormatValue(_result) + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -568,12 +666,16 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class MeasureMethodInvocationHistoryCollection
+		public class MeasureMethodInvocationHistoryCollection
 		{
 			private MeasureMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IImposterInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+
 				internal MeasureMethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -607,6 +709,34 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, orderBySequence);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<MeasureInvocation<T>> MatchingInvocations<T>(MeasureArgumentsCriteria<T> criteria)
+				where T : allows ref struct
+			{
+				var result = new global::System.Collections.Generic.List<MeasureInvocation<T>>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((IMeasureMethodInvocationHistory)entry).Matches<T>(criteria))
+						result.Add((MeasureInvocation<T>)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
 			}
 
 			public override string ToString()
@@ -834,6 +964,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<MeasureInvocation<T>> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -877,26 +1008,17 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			public int Invoke(T value, int scale, MeasureDelegate<T>? baseImplementation = null)
 			{
 				int capturedscale = scale;
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedscale);
-				if (matchingInvocationImposterGroup == default)
 				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedscale);
+					if (matchingInvocationImposterGroup == default)
 					{
-						throw new global::Imposter.Abstractions.MissingImposterException("virtual int AllowsRefStructClass.Measure<T>(T value, int scale)");
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("virtual int AllowsRefStructClass.Measure<T>(T value, int scale)");
+						matchingInvocationImposterGroup = MeasureMethodInvocationImposterGroup<T>.Default;
 					}
 
-					matchingInvocationImposterGroup = MeasureMethodInvocationImposterGroup<T>.Default;
-				}
-
-				try
-				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual int AllowsRefStructClass.Measure<T>(T value, int scale)", value, scale, baseImplementation);
-					_measureMethodInvocationHistoryCollection.Add(new MeasureMethodInvocationHistory<T>(capturedscale, result, default));
 					return result;
-				}
-				catch (global::System.Exception ex) when (_measureMethodInvocationHistoryCollection.RecordFailure(new MeasureMethodInvocationHistory<T>(capturedscale, default !, ex)))
-				{
-					throw;
 				}
 			}
 
@@ -994,14 +1116,32 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				{
 					return _measureMethodInvocationHistoryCollection.Count<T>(_argumentsCriteria);
 				}
+
+				global::System.Collections.Generic.IReadOnlyList<MeasureInvocation<T>> MeasureInvocationVerifier<T>.Invocations
+				{
+					get
+					{
+						return _measureMethodInvocationHistoryCollection.MatchingInvocations<T>(_argumentsCriteria);
+					}
+				}
 			}
 		}
 
 		public AllowsRefStructClassImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._measureMethodInvocationHistoryCollection = new MeasureMethodInvocationHistoryCollection();
+			this._echoMethodInvocationHistoryCollection = new EchoMethodInvocationHistoryCollection();
 			this._measureMethodImposterCollection = new MeasureMethodImposterCollection(_measureMethodInvocationHistoryCollection, invocationBehavior);
 			this._echoMethodImposterCollection = new EchoMethodImposterCollection(_echoMethodInvocationHistoryCollection, invocationBehavior);
 			this._imposterInstance = new ImposterTargetInstance(this);
+		}
+
+		global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> global::Imposter.Abstractions.IImposter.Invocations()
+		{
+			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+			invocations.AddRange(_measureMethodInvocationHistoryCollection.Snapshot(false));
+			invocations.AddRange(_echoMethodInvocationHistoryCollection.Snapshot(false));
+			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1020,7 +1160,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					return base.Measure<T>(value, scale);
 				}
 
-				return _imposter._measureMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<T>(scale).Invoke(value, scale, base.Measure<T>);
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
+				global::System.Exception? invocationException = null;
+				int capturedscale = scale;
+				int? invocationResult = default !;
+				try
+				{
+					var returnedValue = _imposter._measureMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<T>(scale).Invoke(value, scale, base.Measure<T>);
+					invocationResult = returnedValue;
+					return returnedValue;
+				}
+				catch (global::System.Exception caughtInvocationException)
+				{
+					invocationException = caughtInvocationException;
+					throw;
+				}
+				finally
+				{
+					_imposter._measureMethodInvocationHistoryCollection.Add(new MeasureInvocation<T>(capturedscale, invocationResult, invocationException, invocationSequence));
+				}
 			}
 
 			public override T Echo<T>(T value)
@@ -1030,7 +1188,21 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					return base.Echo<T>(value);
 				}
 
-				return _imposter._echoMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<T>().Invoke(value, base.Echo<T>);
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
+				global::System.Exception? invocationException = null;
+				try
+				{
+					return _imposter._echoMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<T>().Invoke(value, base.Echo<T>);
+				}
+				catch (global::System.Exception caughtInvocationException)
+				{
+					invocationException = caughtInvocationException;
+					throw;
+				}
+				finally
+				{
+					_imposter._echoMethodInvocationHistoryCollection.Add(new EchoInvocation<T>(invocationException, invocationSequence));
+				}
 			}
 		}
 	}

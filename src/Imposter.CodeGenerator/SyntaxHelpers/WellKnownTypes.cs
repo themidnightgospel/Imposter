@@ -9,6 +9,7 @@ internal static class WellKnownTypes
     internal static readonly TypeSyntax Void = PredefinedType(Token(SyntaxKind.VoidKeyword));
 
     internal static readonly TypeSyntax Int = PredefinedType(Token(SyntaxKind.IntKeyword));
+    internal static readonly TypeSyntax Long = PredefinedType(Token(SyntaxKind.LongKeyword));
 
     internal static readonly TypeSyntax Bool = PredefinedType(Token(SyntaxKind.BoolKeyword));
 
@@ -63,6 +64,9 @@ internal static class WellKnownTypes
         internal static TypeSyntax IEquatable(TypeSyntax typeArgument) =>
             GenericType(Namespace, "IEquatable", typeArgument);
 
+        internal static TypeSyntax ReadOnlyMemory(TypeSyntax typeArgument) =>
+            GenericType(Namespace, "ReadOnlyMemory", typeArgument);
+
         internal static TypeSyntax Tuple(TypeSyntax item1Type, TypeSyntax item2Type) =>
             GenericType(Namespace, "Tuple", item1Type, item2Type);
 
@@ -98,6 +102,12 @@ internal static class WellKnownTypes
 
                 internal static TypeSyntax List(TypeSyntax typeArgument) =>
                     GenericType(Namespace, "List", typeArgument);
+
+                internal static TypeSyntax IReadOnlyList(TypeSyntax typeArgument) =>
+                    GenericType(Namespace, "IReadOnlyList", typeArgument);
+
+                internal static TypeSyntax IEnumerable(TypeSyntax typeArgument) =>
+                    GenericType(Namespace, "IEnumerable", typeArgument);
 
                 internal static TypeSyntax EqualityComparer(TypeSyntax typeArgument) =>
                     GenericType(Namespace, "EqualityComparer", typeArgument);
@@ -190,6 +200,36 @@ internal static class WellKnownTypes
                 IdentifierName("Abstractions")
             );
 
+            internal static readonly NameSyntax IImposter = QualifiedName(
+                Namespace,
+                IdentifierName("IImposter")
+            );
+            internal static readonly NameSyntax IImposterInvocation = QualifiedName(
+                Namespace,
+                IdentifierName("IImposterInvocation")
+            );
+            internal static readonly NameSyntax InvocationSequence = QualifiedName(
+                Namespace,
+                IdentifierName("InvocationSequence")
+            );
+            internal static readonly NameSyntax InvocationSnapshots = QualifiedName(
+                Namespace,
+                IdentifierName("InvocationSnapshots")
+            );
+            internal static readonly NameSyntax InvocationRecord = QualifiedName(
+                Namespace,
+                IdentifierName("InvocationRecord")
+            );
+
+            internal static TypeSyntax InvocationBuffer(TypeSyntax valueType) =>
+                GenericType(Namespace, nameof(InvocationBuffer), valueType);
+
+            internal static TypeSyntax InvocationHistory(TypeSyntax recordType) =>
+                GenericType(Namespace, "InvocationHistory", recordType);
+
+            internal static TypeSyntax EventSubscriptionInvocation(TypeSyntax handlerType) =>
+                GenericType(Namespace, "EventSubscriptionInvocation", handlerType);
+
             internal static readonly NameSyntax VerificationFailedException = QualifiedName(
                 Namespace,
                 IdentifierName("VerificationFailedException")
@@ -234,6 +274,12 @@ internal static class WellKnownTypes
 
             internal static NameSyntax PropertySetter(TypeSyntax valueType) =>
                 GenericType(Namespace, nameof(PropertySetter), valueType);
+
+            internal static NameSyntax PropertySetterInvocation(TypeSyntax valueType) =>
+                GenericType(Namespace, nameof(PropertySetterInvocation), valueType);
+
+            internal static NameSyntax PassThroughSetter(TypeSyntax invocationType) =>
+                GenericType(Namespace, "PassThroughSetter", invocationType);
 
             internal static NameSyntax ReturnValueSequence(TypeSyntax itemType) =>
                 GenericType(Namespace, nameof(ReturnValueSequence), itemType);
