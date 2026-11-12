@@ -15,14 +15,14 @@ namespace Imposter.Benchmarks
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IMethodHistoryBenchmarkServiceImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Benchmarks.IMethodHistoryBenchmarkService>, IMethodHistoryBenchmarkServiceImposter.IMethodHistoryBenchmarkServiceSetup
 	{
-		private readonly SquareMethodImposter _squareMethodImposter;
-		private readonly EchoMethodImposterCollection _echoMethodImposterCollection;
-		private readonly SumMethodImposter _sumMethodImposter;
-		private readonly ReadMethodImposter _readMethodImposter;
-		private readonly SquareMethodInvocationHistoryCollection _squareMethodInvocationHistoryCollection;
-		private readonly EchoMethodInvocationHistoryCollection _echoMethodInvocationHistoryCollection;
-		private readonly SumMethodInvocationHistoryCollection _sumMethodInvocationHistoryCollection;
-		private readonly ReadMethodInvocationHistoryCollection _readMethodInvocationHistoryCollection;
+		private SquareMethodImposter _squareMethodImposter;
+		private EchoMethodImposterCollection _echoMethodImposterCollection;
+		private SumMethodImposter _sumMethodImposter;
+		private ReadMethodImposter _readMethodImposter;
+		private SquareMethodInvocationHistoryCollection _squareMethodInvocationHistoryCollection;
+		private EchoMethodInvocationHistoryCollection _echoMethodInvocationHistoryCollection;
+		private SumMethodInvocationHistoryCollection _sumMethodInvocationHistoryCollection;
+		private ReadMethodInvocationHistoryCollection _readMethodInvocationHistoryCollection;
 		public ISquareMethodImposterBuilder Square(global::Imposter.Abstractions.Arg<int> value)
 		{
 			return new SquareMethodImposter.Builder(_squareMethodImposter, _squareMethodInvocationHistoryCollection, new SquareArgumentsCriteria(value));
@@ -43,6 +43,7 @@ namespace Imposter.Benchmarks
 			return new ReadMethodImposter.Builder(_readMethodImposter, _readMethodInvocationHistoryCollection, new ReadArgumentsCriteria(value));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Benchmarks.IMethodHistoryBenchmarkService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Benchmarks.IMethodHistoryBenchmarkService>.Instance()
 		{
@@ -195,6 +196,11 @@ namespace Imposter.Benchmarks
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(EchoMethodInvocationHistoryCollection.Node invocationHistory)
@@ -772,6 +778,11 @@ namespace Imposter.Benchmarks
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(ReadMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1262,6 +1273,11 @@ namespace Imposter.Benchmarks
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(SquareMethodInvocationHistoryCollection.Node invocationHistory)
@@ -1756,6 +1772,11 @@ namespace Imposter.Benchmarks
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(SumMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -2148,14 +2169,15 @@ namespace Imposter.Benchmarks
 
 		public IMethodHistoryBenchmarkServiceImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._squareMethodInvocationHistoryCollection = new SquareMethodInvocationHistoryCollection();
 			this._echoMethodInvocationHistoryCollection = new EchoMethodInvocationHistoryCollection();
 			this._sumMethodInvocationHistoryCollection = new SumMethodInvocationHistoryCollection();
 			this._readMethodInvocationHistoryCollection = new ReadMethodInvocationHistoryCollection();
-			this._squareMethodImposter = new SquareMethodImposter(_squareMethodInvocationHistoryCollection, invocationBehavior);
-			this._echoMethodImposterCollection = new EchoMethodImposterCollection(_echoMethodInvocationHistoryCollection, invocationBehavior);
-			this._sumMethodImposter = new SumMethodImposter(_sumMethodInvocationHistoryCollection, invocationBehavior);
-			this._readMethodImposter = new ReadMethodImposter(_readMethodInvocationHistoryCollection, invocationBehavior);
+			this._squareMethodImposter = new SquareMethodImposter(_squareMethodInvocationHistoryCollection, this._imposterMode);
+			this._echoMethodImposterCollection = new EchoMethodImposterCollection(_echoMethodInvocationHistoryCollection, this._imposterMode);
+			this._sumMethodImposter = new SumMethodImposter(_sumMethodInvocationHistoryCollection, this._imposterMode);
+			this._readMethodImposter = new ReadMethodImposter(_readMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -2167,6 +2189,30 @@ namespace Imposter.Benchmarks
 			invocations.AddRange(_sumMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_readMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_squareMethodInvocationHistoryCollection.Clear();
+			_echoMethodInvocationHistoryCollection.Clear();
+			_sumMethodInvocationHistoryCollection.Clear();
+			_readMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_squareMethodInvocationHistoryCollection.Clear();
+			_echoMethodInvocationHistoryCollection.Clear();
+			_sumMethodInvocationHistoryCollection.Clear();
+			_readMethodInvocationHistoryCollection.Clear();
+			this._squareMethodInvocationHistoryCollection = new SquareMethodInvocationHistoryCollection();
+			this._echoMethodInvocationHistoryCollection = new EchoMethodInvocationHistoryCollection();
+			this._sumMethodInvocationHistoryCollection = new SumMethodInvocationHistoryCollection();
+			this._readMethodInvocationHistoryCollection = new ReadMethodInvocationHistoryCollection();
+			this._squareMethodImposter = new SquareMethodImposter(_squareMethodInvocationHistoryCollection, this._imposterMode);
+			this._echoMethodImposterCollection = new EchoMethodImposterCollection(_echoMethodInvocationHistoryCollection, this._imposterMode);
+			this._sumMethodImposter = new SumMethodImposter(_sumMethodInvocationHistoryCollection, this._imposterMode);
+			this._readMethodImposter = new ReadMethodImposter(_readMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

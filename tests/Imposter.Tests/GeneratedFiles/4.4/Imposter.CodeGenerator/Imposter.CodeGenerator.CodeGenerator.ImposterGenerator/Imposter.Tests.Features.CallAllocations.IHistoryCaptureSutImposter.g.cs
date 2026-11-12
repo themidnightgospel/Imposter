@@ -15,16 +15,16 @@ namespace Imposter.Tests.Features.CallAllocations
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IHistoryCaptureSutImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.CallAllocations.IHistoryCaptureSut>, IHistoryCaptureSutImposter.IHistoryCaptureSutSetup
 	{
-		private readonly CaptureMethodImposter _captureMethodImposter;
-		private readonly GenericMethodImposterCollection _genericMethodImposterCollection;
-		private readonly GenericInMethodImposterCollection _genericInMethodImposterCollection;
-		private readonly SpanMethodImposter _spanMethodImposter;
-		private readonly MatchMethodImposterCollection _matchMethodImposterCollection;
-		private readonly CaptureMethodInvocationHistoryCollection _captureMethodInvocationHistoryCollection;
-		private readonly GenericMethodInvocationHistoryCollection _genericMethodInvocationHistoryCollection;
-		private readonly GenericInMethodInvocationHistoryCollection _genericInMethodInvocationHistoryCollection;
-		private readonly SpanMethodInvocationHistoryCollection _spanMethodInvocationHistoryCollection;
-		private readonly MatchMethodInvocationHistoryCollection _matchMethodInvocationHistoryCollection;
+		private CaptureMethodImposter _captureMethodImposter;
+		private GenericMethodImposterCollection _genericMethodImposterCollection;
+		private GenericInMethodImposterCollection _genericInMethodImposterCollection;
+		private SpanMethodImposter _spanMethodImposter;
+		private MatchMethodImposterCollection _matchMethodImposterCollection;
+		private CaptureMethodInvocationHistoryCollection _captureMethodInvocationHistoryCollection;
+		private GenericMethodInvocationHistoryCollection _genericMethodInvocationHistoryCollection;
+		private GenericInMethodInvocationHistoryCollection _genericInMethodInvocationHistoryCollection;
+		private SpanMethodInvocationHistoryCollection _spanMethodInvocationHistoryCollection;
+		private MatchMethodInvocationHistoryCollection _matchMethodInvocationHistoryCollection;
 		public ICaptureMethodImposterBuilder Capture(global::Imposter.Abstractions.Arg<int> value, global::Imposter.Abstractions.Arg<int> other)
 		{
 			return new CaptureMethodImposter.Builder(_captureMethodImposter, _captureMethodInvocationHistoryCollection, new CaptureArgumentsCriteria(value, other));
@@ -50,6 +50,7 @@ namespace Imposter.Tests.Features.CallAllocations
 			return new MatchMethodImposter<T>.Builder(_matchMethodImposterCollection, _matchMethodInvocationHistoryCollection, new MatchArgumentsCriteria<T>(value, values));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.CallAllocations.IHistoryCaptureSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.CallAllocations.IHistoryCaptureSut>.Instance()
 		{
@@ -194,6 +195,11 @@ namespace Imposter.Tests.Features.CallAllocations
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(CaptureMethodInvocationHistoryCollection.Node invocationHistory)
@@ -672,6 +678,11 @@ namespace Imposter.Tests.Features.CallAllocations
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(GenericMethodInvocationHistoryCollection.Node invocationHistory)
@@ -1267,6 +1278,11 @@ namespace Imposter.Tests.Features.CallAllocations
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(GenericInMethodInvocationHistoryCollection.Node invocationHistory)
@@ -1870,6 +1886,11 @@ namespace Imposter.Tests.Features.CallAllocations
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(MatchMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -2467,6 +2488,11 @@ namespace Imposter.Tests.Features.CallAllocations
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(SpanMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -2838,16 +2864,17 @@ namespace Imposter.Tests.Features.CallAllocations
 
 		public IHistoryCaptureSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._captureMethodInvocationHistoryCollection = new CaptureMethodInvocationHistoryCollection();
 			this._genericMethodInvocationHistoryCollection = new GenericMethodInvocationHistoryCollection();
 			this._genericInMethodInvocationHistoryCollection = new GenericInMethodInvocationHistoryCollection();
 			this._spanMethodInvocationHistoryCollection = new SpanMethodInvocationHistoryCollection();
 			this._matchMethodInvocationHistoryCollection = new MatchMethodInvocationHistoryCollection();
-			this._captureMethodImposter = new CaptureMethodImposter(_captureMethodInvocationHistoryCollection, invocationBehavior);
-			this._genericMethodImposterCollection = new GenericMethodImposterCollection(_genericMethodInvocationHistoryCollection, invocationBehavior);
-			this._genericInMethodImposterCollection = new GenericInMethodImposterCollection(_genericInMethodInvocationHistoryCollection, invocationBehavior);
-			this._spanMethodImposter = new SpanMethodImposter(_spanMethodInvocationHistoryCollection, invocationBehavior);
-			this._matchMethodImposterCollection = new MatchMethodImposterCollection(_matchMethodInvocationHistoryCollection, invocationBehavior);
+			this._captureMethodImposter = new CaptureMethodImposter(_captureMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericMethodImposterCollection = new GenericMethodImposterCollection(_genericMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericInMethodImposterCollection = new GenericInMethodImposterCollection(_genericInMethodInvocationHistoryCollection, this._imposterMode);
+			this._spanMethodImposter = new SpanMethodImposter(_spanMethodInvocationHistoryCollection, this._imposterMode);
+			this._matchMethodImposterCollection = new MatchMethodImposterCollection(_matchMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -2860,6 +2887,34 @@ namespace Imposter.Tests.Features.CallAllocations
 			invocations.AddRange(_spanMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_matchMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_captureMethodInvocationHistoryCollection.Clear();
+			_genericMethodInvocationHistoryCollection.Clear();
+			_genericInMethodInvocationHistoryCollection.Clear();
+			_spanMethodInvocationHistoryCollection.Clear();
+			_matchMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_captureMethodInvocationHistoryCollection.Clear();
+			_genericMethodInvocationHistoryCollection.Clear();
+			_genericInMethodInvocationHistoryCollection.Clear();
+			_spanMethodInvocationHistoryCollection.Clear();
+			_matchMethodInvocationHistoryCollection.Clear();
+			this._captureMethodInvocationHistoryCollection = new CaptureMethodInvocationHistoryCollection();
+			this._genericMethodInvocationHistoryCollection = new GenericMethodInvocationHistoryCollection();
+			this._genericInMethodInvocationHistoryCollection = new GenericInMethodInvocationHistoryCollection();
+			this._spanMethodInvocationHistoryCollection = new SpanMethodInvocationHistoryCollection();
+			this._matchMethodInvocationHistoryCollection = new MatchMethodInvocationHistoryCollection();
+			this._captureMethodImposter = new CaptureMethodImposter(_captureMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericMethodImposterCollection = new GenericMethodImposterCollection(_genericMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericInMethodImposterCollection = new GenericInMethodImposterCollection(_genericInMethodInvocationHistoryCollection, this._imposterMode);
+			this._spanMethodImposter = new SpanMethodImposter(_spanMethodInvocationHistoryCollection, this._imposterMode);
+			this._matchMethodImposterCollection = new MatchMethodImposterCollection(_matchMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

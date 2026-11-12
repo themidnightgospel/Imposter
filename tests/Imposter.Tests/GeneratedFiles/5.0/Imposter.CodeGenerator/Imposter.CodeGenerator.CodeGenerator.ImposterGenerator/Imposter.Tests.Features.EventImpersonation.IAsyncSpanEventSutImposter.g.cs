@@ -23,7 +23,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 		public IBufferFilledEventImposterBuilder BufferFilled => _BufferFilled;
 
-		private readonly BufferFilledEventImposterBuilder _BufferFilled;
+		private BufferFilledEventImposterBuilder _BufferFilled;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IBufferFilledEventImposterBuilder : IBufferFilledEventImposterSetupBuilder, IBufferFilledEventImposterVerificationBuilder
 		{
@@ -62,6 +62,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.BufferFilledAsyncHandler>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<byte[]>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.BufferFilledAsyncHandler Handler, byte[] buffer)>? _handlerInvocations;
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.BufferFilledAsyncHandler>> IBufferFilledEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -417,7 +425,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 		public IInTextReceivedEventImposterBuilder InTextReceived => _InTextReceived;
 
-		private readonly InTextReceivedEventImposterBuilder _InTextReceived;
+		private InTextReceivedEventImposterBuilder _InTextReceived;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IInTextReceivedEventImposterBuilder : IInTextReceivedEventImposterSetupBuilder, IInTextReceivedEventImposterVerificationBuilder
 		{
@@ -456,6 +464,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<char[]>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler Handler, char[] text)>? _handlerInvocations;
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.InTextReceivedAsyncHandler>> IInTextReceivedEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -811,7 +827,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 		public ITextReceivedEventImposterBuilder TextReceived => _TextReceived;
 
-		private readonly TextReceivedEventImposterBuilder _TextReceived;
+		private TextReceivedEventImposterBuilder _TextReceived;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ITextReceivedEventImposterBuilder : ITextReceivedEventImposterSetupBuilder, ITextReceivedEventImposterVerificationBuilder
 		{
@@ -850,6 +866,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.TextReceivedAsyncHandler>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<(object? sender, char[] text)>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.TextReceivedAsyncHandler Handler, object? sender, char[] text)>? _handlerInvocations;
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.TextReceivedAsyncHandler>> ITextReceivedEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -1244,6 +1268,23 @@ namespace Imposter.Tests.Features.EventImpersonation
 			invocations.AddRange(_InTextReceived.Snapshot(false));
 			invocations.AddRange(_TextReceived.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_BufferFilled.ClearInvocations();
+			_InTextReceived.ClearInvocations();
+			_TextReceived.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_BufferFilled.ClearInvocations();
+			_InTextReceived.ClearInvocations();
+			_TextReceived.ClearInvocations();
+			this._BufferFilled = new BufferFilledEventImposterBuilder();
+			this._InTextReceived = new InTextReceivedEventImposterBuilder();
+			this._TextReceived = new TextReceivedEventImposterBuilder();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationHistory;
+using Imposter.CodeGenerator.Features.Shared.Builders;
 
 namespace Imposter.CodeGenerator.Helpers;
 
@@ -10,6 +12,8 @@ internal static class GeneratedVerificationNames
     internal static readonly HashSet<string> Reserved =
     [
         "Invocations",
+        InvocationLifecycleBuilder.ClearMethodName,
+        InvocationHistoryCollectionMetadata.ClearMethodName,
         "Snapshot",
         "MatchingInvocations",
         "CreateInvocation",

@@ -15,18 +15,18 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IQuickStartServiceImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.Methods.Overview.IQuickStartService>, IQuickStartServiceImposter.IQuickStartServiceSetup
 	{
-		private readonly GetNumberMethodImposter _getNumberMethodImposter;
-		private readonly IncrementMethodImposter _incrementMethodImposter;
-		private readonly GetNumberAsyncMethodImposter _getNumberAsyncMethodImposter;
-		private readonly DoWorkAsyncMethodImposter _doWorkAsyncMethodImposter;
-		private readonly CombineMethodImposter _combineMethodImposter;
-		private readonly VirtualComputeMethodImposter _virtualComputeMethodImposter;
-		private readonly GetNumberMethodInvocationHistoryCollection _getNumberMethodInvocationHistoryCollection;
-		private readonly IncrementMethodInvocationHistoryCollection _incrementMethodInvocationHistoryCollection;
-		private readonly GetNumberAsyncMethodInvocationHistoryCollection _getNumberAsyncMethodInvocationHistoryCollection;
-		private readonly DoWorkAsyncMethodInvocationHistoryCollection _doWorkAsyncMethodInvocationHistoryCollection;
-		private readonly CombineMethodInvocationHistoryCollection _combineMethodInvocationHistoryCollection;
-		private readonly VirtualComputeMethodInvocationHistoryCollection _virtualComputeMethodInvocationHistoryCollection;
+		private GetNumberMethodImposter _getNumberMethodImposter;
+		private IncrementMethodImposter _incrementMethodImposter;
+		private GetNumberAsyncMethodImposter _getNumberAsyncMethodImposter;
+		private DoWorkAsyncMethodImposter _doWorkAsyncMethodImposter;
+		private CombineMethodImposter _combineMethodImposter;
+		private VirtualComputeMethodImposter _virtualComputeMethodImposter;
+		private GetNumberMethodInvocationHistoryCollection _getNumberMethodInvocationHistoryCollection;
+		private IncrementMethodInvocationHistoryCollection _incrementMethodInvocationHistoryCollection;
+		private GetNumberAsyncMethodInvocationHistoryCollection _getNumberAsyncMethodInvocationHistoryCollection;
+		private DoWorkAsyncMethodInvocationHistoryCollection _doWorkAsyncMethodInvocationHistoryCollection;
+		private CombineMethodInvocationHistoryCollection _combineMethodInvocationHistoryCollection;
+		private VirtualComputeMethodInvocationHistoryCollection _virtualComputeMethodInvocationHistoryCollection;
 		public IGetNumberMethodImposterBuilder GetNumber()
 		{
 			return new GetNumberMethodImposter.Builder(_getNumberMethodImposter, _getNumberMethodInvocationHistoryCollection);
@@ -57,6 +57,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 			return new VirtualComputeMethodImposter.Builder(_virtualComputeMethodImposter, _virtualComputeMethodInvocationHistoryCollection, new VirtualComputeArgumentsCriteria(v));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.Docs.Methods.Overview.IQuickStartService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.Methods.Overview.IQuickStartService>.Instance()
 		{
@@ -211,6 +212,11 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(CombineMethodInvocationHistoryCollection.Node invocationHistory)
@@ -677,6 +683,11 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(DoWorkAsyncMethodInvocationHistoryCollection.Node invocationHistory)
@@ -1149,6 +1160,11 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(GetNumberMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1606,6 +1622,11 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(GetNumberAsyncMethodInvocationHistoryCollection.Node invocationHistory)
@@ -2136,6 +2157,11 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(IncrementMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -2628,6 +2654,11 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(VirtualComputeMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -3032,18 +3063,19 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 
 		public IQuickStartServiceImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._getNumberMethodInvocationHistoryCollection = new GetNumberMethodInvocationHistoryCollection();
 			this._incrementMethodInvocationHistoryCollection = new IncrementMethodInvocationHistoryCollection();
 			this._getNumberAsyncMethodInvocationHistoryCollection = new GetNumberAsyncMethodInvocationHistoryCollection();
 			this._doWorkAsyncMethodInvocationHistoryCollection = new DoWorkAsyncMethodInvocationHistoryCollection();
 			this._combineMethodInvocationHistoryCollection = new CombineMethodInvocationHistoryCollection();
 			this._virtualComputeMethodInvocationHistoryCollection = new VirtualComputeMethodInvocationHistoryCollection();
-			this._getNumberMethodImposter = new GetNumberMethodImposter(_getNumberMethodInvocationHistoryCollection, invocationBehavior);
-			this._incrementMethodImposter = new IncrementMethodImposter(_incrementMethodInvocationHistoryCollection, invocationBehavior);
-			this._getNumberAsyncMethodImposter = new GetNumberAsyncMethodImposter(_getNumberAsyncMethodInvocationHistoryCollection, invocationBehavior);
-			this._doWorkAsyncMethodImposter = new DoWorkAsyncMethodImposter(_doWorkAsyncMethodInvocationHistoryCollection, invocationBehavior);
-			this._combineMethodImposter = new CombineMethodImposter(_combineMethodInvocationHistoryCollection, invocationBehavior);
-			this._virtualComputeMethodImposter = new VirtualComputeMethodImposter(_virtualComputeMethodInvocationHistoryCollection, invocationBehavior);
+			this._getNumberMethodImposter = new GetNumberMethodImposter(_getNumberMethodInvocationHistoryCollection, this._imposterMode);
+			this._incrementMethodImposter = new IncrementMethodImposter(_incrementMethodInvocationHistoryCollection, this._imposterMode);
+			this._getNumberAsyncMethodImposter = new GetNumberAsyncMethodImposter(_getNumberAsyncMethodInvocationHistoryCollection, this._imposterMode);
+			this._doWorkAsyncMethodImposter = new DoWorkAsyncMethodImposter(_doWorkAsyncMethodInvocationHistoryCollection, this._imposterMode);
+			this._combineMethodImposter = new CombineMethodImposter(_combineMethodInvocationHistoryCollection, this._imposterMode);
+			this._virtualComputeMethodImposter = new VirtualComputeMethodImposter(_virtualComputeMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -3057,6 +3089,38 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 			invocations.AddRange(_combineMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_virtualComputeMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_getNumberMethodInvocationHistoryCollection.Clear();
+			_incrementMethodInvocationHistoryCollection.Clear();
+			_getNumberAsyncMethodInvocationHistoryCollection.Clear();
+			_doWorkAsyncMethodInvocationHistoryCollection.Clear();
+			_combineMethodInvocationHistoryCollection.Clear();
+			_virtualComputeMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_getNumberMethodInvocationHistoryCollection.Clear();
+			_incrementMethodInvocationHistoryCollection.Clear();
+			_getNumberAsyncMethodInvocationHistoryCollection.Clear();
+			_doWorkAsyncMethodInvocationHistoryCollection.Clear();
+			_combineMethodInvocationHistoryCollection.Clear();
+			_virtualComputeMethodInvocationHistoryCollection.Clear();
+			this._getNumberMethodInvocationHistoryCollection = new GetNumberMethodInvocationHistoryCollection();
+			this._incrementMethodInvocationHistoryCollection = new IncrementMethodInvocationHistoryCollection();
+			this._getNumberAsyncMethodInvocationHistoryCollection = new GetNumberAsyncMethodInvocationHistoryCollection();
+			this._doWorkAsyncMethodInvocationHistoryCollection = new DoWorkAsyncMethodInvocationHistoryCollection();
+			this._combineMethodInvocationHistoryCollection = new CombineMethodInvocationHistoryCollection();
+			this._virtualComputeMethodInvocationHistoryCollection = new VirtualComputeMethodInvocationHistoryCollection();
+			this._getNumberMethodImposter = new GetNumberMethodImposter(_getNumberMethodInvocationHistoryCollection, this._imposterMode);
+			this._incrementMethodImposter = new IncrementMethodImposter(_incrementMethodInvocationHistoryCollection, this._imposterMode);
+			this._getNumberAsyncMethodImposter = new GetNumberAsyncMethodImposter(_getNumberAsyncMethodInvocationHistoryCollection, this._imposterMode);
+			this._doWorkAsyncMethodImposter = new DoWorkAsyncMethodImposter(_doWorkAsyncMethodInvocationHistoryCollection, this._imposterMode);
+			this._combineMethodImposter = new CombineMethodImposter(_combineMethodInvocationHistoryCollection, this._imposterMode);
+			this._virtualComputeMethodImposter = new VirtualComputeMethodImposter(_virtualComputeMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

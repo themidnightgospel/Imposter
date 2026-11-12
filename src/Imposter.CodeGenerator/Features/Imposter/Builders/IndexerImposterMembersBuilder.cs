@@ -4,14 +4,15 @@ using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.Imposter.Builders;
 
 internal readonly ref struct IndexerImposterMembersBuilder(
     in ClassDeclarationBuilder imposterBuilder,
-    BlockBuilder constructorBodyBuilder,
-    string invocationBehaviorParameterName,
+    BlockBuilder memberInitializationBuilder,
+    ExpressionSyntax invocationBehavior,
     in ImposterInstanceBuilder imposterInstanceBuilder
 )
 {
@@ -23,9 +24,10 @@ internal readonly ref struct IndexerImposterMembersBuilder(
         var propertyDisplayLiteral = indexer.Core.DisplayName.StringLiteral();
 
         _imposterBuilder.AddMember(
-            SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(
+            SyntaxFactoryHelper.SingleVariableField(
                 indexer.Builder.TypeSyntax,
-                indexer.BuilderField.Name
+                indexer.BuilderField.Name,
+                SyntaxKind.PrivateKeyword
             )
         );
 
@@ -77,13 +79,13 @@ internal readonly ref struct IndexerImposterMembersBuilder(
                     .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
         );
 
-        constructorBodyBuilder.AddStatement(
+        memberInitializationBuilder.AddStatement(
             ThisExpression()
                 .Dot(IdentifierName(indexer.BuilderField.Name))
                 .Assign(
                     indexer.Builder.TypeSyntax.New(
                         SyntaxFactoryHelper.ArgumentListSyntax([
-                            Argument(IdentifierName(invocationBehaviorParameterName)),
+                            Argument(invocationBehavior),
                             Argument(propertyDisplayLiteral),
                         ])
                     )

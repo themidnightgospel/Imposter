@@ -19,6 +19,12 @@ internal static class IndexerImposterBuilder
         var classBuilder = new ClassDeclarationBuilder(indexer.Builder.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddMember(
+                InvocationLifecycleBuilder.ClearChildren(
+                    indexer.Core.HasGetter ? indexer.Builder.GetterImposterField.Name : null,
+                    indexer.Core.HasSetter ? indexer.Builder.SetterImposterField.Name : null
+                )
+            )
+            .AddMember(
                 indexer.Core.HasDefaultBehaviour
                     ? SinglePrivateReadonlyVariableField(
                         indexer.Builder.DefaultBehaviourField,

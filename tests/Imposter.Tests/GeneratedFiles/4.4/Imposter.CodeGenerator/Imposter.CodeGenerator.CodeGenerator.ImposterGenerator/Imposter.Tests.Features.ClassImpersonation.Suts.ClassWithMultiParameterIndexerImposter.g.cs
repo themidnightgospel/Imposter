@@ -15,13 +15,14 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class ClassWithMultiParameterIndexerImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithMultiParameterIndexer>
 	{
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithMultiParameterIndexer global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithMultiParameterIndexer>.Instance()
 		{
 			return _imposterInstance;
 		}
 
-		private readonly IndexerIndexerBuilder _IndexerIndexer;
+		private IndexerIndexerBuilder _IndexerIndexer;
 		public IIndexerIndexerBuilder this[global::Imposter.Abstractions.Arg<int> row, global::Imposter.Abstractions.Arg<string> column] => new IndexerIndexerBuilder.InvocationBuilder(_IndexerIndexer, new IndexerIndexerArgumentsCriteria(row, column));
 		public delegate int IndexerIndexerDelegate(int row, string column);
 		public delegate void IndexerIndexerGetterCallback(int row, string column);
@@ -167,6 +168,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class IndexerIndexerBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposter.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			private readonly DefaultIndexerIndexerBehaviour _IndexerDefaultIndexerBehaviour = new DefaultIndexerIndexerBehaviour();
 			private readonly GetterImposter _getterImposter;
 			private readonly SetterImposter _setterImposter;
@@ -291,6 +298,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class GetterImposter
 			{
+				internal void ClearInvocations()
+				{
+					_invocationHistory?.Clear();
+				}
+
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
 				private readonly global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter> _getterInvocationImposters = new global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter>();
 				private global::Imposter.Abstractions.InvocationHistory<IndexerGetterInvocation>? _invocationHistory;
@@ -576,6 +588,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class SetterImposter
 			{
+				internal void ClearInvocations()
+				{
+					_invocationHistory?.Clear();
+				}
+
 				private global::Imposter.Abstractions.CallbackCollection<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)>? _callbacks;
 				private global::Imposter.Abstractions.InvocationHistory<IndexerSetterInvocation>? _invocationHistory;
 				private global::Imposter.Abstractions.CallbackCollection<IndexerIndexerArgumentsCriteria>? _baseCriteria;
@@ -843,7 +860,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 		public ClassWithMultiParameterIndexerImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
-			this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithMultiParameterIndexer.this[int row, string column]");
+			this._imposterMode = invocationBehavior;
+			this._IndexerIndexer = new IndexerIndexerBuilder(this._imposterMode, "Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithMultiParameterIndexer.this[int row, string column]");
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -852,6 +870,17 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
 			invocations.AddRange(_IndexerIndexer.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_IndexerIndexer.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_IndexerIndexer.ClearInvocations();
+			this._IndexerIndexer = new IndexerIndexerBuilder(this._imposterMode, "Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithMultiParameterIndexer.this[int row, string column]");
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

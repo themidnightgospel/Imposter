@@ -15,13 +15,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IHaveIndexerImposter<T> : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.OpenGenericImposter.IHaveIndexer<T>>, IHaveIndexerImposter<T>.IHaveIndexerSetup where T : class
 	{
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.OpenGenericImposter.IHaveIndexer<T> global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.OpenGenericImposter.IHaveIndexer<T>>.Instance()
 		{
 			return _imposterInstance;
 		}
 
-		private readonly IndexerIndexerBuilder _IndexerIndexer;
+		private IndexerIndexerBuilder _IndexerIndexer;
 		public IIndexerIndexerBuilder this[global::Imposter.Abstractions.Arg<int> index] => new IndexerIndexerBuilder.InvocationBuilder(_IndexerIndexer, new IndexerIndexerArgumentsCriteria(index));
 		public delegate T IndexerIndexerDelegate(int index);
 		public delegate void IndexerIndexerGetterCallback(int index);
@@ -147,6 +148,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class IndexerIndexerBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposter.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			private readonly DefaultIndexerIndexerBehaviour _IndexerDefaultIndexerBehaviour = new DefaultIndexerIndexerBehaviour();
 			private readonly GetterImposter _getterImposter;
 			private readonly SetterImposter _setterImposter;
@@ -268,6 +275,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class GetterImposter
 			{
+				internal void ClearInvocations()
+				{
+					_invocationHistory?.Clear();
+				}
+
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
 				private readonly global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter> _getterInvocationImposters = new global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter>();
 				private global::Imposter.Abstractions.InvocationHistory<IndexerGetterInvocation>? _invocationHistory;
@@ -532,6 +544,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class SetterImposter
 			{
+				internal void ClearInvocations()
+				{
+					_invocationHistory?.Clear();
+				}
+
 				private global::Imposter.Abstractions.CallbackCollection<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)>? _callbacks;
 				private global::Imposter.Abstractions.InvocationHistory<IndexerSetterInvocation>? _invocationHistory;
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
@@ -763,7 +780,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			IIndexerIndexerSetterBuilder Setter();
 		}
 
-		private readonly Indexer_1IndexerBuilder _Indexer_1Indexer;
+		private Indexer_1IndexerBuilder _Indexer_1Indexer;
 		public IIndexer_1IndexerBuilder this[global::Imposter.Abstractions.Arg<T> key] => new Indexer_1IndexerBuilder.InvocationBuilder(_Indexer_1Indexer, new Indexer_1IndexerArgumentsCriteria(key));
 		public delegate int Indexer_1IndexerDelegate(T key);
 		public delegate void Indexer_1IndexerGetterCallback(T key);
@@ -889,6 +906,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class Indexer_1IndexerBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposter.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			private readonly DefaultIndexer_1IndexerBehaviour _Indexer_1DefaultIndexerBehaviour = new DefaultIndexer_1IndexerBehaviour();
 			private readonly GetterImposter _getterImposter;
 			private readonly SetterImposter _setterImposter;
@@ -1010,6 +1033,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class GetterImposter
 			{
+				internal void ClearInvocations()
+				{
+					_invocationHistory?.Clear();
+				}
+
 				private readonly DefaultIndexer_1IndexerBehaviour _defaultBehaviour;
 				private readonly global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter> _getterInvocationImposters = new global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter>();
 				private global::Imposter.Abstractions.InvocationHistory<Indexer_1GetterInvocation>? _invocationHistory;
@@ -1274,6 +1302,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class SetterImposter
 			{
+				internal void ClearInvocations()
+				{
+					_invocationHistory?.Clear();
+				}
+
 				private global::Imposter.Abstractions.CallbackCollection<(Indexer_1IndexerArgumentsCriteria Criteria, Indexer_1IndexerSetterCallback Callback)>? _callbacks;
 				private global::Imposter.Abstractions.InvocationHistory<Indexer_1SetterInvocation>? _invocationHistory;
 				private readonly DefaultIndexer_1IndexerBehaviour _defaultBehaviour;
@@ -1505,7 +1538,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			IIndexer_1IndexerSetterBuilder Setter();
 		}
 
-		private readonly Indexer_2IndexerBuilder _Indexer_2Indexer;
+		private Indexer_2IndexerBuilder _Indexer_2Indexer;
 		public IIndexer_2IndexerBuilder this[global::Imposter.Abstractions.Arg<T> key, global::Imposter.Abstractions.Arg<int> index] => new Indexer_2IndexerBuilder.InvocationBuilder(_Indexer_2Indexer, new Indexer_2IndexerArgumentsCriteria(key, index));
 		public delegate T Indexer_2IndexerDelegate(T key, int index);
 		public delegate void Indexer_2IndexerGetterCallback(T key, int index);
@@ -1651,6 +1684,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class Indexer_2IndexerBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposter.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			private readonly DefaultIndexer_2IndexerBehaviour _Indexer_2DefaultIndexerBehaviour = new DefaultIndexer_2IndexerBehaviour();
 			private readonly GetterImposter _getterImposter;
 			private readonly SetterImposter _setterImposter;
@@ -1775,6 +1814,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class GetterImposter
 			{
+				internal void ClearInvocations()
+				{
+					_invocationHistory?.Clear();
+				}
+
 				private readonly DefaultIndexer_2IndexerBehaviour _defaultBehaviour;
 				private readonly global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter> _getterInvocationImposters = new global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter>();
 				private global::Imposter.Abstractions.InvocationHistory<Indexer_2GetterInvocation>? _invocationHistory;
@@ -2039,6 +2083,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class SetterImposter
 			{
+				internal void ClearInvocations()
+				{
+					_invocationHistory?.Clear();
+				}
+
 				private global::Imposter.Abstractions.CallbackCollection<(Indexer_2IndexerArgumentsCriteria Criteria, Indexer_2IndexerSetterCallback Callback)>? _callbacks;
 				private global::Imposter.Abstractions.InvocationHistory<Indexer_2SetterInvocation>? _invocationHistory;
 				private readonly DefaultIndexer_2IndexerBehaviour _defaultBehaviour;
@@ -2290,9 +2339,10 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 		public IHaveIndexerImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
-			this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.OpenGenericImposter.IHaveIndexer<T>.this[int index]");
-			this._Indexer_1Indexer = new Indexer_1IndexerBuilder(invocationBehavior, "Imposter.Tests.Features.OpenGenericImposter.IHaveIndexer<T>.this[T key]");
-			this._Indexer_2Indexer = new Indexer_2IndexerBuilder(invocationBehavior, "Imposter.Tests.Features.OpenGenericImposter.IHaveIndexer<T>.this[T key, int index]");
+			this._imposterMode = invocationBehavior;
+			this._IndexerIndexer = new IndexerIndexerBuilder(this._imposterMode, "Imposter.Tests.Features.OpenGenericImposter.IHaveIndexer<T>.this[int index]");
+			this._Indexer_1Indexer = new Indexer_1IndexerBuilder(this._imposterMode, "Imposter.Tests.Features.OpenGenericImposter.IHaveIndexer<T>.this[T key]");
+			this._Indexer_2Indexer = new Indexer_2IndexerBuilder(this._imposterMode, "Imposter.Tests.Features.OpenGenericImposter.IHaveIndexer<T>.this[T key, int index]");
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -2303,6 +2353,23 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			invocations.AddRange(_Indexer_1Indexer.Snapshot(false));
 			invocations.AddRange(_Indexer_2Indexer.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_IndexerIndexer.ClearInvocations();
+			_Indexer_1Indexer.ClearInvocations();
+			_Indexer_2Indexer.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_IndexerIndexer.ClearInvocations();
+			_Indexer_1Indexer.ClearInvocations();
+			_Indexer_2Indexer.ClearInvocations();
+			this._IndexerIndexer = new IndexerIndexerBuilder(this._imposterMode, "Imposter.Tests.Features.OpenGenericImposter.IHaveIndexer<T>.this[int index]");
+			this._Indexer_1Indexer = new Indexer_1IndexerBuilder(this._imposterMode, "Imposter.Tests.Features.OpenGenericImposter.IHaveIndexer<T>.this[T key]");
+			this._Indexer_2Indexer = new Indexer_2IndexerBuilder(this._imposterMode, "Imposter.Tests.Features.OpenGenericImposter.IHaveIndexer<T>.this[T key, int index]");
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

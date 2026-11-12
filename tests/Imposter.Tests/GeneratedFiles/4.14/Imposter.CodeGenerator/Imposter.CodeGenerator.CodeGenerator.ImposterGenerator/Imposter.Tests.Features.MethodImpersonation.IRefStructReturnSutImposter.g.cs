@@ -15,10 +15,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IRefStructReturnSutImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IRefStructReturnSut>, IRefStructReturnSutImposter.IRefStructReturnSutSetup
 	{
-		private readonly RentMethodImposter _rentMethodImposter;
-		private readonly NextMethodImposter _nextMethodImposter;
-		private readonly RentMethodInvocationHistoryCollection _rentMethodInvocationHistoryCollection;
-		private readonly NextMethodInvocationHistoryCollection _nextMethodInvocationHistoryCollection;
+		private RentMethodImposter _rentMethodImposter;
+		private NextMethodImposter _nextMethodImposter;
+		private RentMethodInvocationHistoryCollection _rentMethodInvocationHistoryCollection;
+		private NextMethodInvocationHistoryCollection _nextMethodInvocationHistoryCollection;
 		public IRentMethodImposterBuilder Rent(global::Imposter.Abstractions.Arg<int> size)
 		{
 			return new RentMethodImposter.Builder(_rentMethodImposter, _rentMethodInvocationHistoryCollection, new RentArgumentsCriteria(size));
@@ -29,6 +29,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			return new NextMethodImposter.Builder(_nextMethodImposter, _nextMethodInvocationHistoryCollection);
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.MethodImpersonation.IRefStructReturnSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IRefStructReturnSut>.Instance()
 		{
@@ -118,6 +119,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(NextMethodInvocationHistoryCollection.Node invocationHistory)
@@ -580,6 +586,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(RentMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -944,10 +955,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 		public IRefStructReturnSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._rentMethodInvocationHistoryCollection = new RentMethodInvocationHistoryCollection();
 			this._nextMethodInvocationHistoryCollection = new NextMethodInvocationHistoryCollection();
-			this._rentMethodImposter = new RentMethodImposter(_rentMethodInvocationHistoryCollection, invocationBehavior);
-			this._nextMethodImposter = new NextMethodImposter(_nextMethodInvocationHistoryCollection, invocationBehavior);
+			this._rentMethodImposter = new RentMethodImposter(_rentMethodInvocationHistoryCollection, this._imposterMode);
+			this._nextMethodImposter = new NextMethodImposter(_nextMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -957,6 +969,22 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			invocations.AddRange(_rentMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_nextMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_rentMethodInvocationHistoryCollection.Clear();
+			_nextMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_rentMethodInvocationHistoryCollection.Clear();
+			_nextMethodInvocationHistoryCollection.Clear();
+			this._rentMethodInvocationHistoryCollection = new RentMethodInvocationHistoryCollection();
+			this._nextMethodInvocationHistoryCollection = new NextMethodInvocationHistoryCollection();
+			this._rentMethodImposter = new RentMethodImposter(_rentMethodInvocationHistoryCollection, this._imposterMode);
+			this._nextMethodImposter = new NextMethodImposter(_nextMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

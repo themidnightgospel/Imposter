@@ -15,13 +15,14 @@ namespace Imposter.Tests.Docs.InvocationHistory
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IHistoryExampleImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Docs.InvocationHistory.IHistoryExample>, IHistoryExampleImposter.IHistoryExampleSetup
 	{
-		private readonly HelloMethodImposter _helloMethodImposter;
-		private readonly HelloMethodInvocationHistoryCollection _helloMethodInvocationHistoryCollection;
+		private HelloMethodImposter _helloMethodImposter;
+		private HelloMethodInvocationHistoryCollection _helloMethodInvocationHistoryCollection;
 		public IHelloMethodImposterBuilder Hello(global::Imposter.Abstractions.Arg<string> name, global::Imposter.Abstractions.Arg<int> times)
 		{
 			return new HelloMethodImposter.Builder(_helloMethodImposter, _helloMethodInvocationHistoryCollection, new HelloArgumentsCriteria(name, times));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Docs.InvocationHistory.IHistoryExample global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Docs.InvocationHistory.IHistoryExample>.Instance()
 		{
@@ -176,6 +177,11 @@ namespace Imposter.Tests.Docs.InvocationHistory
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(HelloMethodInvocationHistoryCollection.Node invocationHistory)
@@ -553,8 +559,9 @@ namespace Imposter.Tests.Docs.InvocationHistory
 
 		public IHistoryExampleImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._helloMethodInvocationHistoryCollection = new HelloMethodInvocationHistoryCollection();
-			this._helloMethodImposter = new HelloMethodImposter(_helloMethodInvocationHistoryCollection, invocationBehavior);
+			this._helloMethodImposter = new HelloMethodImposter(_helloMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -563,6 +570,18 @@ namespace Imposter.Tests.Docs.InvocationHistory
 			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
 			invocations.AddRange(_helloMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_helloMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_helloMethodInvocationHistoryCollection.Clear();
+			this._helloMethodInvocationHistoryCollection = new HelloMethodInvocationHistoryCollection();
+			this._helloMethodImposter = new HelloMethodImposter(_helloMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

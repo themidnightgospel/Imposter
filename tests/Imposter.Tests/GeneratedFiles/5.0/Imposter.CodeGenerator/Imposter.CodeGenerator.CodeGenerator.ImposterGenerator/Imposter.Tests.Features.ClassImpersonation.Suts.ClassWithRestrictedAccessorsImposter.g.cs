@@ -15,6 +15,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class ClassWithRestrictedAccessorsImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithRestrictedAccessors>
 	{
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithRestrictedAccessors global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithRestrictedAccessors>.Instance()
 		{
@@ -23,7 +24,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 		public IPrivateSetterPropertyBuilder PrivateSetter => _PrivateSetterPropertyBuilderField;
 
-		private readonly PrivateSetterPropertyBuilder _PrivateSetterPropertyBuilderField;
+		private PrivateSetterPropertyBuilder _PrivateSetterPropertyBuilderField;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IPrivateSetterPropertyGetterOutcomeBuilder
 		{
@@ -80,6 +81,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class PrivateSetterPropertyBuilder : IPrivateSetterPropertyBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposterBuilder.ClearInvocations();
+			}
+
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
 			{
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>(), orderBySequence);
@@ -174,7 +180,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 		public IProtectedGetterPropertyBuilder ProtectedGetter => _ProtectedGetterPropertyBuilderField;
 
-		private readonly ProtectedGetterPropertyBuilder _ProtectedGetterPropertyBuilderField;
+		private ProtectedGetterPropertyBuilder _ProtectedGetterPropertyBuilderField;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IProtectedGetterPropertyGetterOutcomeBuilder
 		{
@@ -291,6 +297,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ProtectedGetterPropertyBuilder : IProtectedGetterPropertyBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposterBuilder.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
 			{
 				return _setterImposter.Snapshot(orderBySequence);
@@ -448,7 +460,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 		public IProtectedSetterPropertyBuilder ProtectedSetter => _ProtectedSetterPropertyBuilderField;
 
-		private readonly ProtectedSetterPropertyBuilder _ProtectedSetterPropertyBuilderField;
+		private ProtectedSetterPropertyBuilder _ProtectedSetterPropertyBuilderField;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IProtectedSetterPropertyGetterOutcomeBuilder
 		{
@@ -565,6 +577,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ProtectedSetterPropertyBuilder : IProtectedSetterPropertyBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposterBuilder.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
 			{
 				return _setterImposter.Snapshot(orderBySequence);
@@ -720,7 +738,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			}
 		}
 
-		private readonly IndexerIndexerBuilder _IndexerIndexer;
+		private IndexerIndexerBuilder _IndexerIndexer;
 		public IIndexerIndexerBuilder this[global::Imposter.Abstractions.Arg<int> key] => new IndexerIndexerBuilder.InvocationBuilder(_IndexerIndexer, new IndexerIndexerArgumentsCriteria(key));
 		public delegate int IndexerIndexerDelegate(int key);
 		public delegate void IndexerIndexerGetterCallback(int key);
@@ -800,6 +818,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class IndexerIndexerBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposter.ClearInvocations();
+			}
+
 			private readonly DefaultIndexerIndexerBehaviour _IndexerDefaultIndexerBehaviour = new DefaultIndexerIndexerBehaviour();
 			private readonly GetterImposter _getterImposter;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -867,6 +890,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class GetterImposter
 			{
+				internal void ClearInvocations()
+				{
+					_invocationHistory?.Clear();
+				}
+
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
 				private readonly global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter> _getterInvocationImposters = new global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter>();
 				private global::Imposter.Abstractions.InvocationHistory<IndexerGetterInvocation>? _invocationHistory;
@@ -1205,10 +1233,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 		public ClassWithRestrictedAccessorsImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
-			this._PrivateSetterPropertyBuilderField = new PrivateSetterPropertyBuilder(invocationBehavior);
-			this._ProtectedGetterPropertyBuilderField = new ProtectedGetterPropertyBuilder(invocationBehavior);
-			this._ProtectedSetterPropertyBuilderField = new ProtectedSetterPropertyBuilder(invocationBehavior);
-			this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithRestrictedAccessors.this[int key]");
+			this._imposterMode = invocationBehavior;
+			this._PrivateSetterPropertyBuilderField = new PrivateSetterPropertyBuilder(this._imposterMode);
+			this._ProtectedGetterPropertyBuilderField = new ProtectedGetterPropertyBuilder(this._imposterMode);
+			this._ProtectedSetterPropertyBuilderField = new ProtectedSetterPropertyBuilder(this._imposterMode);
+			this._IndexerIndexer = new IndexerIndexerBuilder(this._imposterMode, "Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithRestrictedAccessors.this[int key]");
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -1220,6 +1249,26 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			invocations.AddRange(_ProtectedSetterPropertyBuilderField.Snapshot(false));
 			invocations.AddRange(_IndexerIndexer.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_PrivateSetterPropertyBuilderField.ClearInvocations();
+			_ProtectedGetterPropertyBuilderField.ClearInvocations();
+			_ProtectedSetterPropertyBuilderField.ClearInvocations();
+			_IndexerIndexer.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_PrivateSetterPropertyBuilderField.ClearInvocations();
+			_ProtectedGetterPropertyBuilderField.ClearInvocations();
+			_ProtectedSetterPropertyBuilderField.ClearInvocations();
+			_IndexerIndexer.ClearInvocations();
+			this._PrivateSetterPropertyBuilderField = new PrivateSetterPropertyBuilder(this._imposterMode);
+			this._ProtectedGetterPropertyBuilderField = new ProtectedGetterPropertyBuilder(this._imposterMode);
+			this._ProtectedSetterPropertyBuilderField = new ProtectedSetterPropertyBuilder(this._imposterMode);
+			this._IndexerIndexer = new IndexerIndexerBuilder(this._imposterMode, "Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithRestrictedAccessors.this[int key]");
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

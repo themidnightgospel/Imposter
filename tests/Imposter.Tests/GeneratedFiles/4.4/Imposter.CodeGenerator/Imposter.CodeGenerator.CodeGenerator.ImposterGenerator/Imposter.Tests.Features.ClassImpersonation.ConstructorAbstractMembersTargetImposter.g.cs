@@ -15,12 +15,12 @@ namespace Imposter.Tests.Features.ClassImpersonation
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class ConstructorAbstractMembersTargetImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.ConstructorAbstractMembersTarget>
 	{
-		private readonly TouchMethodImposter _touchMethodImposter;
-		private readonly TransformMethodImposterCollection _transformMethodImposterCollection;
-		private readonly ReadAsyncMethodImposter _readAsyncMethodImposter;
-		private readonly TouchMethodInvocationHistoryCollection _touchMethodInvocationHistoryCollection;
-		private readonly TransformMethodInvocationHistoryCollection _transformMethodInvocationHistoryCollection;
-		private readonly ReadAsyncMethodInvocationHistoryCollection _readAsyncMethodInvocationHistoryCollection;
+		private TouchMethodImposter _touchMethodImposter;
+		private TransformMethodImposterCollection _transformMethodImposterCollection;
+		private ReadAsyncMethodImposter _readAsyncMethodImposter;
+		private TouchMethodInvocationHistoryCollection _touchMethodInvocationHistoryCollection;
+		private TransformMethodInvocationHistoryCollection _transformMethodInvocationHistoryCollection;
+		private ReadAsyncMethodInvocationHistoryCollection _readAsyncMethodInvocationHistoryCollection;
 		public ITouchMethodImposterBuilder Touch()
 		{
 			return new TouchMethodImposter.Builder(_touchMethodImposter, _touchMethodInvocationHistoryCollection);
@@ -36,6 +36,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 			return new ReadAsyncMethodImposter.Builder(_readAsyncMethodImposter, _readAsyncMethodInvocationHistoryCollection);
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.ClassImpersonation.ConstructorAbstractMembersTarget global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.ConstructorAbstractMembersTarget>.Instance()
 		{
@@ -149,6 +150,11 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(ReadAsyncMethodInvocationHistoryCollection.Node invocationHistory)
@@ -626,6 +632,11 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(TouchMethodInvocationHistoryCollection.Node invocationHistory)
@@ -1125,6 +1136,11 @@ namespace Imposter.Tests.Features.ClassImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(TransformMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1585,7 +1601,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 		public IValuePropertyBuilder Value => _ValuePropertyBuilderField;
 
-		private readonly ValuePropertyBuilder _ValuePropertyBuilderField;
+		private ValuePropertyBuilder _ValuePropertyBuilderField;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IValuePropertyGetterOutcomeBuilder
 		{
@@ -1687,6 +1703,12 @@ namespace Imposter.Tests.Features.ClassImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ValuePropertyBuilder : IValuePropertyBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposterBuilder.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
 			{
 				return _setterImposter.Snapshot(orderBySequence);
@@ -1814,7 +1836,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 		public IChangedEventImposterBuilder Changed => _Changed;
 
-		private readonly ChangedEventImposterBuilder _Changed;
+		private ChangedEventImposterBuilder _Changed;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IChangedEventImposterBuilder : IChangedEventImposterSetupBuilder, IChangedEventImposterVerificationBuilder
 		{
@@ -1853,6 +1875,14 @@ namespace Imposter.Tests.Features.ClassImpersonation
 			private global::Imposter.Abstractions.CallbackCollection<global::System.Action>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<bool>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Action>? _handlerInvocations;
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>> IChangedEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -2177,7 +2207,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 			}
 		}
 
-		private readonly IndexerIndexerBuilder _IndexerIndexer;
+		private IndexerIndexerBuilder _IndexerIndexer;
 		public IIndexerIndexerBuilder this[global::Imposter.Abstractions.Arg<int> key] => new IndexerIndexerBuilder.InvocationBuilder(_IndexerIndexer, new IndexerIndexerArgumentsCriteria(key));
 		public delegate string IndexerIndexerDelegate(int key);
 		public delegate void IndexerIndexerGetterCallback(int key);
@@ -2303,6 +2333,12 @@ namespace Imposter.Tests.Features.ClassImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class IndexerIndexerBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposter.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			private readonly DefaultIndexerIndexerBehaviour _IndexerDefaultIndexerBehaviour = new DefaultIndexerIndexerBehaviour();
 			private readonly GetterImposter _getterImposter;
 			private readonly SetterImposter _setterImposter;
@@ -2424,6 +2460,11 @@ namespace Imposter.Tests.Features.ClassImpersonation
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class GetterImposter
 			{
+				internal void ClearInvocations()
+				{
+					_invocationHistory?.Clear();
+				}
+
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
 				private readonly global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter> _getterInvocationImposters = new global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter>();
 				private global::Imposter.Abstractions.InvocationHistory<IndexerGetterInvocation>? _invocationHistory;
@@ -2688,6 +2729,11 @@ namespace Imposter.Tests.Features.ClassImpersonation
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class SetterImposter
 			{
+				internal void ClearInvocations()
+				{
+					_invocationHistory?.Clear();
+				}
+
 				private global::Imposter.Abstractions.CallbackCollection<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)>? _callbacks;
 				private global::Imposter.Abstractions.InvocationHistory<IndexerSetterInvocation>? _invocationHistory;
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
@@ -2921,15 +2967,16 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 		public ConstructorAbstractMembersTargetImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._touchMethodInvocationHistoryCollection = new TouchMethodInvocationHistoryCollection();
 			this._transformMethodInvocationHistoryCollection = new TransformMethodInvocationHistoryCollection();
 			this._readAsyncMethodInvocationHistoryCollection = new ReadAsyncMethodInvocationHistoryCollection();
-			this._touchMethodImposter = new TouchMethodImposter(_touchMethodInvocationHistoryCollection, invocationBehavior);
-			this._transformMethodImposterCollection = new TransformMethodImposterCollection(_transformMethodInvocationHistoryCollection, invocationBehavior);
-			this._readAsyncMethodImposter = new ReadAsyncMethodImposter(_readAsyncMethodInvocationHistoryCollection, invocationBehavior);
-			this._ValuePropertyBuilderField = new ValuePropertyBuilder(invocationBehavior);
+			this._touchMethodImposter = new TouchMethodImposter(_touchMethodInvocationHistoryCollection, this._imposterMode);
+			this._transformMethodImposterCollection = new TransformMethodImposterCollection(_transformMethodInvocationHistoryCollection, this._imposterMode);
+			this._readAsyncMethodImposter = new ReadAsyncMethodImposter(_readAsyncMethodInvocationHistoryCollection, this._imposterMode);
+			this._ValuePropertyBuilderField = new ValuePropertyBuilder(this._imposterMode);
 			this._Changed = new ChangedEventImposterBuilder();
-			this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.ClassImpersonation.ConstructorAbstractMembersTarget.this[int key]");
+			this._IndexerIndexer = new IndexerIndexerBuilder(this._imposterMode, "Imposter.Tests.Features.ClassImpersonation.ConstructorAbstractMembersTarget.this[int key]");
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -2943,6 +2990,35 @@ namespace Imposter.Tests.Features.ClassImpersonation
 			invocations.AddRange(_Changed.Snapshot(false));
 			invocations.AddRange(_IndexerIndexer.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_touchMethodInvocationHistoryCollection.Clear();
+			_transformMethodInvocationHistoryCollection.Clear();
+			_readAsyncMethodInvocationHistoryCollection.Clear();
+			_ValuePropertyBuilderField.ClearInvocations();
+			_Changed.ClearInvocations();
+			_IndexerIndexer.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_touchMethodInvocationHistoryCollection.Clear();
+			_transformMethodInvocationHistoryCollection.Clear();
+			_readAsyncMethodInvocationHistoryCollection.Clear();
+			_ValuePropertyBuilderField.ClearInvocations();
+			_Changed.ClearInvocations();
+			_IndexerIndexer.ClearInvocations();
+			this._touchMethodInvocationHistoryCollection = new TouchMethodInvocationHistoryCollection();
+			this._transformMethodInvocationHistoryCollection = new TransformMethodInvocationHistoryCollection();
+			this._readAsyncMethodInvocationHistoryCollection = new ReadAsyncMethodInvocationHistoryCollection();
+			this._touchMethodImposter = new TouchMethodImposter(_touchMethodInvocationHistoryCollection, this._imposterMode);
+			this._transformMethodImposterCollection = new TransformMethodImposterCollection(_transformMethodInvocationHistoryCollection, this._imposterMode);
+			this._readAsyncMethodImposter = new ReadAsyncMethodImposter(_readAsyncMethodInvocationHistoryCollection, this._imposterMode);
+			this._ValuePropertyBuilderField = new ValuePropertyBuilder(this._imposterMode);
+			this._Changed = new ChangedEventImposterBuilder();
+			this._IndexerIndexer = new IndexerIndexerBuilder(this._imposterMode, "Imposter.Tests.Features.ClassImpersonation.ConstructorAbstractMembersTarget.this[int key]");
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

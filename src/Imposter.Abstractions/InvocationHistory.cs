@@ -25,6 +25,9 @@ public sealed class InvocationHistory<T> : IEnumerable<T>
         } while (Interlocked.CompareExchange(ref _head, entry, head) != head);
     }
 
+    /// <summary>Atomically removes recorded history.</summary>
+    public void Clear() => Interlocked.Exchange(ref _head, null);
+
     /// <summary>Enumerates the history visible when enumeration starts.</summary>
     public Enumerator GetEnumerator() => new(Volatile.Read(ref _head));
 

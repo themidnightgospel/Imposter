@@ -15,13 +15,14 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class ClassWithConstructorDefaultsImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithConstructorDefaults>
 	{
-		private readonly GetMethodImposter _getMethodImposter;
-		private readonly GetMethodInvocationHistoryCollection _getMethodInvocationHistoryCollection;
+		private GetMethodImposter _getMethodImposter;
+		private GetMethodInvocationHistoryCollection _getMethodInvocationHistoryCollection;
 		public IGetMethodImposterBuilder Get()
 		{
 			return new GetMethodImposter.Builder(_getMethodImposter, _getMethodInvocationHistoryCollection);
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithConstructorDefaults global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithConstructorDefaults>.Instance()
 		{
@@ -121,6 +122,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(GetMethodInvocationHistoryCollection.Node invocationHistory)
@@ -498,8 +504,9 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 		public ClassWithConstructorDefaultsImposter(decimal? amount = 1.5M, global::Imposter.Tests.Features.ClassImpersonation.Suts.ConstructorDefaultLevel? level = (global::Imposter.Tests.Features.ClassImpersonation.Suts.ConstructorDefaultLevel)2, double ratio = double.NaN, float limit = float.NegativeInfinity, global::Imposter.Tests.Features.ClassImpersonation.Suts.ConstructorDefaultLevel floor = (global::Imposter.Tests.Features.ClassImpersonation.Suts.ConstructorDefaultLevel)(-1), global::Imposter.Tests.Features.ClassImpersonation.Suts.ConstructorDefaultLevel? ceiling = (global::Imposter.Tests.Features.ClassImpersonation.Suts.ConstructorDefaultLevel)(-1), global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._getMethodInvocationHistoryCollection = new GetMethodInvocationHistoryCollection();
-			this._getMethodImposter = new GetMethodImposter(_getMethodInvocationHistoryCollection, invocationBehavior);
+			this._getMethodImposter = new GetMethodImposter(_getMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this, amount, level, ratio, limit, floor, ceiling);
 		}
 
@@ -508,6 +515,18 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
 			invocations.AddRange(_getMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_getMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_getMethodInvocationHistoryCollection.Clear();
+			this._getMethodInvocationHistoryCollection = new GetMethodInvocationHistoryCollection();
+			this._getMethodImposter = new GetMethodImposter(_getMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

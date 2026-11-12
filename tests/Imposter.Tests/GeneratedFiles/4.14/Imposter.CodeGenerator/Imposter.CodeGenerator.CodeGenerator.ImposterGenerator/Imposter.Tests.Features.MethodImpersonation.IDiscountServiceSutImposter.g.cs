@@ -15,13 +15,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IDiscountServiceSutImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IDiscountServiceSut>, IDiscountServiceSutImposter.IDiscountServiceSutSetup
 	{
-		private readonly CalculateMethodImposter _calculateMethodImposter;
-		private readonly CalculateMethodInvocationHistoryCollection _calculateMethodInvocationHistoryCollection;
+		private CalculateMethodImposter _calculateMethodImposter;
+		private CalculateMethodInvocationHistoryCollection _calculateMethodInvocationHistoryCollection;
 		public ICalculateMethodImposterBuilder Calculate(global::Imposter.Abstractions.Arg<global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.InvoiceItem>?> invoicItems, global::Imposter.Abstractions.Arg<global::System.Collections.Generic.IDictionary<global::Imposter.Tests.Features.MethodImpersonation.Product, global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.History>>?> purchaceHistory)
 		{
 			return new CalculateMethodImposter.Builder(_calculateMethodImposter, _calculateMethodInvocationHistoryCollection, new CalculateArgumentsCriteria(invoicItems, purchaceHistory));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.MethodImpersonation.IDiscountServiceSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IDiscountServiceSut>.Instance()
 		{
@@ -176,6 +177,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(CalculateMethodInvocationHistoryCollection.Node invocationHistory)
@@ -553,8 +559,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 		public IDiscountServiceSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._calculateMethodInvocationHistoryCollection = new CalculateMethodInvocationHistoryCollection();
-			this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, invocationBehavior);
+			this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -563,6 +570,18 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
 			invocations.AddRange(_calculateMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_calculateMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_calculateMethodInvocationHistoryCollection.Clear();
+			this._calculateMethodInvocationHistoryCollection = new CalculateMethodInvocationHistoryCollection();
+			this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

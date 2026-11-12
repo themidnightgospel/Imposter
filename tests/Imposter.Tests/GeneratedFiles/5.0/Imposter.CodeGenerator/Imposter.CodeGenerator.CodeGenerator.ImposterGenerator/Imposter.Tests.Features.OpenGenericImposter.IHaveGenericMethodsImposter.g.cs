@@ -15,14 +15,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IHaveGenericMethodsImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.OpenGenericImposter.IHaveGenericMethods>, IHaveGenericMethodsImposter.IHaveGenericMethodsSetup
 	{
-		private readonly GetValueMethodImposterCollection _getValueMethodImposterCollection;
-		private readonly AddItemMethodImposterCollection _addItemMethodImposterCollection;
-		private readonly ProcessAsyncMethodImposterCollection _processAsyncMethodImposterCollection;
-		private readonly ProcessComplexAsyncMethodImposterCollection _processComplexAsyncMethodImposterCollection;
-		private readonly GetValueMethodInvocationHistoryCollection _getValueMethodInvocationHistoryCollection;
-		private readonly AddItemMethodInvocationHistoryCollection _addItemMethodInvocationHistoryCollection;
-		private readonly ProcessAsyncMethodInvocationHistoryCollection _processAsyncMethodInvocationHistoryCollection;
-		private readonly ProcessComplexAsyncMethodInvocationHistoryCollection _processComplexAsyncMethodInvocationHistoryCollection;
+		private GetValueMethodImposterCollection _getValueMethodImposterCollection;
+		private AddItemMethodImposterCollection _addItemMethodImposterCollection;
+		private ProcessAsyncMethodImposterCollection _processAsyncMethodImposterCollection;
+		private ProcessComplexAsyncMethodImposterCollection _processComplexAsyncMethodImposterCollection;
+		private GetValueMethodInvocationHistoryCollection _getValueMethodInvocationHistoryCollection;
+		private AddItemMethodInvocationHistoryCollection _addItemMethodInvocationHistoryCollection;
+		private ProcessAsyncMethodInvocationHistoryCollection _processAsyncMethodInvocationHistoryCollection;
+		private ProcessComplexAsyncMethodInvocationHistoryCollection _processComplexAsyncMethodInvocationHistoryCollection;
 		public IGetValueMethodImposterBuilder<TResult> GetValue<TResult>()
 		{
 			return new GetValueMethodImposter<TResult>.Builder(_getValueMethodImposterCollection, _getValueMethodInvocationHistoryCollection);
@@ -43,6 +43,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			return new ProcessComplexAsyncMethodImposter<TItem, TResult>.Builder(_processComplexAsyncMethodImposterCollection, _processComplexAsyncMethodInvocationHistoryCollection, new ProcessComplexAsyncArgumentsCriteria<TItem, TResult>(items));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.OpenGenericImposter.IHaveGenericMethods global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.OpenGenericImposter.IHaveGenericMethods>.Instance()
 		{
@@ -185,6 +186,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(AddItemMethodInvocationHistoryCollection.Node invocationHistory)
@@ -691,6 +697,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(GetValueMethodInvocationHistoryCollection.Node invocationHistory)
@@ -1286,6 +1297,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(ProcessAsyncMethodInvocationHistoryCollection.Node invocationHistory)
@@ -1931,6 +1947,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(ProcessComplexAsyncMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -2448,14 +2469,15 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 		public IHaveGenericMethodsImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._getValueMethodInvocationHistoryCollection = new GetValueMethodInvocationHistoryCollection();
 			this._addItemMethodInvocationHistoryCollection = new AddItemMethodInvocationHistoryCollection();
 			this._processAsyncMethodInvocationHistoryCollection = new ProcessAsyncMethodInvocationHistoryCollection();
 			this._processComplexAsyncMethodInvocationHistoryCollection = new ProcessComplexAsyncMethodInvocationHistoryCollection();
-			this._getValueMethodImposterCollection = new GetValueMethodImposterCollection(_getValueMethodInvocationHistoryCollection, invocationBehavior);
-			this._addItemMethodImposterCollection = new AddItemMethodImposterCollection(_addItemMethodInvocationHistoryCollection, invocationBehavior);
-			this._processAsyncMethodImposterCollection = new ProcessAsyncMethodImposterCollection(_processAsyncMethodInvocationHistoryCollection, invocationBehavior);
-			this._processComplexAsyncMethodImposterCollection = new ProcessComplexAsyncMethodImposterCollection(_processComplexAsyncMethodInvocationHistoryCollection, invocationBehavior);
+			this._getValueMethodImposterCollection = new GetValueMethodImposterCollection(_getValueMethodInvocationHistoryCollection, this._imposterMode);
+			this._addItemMethodImposterCollection = new AddItemMethodImposterCollection(_addItemMethodInvocationHistoryCollection, this._imposterMode);
+			this._processAsyncMethodImposterCollection = new ProcessAsyncMethodImposterCollection(_processAsyncMethodInvocationHistoryCollection, this._imposterMode);
+			this._processComplexAsyncMethodImposterCollection = new ProcessComplexAsyncMethodImposterCollection(_processComplexAsyncMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -2467,6 +2489,30 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			invocations.AddRange(_processAsyncMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_processComplexAsyncMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_getValueMethodInvocationHistoryCollection.Clear();
+			_addItemMethodInvocationHistoryCollection.Clear();
+			_processAsyncMethodInvocationHistoryCollection.Clear();
+			_processComplexAsyncMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_getValueMethodInvocationHistoryCollection.Clear();
+			_addItemMethodInvocationHistoryCollection.Clear();
+			_processAsyncMethodInvocationHistoryCollection.Clear();
+			_processComplexAsyncMethodInvocationHistoryCollection.Clear();
+			this._getValueMethodInvocationHistoryCollection = new GetValueMethodInvocationHistoryCollection();
+			this._addItemMethodInvocationHistoryCollection = new AddItemMethodInvocationHistoryCollection();
+			this._processAsyncMethodInvocationHistoryCollection = new ProcessAsyncMethodInvocationHistoryCollection();
+			this._processComplexAsyncMethodInvocationHistoryCollection = new ProcessComplexAsyncMethodInvocationHistoryCollection();
+			this._getValueMethodImposterCollection = new GetValueMethodImposterCollection(_getValueMethodInvocationHistoryCollection, this._imposterMode);
+			this._addItemMethodImposterCollection = new AddItemMethodImposterCollection(_addItemMethodInvocationHistoryCollection, this._imposterMode);
+			this._processAsyncMethodImposterCollection = new ProcessAsyncMethodImposterCollection(_processAsyncMethodInvocationHistoryCollection, this._imposterMode);
+			this._processComplexAsyncMethodImposterCollection = new ProcessComplexAsyncMethodImposterCollection(_processComplexAsyncMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

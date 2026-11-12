@@ -49,6 +49,9 @@ public class PropertyGetter<T>
     protected void Callback(Action callback) =>
         LazyInitializer.EnsureInitialized(ref _callbacks)!.Add(callback);
 
+    /// <summary>Clears recorded interactions while preserving configured behavior.</summary>
+    public void ClearInvocations() => Interlocked.Exchange(ref _invocationCount, 0);
+
     /// <summary>Verifies the number of reads, including reads whose callbacks or outcomes threw.</summary>
     /// <param name="count">The expected count.</param>
     protected void Called(Count count)

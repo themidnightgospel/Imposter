@@ -32,6 +32,14 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
 		}
 
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+		}
+
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		class ImposterTargetInstance : global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithStaticMembers
 		{

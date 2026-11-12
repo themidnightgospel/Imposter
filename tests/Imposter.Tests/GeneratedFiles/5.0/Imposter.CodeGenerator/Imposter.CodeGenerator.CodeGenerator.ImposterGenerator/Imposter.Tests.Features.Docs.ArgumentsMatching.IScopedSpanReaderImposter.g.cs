@@ -15,13 +15,14 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IScopedSpanReaderImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.ArgumentsMatching.IScopedSpanReader>, IScopedSpanReaderImposter.IScopedSpanReaderSetup
 	{
-		private readonly TrimMethodImposter _trimMethodImposter;
-		private readonly TrimMethodInvocationHistoryCollection _trimMethodInvocationHistoryCollection;
+		private TrimMethodImposter _trimMethodImposter;
+		private TrimMethodInvocationHistoryCollection _trimMethodInvocationHistoryCollection;
 		public ITrimMethodImposterBuilder Trim(global::Imposter.Abstractions.ReadOnlySpanArg<char> text)
 		{
 			return new TrimMethodImposter.Builder(_trimMethodImposter, _trimMethodInvocationHistoryCollection, new TrimArgumentsCriteria(text));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.Docs.ArgumentsMatching.IScopedSpanReader global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.ArgumentsMatching.IScopedSpanReader>.Instance()
 		{
@@ -162,6 +163,11 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(TrimMethodInvocationHistoryCollection.Node invocationHistory)
@@ -538,8 +544,9 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 		public IScopedSpanReaderImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._trimMethodInvocationHistoryCollection = new TrimMethodInvocationHistoryCollection();
-			this._trimMethodImposter = new TrimMethodImposter(_trimMethodInvocationHistoryCollection, invocationBehavior);
+			this._trimMethodImposter = new TrimMethodImposter(_trimMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -548,6 +555,18 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
 			invocations.AddRange(_trimMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_trimMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_trimMethodInvocationHistoryCollection.Clear();
+			this._trimMethodInvocationHistoryCollection = new TrimMethodInvocationHistoryCollection();
+			this._trimMethodImposter = new TrimMethodImposter(_trimMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

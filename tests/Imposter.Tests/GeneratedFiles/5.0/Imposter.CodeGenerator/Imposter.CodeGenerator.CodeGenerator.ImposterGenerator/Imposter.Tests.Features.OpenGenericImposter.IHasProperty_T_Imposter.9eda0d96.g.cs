@@ -15,6 +15,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IHasPropertyImposter<T> : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.OpenGenericImposter.IHasProperty<T>>, IHasPropertyImposter<T>.IHasPropertySetup where T : class
 	{
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.OpenGenericImposter.IHasProperty<T> global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.OpenGenericImposter.IHasProperty<T>>.Instance()
 		{
@@ -23,7 +24,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 		public ICountPropertyBuilder Count => _CountPropertyBuilderField;
 
-		private readonly CountPropertyBuilder _CountPropertyBuilderField;
+		private CountPropertyBuilder _CountPropertyBuilderField;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ICountPropertyGetterOutcomeBuilder
 		{
@@ -71,6 +72,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class CountPropertyBuilder : ICountPropertyBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposterBuilder.ClearInvocations();
+			}
+
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
 			{
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>(), orderBySequence);
@@ -142,7 +148,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 		public IItemsPropertyBuilder Items => _ItemsPropertyBuilderField;
 
-		private readonly ItemsPropertyBuilder _ItemsPropertyBuilderField;
+		private ItemsPropertyBuilder _ItemsPropertyBuilderField;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IItemsPropertyGetterOutcomeBuilder
 		{
@@ -190,6 +196,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ItemsPropertyBuilder : IItemsPropertyBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposterBuilder.ClearInvocations();
+			}
+
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
 			{
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>(), orderBySequence);
@@ -261,7 +272,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 		public IReadOnlyValuePropertyBuilder ReadOnlyValue => _ReadOnlyValuePropertyBuilderField;
 
-		private readonly ReadOnlyValuePropertyBuilder _ReadOnlyValuePropertyBuilderField;
+		private ReadOnlyValuePropertyBuilder _ReadOnlyValuePropertyBuilderField;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IReadOnlyValuePropertyGetterOutcomeBuilder
 		{
@@ -309,6 +320,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ReadOnlyValuePropertyBuilder : IReadOnlyValuePropertyBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposterBuilder.ClearInvocations();
+			}
+
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
 			{
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>(), orderBySequence);
@@ -380,7 +396,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 		public IValuePropertyBuilder Value => _ValuePropertyBuilderField;
 
-		private readonly ValuePropertyBuilder _ValuePropertyBuilderField;
+		private ValuePropertyBuilder _ValuePropertyBuilderField;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IValuePropertyGetterOutcomeBuilder
 		{
@@ -482,6 +498,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ValuePropertyBuilder : IValuePropertyBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposterBuilder.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
 			{
 				return _setterImposter.Snapshot(orderBySequence);
@@ -634,10 +656,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 		public IHasPropertyImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
-			this._CountPropertyBuilderField = new CountPropertyBuilder(invocationBehavior);
-			this._ItemsPropertyBuilderField = new ItemsPropertyBuilder(invocationBehavior);
-			this._ReadOnlyValuePropertyBuilderField = new ReadOnlyValuePropertyBuilder(invocationBehavior);
-			this._ValuePropertyBuilderField = new ValuePropertyBuilder(invocationBehavior);
+			this._imposterMode = invocationBehavior;
+			this._CountPropertyBuilderField = new CountPropertyBuilder(this._imposterMode);
+			this._ItemsPropertyBuilderField = new ItemsPropertyBuilder(this._imposterMode);
+			this._ReadOnlyValuePropertyBuilderField = new ReadOnlyValuePropertyBuilder(this._imposterMode);
+			this._ValuePropertyBuilderField = new ValuePropertyBuilder(this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -649,6 +672,26 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			invocations.AddRange(_ReadOnlyValuePropertyBuilderField.Snapshot(false));
 			invocations.AddRange(_ValuePropertyBuilderField.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_CountPropertyBuilderField.ClearInvocations();
+			_ItemsPropertyBuilderField.ClearInvocations();
+			_ReadOnlyValuePropertyBuilderField.ClearInvocations();
+			_ValuePropertyBuilderField.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_CountPropertyBuilderField.ClearInvocations();
+			_ItemsPropertyBuilderField.ClearInvocations();
+			_ReadOnlyValuePropertyBuilderField.ClearInvocations();
+			_ValuePropertyBuilderField.ClearInvocations();
+			this._CountPropertyBuilderField = new CountPropertyBuilder(this._imposterMode);
+			this._ItemsPropertyBuilderField = new ItemsPropertyBuilder(this._imposterMode);
+			this._ReadOnlyValuePropertyBuilderField = new ReadOnlyValuePropertyBuilder(this._imposterMode);
+			this._ValuePropertyBuilderField = new ValuePropertyBuilder(this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

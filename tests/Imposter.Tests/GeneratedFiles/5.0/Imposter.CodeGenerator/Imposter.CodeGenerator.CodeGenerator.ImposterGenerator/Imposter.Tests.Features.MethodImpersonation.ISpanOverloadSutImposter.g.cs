@@ -15,10 +15,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class ISpanOverloadSutImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.ISpanOverloadSut>, ISpanOverloadSutImposter.ISpanOverloadSutSetup
 	{
-		private readonly WriteMethodImposter _writeMethodImposter;
-		private readonly Write_1MethodImposter _write_1MethodImposter;
-		private readonly WriteMethodInvocationHistoryCollection _writeMethodInvocationHistoryCollection;
-		private readonly Write_1MethodInvocationHistoryCollection _write_1MethodInvocationHistoryCollection;
+		private WriteMethodImposter _writeMethodImposter;
+		private Write_1MethodImposter _write_1MethodImposter;
+		private WriteMethodInvocationHistoryCollection _writeMethodInvocationHistoryCollection;
+		private Write_1MethodInvocationHistoryCollection _write_1MethodInvocationHistoryCollection;
 		public IWriteMethodImposterBuilder Write(global::Imposter.Abstractions.SpanArg<byte> buffer)
 		{
 			return new WriteMethodImposter.Builder(_writeMethodImposter, _writeMethodInvocationHistoryCollection, new WriteArgumentsCriteria(buffer));
@@ -29,6 +29,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			return new Write_1MethodImposter.Builder(_write_1MethodImposter, _write_1MethodInvocationHistoryCollection, new Write_1ArgumentsCriteria(data));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.MethodImpersonation.ISpanOverloadSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.ISpanOverloadSut>.Instance()
 		{
@@ -169,6 +170,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(Write_1MethodInvocationHistoryCollection.Node invocationHistory)
@@ -663,6 +669,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(WriteMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1043,10 +1054,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 		public ISpanOverloadSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._writeMethodInvocationHistoryCollection = new WriteMethodInvocationHistoryCollection();
 			this._write_1MethodInvocationHistoryCollection = new Write_1MethodInvocationHistoryCollection();
-			this._writeMethodImposter = new WriteMethodImposter(_writeMethodInvocationHistoryCollection, invocationBehavior);
-			this._write_1MethodImposter = new Write_1MethodImposter(_write_1MethodInvocationHistoryCollection, invocationBehavior);
+			this._writeMethodImposter = new WriteMethodImposter(_writeMethodInvocationHistoryCollection, this._imposterMode);
+			this._write_1MethodImposter = new Write_1MethodImposter(_write_1MethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -1056,6 +1068,22 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			invocations.AddRange(_writeMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_write_1MethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_writeMethodInvocationHistoryCollection.Clear();
+			_write_1MethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_writeMethodInvocationHistoryCollection.Clear();
+			_write_1MethodInvocationHistoryCollection.Clear();
+			this._writeMethodInvocationHistoryCollection = new WriteMethodInvocationHistoryCollection();
+			this._write_1MethodInvocationHistoryCollection = new Write_1MethodInvocationHistoryCollection();
+			this._writeMethodImposter = new WriteMethodImposter(_writeMethodInvocationHistoryCollection, this._imposterMode);
+			this._write_1MethodImposter = new Write_1MethodImposter(_write_1MethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

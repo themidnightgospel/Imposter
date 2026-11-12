@@ -23,7 +23,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 		public ITextReceivedEventImposterBuilder TextReceived => _TextReceived;
 
-		private readonly TextReceivedEventImposterBuilder _TextReceived;
+		private TextReceivedEventImposterBuilder _TextReceived;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ITextReceivedEventImposterBuilder : ITextReceivedEventImposterSetupBuilder, ITextReceivedEventImposterVerificationBuilder
 		{
@@ -65,6 +65,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.TextReceivedHandler Handler, char[] text)>? _handlerInvocations;
 			private bool _useBaseImplementation;
 			private readonly string _eventDisplayName = "Imposter.Tests.Features.EventImpersonation.SpanEventClass.TextReceived";
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.TextReceivedHandler>> ITextReceivedEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -431,6 +439,17 @@ namespace Imposter.Tests.Features.EventImpersonation
 			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
 			invocations.AddRange(_TextReceived.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_TextReceived.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_TextReceived.ClearInvocations();
+			this._TextReceived = new TextReceivedEventImposterBuilder();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

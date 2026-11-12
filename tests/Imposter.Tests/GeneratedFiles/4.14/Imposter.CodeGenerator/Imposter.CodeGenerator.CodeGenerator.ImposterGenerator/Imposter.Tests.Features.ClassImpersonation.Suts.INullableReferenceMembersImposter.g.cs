@@ -15,10 +15,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class INullableReferenceMembersImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.INullableReferenceMembers>, INullableReferenceMembersImposter.INullableReferenceMembersSetup
 	{
-		private readonly FindMethodImposter _findMethodImposter;
-		private readonly FindAsyncMethodImposter _findAsyncMethodImposter;
-		private readonly FindMethodInvocationHistoryCollection _findMethodInvocationHistoryCollection;
-		private readonly FindAsyncMethodInvocationHistoryCollection _findAsyncMethodInvocationHistoryCollection;
+		private FindMethodImposter _findMethodImposter;
+		private FindAsyncMethodImposter _findAsyncMethodImposter;
+		private FindMethodInvocationHistoryCollection _findMethodInvocationHistoryCollection;
+		private FindAsyncMethodInvocationHistoryCollection _findAsyncMethodInvocationHistoryCollection;
 		public IFindMethodImposterBuilder Find(global::Imposter.Abstractions.Arg<string?> key)
 		{
 			return new FindMethodImposter.Builder(_findMethodImposter, _findMethodInvocationHistoryCollection, new FindArgumentsCriteria(key));
@@ -29,6 +29,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			return new FindAsyncMethodImposter.Builder(_findAsyncMethodImposter, _findAsyncMethodInvocationHistoryCollection, new FindAsyncArgumentsCriteria(key));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.ClassImpersonation.Suts.INullableReferenceMembers global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.INullableReferenceMembers>.Instance()
 		{
@@ -169,6 +170,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(FindMethodInvocationHistoryCollection.Node invocationHistory)
@@ -677,6 +683,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(FindAsyncMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1099,10 +1110,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 		public INullableReferenceMembersImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._findMethodInvocationHistoryCollection = new FindMethodInvocationHistoryCollection();
 			this._findAsyncMethodInvocationHistoryCollection = new FindAsyncMethodInvocationHistoryCollection();
-			this._findMethodImposter = new FindMethodImposter(_findMethodInvocationHistoryCollection, invocationBehavior);
-			this._findAsyncMethodImposter = new FindAsyncMethodImposter(_findAsyncMethodInvocationHistoryCollection, invocationBehavior);
+			this._findMethodImposter = new FindMethodImposter(_findMethodInvocationHistoryCollection, this._imposterMode);
+			this._findAsyncMethodImposter = new FindAsyncMethodImposter(_findAsyncMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -1112,6 +1124,22 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			invocations.AddRange(_findMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_findAsyncMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_findMethodInvocationHistoryCollection.Clear();
+			_findAsyncMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_findMethodInvocationHistoryCollection.Clear();
+			_findAsyncMethodInvocationHistoryCollection.Clear();
+			this._findMethodInvocationHistoryCollection = new FindMethodInvocationHistoryCollection();
+			this._findAsyncMethodInvocationHistoryCollection = new FindAsyncMethodInvocationHistoryCollection();
+			this._findMethodImposter = new FindMethodImposter(_findMethodInvocationHistoryCollection, this._imposterMode);
+			this._findAsyncMethodImposter = new FindAsyncMethodImposter(_findAsyncMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

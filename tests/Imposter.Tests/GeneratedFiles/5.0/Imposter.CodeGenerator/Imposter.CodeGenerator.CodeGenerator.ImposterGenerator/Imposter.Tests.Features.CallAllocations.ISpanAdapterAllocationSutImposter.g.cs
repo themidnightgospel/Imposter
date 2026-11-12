@@ -15,13 +15,14 @@ namespace Imposter.Tests.Features.CallAllocations
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class ISpanAdapterAllocationSutImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.CallAllocations.ISpanAdapterAllocationSut>, ISpanAdapterAllocationSutImposter.ISpanAdapterAllocationSutSetup
 	{
-		private readonly ContainsMethodImposterCollection _containsMethodImposterCollection;
-		private readonly ContainsMethodInvocationHistoryCollection _containsMethodInvocationHistoryCollection;
+		private ContainsMethodImposterCollection _containsMethodImposterCollection;
+		private ContainsMethodInvocationHistoryCollection _containsMethodInvocationHistoryCollection;
 		public IContainsMethodImposterBuilder<T> Contains<T>(global::Imposter.Abstractions.ReadOnlySpanArg<int> items, global::Imposter.Abstractions.Arg<T> item)
 		{
 			return new ContainsMethodImposter<T>.Builder(_containsMethodImposterCollection, _containsMethodInvocationHistoryCollection, new ContainsArgumentsCriteria<T>(items, item));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.CallAllocations.ISpanAdapterAllocationSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.CallAllocations.ISpanAdapterAllocationSut>.Instance()
 		{
@@ -188,6 +189,11 @@ namespace Imposter.Tests.Features.CallAllocations
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(ContainsMethodInvocationHistoryCollection.Node invocationHistory)
@@ -679,8 +685,9 @@ namespace Imposter.Tests.Features.CallAllocations
 
 		public ISpanAdapterAllocationSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._containsMethodInvocationHistoryCollection = new ContainsMethodInvocationHistoryCollection();
-			this._containsMethodImposterCollection = new ContainsMethodImposterCollection(_containsMethodInvocationHistoryCollection, invocationBehavior);
+			this._containsMethodImposterCollection = new ContainsMethodImposterCollection(_containsMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -689,6 +696,18 @@ namespace Imposter.Tests.Features.CallAllocations
 			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
 			invocations.AddRange(_containsMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_containsMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_containsMethodInvocationHistoryCollection.Clear();
+			this._containsMethodInvocationHistoryCollection = new ContainsMethodInvocationHistoryCollection();
+			this._containsMethodImposterCollection = new ContainsMethodImposterCollection(_containsMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

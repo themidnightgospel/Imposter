@@ -23,7 +23,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 		public IAsyncSomethingHappenedEventImposterBuilder AsyncSomethingHappened => _AsyncSomethingHappened;
 
-		private readonly AsyncSomethingHappenedEventImposterBuilder _AsyncSomethingHappened;
+		private AsyncSomethingHappenedEventImposterBuilder _AsyncSomethingHappened;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IAsyncSomethingHappenedEventImposterBuilder : IAsyncSomethingHappenedEventImposterSetupBuilder, IAsyncSomethingHappenedEventImposterVerificationBuilder
 		{
@@ -62,6 +62,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 			private global::Imposter.Abstractions.CallbackCollection<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<(object? arg1, global::System.EventArgs arg2)>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task> Handler, object? arg1, global::System.EventArgs arg2)>? _handlerInvocations;
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>> IAsyncSomethingHappenedEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -422,7 +430,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 		public ICustomAsyncSomethingHappenedEventImposterBuilder CustomAsyncSomethingHappened => _CustomAsyncSomethingHappened;
 
-		private readonly CustomAsyncSomethingHappenedEventImposterBuilder _CustomAsyncSomethingHappened;
+		private CustomAsyncSomethingHappenedEventImposterBuilder _CustomAsyncSomethingHappened;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ICustomAsyncSomethingHappenedEventImposterBuilder : ICustomAsyncSomethingHappenedEventImposterSetupBuilder, ICustomAsyncSomethingHappenedEventImposterVerificationBuilder
 		{
@@ -461,6 +469,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<(object? sender, global::System.EventArgs args)>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs> Handler, object? sender, global::System.EventArgs args)>? _handlerInvocations;
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>> ICustomAsyncSomethingHappenedEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -821,7 +837,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 		public ISomethingHappenedEventImposterBuilder SomethingHappened => _SomethingHappened;
 
-		private readonly SomethingHappenedEventImposterBuilder _SomethingHappened;
+		private SomethingHappenedEventImposterBuilder _SomethingHappened;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ISomethingHappenedEventImposterBuilder : ISomethingHappenedEventImposterSetupBuilder, ISomethingHappenedEventImposterVerificationBuilder
 		{
@@ -860,6 +876,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 			private global::Imposter.Abstractions.CallbackCollection<global::System.EventHandler>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<(object? sender, global::System.EventArgs e)>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.EventHandler Handler, object? sender, global::System.EventArgs e)>? _handlerInvocations;
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>> ISomethingHappenedEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -1196,7 +1220,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 		public IValueTaskSomethingHappenedEventImposterBuilder ValueTaskSomethingHappened => _ValueTaskSomethingHappened;
 
-		private readonly ValueTaskSomethingHappenedEventImposterBuilder _ValueTaskSomethingHappened;
+		private ValueTaskSomethingHappenedEventImposterBuilder _ValueTaskSomethingHappened;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IValueTaskSomethingHappenedEventImposterBuilder : IValueTaskSomethingHappenedEventImposterSetupBuilder, IValueTaskSomethingHappenedEventImposterVerificationBuilder
 		{
@@ -1235,6 +1259,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 			private global::Imposter.Abstractions.CallbackCollection<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<(object? arg1, global::System.EventArgs arg2)>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> Handler, object? arg1, global::System.EventArgs arg2)>? _handlerInvocations;
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>> IValueTaskSomethingHappenedEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -1635,6 +1667,26 @@ namespace Imposter.Tests.Features.EventImpersonation
 			invocations.AddRange(_SomethingHappened.Snapshot(false));
 			invocations.AddRange(_ValueTaskSomethingHappened.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_AsyncSomethingHappened.ClearInvocations();
+			_CustomAsyncSomethingHappened.ClearInvocations();
+			_SomethingHappened.ClearInvocations();
+			_ValueTaskSomethingHappened.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_AsyncSomethingHappened.ClearInvocations();
+			_CustomAsyncSomethingHappened.ClearInvocations();
+			_SomethingHappened.ClearInvocations();
+			_ValueTaskSomethingHappened.ClearInvocations();
+			this._AsyncSomethingHappened = new AsyncSomethingHappenedEventImposterBuilder();
+			this._CustomAsyncSomethingHappened = new CustomAsyncSomethingHappenedEventImposterBuilder();
+			this._SomethingHappened = new SomethingHappenedEventImposterBuilder();
+			this._ValueTaskSomethingHappened = new ValueTaskSomethingHappenedEventImposterBuilder();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

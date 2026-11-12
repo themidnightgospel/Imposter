@@ -15,10 +15,10 @@ namespace Imposter.Tests.Features.Docs.Methods.ProtectedMethods
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class MyServiceImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.Methods.ProtectedMethods.MyService>
 	{
-		private readonly ProtectedAddMethodImposter _protectedAddMethodImposter;
-		private readonly InvokeProtectedMethodImposter _invokeProtectedMethodImposter;
-		private readonly ProtectedAddMethodInvocationHistoryCollection _protectedAddMethodInvocationHistoryCollection;
-		private readonly InvokeProtectedMethodInvocationHistoryCollection _invokeProtectedMethodInvocationHistoryCollection;
+		private ProtectedAddMethodImposter _protectedAddMethodImposter;
+		private InvokeProtectedMethodImposter _invokeProtectedMethodImposter;
+		private ProtectedAddMethodInvocationHistoryCollection _protectedAddMethodInvocationHistoryCollection;
+		private InvokeProtectedMethodInvocationHistoryCollection _invokeProtectedMethodInvocationHistoryCollection;
 		public IProtectedAddMethodImposterBuilder ProtectedAdd(global::Imposter.Abstractions.Arg<int> value)
 		{
 			return new ProtectedAddMethodImposter.Builder(_protectedAddMethodImposter, _protectedAddMethodInvocationHistoryCollection, new ProtectedAddArgumentsCriteria(value));
@@ -29,6 +29,7 @@ namespace Imposter.Tests.Features.Docs.Methods.ProtectedMethods
 			return new InvokeProtectedMethodImposter.Builder(_invokeProtectedMethodImposter, _invokeProtectedMethodInvocationHistoryCollection, new InvokeProtectedArgumentsCriteria(value));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.Docs.Methods.ProtectedMethods.MyService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.Methods.ProtectedMethods.MyService>.Instance()
 		{
@@ -169,6 +170,11 @@ namespace Imposter.Tests.Features.Docs.Methods.ProtectedMethods
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(InvokeProtectedMethodInvocationHistoryCollection.Node invocationHistory)
@@ -686,6 +692,11 @@ namespace Imposter.Tests.Features.Docs.Methods.ProtectedMethods
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(ProtectedAddMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1067,10 +1078,11 @@ namespace Imposter.Tests.Features.Docs.Methods.ProtectedMethods
 
 		public MyServiceImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._protectedAddMethodInvocationHistoryCollection = new ProtectedAddMethodInvocationHistoryCollection();
 			this._invokeProtectedMethodInvocationHistoryCollection = new InvokeProtectedMethodInvocationHistoryCollection();
-			this._protectedAddMethodImposter = new ProtectedAddMethodImposter(_protectedAddMethodInvocationHistoryCollection, invocationBehavior);
-			this._invokeProtectedMethodImposter = new InvokeProtectedMethodImposter(_invokeProtectedMethodInvocationHistoryCollection, invocationBehavior);
+			this._protectedAddMethodImposter = new ProtectedAddMethodImposter(_protectedAddMethodInvocationHistoryCollection, this._imposterMode);
+			this._invokeProtectedMethodImposter = new InvokeProtectedMethodImposter(_invokeProtectedMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -1080,6 +1092,22 @@ namespace Imposter.Tests.Features.Docs.Methods.ProtectedMethods
 			invocations.AddRange(_protectedAddMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_invokeProtectedMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_protectedAddMethodInvocationHistoryCollection.Clear();
+			_invokeProtectedMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_protectedAddMethodInvocationHistoryCollection.Clear();
+			_invokeProtectedMethodInvocationHistoryCollection.Clear();
+			this._protectedAddMethodInvocationHistoryCollection = new ProtectedAddMethodInvocationHistoryCollection();
+			this._invokeProtectedMethodInvocationHistoryCollection = new InvokeProtectedMethodInvocationHistoryCollection();
+			this._protectedAddMethodImposter = new ProtectedAddMethodImposter(_protectedAddMethodInvocationHistoryCollection, this._imposterMode);
+			this._invokeProtectedMethodImposter = new InvokeProtectedMethodImposter(_invokeProtectedMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

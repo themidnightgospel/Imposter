@@ -15,12 +15,12 @@ namespace Imposter.Tests.Features.CallAllocations
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class ICallAllocationSutImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.CallAllocations.ICallAllocationSut>, ICallAllocationSutImposter.ICallAllocationSutSetup
 	{
-		private readonly SquareMethodImposter _squareMethodImposter;
-		private readonly LogMethodImposter _logMethodImposter;
-		private readonly EchoMethodImposterCollection _echoMethodImposterCollection;
-		private readonly SquareMethodInvocationHistoryCollection _squareMethodInvocationHistoryCollection;
-		private readonly LogMethodInvocationHistoryCollection _logMethodInvocationHistoryCollection;
-		private readonly EchoMethodInvocationHistoryCollection _echoMethodInvocationHistoryCollection;
+		private SquareMethodImposter _squareMethodImposter;
+		private LogMethodImposter _logMethodImposter;
+		private EchoMethodImposterCollection _echoMethodImposterCollection;
+		private SquareMethodInvocationHistoryCollection _squareMethodInvocationHistoryCollection;
+		private LogMethodInvocationHistoryCollection _logMethodInvocationHistoryCollection;
+		private EchoMethodInvocationHistoryCollection _echoMethodInvocationHistoryCollection;
 		public ISquareMethodImposterBuilder Square(global::Imposter.Abstractions.Arg<int> value)
 		{
 			return new SquareMethodImposter.Builder(_squareMethodImposter, _squareMethodInvocationHistoryCollection, new SquareArgumentsCriteria(value));
@@ -36,6 +36,7 @@ namespace Imposter.Tests.Features.CallAllocations
 			return new EchoMethodImposter<T>.Builder(_echoMethodImposterCollection, _echoMethodInvocationHistoryCollection, new EchoArgumentsCriteria<T>(value));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.CallAllocations.ICallAllocationSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.CallAllocations.ICallAllocationSut>.Instance()
 		{
@@ -188,6 +189,11 @@ namespace Imposter.Tests.Features.CallAllocations
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(EchoMethodInvocationHistoryCollection.Node invocationHistory)
@@ -755,6 +761,11 @@ namespace Imposter.Tests.Features.CallAllocations
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(LogMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1220,6 +1231,11 @@ namespace Imposter.Tests.Features.CallAllocations
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(SquareMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1578,7 +1594,7 @@ namespace Imposter.Tests.Features.CallAllocations
 
 		public IValuePropertyBuilder Value => _ValuePropertyBuilderField;
 
-		private readonly ValuePropertyBuilder _ValuePropertyBuilderField;
+		private ValuePropertyBuilder _ValuePropertyBuilderField;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IValuePropertyGetterOutcomeBuilder
 		{
@@ -1680,6 +1696,12 @@ namespace Imposter.Tests.Features.CallAllocations
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ValuePropertyBuilder : IValuePropertyBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposterBuilder.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
 			{
 				return _setterImposter.Snapshot(orderBySequence);
@@ -1805,7 +1827,7 @@ namespace Imposter.Tests.Features.CallAllocations
 			}
 		}
 
-		private readonly IndexerIndexerBuilder _IndexerIndexer;
+		private IndexerIndexerBuilder _IndexerIndexer;
 		public IIndexerIndexerBuilder this[global::Imposter.Abstractions.Arg<int> key] => new IndexerIndexerBuilder.InvocationBuilder(_IndexerIndexer, new IndexerIndexerArgumentsCriteria(key));
 		public delegate int IndexerIndexerDelegate(int key);
 		public delegate void IndexerIndexerGetterCallback(int key);
@@ -1931,6 +1953,12 @@ namespace Imposter.Tests.Features.CallAllocations
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class IndexerIndexerBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposter.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			private readonly DefaultIndexerIndexerBehaviour _IndexerDefaultIndexerBehaviour = new DefaultIndexerIndexerBehaviour();
 			private readonly GetterImposter _getterImposter;
 			private readonly SetterImposter _setterImposter;
@@ -2052,6 +2080,11 @@ namespace Imposter.Tests.Features.CallAllocations
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class GetterImposter
 			{
+				internal void ClearInvocations()
+				{
+					_invocationHistory?.Clear();
+				}
+
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
 				private readonly global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter> _getterInvocationImposters = new global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter>();
 				private global::Imposter.Abstractions.InvocationHistory<IndexerGetterInvocation>? _invocationHistory;
@@ -2316,6 +2349,11 @@ namespace Imposter.Tests.Features.CallAllocations
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class SetterImposter
 			{
+				internal void ClearInvocations()
+				{
+					_invocationHistory?.Clear();
+				}
+
 				private global::Imposter.Abstractions.CallbackCollection<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)>? _callbacks;
 				private global::Imposter.Abstractions.InvocationHistory<IndexerSetterInvocation>? _invocationHistory;
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
@@ -2583,14 +2621,15 @@ namespace Imposter.Tests.Features.CallAllocations
 
 		public ICallAllocationSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._squareMethodInvocationHistoryCollection = new SquareMethodInvocationHistoryCollection();
 			this._logMethodInvocationHistoryCollection = new LogMethodInvocationHistoryCollection();
 			this._echoMethodInvocationHistoryCollection = new EchoMethodInvocationHistoryCollection();
-			this._squareMethodImposter = new SquareMethodImposter(_squareMethodInvocationHistoryCollection, invocationBehavior);
-			this._logMethodImposter = new LogMethodImposter(_logMethodInvocationHistoryCollection, invocationBehavior);
-			this._echoMethodImposterCollection = new EchoMethodImposterCollection(_echoMethodInvocationHistoryCollection, invocationBehavior);
-			this._ValuePropertyBuilderField = new ValuePropertyBuilder(invocationBehavior);
-			this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.CallAllocations.ICallAllocationSut.this[int key]");
+			this._squareMethodImposter = new SquareMethodImposter(_squareMethodInvocationHistoryCollection, this._imposterMode);
+			this._logMethodImposter = new LogMethodImposter(_logMethodInvocationHistoryCollection, this._imposterMode);
+			this._echoMethodImposterCollection = new EchoMethodImposterCollection(_echoMethodInvocationHistoryCollection, this._imposterMode);
+			this._ValuePropertyBuilderField = new ValuePropertyBuilder(this._imposterMode);
+			this._IndexerIndexer = new IndexerIndexerBuilder(this._imposterMode, "Imposter.Tests.Features.CallAllocations.ICallAllocationSut.this[int key]");
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -2603,6 +2642,32 @@ namespace Imposter.Tests.Features.CallAllocations
 			invocations.AddRange(_ValuePropertyBuilderField.Snapshot(false));
 			invocations.AddRange(_IndexerIndexer.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_squareMethodInvocationHistoryCollection.Clear();
+			_logMethodInvocationHistoryCollection.Clear();
+			_echoMethodInvocationHistoryCollection.Clear();
+			_ValuePropertyBuilderField.ClearInvocations();
+			_IndexerIndexer.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_squareMethodInvocationHistoryCollection.Clear();
+			_logMethodInvocationHistoryCollection.Clear();
+			_echoMethodInvocationHistoryCollection.Clear();
+			_ValuePropertyBuilderField.ClearInvocations();
+			_IndexerIndexer.ClearInvocations();
+			this._squareMethodInvocationHistoryCollection = new SquareMethodInvocationHistoryCollection();
+			this._logMethodInvocationHistoryCollection = new LogMethodInvocationHistoryCollection();
+			this._echoMethodInvocationHistoryCollection = new EchoMethodInvocationHistoryCollection();
+			this._squareMethodImposter = new SquareMethodImposter(_squareMethodInvocationHistoryCollection, this._imposterMode);
+			this._logMethodImposter = new LogMethodImposter(_logMethodInvocationHistoryCollection, this._imposterMode);
+			this._echoMethodImposterCollection = new EchoMethodImposterCollection(_echoMethodInvocationHistoryCollection, this._imposterMode);
+			this._ValuePropertyBuilderField = new ValuePropertyBuilder(this._imposterMode);
+			this._IndexerIndexer = new IndexerIndexerBuilder(this._imposterMode, "Imposter.Tests.Features.CallAllocations.ICallAllocationSut.this[int key]");
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

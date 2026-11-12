@@ -23,7 +23,7 @@ namespace Imposter.Tests.Features.CallAllocations
 
 		public IChangedEventImposterBuilder Changed => _Changed;
 
-		private readonly ChangedEventImposterBuilder _Changed;
+		private ChangedEventImposterBuilder _Changed;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IChangedEventImposterBuilder : IChangedEventImposterSetupBuilder, IChangedEventImposterVerificationBuilder
 		{
@@ -62,6 +62,14 @@ namespace Imposter.Tests.Features.CallAllocations
 			private global::Imposter.Abstractions.CallbackCollection<global::System.EventHandler>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<(object? sender, global::System.EventArgs e)>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.EventHandler Handler, object? sender, global::System.EventArgs e)>? _handlerInvocations;
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>> IChangedEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -420,6 +428,17 @@ namespace Imposter.Tests.Features.CallAllocations
 			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
 			invocations.AddRange(_Changed.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_Changed.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_Changed.ClearInvocations();
+			this._Changed = new ChangedEventImposterBuilder();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

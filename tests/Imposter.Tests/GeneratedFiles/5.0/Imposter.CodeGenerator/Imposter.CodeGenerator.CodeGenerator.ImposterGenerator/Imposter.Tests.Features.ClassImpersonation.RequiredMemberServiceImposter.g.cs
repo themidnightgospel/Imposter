@@ -15,13 +15,14 @@ namespace Imposter.Tests.Features.ClassImpersonation
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class RequiredMemberServiceImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.RequiredMemberService>
 	{
-		private readonly CountMethodImposter _countMethodImposter;
-		private readonly CountMethodInvocationHistoryCollection _countMethodInvocationHistoryCollection;
+		private CountMethodImposter _countMethodImposter;
+		private CountMethodInvocationHistoryCollection _countMethodInvocationHistoryCollection;
 		public ICountMethodImposterBuilder Count()
 		{
 			return new CountMethodImposter.Builder(_countMethodImposter, _countMethodInvocationHistoryCollection);
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.ClassImpersonation.RequiredMemberService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.RequiredMemberService>.Instance()
 		{
@@ -121,6 +122,11 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(CountMethodInvocationHistoryCollection.Node invocationHistory)
@@ -498,7 +504,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 		public ILabelPropertyBuilder Label => _LabelPropertyBuilderField;
 
-		private readonly LabelPropertyBuilder _LabelPropertyBuilderField;
+		private LabelPropertyBuilder _LabelPropertyBuilderField;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ILabelPropertyGetterOutcomeBuilder
 		{
@@ -615,6 +621,12 @@ namespace Imposter.Tests.Features.ClassImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class LabelPropertyBuilder : ILabelPropertyBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposterBuilder.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
 			{
 				return _setterImposter.Snapshot(orderBySequence);
@@ -772,9 +784,10 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 		public RequiredMemberServiceImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._countMethodInvocationHistoryCollection = new CountMethodInvocationHistoryCollection();
-			this._countMethodImposter = new CountMethodImposter(_countMethodInvocationHistoryCollection, invocationBehavior);
-			this._LabelPropertyBuilderField = new LabelPropertyBuilder(invocationBehavior);
+			this._countMethodImposter = new CountMethodImposter(_countMethodInvocationHistoryCollection, this._imposterMode);
+			this._LabelPropertyBuilderField = new LabelPropertyBuilder(this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -784,6 +797,21 @@ namespace Imposter.Tests.Features.ClassImpersonation
 			invocations.AddRange(_countMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_LabelPropertyBuilderField.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_countMethodInvocationHistoryCollection.Clear();
+			_LabelPropertyBuilderField.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_countMethodInvocationHistoryCollection.Clear();
+			_LabelPropertyBuilderField.ClearInvocations();
+			this._countMethodInvocationHistoryCollection = new CountMethodInvocationHistoryCollection();
+			this._countMethodImposter = new CountMethodImposter(_countMethodInvocationHistoryCollection, this._imposterMode);
+			this._LabelPropertyBuilderField = new LabelPropertyBuilder(this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

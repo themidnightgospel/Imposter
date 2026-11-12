@@ -15,13 +15,14 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class BaseServiceImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.GettingStarted.BaseService>
 	{
-		private readonly GetNumberMethodImposter _getNumberMethodImposter;
-		private readonly GetNumberMethodInvocationHistoryCollection _getNumberMethodInvocationHistoryCollection;
+		private GetNumberMethodImposter _getNumberMethodImposter;
+		private GetNumberMethodInvocationHistoryCollection _getNumberMethodInvocationHistoryCollection;
 		public IGetNumberMethodImposterBuilder GetNumber()
 		{
 			return new GetNumberMethodImposter.Builder(_getNumberMethodImposter, _getNumberMethodInvocationHistoryCollection);
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.Docs.GettingStarted.BaseService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.GettingStarted.BaseService>.Instance()
 		{
@@ -121,6 +122,11 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(GetNumberMethodInvocationHistoryCollection.Node invocationHistory)
@@ -498,8 +504,9 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
 
 		public BaseServiceImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._getNumberMethodInvocationHistoryCollection = new GetNumberMethodInvocationHistoryCollection();
-			this._getNumberMethodImposter = new GetNumberMethodImposter(_getNumberMethodInvocationHistoryCollection, invocationBehavior);
+			this._getNumberMethodImposter = new GetNumberMethodImposter(_getNumberMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -508,6 +515,18 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
 			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
 			invocations.AddRange(_getNumberMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_getNumberMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_getNumberMethodInvocationHistoryCollection.Clear();
+			this._getNumberMethodInvocationHistoryCollection = new GetNumberMethodInvocationHistoryCollection();
+			this._getNumberMethodImposter = new GetNumberMethodImposter(_getNumberMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

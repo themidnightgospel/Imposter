@@ -15,18 +15,18 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IOpenGenericMethodTargetImposter<T> : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.OpenGenericImposter.IOpenGenericMethodTarget<T>>, IOpenGenericMethodTargetImposter<T>.IOpenGenericMethodTargetSetup
 	{
-		private readonly GetNextMethodImposter _getNextMethodImposter;
-		private readonly TryAddMethodImposter _tryAddMethodImposter;
-		private readonly AddMethodImposter _addMethodImposter;
-		private readonly CountForMethodImposter _countForMethodImposter;
-		private readonly ResilientFetchMethodImposter _resilientFetchMethodImposter;
-		private readonly PublishMethodImposter _publishMethodImposter;
-		private readonly GetNextMethodInvocationHistoryCollection _getNextMethodInvocationHistoryCollection;
-		private readonly TryAddMethodInvocationHistoryCollection _tryAddMethodInvocationHistoryCollection;
-		private readonly AddMethodInvocationHistoryCollection _addMethodInvocationHistoryCollection;
-		private readonly CountForMethodInvocationHistoryCollection _countForMethodInvocationHistoryCollection;
-		private readonly ResilientFetchMethodInvocationHistoryCollection _resilientFetchMethodInvocationHistoryCollection;
-		private readonly PublishMethodInvocationHistoryCollection _publishMethodInvocationHistoryCollection;
+		private GetNextMethodImposter _getNextMethodImposter;
+		private TryAddMethodImposter _tryAddMethodImposter;
+		private AddMethodImposter _addMethodImposter;
+		private CountForMethodImposter _countForMethodImposter;
+		private ResilientFetchMethodImposter _resilientFetchMethodImposter;
+		private PublishMethodImposter _publishMethodImposter;
+		private GetNextMethodInvocationHistoryCollection _getNextMethodInvocationHistoryCollection;
+		private TryAddMethodInvocationHistoryCollection _tryAddMethodInvocationHistoryCollection;
+		private AddMethodInvocationHistoryCollection _addMethodInvocationHistoryCollection;
+		private CountForMethodInvocationHistoryCollection _countForMethodInvocationHistoryCollection;
+		private ResilientFetchMethodInvocationHistoryCollection _resilientFetchMethodInvocationHistoryCollection;
+		private PublishMethodInvocationHistoryCollection _publishMethodInvocationHistoryCollection;
 		public IGetNextMethodImposterBuilder GetNext()
 		{
 			return new GetNextMethodImposter.Builder(_getNextMethodImposter, _getNextMethodInvocationHistoryCollection);
@@ -57,6 +57,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			return new PublishMethodImposter.Builder(_publishMethodImposter, _publishMethodInvocationHistoryCollection, new PublishArgumentsCriteria(payload, category, priority));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.OpenGenericImposter.IOpenGenericMethodTarget<T> global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.OpenGenericImposter.IOpenGenericMethodTarget<T>>.Instance()
 		{
@@ -201,6 +202,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(AddMethodInvocationHistoryCollection.Node invocationHistory)
@@ -669,6 +675,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(CountForMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1118,6 +1129,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(GetNextMethodInvocationHistoryCollection.Node invocationHistory)
@@ -1624,6 +1640,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(PublishMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -2048,6 +2069,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(ResilientFetchMethodInvocationHistoryCollection.Node invocationHistory)
@@ -2536,6 +2562,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(TryAddMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -2940,18 +2971,19 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 		public IOpenGenericMethodTargetImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._getNextMethodInvocationHistoryCollection = new GetNextMethodInvocationHistoryCollection();
 			this._tryAddMethodInvocationHistoryCollection = new TryAddMethodInvocationHistoryCollection();
 			this._addMethodInvocationHistoryCollection = new AddMethodInvocationHistoryCollection();
 			this._countForMethodInvocationHistoryCollection = new CountForMethodInvocationHistoryCollection();
 			this._resilientFetchMethodInvocationHistoryCollection = new ResilientFetchMethodInvocationHistoryCollection();
 			this._publishMethodInvocationHistoryCollection = new PublishMethodInvocationHistoryCollection();
-			this._getNextMethodImposter = new GetNextMethodImposter(_getNextMethodInvocationHistoryCollection, invocationBehavior);
-			this._tryAddMethodImposter = new TryAddMethodImposter(_tryAddMethodInvocationHistoryCollection, invocationBehavior);
-			this._addMethodImposter = new AddMethodImposter(_addMethodInvocationHistoryCollection, invocationBehavior);
-			this._countForMethodImposter = new CountForMethodImposter(_countForMethodInvocationHistoryCollection, invocationBehavior);
-			this._resilientFetchMethodImposter = new ResilientFetchMethodImposter(_resilientFetchMethodInvocationHistoryCollection, invocationBehavior);
-			this._publishMethodImposter = new PublishMethodImposter(_publishMethodInvocationHistoryCollection, invocationBehavior);
+			this._getNextMethodImposter = new GetNextMethodImposter(_getNextMethodInvocationHistoryCollection, this._imposterMode);
+			this._tryAddMethodImposter = new TryAddMethodImposter(_tryAddMethodInvocationHistoryCollection, this._imposterMode);
+			this._addMethodImposter = new AddMethodImposter(_addMethodInvocationHistoryCollection, this._imposterMode);
+			this._countForMethodImposter = new CountForMethodImposter(_countForMethodInvocationHistoryCollection, this._imposterMode);
+			this._resilientFetchMethodImposter = new ResilientFetchMethodImposter(_resilientFetchMethodInvocationHistoryCollection, this._imposterMode);
+			this._publishMethodImposter = new PublishMethodImposter(_publishMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -2965,6 +2997,38 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			invocations.AddRange(_resilientFetchMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_publishMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_getNextMethodInvocationHistoryCollection.Clear();
+			_tryAddMethodInvocationHistoryCollection.Clear();
+			_addMethodInvocationHistoryCollection.Clear();
+			_countForMethodInvocationHistoryCollection.Clear();
+			_resilientFetchMethodInvocationHistoryCollection.Clear();
+			_publishMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_getNextMethodInvocationHistoryCollection.Clear();
+			_tryAddMethodInvocationHistoryCollection.Clear();
+			_addMethodInvocationHistoryCollection.Clear();
+			_countForMethodInvocationHistoryCollection.Clear();
+			_resilientFetchMethodInvocationHistoryCollection.Clear();
+			_publishMethodInvocationHistoryCollection.Clear();
+			this._getNextMethodInvocationHistoryCollection = new GetNextMethodInvocationHistoryCollection();
+			this._tryAddMethodInvocationHistoryCollection = new TryAddMethodInvocationHistoryCollection();
+			this._addMethodInvocationHistoryCollection = new AddMethodInvocationHistoryCollection();
+			this._countForMethodInvocationHistoryCollection = new CountForMethodInvocationHistoryCollection();
+			this._resilientFetchMethodInvocationHistoryCollection = new ResilientFetchMethodInvocationHistoryCollection();
+			this._publishMethodInvocationHistoryCollection = new PublishMethodInvocationHistoryCollection();
+			this._getNextMethodImposter = new GetNextMethodImposter(_getNextMethodInvocationHistoryCollection, this._imposterMode);
+			this._tryAddMethodImposter = new TryAddMethodImposter(_tryAddMethodInvocationHistoryCollection, this._imposterMode);
+			this._addMethodImposter = new AddMethodImposter(_addMethodInvocationHistoryCollection, this._imposterMode);
+			this._countForMethodImposter = new CountForMethodImposter(_countForMethodInvocationHistoryCollection, this._imposterMode);
+			this._resilientFetchMethodImposter = new ResilientFetchMethodImposter(_resilientFetchMethodInvocationHistoryCollection, this._imposterMode);
+			this._publishMethodImposter = new PublishMethodImposter(_publishMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

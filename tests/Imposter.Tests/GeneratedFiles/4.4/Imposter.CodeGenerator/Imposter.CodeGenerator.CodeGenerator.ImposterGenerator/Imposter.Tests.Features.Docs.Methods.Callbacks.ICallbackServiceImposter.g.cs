@@ -15,12 +15,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class ICallbackServiceImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.Methods.Callbacks.ICallbackService>, ICallbackServiceImposter.ICallbackServiceSetup
 	{
-		private readonly GetNumberMethodImposter _getNumberMethodImposter;
-		private readonly IncrementMethodImposter _incrementMethodImposter;
-		private readonly GenericAllRefKindMethodImposter _genericAllRefKindMethodImposter;
-		private readonly GetNumberMethodInvocationHistoryCollection _getNumberMethodInvocationHistoryCollection;
-		private readonly IncrementMethodInvocationHistoryCollection _incrementMethodInvocationHistoryCollection;
-		private readonly GenericAllRefKindMethodInvocationHistoryCollection _genericAllRefKindMethodInvocationHistoryCollection;
+		private GetNumberMethodImposter _getNumberMethodImposter;
+		private IncrementMethodImposter _incrementMethodImposter;
+		private GenericAllRefKindMethodImposter _genericAllRefKindMethodImposter;
+		private GetNumberMethodInvocationHistoryCollection _getNumberMethodInvocationHistoryCollection;
+		private IncrementMethodInvocationHistoryCollection _incrementMethodInvocationHistoryCollection;
+		private GenericAllRefKindMethodInvocationHistoryCollection _genericAllRefKindMethodInvocationHistoryCollection;
 		public IGetNumberMethodImposterBuilder GetNumber()
 		{
 			return new GetNumberMethodImposter.Builder(_getNumberMethodImposter, _getNumberMethodInvocationHistoryCollection);
@@ -36,6 +36,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 			return new GenericAllRefKindMethodImposter.Builder(_genericAllRefKindMethodImposter, _genericAllRefKindMethodInvocationHistoryCollection, new GenericAllRefKindArgumentsCriteria(o, r, d, args));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.Docs.Methods.Callbacks.ICallbackService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.Methods.Callbacks.ICallbackService>.Instance()
 		{
@@ -216,6 +217,11 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(GenericAllRefKindMethodInvocationHistoryCollection.Node invocationHistory)
@@ -677,6 +683,11 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(GetNumberMethodInvocationHistoryCollection.Node invocationHistory)
@@ -1165,6 +1176,11 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(IncrementMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1551,12 +1567,13 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 
 		public ICallbackServiceImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._getNumberMethodInvocationHistoryCollection = new GetNumberMethodInvocationHistoryCollection();
 			this._incrementMethodInvocationHistoryCollection = new IncrementMethodInvocationHistoryCollection();
 			this._genericAllRefKindMethodInvocationHistoryCollection = new GenericAllRefKindMethodInvocationHistoryCollection();
-			this._getNumberMethodImposter = new GetNumberMethodImposter(_getNumberMethodInvocationHistoryCollection, invocationBehavior);
-			this._incrementMethodImposter = new IncrementMethodImposter(_incrementMethodInvocationHistoryCollection, invocationBehavior);
-			this._genericAllRefKindMethodImposter = new GenericAllRefKindMethodImposter(_genericAllRefKindMethodInvocationHistoryCollection, invocationBehavior);
+			this._getNumberMethodImposter = new GetNumberMethodImposter(_getNumberMethodInvocationHistoryCollection, this._imposterMode);
+			this._incrementMethodImposter = new IncrementMethodImposter(_incrementMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericAllRefKindMethodImposter = new GenericAllRefKindMethodImposter(_genericAllRefKindMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -1567,6 +1584,26 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 			invocations.AddRange(_incrementMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_genericAllRefKindMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_getNumberMethodInvocationHistoryCollection.Clear();
+			_incrementMethodInvocationHistoryCollection.Clear();
+			_genericAllRefKindMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_getNumberMethodInvocationHistoryCollection.Clear();
+			_incrementMethodInvocationHistoryCollection.Clear();
+			_genericAllRefKindMethodInvocationHistoryCollection.Clear();
+			this._getNumberMethodInvocationHistoryCollection = new GetNumberMethodInvocationHistoryCollection();
+			this._incrementMethodInvocationHistoryCollection = new IncrementMethodInvocationHistoryCollection();
+			this._genericAllRefKindMethodInvocationHistoryCollection = new GenericAllRefKindMethodInvocationHistoryCollection();
+			this._getNumberMethodImposter = new GetNumberMethodImposter(_getNumberMethodInvocationHistoryCollection, this._imposterMode);
+			this._incrementMethodImposter = new IncrementMethodImposter(_incrementMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericAllRefKindMethodImposter = new GenericAllRefKindMethodImposter(_genericAllRefKindMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

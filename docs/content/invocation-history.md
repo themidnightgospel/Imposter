@@ -88,7 +88,7 @@ record includes final `out` values. Verification from inside that callback's `fi
 does not yet see the current call. Earlier versions could expose a failed call before those
 blocks ran; code relying on that timing should verify after the exception reaches the caller.
 
-Snapshots are ordered by sequence and keep their membership after later calls. Reading history does not consume configured outcomes. Lifecycle APIs and snapshot behavior after clear/reset are deferred to #520. Concurrent calls safely publish complete records. A snapshot taken
+Snapshots are ordered by sequence and keep their membership after later calls. Reading history does not consume configured outcomes. Previously obtained snapshots also retain their membership after `ClearInvocations()` and `Reset()`. See [clearing and resetting](clear-and-reset.md). Concurrent calls safely publish complete records. A snapshot taken
 while calls are running is a view of the records observed during collection, rather than an
 atomic transaction across all members; take it after the calls finish when asserting a full
 history. Snapshot creation allocates its list on demand.

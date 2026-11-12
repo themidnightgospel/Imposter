@@ -15,13 +15,14 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IAsyncCallbackServiceImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.Methods.Callbacks.IAsyncCallbackService>, IAsyncCallbackServiceImposter.IAsyncCallbackServiceSetup
 	{
-		private readonly SaveAsyncMethodImposter _saveAsyncMethodImposter;
-		private readonly SaveAsyncMethodInvocationHistoryCollection _saveAsyncMethodInvocationHistoryCollection;
+		private SaveAsyncMethodImposter _saveAsyncMethodImposter;
+		private SaveAsyncMethodInvocationHistoryCollection _saveAsyncMethodInvocationHistoryCollection;
 		public ISaveAsyncMethodImposterBuilder SaveAsync(global::Imposter.Abstractions.Arg<string> name)
 		{
 			return new SaveAsyncMethodImposter.Builder(_saveAsyncMethodImposter, _saveAsyncMethodInvocationHistoryCollection, new SaveAsyncArgumentsCriteria(name));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.Docs.Methods.Callbacks.IAsyncCallbackService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.Methods.Callbacks.IAsyncCallbackService>.Instance()
 		{
@@ -176,6 +177,11 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(SaveAsyncMethodInvocationHistoryCollection.Node invocationHistory)
@@ -594,8 +600,9 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 
 		public IAsyncCallbackServiceImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._saveAsyncMethodInvocationHistoryCollection = new SaveAsyncMethodInvocationHistoryCollection();
-			this._saveAsyncMethodImposter = new SaveAsyncMethodImposter(_saveAsyncMethodInvocationHistoryCollection, invocationBehavior);
+			this._saveAsyncMethodImposter = new SaveAsyncMethodImposter(_saveAsyncMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -604,6 +611,18 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
 			invocations.AddRange(_saveAsyncMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_saveAsyncMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_saveAsyncMethodInvocationHistoryCollection.Clear();
+			this._saveAsyncMethodInvocationHistoryCollection = new SaveAsyncMethodInvocationHistoryCollection();
+			this._saveAsyncMethodImposter = new SaveAsyncMethodImposter(_saveAsyncMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

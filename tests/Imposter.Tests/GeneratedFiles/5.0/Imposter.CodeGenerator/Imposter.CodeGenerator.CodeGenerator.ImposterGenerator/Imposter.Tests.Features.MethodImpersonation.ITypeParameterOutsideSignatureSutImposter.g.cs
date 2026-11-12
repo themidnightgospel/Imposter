@@ -15,16 +15,16 @@ namespace Imposter.Tests.Features.MethodImpersonation
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class ITypeParameterOutsideSignatureSutImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.ITypeParameterOutsideSignatureSut>, ITypeParameterOutsideSignatureSutImposter.ITypeParameterOutsideSignatureSutSetup
 	{
-		private readonly TagMethodImposterCollection _tagMethodImposterCollection;
-		private readonly NameMethodImposterCollection _nameMethodImposterCollection;
-		private readonly RegisterMethodImposterCollection _registerMethodImposterCollection;
-		private readonly PutMethodImposterCollection _putMethodImposterCollection;
-		private readonly RelateMethodImposterCollection _relateMethodImposterCollection;
-		private readonly TagMethodInvocationHistoryCollection _tagMethodInvocationHistoryCollection;
-		private readonly NameMethodInvocationHistoryCollection _nameMethodInvocationHistoryCollection;
-		private readonly RegisterMethodInvocationHistoryCollection _registerMethodInvocationHistoryCollection;
-		private readonly PutMethodInvocationHistoryCollection _putMethodInvocationHistoryCollection;
-		private readonly RelateMethodInvocationHistoryCollection _relateMethodInvocationHistoryCollection;
+		private TagMethodImposterCollection _tagMethodImposterCollection;
+		private NameMethodImposterCollection _nameMethodImposterCollection;
+		private RegisterMethodImposterCollection _registerMethodImposterCollection;
+		private PutMethodImposterCollection _putMethodImposterCollection;
+		private RelateMethodImposterCollection _relateMethodImposterCollection;
+		private TagMethodInvocationHistoryCollection _tagMethodInvocationHistoryCollection;
+		private NameMethodInvocationHistoryCollection _nameMethodInvocationHistoryCollection;
+		private RegisterMethodInvocationHistoryCollection _registerMethodInvocationHistoryCollection;
+		private PutMethodInvocationHistoryCollection _putMethodInvocationHistoryCollection;
+		private RelateMethodInvocationHistoryCollection _relateMethodInvocationHistoryCollection;
 		public ITagMethodImposterBuilder<T> Tag<T>(global::Imposter.Abstractions.Arg<int> value)
 		{
 			return new TagMethodImposter<T>.Builder(_tagMethodImposterCollection, _tagMethodInvocationHistoryCollection, new TagArgumentsCriteria<T>(value));
@@ -51,6 +51,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			return new RelateMethodImposter<T, TDerived>.Builder(_relateMethodImposterCollection, _relateMethodInvocationHistoryCollection, new RelateArgumentsCriteria<T, TDerived>(value));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.MethodImpersonation.ITypeParameterOutsideSignatureSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.ITypeParameterOutsideSignatureSut>.Instance()
 		{
@@ -150,6 +151,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(NameMethodInvocationHistoryCollection.Node invocationHistory)
@@ -723,6 +729,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(PutMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1217,6 +1228,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(RegisterMethodInvocationHistoryCollection.Node invocationHistory)
@@ -1768,6 +1784,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(RelateMethodInvocationHistoryCollection.Node invocationHistory)
@@ -2327,6 +2348,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(TagMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -2781,16 +2807,17 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 		public ITypeParameterOutsideSignatureSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._tagMethodInvocationHistoryCollection = new TagMethodInvocationHistoryCollection();
 			this._nameMethodInvocationHistoryCollection = new NameMethodInvocationHistoryCollection();
 			this._registerMethodInvocationHistoryCollection = new RegisterMethodInvocationHistoryCollection();
 			this._putMethodInvocationHistoryCollection = new PutMethodInvocationHistoryCollection();
 			this._relateMethodInvocationHistoryCollection = new RelateMethodInvocationHistoryCollection();
-			this._tagMethodImposterCollection = new TagMethodImposterCollection(_tagMethodInvocationHistoryCollection, invocationBehavior);
-			this._nameMethodImposterCollection = new NameMethodImposterCollection(_nameMethodInvocationHistoryCollection, invocationBehavior);
-			this._registerMethodImposterCollection = new RegisterMethodImposterCollection(_registerMethodInvocationHistoryCollection, invocationBehavior);
-			this._putMethodImposterCollection = new PutMethodImposterCollection(_putMethodInvocationHistoryCollection, invocationBehavior);
-			this._relateMethodImposterCollection = new RelateMethodImposterCollection(_relateMethodInvocationHistoryCollection, invocationBehavior);
+			this._tagMethodImposterCollection = new TagMethodImposterCollection(_tagMethodInvocationHistoryCollection, this._imposterMode);
+			this._nameMethodImposterCollection = new NameMethodImposterCollection(_nameMethodInvocationHistoryCollection, this._imposterMode);
+			this._registerMethodImposterCollection = new RegisterMethodImposterCollection(_registerMethodInvocationHistoryCollection, this._imposterMode);
+			this._putMethodImposterCollection = new PutMethodImposterCollection(_putMethodInvocationHistoryCollection, this._imposterMode);
+			this._relateMethodImposterCollection = new RelateMethodImposterCollection(_relateMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -2803,6 +2830,34 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			invocations.AddRange(_putMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_relateMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_tagMethodInvocationHistoryCollection.Clear();
+			_nameMethodInvocationHistoryCollection.Clear();
+			_registerMethodInvocationHistoryCollection.Clear();
+			_putMethodInvocationHistoryCollection.Clear();
+			_relateMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_tagMethodInvocationHistoryCollection.Clear();
+			_nameMethodInvocationHistoryCollection.Clear();
+			_registerMethodInvocationHistoryCollection.Clear();
+			_putMethodInvocationHistoryCollection.Clear();
+			_relateMethodInvocationHistoryCollection.Clear();
+			this._tagMethodInvocationHistoryCollection = new TagMethodInvocationHistoryCollection();
+			this._nameMethodInvocationHistoryCollection = new NameMethodInvocationHistoryCollection();
+			this._registerMethodInvocationHistoryCollection = new RegisterMethodInvocationHistoryCollection();
+			this._putMethodInvocationHistoryCollection = new PutMethodInvocationHistoryCollection();
+			this._relateMethodInvocationHistoryCollection = new RelateMethodInvocationHistoryCollection();
+			this._tagMethodImposterCollection = new TagMethodImposterCollection(_tagMethodInvocationHistoryCollection, this._imposterMode);
+			this._nameMethodImposterCollection = new NameMethodImposterCollection(_nameMethodInvocationHistoryCollection, this._imposterMode);
+			this._registerMethodImposterCollection = new RegisterMethodImposterCollection(_registerMethodInvocationHistoryCollection, this._imposterMode);
+			this._putMethodImposterCollection = new PutMethodImposterCollection(_putMethodInvocationHistoryCollection, this._imposterMode);
+			this._relateMethodImposterCollection = new RelateMethodImposterCollection(_relateMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

@@ -15,12 +15,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class ClassWithUninferableGenericMethodsImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithUninferableGenericMethods>
 	{
-		private readonly DescribeMethodImposterCollection _describeMethodImposterCollection;
-		private readonly ConvertMethodImposterCollection _convertMethodImposterCollection;
-		private readonly ExecuteMethodImposterCollection _executeMethodImposterCollection;
-		private readonly DescribeMethodInvocationHistoryCollection _describeMethodInvocationHistoryCollection;
-		private readonly ConvertMethodInvocationHistoryCollection _convertMethodInvocationHistoryCollection;
-		private readonly ExecuteMethodInvocationHistoryCollection _executeMethodInvocationHistoryCollection;
+		private DescribeMethodImposterCollection _describeMethodImposterCollection;
+		private ConvertMethodImposterCollection _convertMethodImposterCollection;
+		private ExecuteMethodImposterCollection _executeMethodImposterCollection;
+		private DescribeMethodInvocationHistoryCollection _describeMethodInvocationHistoryCollection;
+		private ConvertMethodInvocationHistoryCollection _convertMethodInvocationHistoryCollection;
+		private ExecuteMethodInvocationHistoryCollection _executeMethodInvocationHistoryCollection;
 		public IDescribeMethodImposterBuilder<T> Describe<T>()
 		{
 			return new DescribeMethodImposter<T>.Builder(_describeMethodImposterCollection, _describeMethodInvocationHistoryCollection);
@@ -36,6 +36,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			return new ExecuteMethodImposter<T>.Builder(_executeMethodImposterCollection, _executeMethodInvocationHistoryCollection);
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithUninferableGenericMethods global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithUninferableGenericMethods>.Instance()
 		{
@@ -188,6 +189,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(ConvertMethodInvocationHistoryCollection.Node invocationHistory)
@@ -747,6 +753,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(DescribeMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1288,6 +1299,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(ExecuteMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1716,12 +1732,13 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 		public ClassWithUninferableGenericMethodsImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._describeMethodInvocationHistoryCollection = new DescribeMethodInvocationHistoryCollection();
 			this._convertMethodInvocationHistoryCollection = new ConvertMethodInvocationHistoryCollection();
 			this._executeMethodInvocationHistoryCollection = new ExecuteMethodInvocationHistoryCollection();
-			this._describeMethodImposterCollection = new DescribeMethodImposterCollection(_describeMethodInvocationHistoryCollection, invocationBehavior);
-			this._convertMethodImposterCollection = new ConvertMethodImposterCollection(_convertMethodInvocationHistoryCollection, invocationBehavior);
-			this._executeMethodImposterCollection = new ExecuteMethodImposterCollection(_executeMethodInvocationHistoryCollection, invocationBehavior);
+			this._describeMethodImposterCollection = new DescribeMethodImposterCollection(_describeMethodInvocationHistoryCollection, this._imposterMode);
+			this._convertMethodImposterCollection = new ConvertMethodImposterCollection(_convertMethodInvocationHistoryCollection, this._imposterMode);
+			this._executeMethodImposterCollection = new ExecuteMethodImposterCollection(_executeMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -1732,6 +1749,26 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			invocations.AddRange(_convertMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_executeMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_describeMethodInvocationHistoryCollection.Clear();
+			_convertMethodInvocationHistoryCollection.Clear();
+			_executeMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_describeMethodInvocationHistoryCollection.Clear();
+			_convertMethodInvocationHistoryCollection.Clear();
+			_executeMethodInvocationHistoryCollection.Clear();
+			this._describeMethodInvocationHistoryCollection = new DescribeMethodInvocationHistoryCollection();
+			this._convertMethodInvocationHistoryCollection = new ConvertMethodInvocationHistoryCollection();
+			this._executeMethodInvocationHistoryCollection = new ExecuteMethodInvocationHistoryCollection();
+			this._describeMethodImposterCollection = new DescribeMethodImposterCollection(_describeMethodInvocationHistoryCollection, this._imposterMode);
+			this._convertMethodImposterCollection = new ConvertMethodImposterCollection(_convertMethodInvocationHistoryCollection, this._imposterMode);
+			this._executeMethodImposterCollection = new ExecuteMethodImposterCollection(_executeMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

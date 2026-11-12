@@ -15,10 +15,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class NullableGenericMethodsClassImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.NullableGenericMethodsClass>
 	{
-		private readonly EchoNullableReferenceMethodImposterCollection _echoNullableReferenceMethodImposterCollection;
-		private readonly EchoMaybeDefaultMethodImposterCollection _echoMaybeDefaultMethodImposterCollection;
-		private readonly EchoNullableReferenceMethodInvocationHistoryCollection _echoNullableReferenceMethodInvocationHistoryCollection;
-		private readonly EchoMaybeDefaultMethodInvocationHistoryCollection _echoMaybeDefaultMethodInvocationHistoryCollection;
+		private EchoNullableReferenceMethodImposterCollection _echoNullableReferenceMethodImposterCollection;
+		private EchoMaybeDefaultMethodImposterCollection _echoMaybeDefaultMethodImposterCollection;
+		private EchoNullableReferenceMethodInvocationHistoryCollection _echoNullableReferenceMethodInvocationHistoryCollection;
+		private EchoMaybeDefaultMethodInvocationHistoryCollection _echoMaybeDefaultMethodInvocationHistoryCollection;
 		public IEchoNullableReferenceMethodImposterBuilder<T> EchoNullableReference<T>(global::Imposter.Abstractions.Arg<T> value)
 			where T : class ?, global::System.IDisposable?
 		{
@@ -30,6 +30,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			return new EchoMaybeDefaultMethodImposter<T>.Builder(_echoMaybeDefaultMethodImposterCollection, _echoMaybeDefaultMethodInvocationHistoryCollection, new EchoMaybeDefaultArgumentsCriteria<T>(value));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.ClassImpersonation.Suts.NullableGenericMethodsClass global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.NullableGenericMethodsClass>.Instance()
 		{
@@ -182,6 +183,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(EchoMaybeDefaultMethodInvocationHistoryCollection.Node invocationHistory)
@@ -802,6 +808,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(EchoNullableReferenceMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1274,10 +1285,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 		public NullableGenericMethodsClassImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._echoNullableReferenceMethodInvocationHistoryCollection = new EchoNullableReferenceMethodInvocationHistoryCollection();
 			this._echoMaybeDefaultMethodInvocationHistoryCollection = new EchoMaybeDefaultMethodInvocationHistoryCollection();
-			this._echoNullableReferenceMethodImposterCollection = new EchoNullableReferenceMethodImposterCollection(_echoNullableReferenceMethodInvocationHistoryCollection, invocationBehavior);
-			this._echoMaybeDefaultMethodImposterCollection = new EchoMaybeDefaultMethodImposterCollection(_echoMaybeDefaultMethodInvocationHistoryCollection, invocationBehavior);
+			this._echoNullableReferenceMethodImposterCollection = new EchoNullableReferenceMethodImposterCollection(_echoNullableReferenceMethodInvocationHistoryCollection, this._imposterMode);
+			this._echoMaybeDefaultMethodImposterCollection = new EchoMaybeDefaultMethodImposterCollection(_echoMaybeDefaultMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -1287,6 +1299,22 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			invocations.AddRange(_echoNullableReferenceMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_echoMaybeDefaultMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_echoNullableReferenceMethodInvocationHistoryCollection.Clear();
+			_echoMaybeDefaultMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_echoNullableReferenceMethodInvocationHistoryCollection.Clear();
+			_echoMaybeDefaultMethodInvocationHistoryCollection.Clear();
+			this._echoNullableReferenceMethodInvocationHistoryCollection = new EchoNullableReferenceMethodInvocationHistoryCollection();
+			this._echoMaybeDefaultMethodInvocationHistoryCollection = new EchoMaybeDefaultMethodInvocationHistoryCollection();
+			this._echoNullableReferenceMethodImposterCollection = new EchoNullableReferenceMethodImposterCollection(_echoNullableReferenceMethodInvocationHistoryCollection, this._imposterMode);
+			this._echoMaybeDefaultMethodImposterCollection = new EchoMaybeDefaultMethodImposterCollection(_echoMaybeDefaultMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

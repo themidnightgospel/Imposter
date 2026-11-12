@@ -2,14 +2,16 @@
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.Imposter.Builders;
 
 internal readonly ref struct PropertyImposterMembersBuilder(
     in ClassDeclarationBuilder imposterBuilder,
-    BlockBuilder constructorBodyBuilder,
-    string invocationBehaviorParameterName,
+    BlockBuilder memberInitializationBuilder,
+    ExpressionSyntax invocationBehavior,
     in ImposterInstanceBuilder imposterInstanceBuilder
 )
 {
@@ -27,17 +29,18 @@ internal readonly ref struct PropertyImposterMembersBuilder(
         );
 
         _imposterBuilder.AddMember(
-            SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(property.BuilderField)
+            SyntaxFactoryHelper.SingleVariableField(
+                property.BuilderField,
+                SyntaxKind.PrivateKeyword
+            )
         );
 
-        constructorBodyBuilder.AddStatement(
+        memberInitializationBuilder.AddStatement(
             ThisExpression()
                 .Dot(IdentifierName(property.BuilderField.Name))
                 .Assign(
                     property.ImposterBuilder.Syntax.New(
-                        SyntaxFactoryHelper.ArgumentListSyntax([
-                            Argument(IdentifierName(invocationBehaviorParameterName)),
-                        ])
+                        SyntaxFactoryHelper.ArgumentListSyntax([Argument(invocationBehavior)])
                     )
                 )
                 .ToStatementSyntax()

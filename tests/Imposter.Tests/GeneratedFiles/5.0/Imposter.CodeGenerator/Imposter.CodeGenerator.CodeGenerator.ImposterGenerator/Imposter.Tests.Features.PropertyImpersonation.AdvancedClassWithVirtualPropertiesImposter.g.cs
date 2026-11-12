@@ -15,6 +15,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class AdvancedClassWithVirtualPropertiesImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImpersonation.AdvancedClassWithVirtualProperties>
 	{
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.PropertyImpersonation.AdvancedClassWithVirtualProperties global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImpersonation.AdvancedClassWithVirtualProperties>.Instance()
 		{
@@ -23,7 +24,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 		public IGetterOnlyVirtualPropertyPropertyBuilder GetterOnlyVirtualProperty => _GetterOnlyVirtualPropertyPropertyBuilderField;
 
-		private readonly GetterOnlyVirtualPropertyPropertyBuilder _GetterOnlyVirtualPropertyPropertyBuilderField;
+		private GetterOnlyVirtualPropertyPropertyBuilder _GetterOnlyVirtualPropertyPropertyBuilderField;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IGetterOnlyVirtualPropertyPropertyGetterOutcomeBuilder
 		{
@@ -80,6 +81,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class GetterOnlyVirtualPropertyPropertyBuilder : IGetterOnlyVirtualPropertyPropertyBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposterBuilder.ClearInvocations();
+			}
+
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
 			{
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>(), orderBySequence);
@@ -174,7 +180,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 		public ISetterOnlyVirtualPropertyPropertyBuilder SetterOnlyVirtualProperty => _SetterOnlyVirtualPropertyPropertyBuilderField;
 
-		private readonly SetterOnlyVirtualPropertyPropertyBuilder _SetterOnlyVirtualPropertyPropertyBuilderField;
+		private SetterOnlyVirtualPropertyPropertyBuilder _SetterOnlyVirtualPropertyPropertyBuilderField;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ISetterOnlyVirtualPropertyPropertySetterCallbackBuilder
 		{
@@ -244,6 +250,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class SetterOnlyVirtualPropertyPropertyBuilder : ISetterOnlyVirtualPropertyPropertyBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_setterImposter.ClearInvocations();
+			}
+
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
 			{
 				return _setterImposter.Snapshot(orderBySequence);
@@ -326,7 +337,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 		public IThrowingGetterVirtualPropertyPropertyBuilder ThrowingGetterVirtualProperty => _ThrowingGetterVirtualPropertyPropertyBuilderField;
 
-		private readonly ThrowingGetterVirtualPropertyPropertyBuilder _ThrowingGetterVirtualPropertyPropertyBuilderField;
+		private ThrowingGetterVirtualPropertyPropertyBuilder _ThrowingGetterVirtualPropertyPropertyBuilderField;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IThrowingGetterVirtualPropertyPropertyGetterOutcomeBuilder
 		{
@@ -383,6 +394,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ThrowingGetterVirtualPropertyPropertyBuilder : IThrowingGetterVirtualPropertyPropertyBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposterBuilder.ClearInvocations();
+			}
+
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
 			{
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>(), orderBySequence);
@@ -477,7 +493,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 		public IThrowingSetterVirtualPropertyPropertyBuilder ThrowingSetterVirtualProperty => _ThrowingSetterVirtualPropertyPropertyBuilderField;
 
-		private readonly ThrowingSetterVirtualPropertyPropertyBuilder _ThrowingSetterVirtualPropertyPropertyBuilderField;
+		private ThrowingSetterVirtualPropertyPropertyBuilder _ThrowingSetterVirtualPropertyPropertyBuilderField;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IThrowingSetterVirtualPropertyPropertyGetterOutcomeBuilder
 		{
@@ -594,6 +610,12 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ThrowingSetterVirtualPropertyPropertyBuilder : IThrowingSetterVirtualPropertyPropertyBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposterBuilder.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
 			{
 				return _setterImposter.Snapshot(orderBySequence);
@@ -751,10 +773,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 		public AdvancedClassWithVirtualPropertiesImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
-			this._GetterOnlyVirtualPropertyPropertyBuilderField = new GetterOnlyVirtualPropertyPropertyBuilder(invocationBehavior);
-			this._SetterOnlyVirtualPropertyPropertyBuilderField = new SetterOnlyVirtualPropertyPropertyBuilder(invocationBehavior);
-			this._ThrowingGetterVirtualPropertyPropertyBuilderField = new ThrowingGetterVirtualPropertyPropertyBuilder(invocationBehavior);
-			this._ThrowingSetterVirtualPropertyPropertyBuilderField = new ThrowingSetterVirtualPropertyPropertyBuilder(invocationBehavior);
+			this._imposterMode = invocationBehavior;
+			this._GetterOnlyVirtualPropertyPropertyBuilderField = new GetterOnlyVirtualPropertyPropertyBuilder(this._imposterMode);
+			this._SetterOnlyVirtualPropertyPropertyBuilderField = new SetterOnlyVirtualPropertyPropertyBuilder(this._imposterMode);
+			this._ThrowingGetterVirtualPropertyPropertyBuilderField = new ThrowingGetterVirtualPropertyPropertyBuilder(this._imposterMode);
+			this._ThrowingSetterVirtualPropertyPropertyBuilderField = new ThrowingSetterVirtualPropertyPropertyBuilder(this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -766,6 +789,26 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			invocations.AddRange(_ThrowingGetterVirtualPropertyPropertyBuilderField.Snapshot(false));
 			invocations.AddRange(_ThrowingSetterVirtualPropertyPropertyBuilderField.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_GetterOnlyVirtualPropertyPropertyBuilderField.ClearInvocations();
+			_SetterOnlyVirtualPropertyPropertyBuilderField.ClearInvocations();
+			_ThrowingGetterVirtualPropertyPropertyBuilderField.ClearInvocations();
+			_ThrowingSetterVirtualPropertyPropertyBuilderField.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_GetterOnlyVirtualPropertyPropertyBuilderField.ClearInvocations();
+			_SetterOnlyVirtualPropertyPropertyBuilderField.ClearInvocations();
+			_ThrowingGetterVirtualPropertyPropertyBuilderField.ClearInvocations();
+			_ThrowingSetterVirtualPropertyPropertyBuilderField.ClearInvocations();
+			this._GetterOnlyVirtualPropertyPropertyBuilderField = new GetterOnlyVirtualPropertyPropertyBuilder(this._imposterMode);
+			this._SetterOnlyVirtualPropertyPropertyBuilderField = new SetterOnlyVirtualPropertyPropertyBuilder(this._imposterMode);
+			this._ThrowingGetterVirtualPropertyPropertyBuilderField = new ThrowingGetterVirtualPropertyPropertyBuilder(this._imposterMode);
+			this._ThrowingSetterVirtualPropertyPropertyBuilderField = new ThrowingSetterVirtualPropertyPropertyBuilder(this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

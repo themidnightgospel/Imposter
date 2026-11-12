@@ -2,6 +2,7 @@
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.PropertyImposter.Getter;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.PropertyImposter.Setter;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
+using Imposter.CodeGenerator.Features.Shared.Builders;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -17,6 +18,16 @@ internal static partial class PropertyImposterBuilder
         new ClassDeclarationBuilder(property.ImposterBuilder.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(property.ImposterBuilderInterface.Syntax))
+            .AddMember(
+                InvocationLifecycleBuilder.ClearChildren(
+                    property.Core.HasGetter
+                        ? property.ImposterBuilder.GetterImposterBuilderField.Name
+                        : null,
+                    property.Core.HasSetter
+                        ? property.ImposterBuilder.SetterImposterField.Name
+                        : null
+                )
+            )
             .AddMember(BuildSnapshot(property))
             // The default (auto-property) behaviour stores the last value set so the getter can return it.
             .AddMember(

@@ -15,13 +15,14 @@ namespace Imposter.Playground
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IAsyncObservableImposter<T> : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Playground.IAsyncObservable<T>>, IAsyncObservableImposter<T>.IAsyncObservableSetup
 	{
-		private readonly OnNextMethodImposter _onNextMethodImposter;
-		private readonly OnNextMethodInvocationHistoryCollection _onNextMethodInvocationHistoryCollection;
+		private OnNextMethodImposter _onNextMethodImposter;
+		private OnNextMethodInvocationHistoryCollection _onNextMethodInvocationHistoryCollection;
 		public IOnNextMethodImposterBuilder OnNext(global::Imposter.Abstractions.Arg<T> item)
 		{
 			return new OnNextMethodImposter.Builder(_onNextMethodImposter, _onNextMethodInvocationHistoryCollection, new OnNextArgumentsCriteria(item));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Playground.IAsyncObservable<T> global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Playground.IAsyncObservable<T>>.Instance()
 		{
@@ -152,6 +153,11 @@ namespace Imposter.Playground
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(OnNextMethodInvocationHistoryCollection.Node invocationHistory)
@@ -501,8 +507,9 @@ namespace Imposter.Playground
 
 		public IAsyncObservableImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._onNextMethodInvocationHistoryCollection = new OnNextMethodInvocationHistoryCollection();
-			this._onNextMethodImposter = new OnNextMethodImposter(_onNextMethodInvocationHistoryCollection, invocationBehavior);
+			this._onNextMethodImposter = new OnNextMethodImposter(_onNextMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -511,6 +518,18 @@ namespace Imposter.Playground
 			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
 			invocations.AddRange(_onNextMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_onNextMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_onNextMethodInvocationHistoryCollection.Clear();
+			this._onNextMethodInvocationHistoryCollection = new OnNextMethodInvocationHistoryCollection();
+			this._onNextMethodImposter = new OnNextMethodImposter(_onNextMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

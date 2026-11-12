@@ -15,10 +15,10 @@ namespace Imposter.Tests.Features.Verification
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IInvocationHistoryCollisionTargetImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Verification.IInvocationHistoryCollisionTarget>, IInvocationHistoryCollisionTargetImposter.IInvocationHistoryCollisionTargetSetup
 	{
-		private readonly InvocationsMethodImposter _invocationsMethodImposter;
-		private readonly CollideMethodImposter _collideMethodImposter;
-		private readonly InvocationsMethodInvocationHistoryCollection _invocationsMethodInvocationHistoryCollection;
-		private readonly CollideMethodInvocationHistoryCollection _collideMethodInvocationHistoryCollection;
+		private InvocationsMethodImposter _invocationsMethodImposter;
+		private CollideMethodImposter _collideMethodImposter;
+		private InvocationsMethodInvocationHistoryCollection _invocationsMethodInvocationHistoryCollection;
+		private CollideMethodInvocationHistoryCollection _collideMethodInvocationHistoryCollection;
 		public IInvocationsMethodImposterBuilder Invocations()
 		{
 			return new InvocationsMethodImposter.Builder(_invocationsMethodImposter, _invocationsMethodInvocationHistoryCollection);
@@ -29,6 +29,7 @@ namespace Imposter.Tests.Features.Verification
 			return new CollideMethodImposter.Builder(_collideMethodImposter, _collideMethodInvocationHistoryCollection, new CollideArgumentsCriteria(result, exception, member, sequence, next, collideInvocation));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.Verification.IInvocationHistoryCollisionTarget global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Verification.IInvocationHistoryCollisionTarget>.Instance()
 		{
@@ -239,6 +240,11 @@ namespace Imposter.Tests.Features.Verification
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(CollideMethodInvocationHistoryCollection.Node invocationHistory)
@@ -697,6 +703,11 @@ namespace Imposter.Tests.Features.Verification
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(InvocationsMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1071,10 +1082,11 @@ namespace Imposter.Tests.Features.Verification
 
 		public IInvocationHistoryCollisionTargetImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._invocationsMethodInvocationHistoryCollection = new InvocationsMethodInvocationHistoryCollection();
 			this._collideMethodInvocationHistoryCollection = new CollideMethodInvocationHistoryCollection();
-			this._invocationsMethodImposter = new InvocationsMethodImposter(_invocationsMethodInvocationHistoryCollection, invocationBehavior);
-			this._collideMethodImposter = new CollideMethodImposter(_collideMethodInvocationHistoryCollection, invocationBehavior);
+			this._invocationsMethodImposter = new InvocationsMethodImposter(_invocationsMethodInvocationHistoryCollection, this._imposterMode);
+			this._collideMethodImposter = new CollideMethodImposter(_collideMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -1084,6 +1096,22 @@ namespace Imposter.Tests.Features.Verification
 			invocations.AddRange(_invocationsMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_collideMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_invocationsMethodInvocationHistoryCollection.Clear();
+			_collideMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_invocationsMethodInvocationHistoryCollection.Clear();
+			_collideMethodInvocationHistoryCollection.Clear();
+			this._invocationsMethodInvocationHistoryCollection = new InvocationsMethodInvocationHistoryCollection();
+			this._collideMethodInvocationHistoryCollection = new CollideMethodInvocationHistoryCollection();
+			this._invocationsMethodImposter = new InvocationsMethodImposter(_invocationsMethodInvocationHistoryCollection, this._imposterMode);
+			this._collideMethodImposter = new CollideMethodImposter(_collideMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

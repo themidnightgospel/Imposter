@@ -15,28 +15,28 @@ namespace Imposter.Tests.Features.Verification
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IInvocationHistoryTargetImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Verification.IInvocationHistoryTarget>, IInvocationHistoryTargetImposter.IInvocationHistoryTargetSetup
 	{
-		private readonly HelloMethodImposter _helloMethodImposter;
-		private readonly OuterMethodImposter _outerMethodImposter;
-		private readonly Outer_1MethodImposter _outer_1MethodImposter;
-		private readonly InnerMethodImposter _innerMethodImposter;
-		private readonly EchoMethodImposterCollection _echoMethodImposterCollection;
-		private readonly TryReadMethodImposter _tryReadMethodImposter;
-		private readonly TransformMethodImposter _transformMethodImposter;
-		private readonly ReadMethodImposter _readMethodImposter;
-		private readonly FetchMethodImposter _fetchMethodImposter;
-		private readonly AcceptMethodImposterCollection _acceptMethodImposterCollection;
-		private readonly ProduceMethodImposterCollection _produceMethodImposterCollection;
-		private readonly HelloMethodInvocationHistoryCollection _helloMethodInvocationHistoryCollection;
-		private readonly OuterMethodInvocationHistoryCollection _outerMethodInvocationHistoryCollection;
-		private readonly Outer_1MethodInvocationHistoryCollection _outer_1MethodInvocationHistoryCollection;
-		private readonly InnerMethodInvocationHistoryCollection _innerMethodInvocationHistoryCollection;
-		private readonly EchoMethodInvocationHistoryCollection _echoMethodInvocationHistoryCollection;
-		private readonly TryReadMethodInvocationHistoryCollection _tryReadMethodInvocationHistoryCollection;
-		private readonly TransformMethodInvocationHistoryCollection _transformMethodInvocationHistoryCollection;
-		private readonly ReadMethodInvocationHistoryCollection _readMethodInvocationHistoryCollection;
-		private readonly FetchMethodInvocationHistoryCollection _fetchMethodInvocationHistoryCollection;
-		private readonly AcceptMethodInvocationHistoryCollection _acceptMethodInvocationHistoryCollection;
-		private readonly ProduceMethodInvocationHistoryCollection _produceMethodInvocationHistoryCollection;
+		private HelloMethodImposter _helloMethodImposter;
+		private OuterMethodImposter _outerMethodImposter;
+		private Outer_1MethodImposter _outer_1MethodImposter;
+		private InnerMethodImposter _innerMethodImposter;
+		private EchoMethodImposterCollection _echoMethodImposterCollection;
+		private TryReadMethodImposter _tryReadMethodImposter;
+		private TransformMethodImposter _transformMethodImposter;
+		private ReadMethodImposter _readMethodImposter;
+		private FetchMethodImposter _fetchMethodImposter;
+		private AcceptMethodImposterCollection _acceptMethodImposterCollection;
+		private ProduceMethodImposterCollection _produceMethodImposterCollection;
+		private HelloMethodInvocationHistoryCollection _helloMethodInvocationHistoryCollection;
+		private OuterMethodInvocationHistoryCollection _outerMethodInvocationHistoryCollection;
+		private Outer_1MethodInvocationHistoryCollection _outer_1MethodInvocationHistoryCollection;
+		private InnerMethodInvocationHistoryCollection _innerMethodInvocationHistoryCollection;
+		private EchoMethodInvocationHistoryCollection _echoMethodInvocationHistoryCollection;
+		private TryReadMethodInvocationHistoryCollection _tryReadMethodInvocationHistoryCollection;
+		private TransformMethodInvocationHistoryCollection _transformMethodInvocationHistoryCollection;
+		private ReadMethodInvocationHistoryCollection _readMethodInvocationHistoryCollection;
+		private FetchMethodInvocationHistoryCollection _fetchMethodInvocationHistoryCollection;
+		private AcceptMethodInvocationHistoryCollection _acceptMethodInvocationHistoryCollection;
+		private ProduceMethodInvocationHistoryCollection _produceMethodInvocationHistoryCollection;
 		public IHelloMethodImposterBuilder Hello(global::Imposter.Abstractions.Arg<string> name, global::Imposter.Abstractions.Arg<int> times)
 		{
 			return new HelloMethodImposter.Builder(_helloMethodImposter, _helloMethodInvocationHistoryCollection, new HelloArgumentsCriteria(name, times));
@@ -92,6 +92,7 @@ namespace Imposter.Tests.Features.Verification
 			return new ProduceMethodImposter<T>.Builder(_produceMethodImposterCollection, _produceMethodInvocationHistoryCollection, new ProduceArgumentsCriteria<T>(reference, output));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.Verification.IInvocationHistoryTarget global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Verification.IInvocationHistoryTarget>.Instance()
 		{
@@ -234,6 +235,11 @@ namespace Imposter.Tests.Features.Verification
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(AcceptMethodInvocationHistoryCollection.Node invocationHistory)
@@ -795,6 +801,11 @@ namespace Imposter.Tests.Features.Verification
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(EchoMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1343,6 +1354,11 @@ namespace Imposter.Tests.Features.Verification
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(FetchMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1885,6 +1901,11 @@ namespace Imposter.Tests.Features.Verification
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(HelloMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -2327,6 +2348,11 @@ namespace Imposter.Tests.Features.Verification
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(InnerMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -2733,6 +2759,11 @@ namespace Imposter.Tests.Features.Verification
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(OuterMethodInvocationHistoryCollection.Node invocationHistory)
@@ -3182,6 +3213,11 @@ namespace Imposter.Tests.Features.Verification
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(Outer_1MethodInvocationHistoryCollection.Node invocationHistory)
@@ -3661,6 +3697,11 @@ namespace Imposter.Tests.Features.Verification
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(ProduceMethodInvocationHistoryCollection.Node invocationHistory)
@@ -4217,6 +4258,11 @@ namespace Imposter.Tests.Features.Verification
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(ReadMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -4680,6 +4726,11 @@ namespace Imposter.Tests.Features.Verification
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(TransformMethodInvocationHistoryCollection.Node invocationHistory)
@@ -5186,6 +5237,11 @@ namespace Imposter.Tests.Features.Verification
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(TryReadMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -5552,7 +5608,7 @@ namespace Imposter.Tests.Features.Verification
 
 		public ILabelPropertyBuilder Label => _LabelPropertyBuilderField;
 
-		private readonly LabelPropertyBuilder _LabelPropertyBuilderField;
+		private LabelPropertyBuilder _LabelPropertyBuilderField;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ILabelPropertyGetterOutcomeBuilder
 		{
@@ -5654,6 +5710,12 @@ namespace Imposter.Tests.Features.Verification
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class LabelPropertyBuilder : ILabelPropertyBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposterBuilder.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
 			{
 				return _setterImposter.Snapshot(orderBySequence);
@@ -5781,7 +5843,7 @@ namespace Imposter.Tests.Features.Verification
 
 		public IChangedEventImposterBuilder Changed => _Changed;
 
-		private readonly ChangedEventImposterBuilder _Changed;
+		private ChangedEventImposterBuilder _Changed;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IChangedEventImposterBuilder : IChangedEventImposterSetupBuilder, IChangedEventImposterVerificationBuilder
 		{
@@ -5820,6 +5882,14 @@ namespace Imposter.Tests.Features.Verification
 			private global::Imposter.Abstractions.CallbackCollection<global::System.Action>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<bool>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Action>? _handlerInvocations;
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>> IChangedEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -6144,7 +6214,7 @@ namespace Imposter.Tests.Features.Verification
 			}
 		}
 
-		private readonly IndexerIndexerBuilder _IndexerIndexer;
+		private IndexerIndexerBuilder _IndexerIndexer;
 		public IIndexerIndexerBuilder this[global::Imposter.Abstractions.Arg<int> key] => new IndexerIndexerBuilder.InvocationBuilder(_IndexerIndexer, new IndexerIndexerArgumentsCriteria(key));
 		public delegate string IndexerIndexerDelegate(int key);
 		public delegate void IndexerIndexerGetterCallback(int key);
@@ -6270,6 +6340,12 @@ namespace Imposter.Tests.Features.Verification
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class IndexerIndexerBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposter.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			private readonly DefaultIndexerIndexerBehaviour _IndexerDefaultIndexerBehaviour = new DefaultIndexerIndexerBehaviour();
 			private readonly GetterImposter _getterImposter;
 			private readonly SetterImposter _setterImposter;
@@ -6391,6 +6467,11 @@ namespace Imposter.Tests.Features.Verification
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class GetterImposter
 			{
+				internal void ClearInvocations()
+				{
+					_invocationHistory?.Clear();
+				}
+
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
 				private readonly global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter> _getterInvocationImposters = new global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter>();
 				private global::Imposter.Abstractions.InvocationHistory<IndexerGetterInvocation>? _invocationHistory;
@@ -6655,6 +6736,11 @@ namespace Imposter.Tests.Features.Verification
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class SetterImposter
 			{
+				internal void ClearInvocations()
+				{
+					_invocationHistory?.Clear();
+				}
+
 				private global::Imposter.Abstractions.CallbackCollection<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)>? _callbacks;
 				private global::Imposter.Abstractions.InvocationHistory<IndexerSetterInvocation>? _invocationHistory;
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
@@ -6974,6 +7060,7 @@ namespace Imposter.Tests.Features.Verification
 
 		public IInvocationHistoryTargetImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._helloMethodInvocationHistoryCollection = new HelloMethodInvocationHistoryCollection();
 			this._outerMethodInvocationHistoryCollection = new OuterMethodInvocationHistoryCollection();
 			this._outer_1MethodInvocationHistoryCollection = new Outer_1MethodInvocationHistoryCollection();
@@ -6985,20 +7072,20 @@ namespace Imposter.Tests.Features.Verification
 			this._fetchMethodInvocationHistoryCollection = new FetchMethodInvocationHistoryCollection();
 			this._acceptMethodInvocationHistoryCollection = new AcceptMethodInvocationHistoryCollection();
 			this._produceMethodInvocationHistoryCollection = new ProduceMethodInvocationHistoryCollection();
-			this._helloMethodImposter = new HelloMethodImposter(_helloMethodInvocationHistoryCollection, invocationBehavior);
-			this._outerMethodImposter = new OuterMethodImposter(_outerMethodInvocationHistoryCollection, invocationBehavior);
-			this._outer_1MethodImposter = new Outer_1MethodImposter(_outer_1MethodInvocationHistoryCollection, invocationBehavior);
-			this._innerMethodImposter = new InnerMethodImposter(_innerMethodInvocationHistoryCollection, invocationBehavior);
-			this._echoMethodImposterCollection = new EchoMethodImposterCollection(_echoMethodInvocationHistoryCollection, invocationBehavior);
-			this._tryReadMethodImposter = new TryReadMethodImposter(_tryReadMethodInvocationHistoryCollection, invocationBehavior);
-			this._transformMethodImposter = new TransformMethodImposter(_transformMethodInvocationHistoryCollection, invocationBehavior);
-			this._readMethodImposter = new ReadMethodImposter(_readMethodInvocationHistoryCollection, invocationBehavior);
-			this._fetchMethodImposter = new FetchMethodImposter(_fetchMethodInvocationHistoryCollection, invocationBehavior);
-			this._acceptMethodImposterCollection = new AcceptMethodImposterCollection(_acceptMethodInvocationHistoryCollection, invocationBehavior);
-			this._produceMethodImposterCollection = new ProduceMethodImposterCollection(_produceMethodInvocationHistoryCollection, invocationBehavior);
-			this._LabelPropertyBuilderField = new LabelPropertyBuilder(invocationBehavior);
+			this._helloMethodImposter = new HelloMethodImposter(_helloMethodInvocationHistoryCollection, this._imposterMode);
+			this._outerMethodImposter = new OuterMethodImposter(_outerMethodInvocationHistoryCollection, this._imposterMode);
+			this._outer_1MethodImposter = new Outer_1MethodImposter(_outer_1MethodInvocationHistoryCollection, this._imposterMode);
+			this._innerMethodImposter = new InnerMethodImposter(_innerMethodInvocationHistoryCollection, this._imposterMode);
+			this._echoMethodImposterCollection = new EchoMethodImposterCollection(_echoMethodInvocationHistoryCollection, this._imposterMode);
+			this._tryReadMethodImposter = new TryReadMethodImposter(_tryReadMethodInvocationHistoryCollection, this._imposterMode);
+			this._transformMethodImposter = new TransformMethodImposter(_transformMethodInvocationHistoryCollection, this._imposterMode);
+			this._readMethodImposter = new ReadMethodImposter(_readMethodInvocationHistoryCollection, this._imposterMode);
+			this._fetchMethodImposter = new FetchMethodImposter(_fetchMethodInvocationHistoryCollection, this._imposterMode);
+			this._acceptMethodImposterCollection = new AcceptMethodImposterCollection(_acceptMethodInvocationHistoryCollection, this._imposterMode);
+			this._produceMethodImposterCollection = new ProduceMethodImposterCollection(_produceMethodInvocationHistoryCollection, this._imposterMode);
+			this._LabelPropertyBuilderField = new LabelPropertyBuilder(this._imposterMode);
 			this._Changed = new ChangedEventImposterBuilder();
-			this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.Verification.IInvocationHistoryTarget.this[int key]");
+			this._IndexerIndexer = new IndexerIndexerBuilder(this._imposterMode, "Imposter.Tests.Features.Verification.IInvocationHistoryTarget.this[int key]");
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -7020,6 +7107,67 @@ namespace Imposter.Tests.Features.Verification
 			invocations.AddRange(_Changed.Snapshot(false));
 			invocations.AddRange(_IndexerIndexer.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_helloMethodInvocationHistoryCollection.Clear();
+			_outerMethodInvocationHistoryCollection.Clear();
+			_outer_1MethodInvocationHistoryCollection.Clear();
+			_innerMethodInvocationHistoryCollection.Clear();
+			_echoMethodInvocationHistoryCollection.Clear();
+			_tryReadMethodInvocationHistoryCollection.Clear();
+			_transformMethodInvocationHistoryCollection.Clear();
+			_readMethodInvocationHistoryCollection.Clear();
+			_fetchMethodInvocationHistoryCollection.Clear();
+			_acceptMethodInvocationHistoryCollection.Clear();
+			_produceMethodInvocationHistoryCollection.Clear();
+			_LabelPropertyBuilderField.ClearInvocations();
+			_Changed.ClearInvocations();
+			_IndexerIndexer.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_helloMethodInvocationHistoryCollection.Clear();
+			_outerMethodInvocationHistoryCollection.Clear();
+			_outer_1MethodInvocationHistoryCollection.Clear();
+			_innerMethodInvocationHistoryCollection.Clear();
+			_echoMethodInvocationHistoryCollection.Clear();
+			_tryReadMethodInvocationHistoryCollection.Clear();
+			_transformMethodInvocationHistoryCollection.Clear();
+			_readMethodInvocationHistoryCollection.Clear();
+			_fetchMethodInvocationHistoryCollection.Clear();
+			_acceptMethodInvocationHistoryCollection.Clear();
+			_produceMethodInvocationHistoryCollection.Clear();
+			_LabelPropertyBuilderField.ClearInvocations();
+			_Changed.ClearInvocations();
+			_IndexerIndexer.ClearInvocations();
+			this._helloMethodInvocationHistoryCollection = new HelloMethodInvocationHistoryCollection();
+			this._outerMethodInvocationHistoryCollection = new OuterMethodInvocationHistoryCollection();
+			this._outer_1MethodInvocationHistoryCollection = new Outer_1MethodInvocationHistoryCollection();
+			this._innerMethodInvocationHistoryCollection = new InnerMethodInvocationHistoryCollection();
+			this._echoMethodInvocationHistoryCollection = new EchoMethodInvocationHistoryCollection();
+			this._tryReadMethodInvocationHistoryCollection = new TryReadMethodInvocationHistoryCollection();
+			this._transformMethodInvocationHistoryCollection = new TransformMethodInvocationHistoryCollection();
+			this._readMethodInvocationHistoryCollection = new ReadMethodInvocationHistoryCollection();
+			this._fetchMethodInvocationHistoryCollection = new FetchMethodInvocationHistoryCollection();
+			this._acceptMethodInvocationHistoryCollection = new AcceptMethodInvocationHistoryCollection();
+			this._produceMethodInvocationHistoryCollection = new ProduceMethodInvocationHistoryCollection();
+			this._helloMethodImposter = new HelloMethodImposter(_helloMethodInvocationHistoryCollection, this._imposterMode);
+			this._outerMethodImposter = new OuterMethodImposter(_outerMethodInvocationHistoryCollection, this._imposterMode);
+			this._outer_1MethodImposter = new Outer_1MethodImposter(_outer_1MethodInvocationHistoryCollection, this._imposterMode);
+			this._innerMethodImposter = new InnerMethodImposter(_innerMethodInvocationHistoryCollection, this._imposterMode);
+			this._echoMethodImposterCollection = new EchoMethodImposterCollection(_echoMethodInvocationHistoryCollection, this._imposterMode);
+			this._tryReadMethodImposter = new TryReadMethodImposter(_tryReadMethodInvocationHistoryCollection, this._imposterMode);
+			this._transformMethodImposter = new TransformMethodImposter(_transformMethodInvocationHistoryCollection, this._imposterMode);
+			this._readMethodImposter = new ReadMethodImposter(_readMethodInvocationHistoryCollection, this._imposterMode);
+			this._fetchMethodImposter = new FetchMethodImposter(_fetchMethodInvocationHistoryCollection, this._imposterMode);
+			this._acceptMethodImposterCollection = new AcceptMethodImposterCollection(_acceptMethodInvocationHistoryCollection, this._imposterMode);
+			this._produceMethodImposterCollection = new ProduceMethodImposterCollection(_produceMethodInvocationHistoryCollection, this._imposterMode);
+			this._LabelPropertyBuilderField = new LabelPropertyBuilder(this._imposterMode);
+			this._Changed = new ChangedEventImposterBuilder();
+			this._IndexerIndexer = new IndexerIndexerBuilder(this._imposterMode, "Imposter.Tests.Features.Verification.IInvocationHistoryTarget.this[int key]");
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

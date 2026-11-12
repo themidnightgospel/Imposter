@@ -15,10 +15,10 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class OpenGenericPairClassImposter<TKey, TValue> : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.OpenGenericImposter.OpenGenericPairClass<TKey, TValue>> where TKey : class where TValue : class
 	{
-		private readonly ResolveMethodImposter _resolveMethodImposter;
-		private readonly DescribePairMethodImposter _describePairMethodImposter;
-		private readonly ResolveMethodInvocationHistoryCollection _resolveMethodInvocationHistoryCollection;
-		private readonly DescribePairMethodInvocationHistoryCollection _describePairMethodInvocationHistoryCollection;
+		private ResolveMethodImposter _resolveMethodImposter;
+		private DescribePairMethodImposter _describePairMethodImposter;
+		private ResolveMethodInvocationHistoryCollection _resolveMethodInvocationHistoryCollection;
+		private DescribePairMethodInvocationHistoryCollection _describePairMethodInvocationHistoryCollection;
 		public IResolveMethodImposterBuilder Resolve(global::Imposter.Abstractions.Arg<TKey> key, global::Imposter.Abstractions.Arg<TValue> defaultValue)
 		{
 			return new ResolveMethodImposter.Builder(_resolveMethodImposter, _resolveMethodInvocationHistoryCollection, new ResolveArgumentsCriteria(key, defaultValue));
@@ -29,6 +29,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			return new DescribePairMethodImposter.Builder(_describePairMethodImposter, _describePairMethodInvocationHistoryCollection, new DescribePairArgumentsCriteria(key, value));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.OpenGenericImposter.OpenGenericPairClass<TKey, TValue> global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.OpenGenericImposter.OpenGenericPairClass<TKey, TValue>>.Instance()
 		{
@@ -183,6 +184,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(DescribePairMethodInvocationHistoryCollection.Node invocationHistory)
@@ -715,6 +721,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(ResolveMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1097,7 +1108,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 		public ICurrentPairPropertyBuilder CurrentPair => _CurrentPairPropertyBuilderField;
 
-		private readonly CurrentPairPropertyBuilder _CurrentPairPropertyBuilderField;
+		private CurrentPairPropertyBuilder _CurrentPairPropertyBuilderField;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ICurrentPairPropertyGetterOutcomeBuilder
 		{
@@ -1214,6 +1225,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class CurrentPairPropertyBuilder : ICurrentPairPropertyBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposterBuilder.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
 			{
 				return _setterImposter.Snapshot(orderBySequence);
@@ -1369,7 +1386,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			}
 		}
 
-		private readonly IndexerIndexerBuilder _IndexerIndexer;
+		private IndexerIndexerBuilder _IndexerIndexer;
 		public IIndexerIndexerBuilder this[global::Imposter.Abstractions.Arg<TKey> key] => new IndexerIndexerBuilder.InvocationBuilder(_IndexerIndexer, new IndexerIndexerArgumentsCriteria(key));
 		public delegate TValue IndexerIndexerDelegate(TKey key);
 		public delegate void IndexerIndexerGetterCallback(TKey key);
@@ -1495,6 +1512,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class IndexerIndexerBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposter.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			private readonly DefaultIndexerIndexerBehaviour _IndexerDefaultIndexerBehaviour = new DefaultIndexerIndexerBehaviour();
 			private readonly GetterImposter _getterImposter;
 			private readonly SetterImposter _setterImposter;
@@ -1616,6 +1639,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class GetterImposter
 			{
+				internal void ClearInvocations()
+				{
+					_invocationHistory?.Clear();
+				}
+
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
 				private readonly global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter> _getterInvocationImposters = new global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter>();
 				private global::Imposter.Abstractions.InvocationHistory<IndexerGetterInvocation>? _invocationHistory;
@@ -1901,6 +1929,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class SetterImposter
 			{
+				internal void ClearInvocations()
+				{
+					_invocationHistory?.Clear();
+				}
+
 				private global::Imposter.Abstractions.CallbackCollection<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)>? _callbacks;
 				private global::Imposter.Abstractions.InvocationHistory<IndexerSetterInvocation>? _invocationHistory;
 				private global::Imposter.Abstractions.CallbackCollection<IndexerIndexerArgumentsCriteria>? _baseCriteria;
@@ -2168,12 +2201,13 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 		public OpenGenericPairClassImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._resolveMethodInvocationHistoryCollection = new ResolveMethodInvocationHistoryCollection();
 			this._describePairMethodInvocationHistoryCollection = new DescribePairMethodInvocationHistoryCollection();
-			this._resolveMethodImposter = new ResolveMethodImposter(_resolveMethodInvocationHistoryCollection, invocationBehavior);
-			this._describePairMethodImposter = new DescribePairMethodImposter(_describePairMethodInvocationHistoryCollection, invocationBehavior);
-			this._CurrentPairPropertyBuilderField = new CurrentPairPropertyBuilder(invocationBehavior);
-			this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.OpenGenericImposter.OpenGenericPairClass<TKey, TValue>.this[TKey key]");
+			this._resolveMethodImposter = new ResolveMethodImposter(_resolveMethodInvocationHistoryCollection, this._imposterMode);
+			this._describePairMethodImposter = new DescribePairMethodImposter(_describePairMethodInvocationHistoryCollection, this._imposterMode);
+			this._CurrentPairPropertyBuilderField = new CurrentPairPropertyBuilder(this._imposterMode);
+			this._IndexerIndexer = new IndexerIndexerBuilder(this._imposterMode, "Imposter.Tests.Features.OpenGenericImposter.OpenGenericPairClass<TKey, TValue>.this[TKey key]");
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -2185,6 +2219,28 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			invocations.AddRange(_CurrentPairPropertyBuilderField.Snapshot(false));
 			invocations.AddRange(_IndexerIndexer.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_resolveMethodInvocationHistoryCollection.Clear();
+			_describePairMethodInvocationHistoryCollection.Clear();
+			_CurrentPairPropertyBuilderField.ClearInvocations();
+			_IndexerIndexer.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_resolveMethodInvocationHistoryCollection.Clear();
+			_describePairMethodInvocationHistoryCollection.Clear();
+			_CurrentPairPropertyBuilderField.ClearInvocations();
+			_IndexerIndexer.ClearInvocations();
+			this._resolveMethodInvocationHistoryCollection = new ResolveMethodInvocationHistoryCollection();
+			this._describePairMethodInvocationHistoryCollection = new DescribePairMethodInvocationHistoryCollection();
+			this._resolveMethodImposter = new ResolveMethodImposter(_resolveMethodInvocationHistoryCollection, this._imposterMode);
+			this._describePairMethodImposter = new DescribePairMethodImposter(_describePairMethodInvocationHistoryCollection, this._imposterMode);
+			this._CurrentPairPropertyBuilderField = new CurrentPairPropertyBuilder(this._imposterMode);
+			this._IndexerIndexer = new IndexerIndexerBuilder(this._imposterMode, "Imposter.Tests.Features.OpenGenericImposter.OpenGenericPairClass<TKey, TValue>.this[TKey key]");
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

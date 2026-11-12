@@ -60,6 +60,9 @@ public abstract class PassThroughSetter<TInvocation>
             .EnsureInitialized(ref _history)!
             .Push(CreateInvocation(sequence, exception));
 
+    /// <summary>Clears recorded interactions while preserving configured behavior.</summary>
+    public void ClearInvocations() => _history?.Clear();
+
     /// <summary>Returns a detached ordered snapshot.</summary>
     public IReadOnlyList<IImposterInvocation> Snapshot() => Snapshot<IImposterInvocation>();
 

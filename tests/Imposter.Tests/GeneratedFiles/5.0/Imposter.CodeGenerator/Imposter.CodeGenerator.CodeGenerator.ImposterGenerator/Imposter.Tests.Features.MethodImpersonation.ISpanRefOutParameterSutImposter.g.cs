@@ -15,14 +15,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class ISpanRefOutParameterSutImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.ISpanRefOutParameterSut>, ISpanRefOutParameterSutImposter.ISpanRefOutParameterSutSetup
 	{
-		private readonly TryReadMethodImposter _tryReadMethodImposter;
-		private readonly AdvanceMethodImposter _advanceMethodImposter;
-		private readonly FillMethodImposter _fillMethodImposter;
-		private readonly TryGetMethodImposterCollection _tryGetMethodImposterCollection;
-		private readonly TryReadMethodInvocationHistoryCollection _tryReadMethodInvocationHistoryCollection;
-		private readonly AdvanceMethodInvocationHistoryCollection _advanceMethodInvocationHistoryCollection;
-		private readonly FillMethodInvocationHistoryCollection _fillMethodInvocationHistoryCollection;
-		private readonly TryGetMethodInvocationHistoryCollection _tryGetMethodInvocationHistoryCollection;
+		private TryReadMethodImposter _tryReadMethodImposter;
+		private AdvanceMethodImposter _advanceMethodImposter;
+		private FillMethodImposter _fillMethodImposter;
+		private TryGetMethodImposterCollection _tryGetMethodImposterCollection;
+		private TryReadMethodInvocationHistoryCollection _tryReadMethodInvocationHistoryCollection;
+		private AdvanceMethodInvocationHistoryCollection _advanceMethodInvocationHistoryCollection;
+		private FillMethodInvocationHistoryCollection _fillMethodInvocationHistoryCollection;
+		private TryGetMethodInvocationHistoryCollection _tryGetMethodInvocationHistoryCollection;
 		public ITryReadMethodImposterBuilder TryRead(global::Imposter.Abstractions.OutReadOnlySpanArg<byte> data)
 		{
 			return new TryReadMethodImposter.Builder(_tryReadMethodImposter, _tryReadMethodInvocationHistoryCollection);
@@ -43,6 +43,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			return new TryGetMethodImposter<T>.Builder(_tryGetMethodImposterCollection, _tryGetMethodInvocationHistoryCollection);
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.MethodImpersonation.ISpanRefOutParameterSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.ISpanRefOutParameterSut>.Instance()
 		{
@@ -183,6 +184,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(AdvanceMethodInvocationHistoryCollection.Node invocationHistory)
@@ -667,6 +673,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(FillMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1099,6 +1110,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(TryGetMethodInvocationHistoryCollection.Node invocationHistory)
@@ -1655,6 +1671,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(TryReadMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -2049,14 +2070,15 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 		public ISpanRefOutParameterSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._tryReadMethodInvocationHistoryCollection = new TryReadMethodInvocationHistoryCollection();
 			this._advanceMethodInvocationHistoryCollection = new AdvanceMethodInvocationHistoryCollection();
 			this._fillMethodInvocationHistoryCollection = new FillMethodInvocationHistoryCollection();
 			this._tryGetMethodInvocationHistoryCollection = new TryGetMethodInvocationHistoryCollection();
-			this._tryReadMethodImposter = new TryReadMethodImposter(_tryReadMethodInvocationHistoryCollection, invocationBehavior);
-			this._advanceMethodImposter = new AdvanceMethodImposter(_advanceMethodInvocationHistoryCollection, invocationBehavior);
-			this._fillMethodImposter = new FillMethodImposter(_fillMethodInvocationHistoryCollection, invocationBehavior);
-			this._tryGetMethodImposterCollection = new TryGetMethodImposterCollection(_tryGetMethodInvocationHistoryCollection, invocationBehavior);
+			this._tryReadMethodImposter = new TryReadMethodImposter(_tryReadMethodInvocationHistoryCollection, this._imposterMode);
+			this._advanceMethodImposter = new AdvanceMethodImposter(_advanceMethodInvocationHistoryCollection, this._imposterMode);
+			this._fillMethodImposter = new FillMethodImposter(_fillMethodInvocationHistoryCollection, this._imposterMode);
+			this._tryGetMethodImposterCollection = new TryGetMethodImposterCollection(_tryGetMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -2068,6 +2090,30 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			invocations.AddRange(_fillMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_tryGetMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_tryReadMethodInvocationHistoryCollection.Clear();
+			_advanceMethodInvocationHistoryCollection.Clear();
+			_fillMethodInvocationHistoryCollection.Clear();
+			_tryGetMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_tryReadMethodInvocationHistoryCollection.Clear();
+			_advanceMethodInvocationHistoryCollection.Clear();
+			_fillMethodInvocationHistoryCollection.Clear();
+			_tryGetMethodInvocationHistoryCollection.Clear();
+			this._tryReadMethodInvocationHistoryCollection = new TryReadMethodInvocationHistoryCollection();
+			this._advanceMethodInvocationHistoryCollection = new AdvanceMethodInvocationHistoryCollection();
+			this._fillMethodInvocationHistoryCollection = new FillMethodInvocationHistoryCollection();
+			this._tryGetMethodInvocationHistoryCollection = new TryGetMethodInvocationHistoryCollection();
+			this._tryReadMethodImposter = new TryReadMethodImposter(_tryReadMethodInvocationHistoryCollection, this._imposterMode);
+			this._advanceMethodImposter = new AdvanceMethodImposter(_advanceMethodInvocationHistoryCollection, this._imposterMode);
+			this._fillMethodImposter = new FillMethodImposter(_fillMethodInvocationHistoryCollection, this._imposterMode);
+			this._tryGetMethodImposterCollection = new TryGetMethodImposterCollection(_tryGetMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

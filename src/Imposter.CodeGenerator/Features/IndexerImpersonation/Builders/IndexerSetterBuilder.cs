@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
+using Imposter.CodeGenerator.Features.Shared.Builders;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -88,6 +89,13 @@ internal static partial class IndexerSetterBuilder
         return new ClassDeclarationBuilder(setter.Name)
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddModifier(Token(SyntaxKind.SealedKeyword))
+            .AddMember(
+                InvocationLifecycleBuilder.Clear([
+                    InvocationLifecycleBuilder.ClearIfInitialized(
+                        setter.InvocationHistoryField.Name
+                    ),
+                ])
+            )
             .AddMember(LazyCollectionSyntaxHelper.Field(setter.CallbacksField))
             .AddMember(LazyCollectionSyntaxHelper.Field(setter.InvocationHistoryField))
             .AddMember(baseCriteriaField)

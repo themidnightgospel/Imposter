@@ -2,13 +2,14 @@
 using Imposter.CodeGenerator.Features.Imposter.ImposterInstance;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
+using Microsoft.CodeAnalysis.CSharp;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.Imposter.Builders;
 
 internal readonly ref struct EventImposterMembersBuilder(
     in ClassDeclarationBuilder imposterBuilder,
-    BlockBuilder constructorBodyBuilder,
+    BlockBuilder memberInitializationBuilder,
     in ImposterInstanceBuilder imposterInstanceBuilder
 )
 {
@@ -26,13 +27,14 @@ internal readonly ref struct EventImposterMembersBuilder(
         );
 
         _imposterBuilder.AddMember(
-            SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(
+            SyntaxFactoryHelper.SingleVariableField(
                 @event.Builder.TypeSyntax,
-                @event.BuilderField.Name
+                @event.BuilderField.Name,
+                SyntaxKind.PrivateKeyword
             )
         );
 
-        constructorBodyBuilder.AddStatement(
+        memberInitializationBuilder.AddStatement(
             ThisExpression()
                 .Dot(IdentifierName(@event.BuilderField.Name))
                 .Assign(@event.Builder.TypeSyntax.New())

@@ -15,6 +15,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class ISpanPropertySutImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImpersonation.ISpanPropertySut>, ISpanPropertySutImposter.ISpanPropertySutSetup
 	{
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.PropertyImpersonation.ISpanPropertySut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImpersonation.ISpanPropertySut>.Instance()
 		{
@@ -23,7 +24,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 		public IBufferPropertyBuilder Buffer => _BufferPropertyBuilderField;
 
-		private readonly BufferPropertyBuilder _BufferPropertyBuilderField;
+		private BufferPropertyBuilder _BufferPropertyBuilderField;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IBufferPropertyGetterOutcomeBuilder
 		{
@@ -125,6 +126,12 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class BufferPropertyBuilder : IBufferPropertyBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposterBuilder.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
 			{
 				return _setterImposter.Snapshot(orderBySequence);
@@ -165,6 +172,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 					_defaultPropertyBehaviour.TurnOff();
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _returnValues).Add(valueGenerator);
 					_hasConfiguredReturn = true;
+				}
+
+				internal void ClearInvocations()
+				{
+					global::System.Threading.Interlocked.Exchange(ref _invocationCount, 0);
 				}
 
 				IBufferPropertyGetterContinuationBuilder IBufferPropertyGetterOutcomeBuilder.Returns(byte[] value)
@@ -311,7 +323,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 		public INamePropertyBuilder Name => _NamePropertyBuilderField;
 
-		private readonly NamePropertyBuilder _NamePropertyBuilderField;
+		private NamePropertyBuilder _NamePropertyBuilderField;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface INamePropertyGetterOutcomeBuilder
 		{
@@ -359,6 +371,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class NamePropertyBuilder : INamePropertyBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposterBuilder.ClearInvocations();
+			}
+
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
 			{
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>(), orderBySequence);
@@ -397,6 +414,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 					_defaultPropertyBehaviour.TurnOff();
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _returnValues).Add(valueGenerator);
 					_hasConfiguredReturn = true;
+				}
+
+				internal void ClearInvocations()
+				{
+					global::System.Threading.Interlocked.Exchange(ref _invocationCount, 0);
 				}
 
 				INamePropertyGetterContinuationBuilder INamePropertyGetterOutcomeBuilder.Returns(char[] value)
@@ -499,8 +521,9 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 		public ISpanPropertySutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
-			this._BufferPropertyBuilderField = new BufferPropertyBuilder(invocationBehavior);
-			this._NamePropertyBuilderField = new NamePropertyBuilder(invocationBehavior);
+			this._imposterMode = invocationBehavior;
+			this._BufferPropertyBuilderField = new BufferPropertyBuilder(this._imposterMode);
+			this._NamePropertyBuilderField = new NamePropertyBuilder(this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -510,6 +533,20 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			invocations.AddRange(_BufferPropertyBuilderField.Snapshot(false));
 			invocations.AddRange(_NamePropertyBuilderField.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_BufferPropertyBuilderField.ClearInvocations();
+			_NamePropertyBuilderField.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_BufferPropertyBuilderField.ClearInvocations();
+			_NamePropertyBuilderField.ClearInvocations();
+			this._BufferPropertyBuilderField = new BufferPropertyBuilder(this._imposterMode);
+			this._NamePropertyBuilderField = new NamePropertyBuilder(this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

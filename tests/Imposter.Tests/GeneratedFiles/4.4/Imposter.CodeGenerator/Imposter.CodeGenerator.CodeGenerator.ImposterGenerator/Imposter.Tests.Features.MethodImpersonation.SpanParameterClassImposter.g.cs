@@ -15,13 +15,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class SpanParameterClassImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.SpanParameterClass>
 	{
-		private readonly CountMethodImposter _countMethodImposter;
-		private readonly CountMethodInvocationHistoryCollection _countMethodInvocationHistoryCollection;
+		private CountMethodImposter _countMethodImposter;
+		private CountMethodInvocationHistoryCollection _countMethodInvocationHistoryCollection;
 		public ICountMethodImposterBuilder Count(global::Imposter.Abstractions.ReadOnlySpanArg<char> text)
 		{
 			return new CountMethodImposter.Builder(_countMethodImposter, _countMethodInvocationHistoryCollection, new CountArgumentsCriteria(text));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.MethodImpersonation.SpanParameterClass global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.SpanParameterClass>.Instance()
 		{
@@ -162,6 +163,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(CountMethodInvocationHistoryCollection.Node invocationHistory)
@@ -545,8 +551,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 		public SpanParameterClassImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._countMethodInvocationHistoryCollection = new CountMethodInvocationHistoryCollection();
-			this._countMethodImposter = new CountMethodImposter(_countMethodInvocationHistoryCollection, invocationBehavior);
+			this._countMethodImposter = new CountMethodImposter(_countMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -555,6 +562,18 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
 			invocations.AddRange(_countMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_countMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_countMethodInvocationHistoryCollection.Clear();
+			this._countMethodInvocationHistoryCollection = new CountMethodInvocationHistoryCollection();
+			this._countMethodImposter = new CountMethodImposter(_countMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

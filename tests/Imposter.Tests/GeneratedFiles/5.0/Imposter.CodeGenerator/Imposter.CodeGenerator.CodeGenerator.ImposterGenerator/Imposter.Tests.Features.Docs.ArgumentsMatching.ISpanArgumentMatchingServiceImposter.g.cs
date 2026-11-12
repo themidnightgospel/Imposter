@@ -15,13 +15,14 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class ISpanArgumentMatchingServiceImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.ArgumentsMatching.ISpanArgumentMatchingService>, ISpanArgumentMatchingServiceImposter.ISpanArgumentMatchingServiceSetup
 	{
-		private readonly ParseMethodImposter _parseMethodImposter;
-		private readonly ParseMethodInvocationHistoryCollection _parseMethodInvocationHistoryCollection;
+		private ParseMethodImposter _parseMethodImposter;
+		private ParseMethodInvocationHistoryCollection _parseMethodInvocationHistoryCollection;
 		public IParseMethodImposterBuilder Parse(global::Imposter.Abstractions.ReadOnlySpanArg<char> text)
 		{
 			return new ParseMethodImposter.Builder(_parseMethodImposter, _parseMethodInvocationHistoryCollection, new ParseArgumentsCriteria(text));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.Docs.ArgumentsMatching.ISpanArgumentMatchingService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.ArgumentsMatching.ISpanArgumentMatchingService>.Instance()
 		{
@@ -162,6 +163,11 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(ParseMethodInvocationHistoryCollection.Node invocationHistory)
@@ -538,8 +544,9 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 		public ISpanArgumentMatchingServiceImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._parseMethodInvocationHistoryCollection = new ParseMethodInvocationHistoryCollection();
-			this._parseMethodImposter = new ParseMethodImposter(_parseMethodInvocationHistoryCollection, invocationBehavior);
+			this._parseMethodImposter = new ParseMethodImposter(_parseMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -548,6 +555,18 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
 			invocations.AddRange(_parseMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_parseMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_parseMethodInvocationHistoryCollection.Clear();
+			this._parseMethodInvocationHistoryCollection = new ParseMethodInvocationHistoryCollection();
+			this._parseMethodImposter = new ParseMethodImposter(_parseMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

@@ -15,14 +15,14 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class ClassWithOverloadsAndGenericsImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithOverloadsAndGenerics>
 	{
-		private readonly FormatMethodImposter _formatMethodImposter;
-		private readonly Format_1MethodImposter _format_1MethodImposter;
-		private readonly EchoMethodImposterCollection _echoMethodImposterCollection;
-		private readonly SelectFirstMethodImposterCollection _selectFirstMethodImposterCollection;
-		private readonly FormatMethodInvocationHistoryCollection _formatMethodInvocationHistoryCollection;
-		private readonly Format_1MethodInvocationHistoryCollection _format_1MethodInvocationHistoryCollection;
-		private readonly EchoMethodInvocationHistoryCollection _echoMethodInvocationHistoryCollection;
-		private readonly SelectFirstMethodInvocationHistoryCollection _selectFirstMethodInvocationHistoryCollection;
+		private FormatMethodImposter _formatMethodImposter;
+		private Format_1MethodImposter _format_1MethodImposter;
+		private EchoMethodImposterCollection _echoMethodImposterCollection;
+		private SelectFirstMethodImposterCollection _selectFirstMethodImposterCollection;
+		private FormatMethodInvocationHistoryCollection _formatMethodInvocationHistoryCollection;
+		private Format_1MethodInvocationHistoryCollection _format_1MethodInvocationHistoryCollection;
+		private EchoMethodInvocationHistoryCollection _echoMethodInvocationHistoryCollection;
+		private SelectFirstMethodInvocationHistoryCollection _selectFirstMethodInvocationHistoryCollection;
 		public IFormatMethodImposterBuilder Format(global::Imposter.Abstractions.Arg<int> value)
 		{
 			return new FormatMethodImposter.Builder(_formatMethodImposter, _formatMethodInvocationHistoryCollection, new FormatArgumentsCriteria(value));
@@ -44,6 +44,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			return new SelectFirstMethodImposter<TFirst, TSecond>.Builder(_selectFirstMethodImposterCollection, _selectFirstMethodInvocationHistoryCollection, new SelectFirstArgumentsCriteria<TFirst, TSecond>(first, second));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithOverloadsAndGenerics global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithOverloadsAndGenerics>.Instance()
 		{
@@ -204,6 +205,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(EchoMethodInvocationHistoryCollection.Node invocationHistory)
@@ -812,6 +818,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(FormatMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1339,6 +1350,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(Format_1MethodInvocationHistoryCollection.Node invocationHistory)
@@ -1883,6 +1899,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(SelectFirstMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -2348,14 +2369,15 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 		public ClassWithOverloadsAndGenericsImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._formatMethodInvocationHistoryCollection = new FormatMethodInvocationHistoryCollection();
 			this._format_1MethodInvocationHistoryCollection = new Format_1MethodInvocationHistoryCollection();
 			this._echoMethodInvocationHistoryCollection = new EchoMethodInvocationHistoryCollection();
 			this._selectFirstMethodInvocationHistoryCollection = new SelectFirstMethodInvocationHistoryCollection();
-			this._formatMethodImposter = new FormatMethodImposter(_formatMethodInvocationHistoryCollection, invocationBehavior);
-			this._format_1MethodImposter = new Format_1MethodImposter(_format_1MethodInvocationHistoryCollection, invocationBehavior);
-			this._echoMethodImposterCollection = new EchoMethodImposterCollection(_echoMethodInvocationHistoryCollection, invocationBehavior);
-			this._selectFirstMethodImposterCollection = new SelectFirstMethodImposterCollection(_selectFirstMethodInvocationHistoryCollection, invocationBehavior);
+			this._formatMethodImposter = new FormatMethodImposter(_formatMethodInvocationHistoryCollection, this._imposterMode);
+			this._format_1MethodImposter = new Format_1MethodImposter(_format_1MethodInvocationHistoryCollection, this._imposterMode);
+			this._echoMethodImposterCollection = new EchoMethodImposterCollection(_echoMethodInvocationHistoryCollection, this._imposterMode);
+			this._selectFirstMethodImposterCollection = new SelectFirstMethodImposterCollection(_selectFirstMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -2367,6 +2389,30 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			invocations.AddRange(_echoMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_selectFirstMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_formatMethodInvocationHistoryCollection.Clear();
+			_format_1MethodInvocationHistoryCollection.Clear();
+			_echoMethodInvocationHistoryCollection.Clear();
+			_selectFirstMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_formatMethodInvocationHistoryCollection.Clear();
+			_format_1MethodInvocationHistoryCollection.Clear();
+			_echoMethodInvocationHistoryCollection.Clear();
+			_selectFirstMethodInvocationHistoryCollection.Clear();
+			this._formatMethodInvocationHistoryCollection = new FormatMethodInvocationHistoryCollection();
+			this._format_1MethodInvocationHistoryCollection = new Format_1MethodInvocationHistoryCollection();
+			this._echoMethodInvocationHistoryCollection = new EchoMethodInvocationHistoryCollection();
+			this._selectFirstMethodInvocationHistoryCollection = new SelectFirstMethodInvocationHistoryCollection();
+			this._formatMethodImposter = new FormatMethodImposter(_formatMethodInvocationHistoryCollection, this._imposterMode);
+			this._format_1MethodImposter = new Format_1MethodImposter(_format_1MethodInvocationHistoryCollection, this._imposterMode);
+			this._echoMethodImposterCollection = new EchoMethodImposterCollection(_echoMethodInvocationHistoryCollection, this._imposterMode);
+			this._selectFirstMethodImposterCollection = new SelectFirstMethodImposterCollection(_selectFirstMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
