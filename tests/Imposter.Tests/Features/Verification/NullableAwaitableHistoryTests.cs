@@ -27,10 +27,10 @@ namespace Imposter.Tests.Features.Verification
         public void GivenNullableTasks_WhenReturningNull_ShouldKeepNullWithoutSynchronousFailure()
         {
             var sut = new INullableAwaitableHistoryTargetImposter();
-            Task? nullTask = null;
-            Task<int>? nullGenericTask = null;
-            sut.Plain().Returns(nullTask);
-            sut.Generic().Returns(nullGenericTask);
+            Task? plainResult = null;
+            Task<int>? genericResult = null;
+            sut.Plain().Returns(plainResult);
+            sut.Generic().Returns(genericResult);
             sut.Instance().Plain().ShouldBeNull();
             sut.Instance().Generic().ShouldBeNull();
             sut.Plain().Invocations[0].Result.ShouldBeNull();

@@ -198,16 +198,36 @@ internal static class EventImposterRaiseBuilder
     ) => invoked.Call(@event.Core.Parameters.Select(parameter => parameter.ForwardingArgument));
 
     // Runs the body for each callback, which it reads as RaiseLocalNames.Callback.
-    private static StatementSyntax ForEachCallback(
+    private static BlockSyntax ForEachCallback(
         in ImposterEventMetadata @event,
         params StatementSyntax[] body
     ) =>
-        LazyCollectionSyntaxHelper.UnlessNull(
-            ForEachStatement(
-                Var,
-                Identifier(@event.Builder.Methods.RaiseLocalNames.Callback),
-                IdentifierName(@event.Builder.Fields.Callbacks.Name),
-                Block(body)
+        Block(
+            LocalVariableDeclarationSyntax(
+                WellKnownTypes.Int,
+                @event.Builder.Methods.RaiseLocalNames.CallbackIndex,
+                LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))
+            ),
+            LazyCollectionSyntaxHelper.UnlessNull(
+                ForEachStatement(
+                    Var,
+                    Identifier(@event.Builder.Methods.RaiseLocalNames.Callback),
+                    IdentifierName(@event.Builder.Fields.Callbacks.Name),
+                    Block(
+                        new StatementSyntax[]
+                        {
+                            EventVerificationSourceBuilder.MarkUsed(
+                                @event.Builder.Fields.CallbacksUsed.Name,
+                                PrefixUnaryExpression(
+                                    SyntaxKind.PreIncrementExpression,
+                                    IdentifierName(
+                                        @event.Builder.Methods.RaiseLocalNames.CallbackIndex
+                                    )
+                                )
+                            ),
+                        }.Concat(body)
+                    )
+                )
             )
         );
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -27,10 +28,16 @@ internal static class PropertySetterImposterBuilderInterfaceBuilder
                 property.SetterImposterBuilderInterface.CallbackMethod
             ),
             ContinuationInterface(
-                property.SetterImposterBuilderInterface.ContinuationInterfaceName,
-                property.SetterImposterBuilderInterface.CallbackInterfaceTypeSyntax,
-                property.SetterImposterBuilderInterface.ThenMethod
-            ),
+                    property.SetterImposterBuilderInterface.ContinuationInterfaceName,
+                    property.SetterImposterBuilderInterface.CallbackInterfaceTypeSyntax,
+                    property.SetterImposterBuilderInterface.ThenMethod
+                )
+                .AddMembers(
+                    InterfaceMethod(
+                        property.SetterImposterBuilderInterface.ContinuationInterfaceTypeSyntax,
+                        VerificationSourceNames.LenientMethodName
+                    )
+                ),
             BuildFluentInterface(property),
             BuildVerificationInterface(property),
             BuildBuilderInterface(property),

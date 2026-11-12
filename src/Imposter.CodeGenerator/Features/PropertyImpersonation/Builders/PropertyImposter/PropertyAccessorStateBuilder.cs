@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.Shared.Builders;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -77,8 +78,11 @@ internal static class PropertyAccessorStateBuilder
     internal static ThrowStatementSyntax ThrowMissingImposter(
         in PropertyAccessorStateMetadata state
     ) =>
-        MissingImposterBuilder.ThrowMissingImposter(
-            PropertyAccessorStateMetadata.PropertyDisplayNameField.Name,
-            state.MissingImposterSuffix
+        ThrowStatement(
+            WellKnownTypes.Imposter.Abstractions.MissingImposterException.New(
+                IdentifierName(PropertyAccessorStateMetadata.PropertyDisplayNameField.Name)
+                    .Add(state.MissingImposterSuffix.StringLiteral())
+                    .ToSingleArgumentList()
+            )
         );
 }

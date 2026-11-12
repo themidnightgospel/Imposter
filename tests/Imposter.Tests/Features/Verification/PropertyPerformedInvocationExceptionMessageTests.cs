@@ -81,7 +81,7 @@ namespace Imposter.Tests.Features.Verification
         }
 
         [Fact]
-        public void GivenGetterVerificationFails_WhenVerificationFails_ShouldNotPopulatePerformedInvocations()
+        public void GivenGetterVerificationFails_WhenVerificationFails_ShouldDescribeRecordedReadCount()
         {
             var sut = PerformedInvocationSutFactory.CreatePropertySut();
             _ = sut.Instance().Age;
@@ -92,7 +92,7 @@ namespace Imposter.Tests.Features.Verification
             );
 
             exception.MessageShouldDescribeCounts(expectedCount, 1);
-            exception.PerformedInvocations.ShouldBeNull();
+            exception.PerformedInvocations.ShouldBe("1 read(s)");
         }
     }
 }

@@ -11,6 +11,8 @@ internal readonly struct EventRaiseLocalNames
 
     internal readonly string PendingTasks;
 
+    internal readonly string CallbackIndex;
+
     internal EventRaiseLocalNames(in ImposterEventCoreMetadata core)
     {
         var names = core.CreateParameterNameSet();
@@ -18,5 +20,6 @@ internal readonly struct EventRaiseLocalNames
         Handler = names.Use("handler");
         Task = names.Use("task");
         PendingTasks = names.Use("pendingTasks");
+        CallbackIndex = names.Use("callbackIndex");
     }
 }

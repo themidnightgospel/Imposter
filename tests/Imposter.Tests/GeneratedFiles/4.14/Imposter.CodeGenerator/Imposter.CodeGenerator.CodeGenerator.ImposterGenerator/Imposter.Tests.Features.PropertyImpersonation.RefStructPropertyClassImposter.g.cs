@@ -47,6 +47,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		public interface ICurrentPropertyGetterContinuationBuilder : ICurrentPropertyGetterCallbackBuilder
 		{
 			ICurrentPropertyGetterFluentBuilder Then();
+			ICurrentPropertyGetterContinuationBuilder Lenient();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -83,6 +84,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		public interface ICurrentPropertySetterContinuationBuilder : ICurrentPropertySetterCallbackBuilder
 		{
 			ICurrentPropertySetterUseBaseImplementationBuilder Then();
+			ICurrentPropertySetterContinuationBuilder Lenient();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -133,12 +135,30 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class CurrentPropertyBuilder : ICurrentPropertyBuilder
+		internal class CurrentPropertyBuilder : ICurrentPropertyBuilder, global::Imposter.Abstractions.IImposterVerificationSource
 		{
-			internal void ClearInvocations()
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
 			{
-				_getterImposterBuilder.ClearInvocations();
-				_setterImposter.ClearInvocations();
+				var findings = new global::System.Collections.Generic.List<string>();
+				findings.AddRange(((global::Imposter.Abstractions.IImposterVerificationSource)_getterImposterBuilder).Interactions());
+				findings.AddRange(((global::Imposter.Abstractions.IImposterVerificationSource)_setterImposter).Interactions());
+				return findings;
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+			{
+				var findings = new global::System.Collections.Generic.List<string>();
+				findings.AddRange(((global::Imposter.Abstractions.IImposterVerificationSource)_getterImposterBuilder).UncoveredInteractions());
+				findings.AddRange(((global::Imposter.Abstractions.IImposterVerificationSource)_setterImposter).UncoveredInteractions());
+				return findings;
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+			{
+				var findings = new global::System.Collections.Generic.List<string>();
+				findings.AddRange(((global::Imposter.Abstractions.IImposterVerificationSource)_getterImposterBuilder).UnusedSetups());
+				findings.AddRange(((global::Imposter.Abstractions.IImposterVerificationSource)_setterImposter).UnusedSetups());
+				return findings;
 			}
 
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
@@ -156,13 +176,19 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 				_setterImposter = new SetterImposter(_invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.RefStructPropertyClass.Current");
 			}
 
+			internal void ClearInvocations()
+			{
+				_getterImposterBuilder.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal class GetterImposterBuilder : ICurrentPropertyGetterBuilder, ICurrentPropertyGetterFluentBuilder, ICurrentPropertyGetterUseBaseImplementationBuilder
+			internal class GetterImposterBuilder : global::Imposter.Abstractions.IImposterVerificationSource, ICurrentPropertyGetterBuilder, ICurrentPropertyGetterFluentBuilder, ICurrentPropertyGetterUseBaseImplementationBuilder
 			{
 				private global::Imposter.Abstractions.ReturnValueSequence<CurrentPropertyReturnHandler>? _returnValues;
 				private global::Imposter.Abstractions.CallbackCollection<global::System.Action>? _callbacks;
 				private volatile CurrentPropertyReturnHandler _lastReturnValue = baseImplementation => baseImplementation != null ? baseImplementation() : default !;
-				private int _invocationCount;
+				private readonly global::Imposter.Abstractions.CounterVerification _verification = new global::Imposter.Abstractions.CounterVerification();
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 				private readonly string _propertyDisplayName;
 				private bool _hasConfiguredReturn;
@@ -174,13 +200,14 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 				private void AddReturnValue(CurrentPropertyReturnHandler valueGenerator)
 				{
+					_verification.Configure();
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _returnValues).Add(valueGenerator);
 					_hasConfiguredReturn = true;
 				}
 
 				internal void ClearInvocations()
 				{
-					global::System.Threading.Interlocked.Exchange(ref _invocationCount, 0);
+					_verification.Clear();
 				}
 
 				ICurrentPropertyGetterContinuationBuilder ICurrentPropertyGetterOutcomeBuilder.Returns(CurrentPropertyDelegate valueGenerator)
@@ -204,13 +231,13 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 				ICurrentPropertyGetterContinuationBuilder ICurrentPropertyGetterCallbackBuilder.Callback(global::System.Action callback)
 				{
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
+					_verification.Configure();
 					return this;
 				}
 
 				void ICurrentPropertyGetterVerifier.Called(global::Imposter.Abstractions.Count count)
 				{
-					if (!count.Matches(_invocationCount))
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, _invocationCount);
+					_verification.Verify(count);
 				}
 
 				ICurrentPropertyGetterFluentBuilder ICurrentPropertyGetterContinuationBuilder.Then()
@@ -220,6 +247,27 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 				ICurrentPropertyGetterUseBaseImplementationBuilder ICurrentPropertyGetterBuilder.Then()
 				{
+					return this;
+				}
+
+				global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
+				{
+					return _verification.Interactions(_propertyDisplayName + " (getter)");
+				}
+
+				global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+				{
+					return _verification.UncoveredInteractions(_propertyDisplayName + " (getter)");
+				}
+
+				global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+				{
+					return _verification.UnusedSetups(_propertyDisplayName + " (getter)");
+				}
+
+				ICurrentPropertyGetterContinuationBuilder ICurrentPropertyGetterContinuationBuilder.Lenient()
+				{
+					_verification.Lenient();
 					return this;
 				}
 
@@ -248,8 +296,9 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 				internal global::Imposter.Tests.Features.PropertyImpersonation.Bookmark Get(CurrentPropertyDelegate? baseImplementation = null)
 				{
+					_verification.Record();
 					EnsureGetterConfigured();
-					global::System.Threading.Interlocked.Increment(ref _invocationCount);
+					_verification.Use();
 					if (_callbacks != null)
 					{
 						foreach (var getterCallback in _callbacks)
@@ -278,7 +327,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			internal class SetterImposter : global::Imposter.Abstractions.PassThroughSetter<CurrentSetterInvocation>
 			{
-				private global::Imposter.Abstractions.CallbackCollection<CurrentPropertySetterCallback>? _callbacks;
+				private global::Imposter.Abstractions.CallbackCollection<global::System.Tuple<global::Imposter.Abstractions.SetterSetup, CurrentPropertySetterCallback>>? _callbacks;
 				internal SetterImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName) : base(invocationBehavior, propertyDisplayName)
 				{
 				}
@@ -288,10 +337,10 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 					return new CurrentSetterInvocation(setterSequence, setterException);
 				}
 
-				internal void Callback(CurrentPropertySetterCallback callback)
+				internal void Callback(global::Imposter.Abstractions.SetterSetup setup, CurrentPropertySetterCallback callback)
 				{
-					Register();
-					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
+					Register(setup);
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(new global::System.Tuple<global::Imposter.Abstractions.SetterSetup, CurrentPropertySetterCallback>(setup, callback));
 				}
 
 				internal void Set(global::Imposter.Tests.Features.PropertyImpersonation.Bookmark value, CurrentPropertySetterCallback? baseImplementation = null)
@@ -305,7 +354,8 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 						{
 							foreach (var setterRegistration in _callbacks)
 							{
-								setterRegistration(value);
+								setterRegistration.Item1.MarkUsed();
+								setterRegistration.Item2(value);
 							}
 						}
 
@@ -332,8 +382,10 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 					internal Builder(SetterImposter _setterImposter)
 					{
 						this._setterImposter = _setterImposter;
+						_setup = new global::Imposter.Abstractions.SetterSetup();
 					}
 
+					private readonly global::Imposter.Abstractions.SetterSetup _setup;
 					global::System.Collections.Generic.IReadOnlyList<CurrentSetterInvocation> ICurrentPropertySetterVerifier.Invocations
 					{
 						get
@@ -342,9 +394,15 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 						}
 					}
 
+					ICurrentPropertySetterContinuationBuilder ICurrentPropertySetterContinuationBuilder.Lenient()
+					{
+						_setup.Lenient();
+						return this;
+					}
+
 					ICurrentPropertySetterContinuationBuilder ICurrentPropertySetterCallbackBuilder.Callback(CurrentPropertySetterCallback callback)
 					{
-						_setterImposter.Callback(callback);
+						_setterImposter.Callback(_setup, callback);
 						return this;
 					}
 
@@ -360,7 +418,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 					ICurrentPropertySetterFluentBuilder ICurrentPropertySetterUseBaseImplementationBuilder.UseBaseImplementation()
 					{
-						_setterImposter.UseBaseImplementation();
+						_setterImposter.UseBaseImplementation(_setup);
 						return this;
 					}
 				}
@@ -396,6 +454,21 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
 			invocations.AddRange(_CurrentPropertyBuilderField.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyNoOtherCalls()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyNoOtherCalls(_CurrentPropertyBuilderField);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyNoInteractions()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyNoInteractions(_CurrentPropertyBuilderField);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyAllSetupsUsed()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyAllSetupsUsed(_CurrentPropertyBuilderField);
 		}
 
 		void global::Imposter.Abstractions.IImposter.ClearInvocations()

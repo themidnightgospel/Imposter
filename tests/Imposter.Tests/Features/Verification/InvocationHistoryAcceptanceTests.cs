@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 using Imposter.Abstractions;
 using Imposter.Tests.Features.CallAllocations;
 using Shouldly;
@@ -85,6 +86,21 @@ namespace Imposter.Tests.Features.Verification
             record.Exception.ShouldBeNull();
             record.Member.ShouldBe("Collide");
             record.Sequence.ShouldBeGreaterThan(0);
+        }
+
+        [Fact]
+        public void GivenTypedRecord_WhenInspectingPublicApi_ShouldHideMutableCoverage()
+        {
+            var sut = new IInvocationHistoryCollisionTargetImposter();
+            sut.Instance().Invocations();
+            var record = sut.Invocations().Invocations.ShouldHaveSingleItem();
+            const BindingFlags publicInstance = BindingFlags.Public | BindingFlags.Instance;
+            record.GetType().GetProperty("IsVerified", publicInstance).ShouldBeNull();
+            record.GetType().GetMethod("MarkVerified", publicInstance).ShouldBeNull();
+            var coverage = (IVerifiableInvocation)record;
+            coverage.IsVerified.ShouldBeFalse();
+            coverage.MarkVerified();
+            coverage.IsVerified.ShouldBeTrue();
         }
     }
 }

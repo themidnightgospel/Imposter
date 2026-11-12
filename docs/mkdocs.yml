@@ -87,14 +87,15 @@ nav:
   - Arguments Matching: arguments-matching.md
   - Interface-specific Setup: interface-setup.md
   - Verification: verification.md
+  - Verification Completeness: verification-completeness.md
   - Invocation History: invocation-history.md
-  - Clearing and Resetting: clear-and-reset.md
-  - Invocation Performance: invocation-contention.md
+  - Clear and Reset: clear-and-reset.md
   - Implicit vs Explicit: implicit-vs-explicit.md
   - Base Implementation: base-implementation.md
   - Generics: generics.md
   - Reference:
       - Benchmarks: benchmarks.md
+      - Invocation Performance: invocation-contention.md
       - Release Notes: release-notes.md
       - Cheat Sheet: cheat-sheet.md
       - Key API Reference: key-api-reference.md

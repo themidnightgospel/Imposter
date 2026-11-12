@@ -67,8 +67,8 @@ namespace Imposter.Tests.Features.CallAllocations
         [Fact]
         public void GivenNullTaskResult_WhenInspectingHistory_ShouldKeepNullWithoutException()
         {
-            Task<int> nullTask = null!;
-            _sut.GetAsync(Arg<int>.Any()).Returns(nullTask);
+            Task<int> result = null!;
+            _sut.GetAsync(Arg<int>.Any()).Returns(result);
             _sut.Instance().GetAsync(7).ShouldBeNull();
             var invocation = _sut.GetAsync(Arg<int>.Any()).Invocations[0];
             invocation.Result.ShouldBeNull();

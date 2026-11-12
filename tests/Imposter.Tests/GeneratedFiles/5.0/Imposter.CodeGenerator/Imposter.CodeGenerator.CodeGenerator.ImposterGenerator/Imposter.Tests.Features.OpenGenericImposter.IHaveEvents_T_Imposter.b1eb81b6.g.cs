@@ -32,6 +32,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IDiagnosticPayloadPublishedEventImposterSetupBuilder
 		{
+			IDiagnosticPayloadPublishedEventImposterSetupBuilder Lenient();
 			IDiagnosticPayloadPublishedEventImposterSetupBuilder Callback(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> callback);
 			IDiagnosticPayloadPublishedEventImposterSetupBuilder Raise(object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e);
 			IDiagnosticPayloadPublishedEventImposterSetupBuilder OnSubscribe(global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> interceptor);
@@ -52,8 +53,59 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal sealed class DiagnosticPayloadPublishedEventImposterBuilder : IDiagnosticPayloadPublishedEventImposterBuilder, IDiagnosticPayloadPublishedEventImposterSetupBuilder, IDiagnosticPayloadPublishedEventImposterVerificationBuilder
+		internal sealed class DiagnosticPayloadPublishedEventImposterBuilder : IDiagnosticPayloadPublishedEventImposterBuilder, IDiagnosticPayloadPublishedEventImposterSetupBuilder, IDiagnosticPayloadPublishedEventImposterVerificationBuilder, global::Imposter.Abstractions.IImposterVerificationSource
 		{
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), false);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), true);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+			{
+				if (_isLenient)
+					yield break;
+				if (_subscribeInterceptors != null)
+				{
+					int index = 0;
+					foreach (var registration in _subscribeInterceptors)
+					{
+						if (++index > _subscribeUsed)
+							yield return "Imposter.Tests.Features.OpenGenericImposter.IHaveEvents<T>.DiagnosticPayloadPublished OnSubscribe";
+					}
+				}
+
+				if (_unsubscribeInterceptors != null)
+				{
+					int index = 0;
+					foreach (var registration in _unsubscribeInterceptors)
+					{
+						if (++index > _unsubscribeUsed)
+							yield return "Imposter.Tests.Features.OpenGenericImposter.IHaveEvents<T>.DiagnosticPayloadPublished OnUnsubscribe";
+					}
+				}
+
+				if (_callbacks != null)
+				{
+					int index = 0;
+					foreach (var registration in _callbacks)
+					{
+						if (++index > _callbacksUsed)
+							yield return "Imposter.Tests.Features.OpenGenericImposter.IHaveEvents<T>.DiagnosticPayloadPublished Callback";
+					}
+				}
+			}
+
+			IDiagnosticPayloadPublishedEventImposterSetupBuilder IDiagnosticPayloadPublishedEventImposterSetupBuilder.Lenient()
+			{
+				_isLenient = true;
+				return this;
+			}
+
 			private global::Imposter.Abstractions.EventHandlerCollection<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>? _activeHandlers;
 			private global::Imposter.Abstractions.InvocationBuffer<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>? _subscribeHistory;
 			private global::Imposter.Abstractions.InvocationBuffer<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>? _unsubscribeHistory;
@@ -62,14 +114,10 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			private global::Imposter.Abstractions.CallbackCollection<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<(object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> Handler, object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)>? _handlerInvocations;
-			internal void ClearInvocations()
-			{
-				_subscribeHistory?.Clear();
-				_unsubscribeHistory?.Clear();
-				_history?.Clear();
-				_handlerInvocations?.Clear();
-			}
-
+			private int _subscribeUsed;
+			private int _unsubscribeUsed;
+			private int _callbacksUsed;
+			private bool _isLenient;
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>> IDiagnosticPayloadPublishedEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -91,6 +139,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				return global::Imposter.Abstractions.InvocationSnapshots.Combine(global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>.Snapshot(_subscribeHistory, "DiagnosticPayloadPublished", true, false), global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>.Snapshot(_unsubscribeHistory, "DiagnosticPayloadPublished", false, false), orderBySequence);
 			}
 
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			internal void Subscribe(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> handler)
 			{
 				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
@@ -103,11 +159,15 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					}
 
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Combine(handler);
-					if (_subscribeInterceptors != null)
 					{
-						foreach (var interceptor in _subscribeInterceptors)
+						int interceptorIndex = 0;
+						if (_subscribeInterceptors != null)
 						{
-							interceptor(handler);
+							foreach (var interceptor in _subscribeInterceptors)
+							{
+								global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _subscribeUsed, ++interceptorIndex);
+								interceptor(handler);
+							}
 						}
 					}
 				}
@@ -134,11 +194,15 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					}
 
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Remove(handler);
-					if (_unsubscribeInterceptors != null)
 					{
-						foreach (var interceptor in _unsubscribeInterceptors)
+						int interceptorIndex = 0;
+						if (_unsubscribeInterceptors != null)
 						{
-							interceptor(handler);
+							foreach (var interceptor in _unsubscribeInterceptors)
+							{
+								global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _unsubscribeUsed, ++interceptorIndex);
+								interceptor(handler);
+							}
 						}
 					}
 				}
@@ -182,16 +246,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = 0;
-				if (_subscribeHistory != null)
+				var actual = 0;
+				var snapshot = _subscribeHistory == null ? default(global::Imposter.Abstractions.InvocationBuffer<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>.Enumerator) : _subscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
 				{
-					foreach (var entry in _subscribeHistory)
-					{
-						if (criteria.Matches(entry.Value))
-						{
-							actual++;
-						}
-					}
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						actual++;
 				}
 
 				if (!count.Matches(actual))
@@ -201,15 +263,20 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						foreach (var entry in _subscribeHistory)
 						{
-							if (criteria.Matches(entry.Value))
-							{
-								performedInvocations.Add("DiagnosticPayloadPublished subscribed" + " handler: " + FormatValue(entry.Value));
-							}
+							performedInvocations.Add("DiagnosticPayloadPublished subscribed" + " handler: " + FormatValue(entry.Value));
 						}
 					}
 
 					performedInvocations.Reverse();
 					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						global::Imposter.Abstractions.InvocationBuffer<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>.MarkVerified(entry);
 				}
 
 				return this;
@@ -227,16 +294,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = 0;
-				if (_unsubscribeHistory != null)
+				var actual = 0;
+				var snapshot = _unsubscribeHistory == null ? default(global::Imposter.Abstractions.InvocationBuffer<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>.Enumerator) : _unsubscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
 				{
-					foreach (var entry in _unsubscribeHistory)
-					{
-						if (criteria.Matches(entry.Value))
-						{
-							actual++;
-						}
-					}
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						actual++;
 				}
 
 				if (!count.Matches(actual))
@@ -246,15 +311,20 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						foreach (var entry in _unsubscribeHistory)
 						{
-							if (criteria.Matches(entry.Value))
-							{
-								performedInvocations.Add("DiagnosticPayloadPublished unsubscribed" + " handler: " + FormatValue(entry.Value));
-							}
+							performedInvocations.Add("DiagnosticPayloadPublished unsubscribed" + " handler: " + FormatValue(entry.Value));
 						}
 					}
 
 					performedInvocations.Reverse();
 					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						global::Imposter.Abstractions.InvocationBuffer<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>.MarkVerified(entry);
 				}
 
 				return this;
@@ -318,10 +388,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						foreach (var entry in _history)
 						{
-							if (senderCriteria.Matches(entry.sender) && eCriteria.Matches(entry.e))
-							{
-								performedInvocations.Add("DiagnosticPayloadPublished raised" + " sender: " + FormatValue(entry.sender) + " e: " + FormatValue(entry.e));
-							}
+							performedInvocations.Add("DiagnosticPayloadPublished raised" + " sender: " + FormatValue(entry.sender) + " e: " + FormatValue(entry.e));
 						}
 					}
 
@@ -363,10 +430,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						foreach (var entry in _handlerInvocations)
 						{
-							if (handlerCriteria.Matches(entry.Handler))
-							{
-								performedInvocations.Add("DiagnosticPayloadPublished handler invoked" + " handler: " + FormatValue(entry.Handler) + " sender: " + FormatValue(entry.sender) + " e: " + FormatValue(entry.e));
-							}
+							performedInvocations.Add("DiagnosticPayloadPublished handler invoked" + " handler: " + FormatValue(entry.Handler) + " sender: " + FormatValue(entry.sender) + " e: " + FormatValue(entry.e));
 						}
 					}
 
@@ -380,11 +444,15 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			private void RaiseInternal(object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)
 			{
 				global::System.Threading.LazyInitializer.EnsureInitialized(ref _history).Push((sender, e));
-				if (_callbacks != null)
 				{
-					foreach (var callback in _callbacks)
+					int callbackIndex = 0;
+					if (_callbacks != null)
 					{
-						callback(sender, e);
+						foreach (var callback in _callbacks)
+						{
+							global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _callbacksUsed, ++callbackIndex);
+							callback(sender, e);
+						}
 					}
 				}
 
@@ -415,6 +483,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ILegacyPayloadAvailableEventImposterSetupBuilder
 		{
+			ILegacyPayloadAvailableEventImposterSetupBuilder Lenient();
 			ILegacyPayloadAvailableEventImposterSetupBuilder Callback(global::System.EventHandler callback);
 			ILegacyPayloadAvailableEventImposterSetupBuilder Raise(object? sender, global::System.EventArgs e);
 			ILegacyPayloadAvailableEventImposterSetupBuilder OnSubscribe(global::System.Action<global::System.EventHandler> interceptor);
@@ -435,8 +504,59 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal sealed class LegacyPayloadAvailableEventImposterBuilder : ILegacyPayloadAvailableEventImposterBuilder, ILegacyPayloadAvailableEventImposterSetupBuilder, ILegacyPayloadAvailableEventImposterVerificationBuilder
+		internal sealed class LegacyPayloadAvailableEventImposterBuilder : ILegacyPayloadAvailableEventImposterBuilder, ILegacyPayloadAvailableEventImposterSetupBuilder, ILegacyPayloadAvailableEventImposterVerificationBuilder, global::Imposter.Abstractions.IImposterVerificationSource
 		{
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), false);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), true);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+			{
+				if (_isLenient)
+					yield break;
+				if (_subscribeInterceptors != null)
+				{
+					int index = 0;
+					foreach (var registration in _subscribeInterceptors)
+					{
+						if (++index > _subscribeUsed)
+							yield return "Imposter.Tests.Features.OpenGenericImposter.IHaveEvents<T>.LegacyPayloadAvailable OnSubscribe";
+					}
+				}
+
+				if (_unsubscribeInterceptors != null)
+				{
+					int index = 0;
+					foreach (var registration in _unsubscribeInterceptors)
+					{
+						if (++index > _unsubscribeUsed)
+							yield return "Imposter.Tests.Features.OpenGenericImposter.IHaveEvents<T>.LegacyPayloadAvailable OnUnsubscribe";
+					}
+				}
+
+				if (_callbacks != null)
+				{
+					int index = 0;
+					foreach (var registration in _callbacks)
+					{
+						if (++index > _callbacksUsed)
+							yield return "Imposter.Tests.Features.OpenGenericImposter.IHaveEvents<T>.LegacyPayloadAvailable Callback";
+					}
+				}
+			}
+
+			ILegacyPayloadAvailableEventImposterSetupBuilder ILegacyPayloadAvailableEventImposterSetupBuilder.Lenient()
+			{
+				_isLenient = true;
+				return this;
+			}
+
 			private global::Imposter.Abstractions.EventHandlerCollection<global::System.EventHandler>? _activeHandlers;
 			private global::Imposter.Abstractions.InvocationBuffer<global::System.EventHandler>? _subscribeHistory;
 			private global::Imposter.Abstractions.InvocationBuffer<global::System.EventHandler>? _unsubscribeHistory;
@@ -445,14 +565,10 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			private global::Imposter.Abstractions.CallbackCollection<global::System.EventHandler>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<(object? sender, global::System.EventArgs e)>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.EventHandler Handler, object? sender, global::System.EventArgs e)>? _handlerInvocations;
-			internal void ClearInvocations()
-			{
-				_subscribeHistory?.Clear();
-				_unsubscribeHistory?.Clear();
-				_history?.Clear();
-				_handlerInvocations?.Clear();
-			}
-
+			private int _subscribeUsed;
+			private int _unsubscribeUsed;
+			private int _callbacksUsed;
+			private bool _isLenient;
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>> ILegacyPayloadAvailableEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -474,6 +590,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				return global::Imposter.Abstractions.InvocationSnapshots.Combine(global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>.Snapshot(_subscribeHistory, "LegacyPayloadAvailable", true, false), global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>.Snapshot(_unsubscribeHistory, "LegacyPayloadAvailable", false, false), orderBySequence);
 			}
 
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			internal void Subscribe(global::System.EventHandler handler)
 			{
 				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
@@ -486,11 +610,15 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					}
 
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Combine(handler);
-					if (_subscribeInterceptors != null)
 					{
-						foreach (var interceptor in _subscribeInterceptors)
+						int interceptorIndex = 0;
+						if (_subscribeInterceptors != null)
 						{
-							interceptor(handler);
+							foreach (var interceptor in _subscribeInterceptors)
+							{
+								global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _subscribeUsed, ++interceptorIndex);
+								interceptor(handler);
+							}
 						}
 					}
 				}
@@ -517,11 +645,15 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					}
 
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Remove(handler);
-					if (_unsubscribeInterceptors != null)
 					{
-						foreach (var interceptor in _unsubscribeInterceptors)
+						int interceptorIndex = 0;
+						if (_unsubscribeInterceptors != null)
 						{
-							interceptor(handler);
+							foreach (var interceptor in _unsubscribeInterceptors)
+							{
+								global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _unsubscribeUsed, ++interceptorIndex);
+								interceptor(handler);
+							}
 						}
 					}
 				}
@@ -565,16 +697,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = 0;
-				if (_subscribeHistory != null)
+				var actual = 0;
+				var snapshot = _subscribeHistory == null ? default(global::Imposter.Abstractions.InvocationBuffer<global::System.EventHandler>.Enumerator) : _subscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
 				{
-					foreach (var entry in _subscribeHistory)
-					{
-						if (criteria.Matches(entry.Value))
-						{
-							actual++;
-						}
-					}
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						actual++;
 				}
 
 				if (!count.Matches(actual))
@@ -584,15 +714,20 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						foreach (var entry in _subscribeHistory)
 						{
-							if (criteria.Matches(entry.Value))
-							{
-								performedInvocations.Add("LegacyPayloadAvailable subscribed" + " handler: " + FormatValue(entry.Value));
-							}
+							performedInvocations.Add("LegacyPayloadAvailable subscribed" + " handler: " + FormatValue(entry.Value));
 						}
 					}
 
 					performedInvocations.Reverse();
 					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						global::Imposter.Abstractions.InvocationBuffer<global::System.EventHandler>.MarkVerified(entry);
 				}
 
 				return this;
@@ -610,16 +745,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = 0;
-				if (_unsubscribeHistory != null)
+				var actual = 0;
+				var snapshot = _unsubscribeHistory == null ? default(global::Imposter.Abstractions.InvocationBuffer<global::System.EventHandler>.Enumerator) : _unsubscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
 				{
-					foreach (var entry in _unsubscribeHistory)
-					{
-						if (criteria.Matches(entry.Value))
-						{
-							actual++;
-						}
-					}
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						actual++;
 				}
 
 				if (!count.Matches(actual))
@@ -629,15 +762,20 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						foreach (var entry in _unsubscribeHistory)
 						{
-							if (criteria.Matches(entry.Value))
-							{
-								performedInvocations.Add("LegacyPayloadAvailable unsubscribed" + " handler: " + FormatValue(entry.Value));
-							}
+							performedInvocations.Add("LegacyPayloadAvailable unsubscribed" + " handler: " + FormatValue(entry.Value));
 						}
 					}
 
 					performedInvocations.Reverse();
 					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						global::Imposter.Abstractions.InvocationBuffer<global::System.EventHandler>.MarkVerified(entry);
 				}
 
 				return this;
@@ -701,10 +839,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						foreach (var entry in _history)
 						{
-							if (senderCriteria.Matches(entry.sender) && eCriteria.Matches(entry.e))
-							{
-								performedInvocations.Add("LegacyPayloadAvailable raised" + " sender: " + FormatValue(entry.sender) + " e: " + FormatValue(entry.e));
-							}
+							performedInvocations.Add("LegacyPayloadAvailable raised" + " sender: " + FormatValue(entry.sender) + " e: " + FormatValue(entry.e));
 						}
 					}
 
@@ -746,10 +881,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						foreach (var entry in _handlerInvocations)
 						{
-							if (handlerCriteria.Matches(entry.Handler))
-							{
-								performedInvocations.Add("LegacyPayloadAvailable handler invoked" + " handler: " + FormatValue(entry.Handler) + " sender: " + FormatValue(entry.sender) + " e: " + FormatValue(entry.e));
-							}
+							performedInvocations.Add("LegacyPayloadAvailable handler invoked" + " handler: " + FormatValue(entry.Handler) + " sender: " + FormatValue(entry.sender) + " e: " + FormatValue(entry.e));
 						}
 					}
 
@@ -763,11 +895,15 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			private void RaiseInternal(object? sender, global::System.EventArgs e)
 			{
 				global::System.Threading.LazyInitializer.EnsureInitialized(ref _history).Push((sender, e));
-				if (_callbacks != null)
 				{
-					foreach (var callback in _callbacks)
+					int callbackIndex = 0;
+					if (_callbacks != null)
 					{
-						callback(sender, e);
+						foreach (var callback in _callbacks)
+						{
+							global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _callbacksUsed, ++callbackIndex);
+							callback(sender, e);
+						}
 					}
 				}
 
@@ -798,6 +934,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IPayloadAvailableEventImposterSetupBuilder
 		{
+			IPayloadAvailableEventImposterSetupBuilder Lenient();
 			IPayloadAvailableEventImposterSetupBuilder Callback(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> callback);
 			IPayloadAvailableEventImposterSetupBuilder Raise(object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e);
 			IPayloadAvailableEventImposterSetupBuilder OnSubscribe(global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>> interceptor);
@@ -818,8 +955,59 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal sealed class PayloadAvailableEventImposterBuilder : IPayloadAvailableEventImposterBuilder, IPayloadAvailableEventImposterSetupBuilder, IPayloadAvailableEventImposterVerificationBuilder
+		internal sealed class PayloadAvailableEventImposterBuilder : IPayloadAvailableEventImposterBuilder, IPayloadAvailableEventImposterSetupBuilder, IPayloadAvailableEventImposterVerificationBuilder, global::Imposter.Abstractions.IImposterVerificationSource
 		{
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), false);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), true);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+			{
+				if (_isLenient)
+					yield break;
+				if (_subscribeInterceptors != null)
+				{
+					int index = 0;
+					foreach (var registration in _subscribeInterceptors)
+					{
+						if (++index > _subscribeUsed)
+							yield return "Imposter.Tests.Features.OpenGenericImposter.IHaveEvents<T>.PayloadAvailable OnSubscribe";
+					}
+				}
+
+				if (_unsubscribeInterceptors != null)
+				{
+					int index = 0;
+					foreach (var registration in _unsubscribeInterceptors)
+					{
+						if (++index > _unsubscribeUsed)
+							yield return "Imposter.Tests.Features.OpenGenericImposter.IHaveEvents<T>.PayloadAvailable OnUnsubscribe";
+					}
+				}
+
+				if (_callbacks != null)
+				{
+					int index = 0;
+					foreach (var registration in _callbacks)
+					{
+						if (++index > _callbacksUsed)
+							yield return "Imposter.Tests.Features.OpenGenericImposter.IHaveEvents<T>.PayloadAvailable Callback";
+					}
+				}
+			}
+
+			IPayloadAvailableEventImposterSetupBuilder IPayloadAvailableEventImposterSetupBuilder.Lenient()
+			{
+				_isLenient = true;
+				return this;
+			}
+
 			private global::Imposter.Abstractions.EventHandlerCollection<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>? _activeHandlers;
 			private global::Imposter.Abstractions.InvocationBuffer<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>? _subscribeHistory;
 			private global::Imposter.Abstractions.InvocationBuffer<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>? _unsubscribeHistory;
@@ -828,14 +1016,10 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			private global::Imposter.Abstractions.CallbackCollection<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<(object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> Handler, object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)>? _handlerInvocations;
-			internal void ClearInvocations()
-			{
-				_subscribeHistory?.Clear();
-				_unsubscribeHistory?.Clear();
-				_history?.Clear();
-				_handlerInvocations?.Clear();
-			}
-
+			private int _subscribeUsed;
+			private int _unsubscribeUsed;
+			private int _callbacksUsed;
+			private bool _isLenient;
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>> IPayloadAvailableEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -857,6 +1041,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				return global::Imposter.Abstractions.InvocationSnapshots.Combine(global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>.Snapshot(_subscribeHistory, "PayloadAvailable", true, false), global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>.Snapshot(_unsubscribeHistory, "PayloadAvailable", false, false), orderBySequence);
 			}
 
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			internal void Subscribe(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> handler)
 			{
 				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
@@ -869,11 +1061,15 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					}
 
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Combine(handler);
-					if (_subscribeInterceptors != null)
 					{
-						foreach (var interceptor in _subscribeInterceptors)
+						int interceptorIndex = 0;
+						if (_subscribeInterceptors != null)
 						{
-							interceptor(handler);
+							foreach (var interceptor in _subscribeInterceptors)
+							{
+								global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _subscribeUsed, ++interceptorIndex);
+								interceptor(handler);
+							}
 						}
 					}
 				}
@@ -900,11 +1096,15 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					}
 
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Remove(handler);
-					if (_unsubscribeInterceptors != null)
 					{
-						foreach (var interceptor in _unsubscribeInterceptors)
+						int interceptorIndex = 0;
+						if (_unsubscribeInterceptors != null)
 						{
-							interceptor(handler);
+							foreach (var interceptor in _unsubscribeInterceptors)
+							{
+								global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _unsubscribeUsed, ++interceptorIndex);
+								interceptor(handler);
+							}
 						}
 					}
 				}
@@ -948,16 +1148,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = 0;
-				if (_subscribeHistory != null)
+				var actual = 0;
+				var snapshot = _subscribeHistory == null ? default(global::Imposter.Abstractions.InvocationBuffer<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>.Enumerator) : _subscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
 				{
-					foreach (var entry in _subscribeHistory)
-					{
-						if (criteria.Matches(entry.Value))
-						{
-							actual++;
-						}
-					}
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						actual++;
 				}
 
 				if (!count.Matches(actual))
@@ -967,15 +1165,20 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						foreach (var entry in _subscribeHistory)
 						{
-							if (criteria.Matches(entry.Value))
-							{
-								performedInvocations.Add("PayloadAvailable subscribed" + " handler: " + FormatValue(entry.Value));
-							}
+							performedInvocations.Add("PayloadAvailable subscribed" + " handler: " + FormatValue(entry.Value));
 						}
 					}
 
 					performedInvocations.Reverse();
 					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						global::Imposter.Abstractions.InvocationBuffer<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>.MarkVerified(entry);
 				}
 
 				return this;
@@ -993,16 +1196,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = 0;
-				if (_unsubscribeHistory != null)
+				var actual = 0;
+				var snapshot = _unsubscribeHistory == null ? default(global::Imposter.Abstractions.InvocationBuffer<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>.Enumerator) : _unsubscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
 				{
-					foreach (var entry in _unsubscribeHistory)
-					{
-						if (criteria.Matches(entry.Value))
-						{
-							actual++;
-						}
-					}
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						actual++;
 				}
 
 				if (!count.Matches(actual))
@@ -1012,15 +1213,20 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						foreach (var entry in _unsubscribeHistory)
 						{
-							if (criteria.Matches(entry.Value))
-							{
-								performedInvocations.Add("PayloadAvailable unsubscribed" + " handler: " + FormatValue(entry.Value));
-							}
+							performedInvocations.Add("PayloadAvailable unsubscribed" + " handler: " + FormatValue(entry.Value));
 						}
 					}
 
 					performedInvocations.Reverse();
 					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						global::Imposter.Abstractions.InvocationBuffer<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>.MarkVerified(entry);
 				}
 
 				return this;
@@ -1084,10 +1290,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						foreach (var entry in _history)
 						{
-							if (senderCriteria.Matches(entry.sender) && eCriteria.Matches(entry.e))
-							{
-								performedInvocations.Add("PayloadAvailable raised" + " sender: " + FormatValue(entry.sender) + " e: " + FormatValue(entry.e));
-							}
+							performedInvocations.Add("PayloadAvailable raised" + " sender: " + FormatValue(entry.sender) + " e: " + FormatValue(entry.e));
 						}
 					}
 
@@ -1129,10 +1332,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						foreach (var entry in _handlerInvocations)
 						{
-							if (handlerCriteria.Matches(entry.Handler))
-							{
-								performedInvocations.Add("PayloadAvailable handler invoked" + " handler: " + FormatValue(entry.Handler) + " sender: " + FormatValue(entry.sender) + " e: " + FormatValue(entry.e));
-							}
+							performedInvocations.Add("PayloadAvailable handler invoked" + " handler: " + FormatValue(entry.Handler) + " sender: " + FormatValue(entry.sender) + " e: " + FormatValue(entry.e));
 						}
 					}
 
@@ -1146,11 +1346,15 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			private void RaiseInternal(object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)
 			{
 				global::System.Threading.LazyInitializer.EnsureInitialized(ref _history).Push((sender, e));
-				if (_callbacks != null)
 				{
-					foreach (var callback in _callbacks)
+					int callbackIndex = 0;
+					if (_callbacks != null)
 					{
-						callback(sender, e);
+						foreach (var callback in _callbacks)
+						{
+							global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _callbacksUsed, ++callbackIndex);
+							callback(sender, e);
+						}
 					}
 				}
 
@@ -1206,6 +1410,21 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			invocations.AddRange(_LegacyPayloadAvailable.Snapshot(false));
 			invocations.AddRange(_PayloadAvailable.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyNoOtherCalls()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyNoOtherCalls(_DiagnosticPayloadPublished, _LegacyPayloadAvailable, _PayloadAvailable);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyNoInteractions()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyNoInteractions(_DiagnosticPayloadPublished, _LegacyPayloadAvailable, _PayloadAvailable);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyAllSetupsUsed()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyAllSetupsUsed(_DiagnosticPayloadPublished, _LegacyPayloadAvailable, _PayloadAvailable);
 		}
 
 		void global::Imposter.Abstractions.IImposter.ClearInvocations()

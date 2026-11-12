@@ -13,6 +13,8 @@ internal readonly struct IndexerArgumentsCriteriaMetadata
 
     // The getter setup made for these criteria, kept on them because criteria are compared by reference.
     internal readonly string GetterSetupFieldName;
+    internal readonly string SetterLenientFieldName;
+    internal readonly string SetterUsedFieldName;
 
     internal IndexerArgumentsCriteriaMetadata(in ImposterIndexerCoreMetadata core)
     {
@@ -20,5 +22,7 @@ internal readonly struct IndexerArgumentsCriteriaMetadata
         Name = core.CreateParameterNameSet().Use($"{core.UniqueName}IndexerArgumentsCriteria");
         TypeSyntax = IdentifierName(Name);
         GetterSetupFieldName = core.CreateParameterNameSet().Use("GetterSetup");
+        SetterLenientFieldName = core.CreateParameterNameSet().Use("SetterLenient");
+        SetterUsedFieldName = core.CreateParameterNameSet().Use("SetterUsed");
     }
 }

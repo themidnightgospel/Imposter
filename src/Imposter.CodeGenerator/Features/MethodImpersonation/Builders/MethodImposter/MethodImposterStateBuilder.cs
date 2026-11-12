@@ -18,12 +18,11 @@ internal static class MethodImposterStateBuilder
             method.MethodImposter.InvocationBehaviorFieldName
         );
 
-        return
-        [
-            historyField,
-            modeField,
-            BuildConstructorAndInitializeMembers(className, [historyField, modeField]),
-        ];
+        var constructor = BuildConstructorAndInitializeMembers(
+            className,
+            [historyField, modeField]
+        );
+        return [historyField, modeField, constructor];
     }
 
     internal static FieldDeclarationSyntax BuildHistoryField(

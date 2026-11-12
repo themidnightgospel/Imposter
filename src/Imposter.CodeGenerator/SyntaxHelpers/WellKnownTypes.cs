@@ -208,6 +208,10 @@ internal static class WellKnownTypes
                 Namespace,
                 IdentifierName("IImposterInvocation")
             );
+            internal static readonly NameSyntax IVerifiableInvocation = QualifiedName(
+                Namespace,
+                IdentifierName("IVerifiableInvocation")
+            );
             internal static readonly NameSyntax InvocationSequence = QualifiedName(
                 Namespace,
                 IdentifierName("InvocationSequence")
@@ -230,6 +234,11 @@ internal static class WellKnownTypes
             internal static TypeSyntax EventSubscriptionInvocation(TypeSyntax handlerType) =>
                 GenericType(Namespace, "EventSubscriptionInvocation", handlerType);
 
+            internal static readonly NameSyntax MatcherDescription = QualifiedName(
+                Namespace,
+                IdentifierName("MatcherDescription")
+            );
+
             internal static readonly NameSyntax VerificationFailedException = QualifiedName(
                 Namespace,
                 IdentifierName("VerificationFailedException")
@@ -238,6 +247,19 @@ internal static class WellKnownTypes
             internal static readonly NameSyntax Count = QualifiedName(
                 Namespace,
                 IdentifierName("Count")
+            );
+
+            internal static readonly NameSyntax IImposterVerificationSource = QualifiedName(
+                Namespace,
+                IdentifierName("IImposterVerificationSource")
+            );
+            internal static readonly NameSyntax ImposterVerification = QualifiedName(
+                Namespace,
+                IdentifierName("ImposterVerification")
+            );
+            internal static readonly NameSyntax CounterVerification = QualifiedName(
+                Namespace,
+                IdentifierName("CounterVerification")
             );
 
             internal static readonly NameSyntax TypeCaster = QualifiedName(
@@ -280,6 +302,12 @@ internal static class WellKnownTypes
 
             internal static NameSyntax PassThroughSetter(TypeSyntax invocationType) =>
                 GenericType(Namespace, "PassThroughSetter", invocationType);
+
+            internal static NameSyntax SetterSetup =>
+                QualifiedName(Namespace, IdentifierName(nameof(SetterSetup)));
+
+            internal static NameSyntax PropertySetterSetup(TypeSyntax valueType) =>
+                GenericType(Namespace, nameof(PropertySetterSetup), valueType);
 
             internal static NameSyntax ReturnValueSequence(TypeSyntax itemType) =>
                 GenericType(Namespace, nameof(ReturnValueSequence), itemType);

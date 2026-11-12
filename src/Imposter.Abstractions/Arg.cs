@@ -76,6 +76,17 @@ public class Arg<T>
         _negated = negated;
     }
 
+    internal string DescribeMatcher()
+    {
+        var description = _kind switch
+        {
+            MatcherKind.Any => "any",
+            MatcherKind.Equality => MatcherDescription.Value(_value),
+            _ => "<predicate>",
+        };
+        return _negated ? "not " + description : description;
+    }
+
     /// <summary>
     /// Determines whether the provided value satisfies this matcher.
     /// </summary>

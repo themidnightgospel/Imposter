@@ -17,6 +17,13 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.MethodImp
 
 internal static class MethodImposterAdapterBuilder
 {
+    private static readonly string[] VerificationMemberNames =
+    [
+        VerificationSourceNames.InteractionsMethodName,
+        VerificationSourceNames.UncoveredInteractionsMethodName,
+        VerificationSourceNames.UnusedSetupsMethodName,
+    ];
+
     internal static ClassDeclarationSyntax? Build(in ImposterTargetMethodMetadata method)
     {
         if (!method.Model.HasAdapter)
@@ -67,10 +74,45 @@ internal static class MethodImposterAdapterBuilder
             )
             .AddMember(BuildAdapterHasMatchingInvocationImposterGroupMethod(method, adapterNames))
             .AddMember(BuildAdapterAsMethod(method))
+            .AddMembers(BuildVerificationForwarders(adapterNames.TargetFieldName))
             .Build();
 
         return adapterClass;
     }
+
+    private static MemberDeclarationSyntax[] BuildVerificationForwarders(string targetFieldName) =>
+        VerificationMemberNames
+            .Select(name =>
+                (MemberDeclarationSyntax)
+                    new MethodDeclarationBuilder(
+                        WellKnownTypes.System.Collections.Generic.IEnumerable(
+                            WellKnownTypes.String
+                        ),
+                        name
+                    )
+                        .WithExplicitInterfaceSpecifier(
+                            WellKnownTypes.Imposter.Abstractions.IImposterVerificationSource
+                        )
+                        .WithBody(
+                            Block(
+                                ReturnStatement(
+                                    ParenthesizedExpression(
+                                            CastExpression(
+                                                WellKnownTypes
+                                                    .Imposter
+                                                    .Abstractions
+                                                    .IImposterVerificationSource,
+                                                IdentifierName(targetFieldName)
+                                            )
+                                        )
+                                        .Dot(IdentifierName(name))
+                                        .Call()
+                                )
+                            )
+                        )
+                        .Build()
+            )
+            .ToArray();
 
     private static MethodDeclarationSyntax BuildAdapterInvokeMethod(
         in ImposterTargetMethodMetadata method,

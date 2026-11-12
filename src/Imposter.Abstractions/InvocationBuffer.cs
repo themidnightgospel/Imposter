@@ -13,8 +13,16 @@ public sealed class InvocationBuffer<T>
     public void Add(T value, long sequence, Exception? exception) =>
         LazyInitializer.EnsureInitialized(ref _storage)!.Add(value, sequence, exception);
 
-    /// <summary>Starts an empty generation without invalidating existing snapshots.</summary>
+    /// <summary>Starts an empty generation without invalidating existing snapshots or coverage handles.</summary>
     public void Clear() => Interlocked.Exchange(ref _storage, null);
+
+    /// <summary>Marks a captured entry covered without materializing a record.</summary>
+    /// <param name="entry">The completed interaction selected by a passing verification.</param>
+    public static void MarkVerified(Entry entry) => entry.MarkVerified();
+
+    /// <summary>Reads a captured entry's verification coverage.</summary>
+    /// <param name="entry">The completed interaction to inspect.</param>
+    public static bool IsVerified(Entry entry) => entry.IsVerified;
 
     /// <summary>Captures the completed-entry chain visible at this point.</summary>
     public Enumerator GetEnumerator()
@@ -23,7 +31,7 @@ public sealed class InvocationBuffer<T>
         return new Enumerator(storage, storage is null ? -1 : Volatile.Read(ref storage.Head));
     }
 
-    /// <summary>A stable view of a published entry.</summary>
+    /// <summary>A stable handle to a published entry and its verification coverage.</summary>
     public readonly struct Entry
     {
         private readonly Segment? _segment;
@@ -35,6 +43,7 @@ public sealed class InvocationBuffer<T>
             _index = index;
         }
 
+        internal bool IsValid => _segment is not null;
         internal int Next => _segment!.Next[_index];
 
         /// <summary>Gets the captured payload.</summary>
@@ -44,7 +53,21 @@ public sealed class InvocationBuffer<T>
         public Exception? Exception => Volatile.Read(ref _segment!.Exceptions)?[_index];
 
         /// <summary>Gets the globally ordered entry stamp.</summary>
-        public long Sequence => _segment!.Values[_index].Sequence;
+        public long Sequence =>
+            Volatile.Read(ref _segment!.Values[_index].SequenceAndCoverage) & long.MaxValue;
+
+        /// <summary>Gets whether a successful verification covered this entry.</summary>
+        internal bool IsVerified =>
+            Volatile.Read(ref _segment!.Values[_index].SequenceAndCoverage) < 0;
+
+        /// <summary>Marks this entry covered without changing its captured values.</summary>
+        internal void MarkVerified()
+        {
+            if (IsVerified)
+                return;
+            ref var stamp = ref _segment!.Values[_index].SequenceAndCoverage;
+            Volatile.Write(ref stamp, Volatile.Read(ref stamp) | long.MinValue);
+        }
     }
 
     /// <summary>Enumerates one captured publication head without allocations.</summary>
@@ -76,6 +99,8 @@ public sealed class InvocationBuffer<T>
         }
     }
 
+    // A generation owns all its slots. Clear swaps this entire owner, allowing discarded values to be
+    // collected while previously materialized records retain only their containing segment.
     internal sealed class Storage
     {
         private const int SegmentSize = 32;
@@ -171,6 +196,6 @@ public sealed class InvocationBuffer<T>
     internal struct Data(T value, long sequence)
     {
         internal readonly T Value = value;
-        internal readonly long Sequence = sequence;
+        internal long SequenceAndCoverage = sequence;
     }
 }

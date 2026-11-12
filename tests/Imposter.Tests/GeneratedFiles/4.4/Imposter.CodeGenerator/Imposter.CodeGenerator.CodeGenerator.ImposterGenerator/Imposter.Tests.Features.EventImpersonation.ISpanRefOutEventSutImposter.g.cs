@@ -32,6 +32,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IBufferRentedEventImposterSetupBuilder
 		{
+			IBufferRentedEventImposterSetupBuilder Lenient();
 			IBufferRentedEventImposterSetupBuilder Callback(global::Imposter.Tests.Features.EventImpersonation.BufferRentedHandler callback);
 			IBufferRentedEventImposterSetupBuilder Raise(out global::System.Span<byte> buffer);
 			IBufferRentedEventImposterSetupBuilder OnSubscribe(global::System.Action<global::Imposter.Tests.Features.EventImpersonation.BufferRentedHandler> interceptor);
@@ -52,8 +53,59 @@ namespace Imposter.Tests.Features.EventImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal sealed class BufferRentedEventImposterBuilder : IBufferRentedEventImposterBuilder, IBufferRentedEventImposterSetupBuilder, IBufferRentedEventImposterVerificationBuilder
+		internal sealed class BufferRentedEventImposterBuilder : IBufferRentedEventImposterBuilder, IBufferRentedEventImposterSetupBuilder, IBufferRentedEventImposterVerificationBuilder, global::Imposter.Abstractions.IImposterVerificationSource
 		{
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), false);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), true);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+			{
+				if (_isLenient)
+					yield break;
+				if (_subscribeInterceptors != null)
+				{
+					int index = 0;
+					foreach (var registration in _subscribeInterceptors)
+					{
+						if (++index > _subscribeUsed)
+							yield return "Imposter.Tests.Features.EventImpersonation.ISpanRefOutEventSut.BufferRented OnSubscribe";
+					}
+				}
+
+				if (_unsubscribeInterceptors != null)
+				{
+					int index = 0;
+					foreach (var registration in _unsubscribeInterceptors)
+					{
+						if (++index > _unsubscribeUsed)
+							yield return "Imposter.Tests.Features.EventImpersonation.ISpanRefOutEventSut.BufferRented OnUnsubscribe";
+					}
+				}
+
+				if (_callbacks != null)
+				{
+					int index = 0;
+					foreach (var registration in _callbacks)
+					{
+						if (++index > _callbacksUsed)
+							yield return "Imposter.Tests.Features.EventImpersonation.ISpanRefOutEventSut.BufferRented Callback";
+					}
+				}
+			}
+
+			IBufferRentedEventImposterSetupBuilder IBufferRentedEventImposterSetupBuilder.Lenient()
+			{
+				_isLenient = true;
+				return this;
+			}
+
 			private global::Imposter.Abstractions.EventHandlerCollection<global::Imposter.Tests.Features.EventImpersonation.BufferRentedHandler>? _activeHandlers;
 			private global::Imposter.Abstractions.InvocationBuffer<global::Imposter.Tests.Features.EventImpersonation.BufferRentedHandler>? _subscribeHistory;
 			private global::Imposter.Abstractions.InvocationBuffer<global::Imposter.Tests.Features.EventImpersonation.BufferRentedHandler>? _unsubscribeHistory;
@@ -62,14 +114,10 @@ namespace Imposter.Tests.Features.EventImpersonation
 			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.BufferRentedHandler>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<byte[]>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.BufferRentedHandler Handler, byte[] buffer)>? _handlerInvocations;
-			internal void ClearInvocations()
-			{
-				_subscribeHistory?.Clear();
-				_unsubscribeHistory?.Clear();
-				_history?.Clear();
-				_handlerInvocations?.Clear();
-			}
-
+			private int _subscribeUsed;
+			private int _unsubscribeUsed;
+			private int _callbacksUsed;
+			private bool _isLenient;
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.BufferRentedHandler>> IBufferRentedEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -91,6 +139,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 				return global::Imposter.Abstractions.InvocationSnapshots.Combine(global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.BufferRentedHandler>.Snapshot(_subscribeHistory, "BufferRented", true, false), global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.BufferRentedHandler>.Snapshot(_unsubscribeHistory, "BufferRented", false, false), orderBySequence);
 			}
 
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			internal void Subscribe(global::Imposter.Tests.Features.EventImpersonation.BufferRentedHandler handler)
 			{
 				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
@@ -103,11 +159,15 @@ namespace Imposter.Tests.Features.EventImpersonation
 					}
 
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Combine(handler);
-					if (_subscribeInterceptors != null)
 					{
-						foreach (var interceptor in _subscribeInterceptors)
+						int interceptorIndex = 0;
+						if (_subscribeInterceptors != null)
 						{
-							interceptor(handler);
+							foreach (var interceptor in _subscribeInterceptors)
+							{
+								global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _subscribeUsed, ++interceptorIndex);
+								interceptor(handler);
+							}
 						}
 					}
 				}
@@ -134,11 +194,15 @@ namespace Imposter.Tests.Features.EventImpersonation
 					}
 
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Remove(handler);
-					if (_unsubscribeInterceptors != null)
 					{
-						foreach (var interceptor in _unsubscribeInterceptors)
+						int interceptorIndex = 0;
+						if (_unsubscribeInterceptors != null)
 						{
-							interceptor(handler);
+							foreach (var interceptor in _unsubscribeInterceptors)
+							{
+								global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _unsubscribeUsed, ++interceptorIndex);
+								interceptor(handler);
+							}
 						}
 					}
 				}
@@ -182,16 +246,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = 0;
-				if (_subscribeHistory != null)
+				var actual = 0;
+				var snapshot = _subscribeHistory == null ? default(global::Imposter.Abstractions.InvocationBuffer<global::Imposter.Tests.Features.EventImpersonation.BufferRentedHandler>.Enumerator) : _subscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
 				{
-					foreach (var entry in _subscribeHistory)
-					{
-						if (criteria.Matches(entry.Value))
-						{
-							actual++;
-						}
-					}
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						actual++;
 				}
 
 				if (!count.Matches(actual))
@@ -201,15 +263,20 @@ namespace Imposter.Tests.Features.EventImpersonation
 					{
 						foreach (var entry in _subscribeHistory)
 						{
-							if (criteria.Matches(entry.Value))
-							{
-								performedInvocations.Add("BufferRented subscribed" + " handler: " + FormatValue(entry.Value));
-							}
+							performedInvocations.Add("BufferRented subscribed" + " handler: " + FormatValue(entry.Value));
 						}
 					}
 
 					performedInvocations.Reverse();
 					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						global::Imposter.Abstractions.InvocationBuffer<global::Imposter.Tests.Features.EventImpersonation.BufferRentedHandler>.MarkVerified(entry);
 				}
 
 				return this;
@@ -227,16 +294,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = 0;
-				if (_unsubscribeHistory != null)
+				var actual = 0;
+				var snapshot = _unsubscribeHistory == null ? default(global::Imposter.Abstractions.InvocationBuffer<global::Imposter.Tests.Features.EventImpersonation.BufferRentedHandler>.Enumerator) : _unsubscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
 				{
-					foreach (var entry in _unsubscribeHistory)
-					{
-						if (criteria.Matches(entry.Value))
-						{
-							actual++;
-						}
-					}
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						actual++;
 				}
 
 				if (!count.Matches(actual))
@@ -246,15 +311,20 @@ namespace Imposter.Tests.Features.EventImpersonation
 					{
 						foreach (var entry in _unsubscribeHistory)
 						{
-							if (criteria.Matches(entry.Value))
-							{
-								performedInvocations.Add("BufferRented unsubscribed" + " handler: " + FormatValue(entry.Value));
-							}
+							performedInvocations.Add("BufferRented unsubscribed" + " handler: " + FormatValue(entry.Value));
 						}
 					}
 
 					performedInvocations.Reverse();
 					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						global::Imposter.Abstractions.InvocationBuffer<global::Imposter.Tests.Features.EventImpersonation.BufferRentedHandler>.MarkVerified(entry);
 				}
 
 				return this;
@@ -313,10 +383,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 					{
 						foreach (var entry in _history)
 						{
-							if (bufferCriteria.Matches(entry))
-							{
-								performedInvocations.Add("BufferRented raised" + " buffer: " + FormatValue(entry));
-							}
+							performedInvocations.Add("BufferRented raised" + " buffer: " + FormatValue(entry));
 						}
 					}
 
@@ -358,10 +425,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 					{
 						foreach (var entry in _handlerInvocations)
 						{
-							if (handlerCriteria.Matches(entry.Handler))
-							{
-								performedInvocations.Add("BufferRented handler invoked" + " handler: " + FormatValue(entry.Handler) + " buffer: " + FormatValue(entry.buffer));
-							}
+							performedInvocations.Add("BufferRented handler invoked" + " handler: " + FormatValue(entry.Handler) + " buffer: " + FormatValue(entry.buffer));
 						}
 					}
 
@@ -376,11 +440,15 @@ namespace Imposter.Tests.Features.EventImpersonation
 			{
 				buffer = default !;
 				global::System.Threading.LazyInitializer.EnsureInitialized(ref _history).Push(buffer.ToArray());
-				if (_callbacks != null)
 				{
-					foreach (var callback in _callbacks)
+					int callbackIndex = 0;
+					if (_callbacks != null)
 					{
-						callback(out buffer);
+						foreach (var callback in _callbacks)
+						{
+							global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _callbacksUsed, ++callbackIndex);
+							callback(out buffer);
+						}
 					}
 				}
 
@@ -411,6 +479,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IDataReadEventImposterSetupBuilder
 		{
+			IDataReadEventImposterSetupBuilder Lenient();
 			IDataReadEventImposterSetupBuilder Callback(global::Imposter.Tests.Features.EventImpersonation.DataReadHandler callback);
 			IDataReadEventImposterSetupBuilder Raise(ref global::System.ReadOnlySpan<byte> data);
 			IDataReadEventImposterSetupBuilder OnSubscribe(global::System.Action<global::Imposter.Tests.Features.EventImpersonation.DataReadHandler> interceptor);
@@ -431,8 +500,59 @@ namespace Imposter.Tests.Features.EventImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal sealed class DataReadEventImposterBuilder : IDataReadEventImposterBuilder, IDataReadEventImposterSetupBuilder, IDataReadEventImposterVerificationBuilder
+		internal sealed class DataReadEventImposterBuilder : IDataReadEventImposterBuilder, IDataReadEventImposterSetupBuilder, IDataReadEventImposterVerificationBuilder, global::Imposter.Abstractions.IImposterVerificationSource
 		{
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), false);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), true);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+			{
+				if (_isLenient)
+					yield break;
+				if (_subscribeInterceptors != null)
+				{
+					int index = 0;
+					foreach (var registration in _subscribeInterceptors)
+					{
+						if (++index > _subscribeUsed)
+							yield return "Imposter.Tests.Features.EventImpersonation.ISpanRefOutEventSut.DataRead OnSubscribe";
+					}
+				}
+
+				if (_unsubscribeInterceptors != null)
+				{
+					int index = 0;
+					foreach (var registration in _unsubscribeInterceptors)
+					{
+						if (++index > _unsubscribeUsed)
+							yield return "Imposter.Tests.Features.EventImpersonation.ISpanRefOutEventSut.DataRead OnUnsubscribe";
+					}
+				}
+
+				if (_callbacks != null)
+				{
+					int index = 0;
+					foreach (var registration in _callbacks)
+					{
+						if (++index > _callbacksUsed)
+							yield return "Imposter.Tests.Features.EventImpersonation.ISpanRefOutEventSut.DataRead Callback";
+					}
+				}
+			}
+
+			IDataReadEventImposterSetupBuilder IDataReadEventImposterSetupBuilder.Lenient()
+			{
+				_isLenient = true;
+				return this;
+			}
+
 			private global::Imposter.Abstractions.EventHandlerCollection<global::Imposter.Tests.Features.EventImpersonation.DataReadHandler>? _activeHandlers;
 			private global::Imposter.Abstractions.InvocationBuffer<global::Imposter.Tests.Features.EventImpersonation.DataReadHandler>? _subscribeHistory;
 			private global::Imposter.Abstractions.InvocationBuffer<global::Imposter.Tests.Features.EventImpersonation.DataReadHandler>? _unsubscribeHistory;
@@ -441,14 +561,10 @@ namespace Imposter.Tests.Features.EventImpersonation
 			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.DataReadHandler>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<byte[]>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.DataReadHandler Handler, byte[] data)>? _handlerInvocations;
-			internal void ClearInvocations()
-			{
-				_subscribeHistory?.Clear();
-				_unsubscribeHistory?.Clear();
-				_history?.Clear();
-				_handlerInvocations?.Clear();
-			}
-
+			private int _subscribeUsed;
+			private int _unsubscribeUsed;
+			private int _callbacksUsed;
+			private bool _isLenient;
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.DataReadHandler>> IDataReadEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -470,6 +586,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 				return global::Imposter.Abstractions.InvocationSnapshots.Combine(global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.DataReadHandler>.Snapshot(_subscribeHistory, "DataRead", true, false), global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.DataReadHandler>.Snapshot(_unsubscribeHistory, "DataRead", false, false), orderBySequence);
 			}
 
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			internal void Subscribe(global::Imposter.Tests.Features.EventImpersonation.DataReadHandler handler)
 			{
 				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
@@ -482,11 +606,15 @@ namespace Imposter.Tests.Features.EventImpersonation
 					}
 
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Combine(handler);
-					if (_subscribeInterceptors != null)
 					{
-						foreach (var interceptor in _subscribeInterceptors)
+						int interceptorIndex = 0;
+						if (_subscribeInterceptors != null)
 						{
-							interceptor(handler);
+							foreach (var interceptor in _subscribeInterceptors)
+							{
+								global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _subscribeUsed, ++interceptorIndex);
+								interceptor(handler);
+							}
 						}
 					}
 				}
@@ -513,11 +641,15 @@ namespace Imposter.Tests.Features.EventImpersonation
 					}
 
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Remove(handler);
-					if (_unsubscribeInterceptors != null)
 					{
-						foreach (var interceptor in _unsubscribeInterceptors)
+						int interceptorIndex = 0;
+						if (_unsubscribeInterceptors != null)
 						{
-							interceptor(handler);
+							foreach (var interceptor in _unsubscribeInterceptors)
+							{
+								global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _unsubscribeUsed, ++interceptorIndex);
+								interceptor(handler);
+							}
 						}
 					}
 				}
@@ -561,16 +693,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = 0;
-				if (_subscribeHistory != null)
+				var actual = 0;
+				var snapshot = _subscribeHistory == null ? default(global::Imposter.Abstractions.InvocationBuffer<global::Imposter.Tests.Features.EventImpersonation.DataReadHandler>.Enumerator) : _subscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
 				{
-					foreach (var entry in _subscribeHistory)
-					{
-						if (criteria.Matches(entry.Value))
-						{
-							actual++;
-						}
-					}
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						actual++;
 				}
 
 				if (!count.Matches(actual))
@@ -580,15 +710,20 @@ namespace Imposter.Tests.Features.EventImpersonation
 					{
 						foreach (var entry in _subscribeHistory)
 						{
-							if (criteria.Matches(entry.Value))
-							{
-								performedInvocations.Add("DataRead subscribed" + " handler: " + FormatValue(entry.Value));
-							}
+							performedInvocations.Add("DataRead subscribed" + " handler: " + FormatValue(entry.Value));
 						}
 					}
 
 					performedInvocations.Reverse();
 					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						global::Imposter.Abstractions.InvocationBuffer<global::Imposter.Tests.Features.EventImpersonation.DataReadHandler>.MarkVerified(entry);
 				}
 
 				return this;
@@ -606,16 +741,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = 0;
-				if (_unsubscribeHistory != null)
+				var actual = 0;
+				var snapshot = _unsubscribeHistory == null ? default(global::Imposter.Abstractions.InvocationBuffer<global::Imposter.Tests.Features.EventImpersonation.DataReadHandler>.Enumerator) : _unsubscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
 				{
-					foreach (var entry in _unsubscribeHistory)
-					{
-						if (criteria.Matches(entry.Value))
-						{
-							actual++;
-						}
-					}
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						actual++;
 				}
 
 				if (!count.Matches(actual))
@@ -625,15 +758,20 @@ namespace Imposter.Tests.Features.EventImpersonation
 					{
 						foreach (var entry in _unsubscribeHistory)
 						{
-							if (criteria.Matches(entry.Value))
-							{
-								performedInvocations.Add("DataRead unsubscribed" + " handler: " + FormatValue(entry.Value));
-							}
+							performedInvocations.Add("DataRead unsubscribed" + " handler: " + FormatValue(entry.Value));
 						}
 					}
 
 					performedInvocations.Reverse();
 					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						global::Imposter.Abstractions.InvocationBuffer<global::Imposter.Tests.Features.EventImpersonation.DataReadHandler>.MarkVerified(entry);
 				}
 
 				return this;
@@ -692,10 +830,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 					{
 						foreach (var entry in _history)
 						{
-							if (dataCriteria.Matches(entry))
-							{
-								performedInvocations.Add("DataRead raised" + " data: " + FormatValue(entry));
-							}
+							performedInvocations.Add("DataRead raised" + " data: " + FormatValue(entry));
 						}
 					}
 
@@ -737,10 +872,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 					{
 						foreach (var entry in _handlerInvocations)
 						{
-							if (handlerCriteria.Matches(entry.Handler))
-							{
-								performedInvocations.Add("DataRead handler invoked" + " handler: " + FormatValue(entry.Handler) + " data: " + FormatValue(entry.data));
-							}
+							performedInvocations.Add("DataRead handler invoked" + " handler: " + FormatValue(entry.Handler) + " data: " + FormatValue(entry.data));
 						}
 					}
 
@@ -754,11 +886,15 @@ namespace Imposter.Tests.Features.EventImpersonation
 			private void RaiseInternal(ref global::System.ReadOnlySpan<byte> data)
 			{
 				global::System.Threading.LazyInitializer.EnsureInitialized(ref _history).Push(data.ToArray());
-				if (_callbacks != null)
 				{
-					foreach (var callback in _callbacks)
+					int callbackIndex = 0;
+					if (_callbacks != null)
 					{
-						callback(ref data);
+						foreach (var callback in _callbacks)
+						{
+							global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _callbacksUsed, ++callbackIndex);
+							callback(ref data);
+						}
 					}
 				}
 
@@ -808,6 +944,21 @@ namespace Imposter.Tests.Features.EventImpersonation
 			invocations.AddRange(_BufferRented.Snapshot(false));
 			invocations.AddRange(_DataRead.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyNoOtherCalls()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyNoOtherCalls(_BufferRented, _DataRead);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyNoInteractions()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyNoInteractions(_BufferRented, _DataRead);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyAllSetupsUsed()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyAllSetupsUsed(_BufferRented, _DataRead);
 		}
 
 		void global::Imposter.Abstractions.IImposter.ClearInvocations()

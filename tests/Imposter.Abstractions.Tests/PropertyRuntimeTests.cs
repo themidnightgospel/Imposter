@@ -23,7 +23,7 @@ public class PropertyRuntimeTests
         Should
             .Throw<MissingImposterException>(() => setter.Set(1))
             .Message.ShouldContain("Value (setter)");
-        getter.Verify(Count.Never());
+        getter.Verify(Count.Once());
         setter.Called(Arg<int>.Any(), Count.Once());
         setter.Callback(Arg<int>.Is(1), _ => { });
         setter.Set(2); // A setup configures the setter even when its criteria do not match.

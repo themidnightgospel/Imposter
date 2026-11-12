@@ -5,7 +5,6 @@ using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Imposter.CodeGenerator.Features.IndexerImpersonation.Builders.IndexerImposterBuilderCommon;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -18,12 +17,10 @@ internal static class IndexerImposterBuilder
         var orderBySequence = indexer.Core.CreateParameterNameSet().Use("orderBySequence");
         var classBuilder = new ClassDeclarationBuilder(indexer.Builder.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddMember(
-                InvocationLifecycleBuilder.ClearChildren(
-                    indexer.Core.HasGetter ? indexer.Builder.GetterImposterField.Name : null,
-                    indexer.Core.HasSetter ? indexer.Builder.SetterImposterField.Name : null
-                )
+            .AddBaseType(
+                SimpleBaseType(WellKnownTypes.Imposter.Abstractions.IImposterVerificationSource)
             )
+            .AddMembers(IndexerVerificationBuilder.Source(indexer, null))
             .AddMember(
                 indexer.Core.HasDefaultBehaviour
                     ? SinglePrivateReadonlyVariableField(
@@ -93,6 +90,12 @@ internal static class IndexerImposterBuilder
                     )
                     .Build()
             )
+            .AddMember(
+                InvocationLifecycleBuilder.ClearChildren(
+                    indexer.Core.HasGetter ? indexer.Builder.GetterImposterField.Name : null,
+                    indexer.Core.HasSetter ? indexer.Builder.SetterImposterField.Name : null
+                )
+            )
             .AddMember(indexer.Core.HasGetter ? BuildCreateGetterMethod(indexer) : null)
             .AddMember(indexer.Core.HasSetter ? BuildCreateSetterMethod(indexer) : null)
             .AddMember(BuildInvocationBuilder(indexer))
@@ -117,11 +120,11 @@ internal static class IndexerImposterBuilder
     {
         var invocationBehaviorParameter = ParameterSyntax(
             WellKnownTypes.Imposter.Abstractions.ImposterMode,
-            InvocationBehaviorParameterName
+            indexer.Locals["invocationBehavior"]
         );
         var propertyDisplayNameParameter = ParameterSyntax(
             WellKnownTypes.String,
-            PropertyDisplayNameParameterName
+            indexer.Locals["propertyDisplayName"]
         );
 
         var getterInitialization = indexer.Core.HasGetter
@@ -241,11 +244,17 @@ internal static class IndexerImposterBuilder
                 new ConstructorWithFieldInitializationBuilder(invocationBuilder.Name)
                     .WithModifiers(Token(SyntaxKind.InternalKeyword))
                     .AddParameter(
-                        new ParameterMetadata("builder", invocationBuilder.BuilderField.Type),
+                        new ParameterMetadata(
+                            indexer.Locals["builder"],
+                            invocationBuilder.BuilderField.Type
+                        ),
                         invocationBuilder.BuilderField.Name
                     )
                     .AddParameter(
-                        new ParameterMetadata("criteria", invocationBuilder.CriteriaField.Type),
+                        new ParameterMetadata(
+                            indexer.Locals["criteria"],
+                            invocationBuilder.CriteriaField.Type
+                        ),
                         invocationBuilder.CriteriaField.Name
                     )
                     .Build()

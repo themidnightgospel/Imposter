@@ -6,11 +6,14 @@ namespace Imposter.Abstractions;
 /// <typeparam name="T">The property's value type.</typeparam>
 /// <remarks>Public for generated code only and may change with the generator in the same package.</remarks>
 [EditorBrowsable(EditorBrowsableState.Never)]
-public class PropertyGetter<T>
+public class PropertyGetter<T> : IImposterVerificationSource
 {
     private ReturnValueSequence<Func<Func<T>?, T>?>? _returnValues;
     private CallbackCollection<Action>? _callbacks;
-    private int _invocationCount;
+    private InvocationCounter _counter;
+    private volatile bool _isUsed;
+    private volatile bool _isLenient;
+    private bool _hasConfiguredCallback;
     private readonly PropertyValue<T> _defaultValue;
     private readonly ImposterMode _mode;
     private readonly string _displayName;
@@ -46,19 +49,48 @@ public class PropertyGetter<T>
 
     /// <summary>Registers a callback without configuring an outcome.</summary>
     /// <param name="callback">The callback to invoke before the outcome.</param>
-    protected void Callback(Action callback) =>
+    protected void Callback(Action callback)
+    {
         LazyInitializer.EnsureInitialized(ref _callbacks)!.Add(callback);
-
-    /// <summary>Clears recorded interactions while preserving configured behavior.</summary>
-    public void ClearInvocations() => Interlocked.Exchange(ref _invocationCount, 0);
+        _hasConfiguredCallback = true;
+    }
 
     /// <summary>Verifies the number of reads, including reads whose callbacks or outcomes threw.</summary>
     /// <param name="count">The expected count.</param>
     protected void Called(Count count)
     {
-        var actual = Volatile.Read(ref _invocationCount);
-        if (!count.Matches(actual))
-            throw new VerificationFailedException(count, actual);
+        if (!_counter.Verify(count, out var actual))
+            throw new VerificationFailedException(
+                count,
+                actual,
+                actual == 0 ? null : actual + " read(s)"
+            );
+    }
+
+    /// <summary>Clears recorded reads and their coverage while preserving configured outcomes and usage.</summary>
+    public void ClearInvocations() => _counter.Clear();
+
+    /// <summary>Excludes the getter setup from unused-setup verification.</summary>
+    protected void MarkLenient() => _isLenient = true;
+
+    IEnumerable<string> IImposterVerificationSource.UncoveredInteractions()
+    {
+        var uncovered = _counter.Uncovered;
+        if (uncovered > 0)
+            yield return _displayName + " (getter): " + uncovered + " uncovered read(s)";
+    }
+
+    IEnumerable<string> IImposterVerificationSource.Interactions()
+    {
+        var count = _counter.Count;
+        if (count > 0)
+            yield return _displayName + " (getter): " + count + " read(s)";
+    }
+
+    IEnumerable<string> IImposterVerificationSource.UnusedSetups()
+    {
+        if ((_hasConfiguredReturn || _hasConfiguredCallback) && !_isUsed && !_isLenient)
+            yield return _displayName + " (getter)";
     }
 
     /// <summary>Appends an outcome that calls the base getter.</summary>
@@ -79,9 +111,11 @@ public class PropertyGetter<T>
     /// <returns>The property's value.</returns>
     public T Get(Func<T>? baseImplementation = null)
     {
+        _counter.Record();
         if (_mode == ImposterMode.Explicit && !_hasConfiguredReturn)
             throw MissingImposter();
-        Interlocked.Increment(ref _invocationCount);
+        if (!_isUsed && (_hasConfiguredReturn || _hasConfiguredCallback))
+            _isUsed = true;
         if (_callbacks is not null)
             foreach (var callback in _callbacks)
                 callback();

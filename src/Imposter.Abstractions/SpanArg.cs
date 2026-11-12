@@ -27,6 +27,11 @@ public sealed class SpanArg<T>
         _expected = expected;
     }
 
+    internal string DescribeMatcher() =>
+        ReferenceEquals(this, AnyInstance) ? "any"
+        : _expected is null ? "<predicate>"
+        : "[" + string.Join(", ", _expected.Select(value => MatcherDescription.Value(value))) + "]";
+
     /// <summary>
     /// Determines whether the copy of a span argument satisfies this matcher.
     /// </summary>

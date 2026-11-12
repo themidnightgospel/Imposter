@@ -1,4 +1,5 @@
 ﻿using Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -37,6 +38,7 @@ internal static class EventImposterBuilderInterfaceBuilder
 
         return new InterfaceDeclarationBuilder(@event.BuilderInterface.SetupInterfaceName)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddMember(InterfaceMethod(setupInterface, VerificationSourceNames.LenientMethodName))
             .AddMember(
                 InterfaceMethod(
                     setupInterface,

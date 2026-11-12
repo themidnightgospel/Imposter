@@ -1,5 +1,6 @@
 ﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -18,6 +19,9 @@ internal static class MethodImposterNonGenericInterfaceBuilder
 
         return new InterfaceDeclarationBuilder(method.MethodImposter.Interface.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddBaseType(
+                SimpleBaseType(WellKnownTypes.Imposter.Abstractions.IImposterVerificationSource)
+            )
             .AddMember(
                 new MethodDeclarationBuilder(
                     NullableType(

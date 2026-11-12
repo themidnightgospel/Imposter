@@ -1,4 +1,5 @@
 ﻿using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -24,10 +25,16 @@ internal static class IndexerSetterImposterBuilderInterfaceBuilder
                 indexer.SetterBuilderInterface.CallbackMethod
             ),
             ContinuationInterface(
-                indexer.SetterBuilderInterface.ContinuationInterfaceName,
-                indexer.SetterBuilderInterface.CallbackInterfaceTypeSyntax,
-                indexer.SetterBuilderInterface.ThenMethod
-            ),
+                    indexer.SetterBuilderInterface.ContinuationInterfaceName,
+                    indexer.SetterBuilderInterface.CallbackInterfaceTypeSyntax,
+                    indexer.SetterBuilderInterface.ThenMethod
+                )
+                .AddMembers(
+                    InterfaceMethod(
+                        indexer.SetterBuilderInterface.ContinuationInterfaceTypeSyntax,
+                        VerificationSourceNames.LenientMethodName
+                    )
+                ),
             BuildFluentInterface(indexer),
             VerificationInterface(
                     indexer.SetterBuilderInterface.VerificationInterfaceName,

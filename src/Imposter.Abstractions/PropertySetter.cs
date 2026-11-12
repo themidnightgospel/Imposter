@@ -7,12 +7,28 @@ namespace Imposter.Abstractions;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public abstract class PropertySetterInvocation<T> : InvocationRecord
 {
+    private InvocationBuffer<T>.Entry _entry;
+
     /// <summary>The assigned value.</summary>
     protected internal T StoredValue { get; }
 
     /// <summary>Creates a completed property assignment record.</summary>
     protected PropertySetterInvocation(T value, long sequence, Exception? exception)
         : base(sequence, exception) => StoredValue = value;
+
+    internal void Bind(InvocationBuffer<T>.Entry entry) => _entry = entry;
+
+    /// <inheritdoc />
+    protected override bool IsVerified => _entry.IsValid ? _entry.IsVerified : base.IsVerified;
+
+    /// <inheritdoc />
+    protected override void MarkVerified()
+    {
+        if (_entry.IsValid)
+            _entry.MarkVerified();
+        else
+            base.MarkVerified();
+    }
 
     /// <summary>Formats the assignment without invoking user callbacks.</summary>
     public override string ToString() =>
@@ -23,14 +39,38 @@ public abstract class PropertySetterInvocation<T> : InvocationRecord
         + (Exception is null ? string.Empty : " threw " + Exception);
 }
 
+/// <summary>Tracks the use and leniency of one property setter builder chain.</summary>
+/// <typeparam name="T">The assigned value type.</typeparam>
+[EditorBrowsable(EditorBrowsableState.Never)]
+public sealed class PropertySetterSetup<T>
+{
+    internal readonly Arg<T> Criteria;
+    internal SetterSetupState State;
+
+    /// <summary>Creates a setup for assignments matching the criteria.</summary>
+    public PropertySetterSetup(Arg<T> criteria) => Criteria = criteria;
+
+    /// <summary>Excludes this setup chain from unused setup verification.</summary>
+    public void Lenient() => State.IsLenient = true;
+
+    /// <summary>Marks this setup chain as executed.</summary>
+    internal void MarkUsed() => State.MarkUsed();
+
+    internal bool IsUnused => !State.IsLenient && Volatile.Read(ref State.Used) == 0;
+
+    internal string Describe(string member) =>
+        "set " + member + "(value: " + MatcherDescription.Format(Criteria) + ")";
+}
+
 /// <summary>Implements callbacks, history and invocation for generated property setters.</summary>
 /// <typeparam name="T">The property's value type.</typeparam>
 /// <remarks>Public for generated code only and may change with the generator in the same package.</remarks>
 [EditorBrowsable(EditorBrowsableState.Never)]
-public class PropertySetter<T>
+public class PropertySetter<T> : IImposterVerificationSource
 {
-    private CallbackCollection<(Arg<T> Criteria, Action<T> Callback)>? _callbacks;
+    private CallbackCollection<(PropertySetterSetup<T> Setup, Action<T> Callback)>? _callbacks;
     private InvocationBuffer<T>? _invocationHistory;
+    private SetupCollection<PropertySetterSetup<T>>? _setups;
     private readonly PropertyValue<T>? _defaultValue;
     private readonly ImposterMode _mode;
     private readonly string _displayName;
@@ -46,23 +86,42 @@ public class PropertySetter<T>
     }
 
     /// <summary>Registers a callback for matching assignments.</summary>
-    public void Callback(Arg<T> criteria, Action<T> callback)
+    public void Callback(Arg<T> criteria, Action<T> callback) =>
+        Callback(new PropertySetterSetup<T>(criteria), callback);
+
+    /// <summary>Registers a callback belonging to one builder chain.</summary>
+    public void Callback(PropertySetterSetup<T> setup, Action<T> callback)
     {
-        LazyInitializer.EnsureInitialized(ref _callbacks)!.Add((criteria, callback));
+        Register(setup);
+        LazyInitializer.EnsureInitialized(ref _callbacks)!.Add((setup, callback));
         _hasConfiguredSetter = true;
     }
 
-    /// <summary>Verifies the number of matching assignments.</summary>
+    private void Register(PropertySetterSetup<T> setup)
+    {
+        if (Interlocked.CompareExchange(ref setup.State.Registered, 1, 0) == 0)
+            LazyInitializer.EnsureInitialized(ref _setups)!.Push(setup);
+    }
+
+    /// <summary>Verifies matching assignments.</summary>
     public void Called(Arg<T> criteria, Count count)
     {
         var snapshot = _invocationHistory?.GetEnumerator() ?? default;
         var cursor = snapshot;
         var actual = 0;
         while (cursor.MoveNext())
+        {
             if (criteria.Matches(cursor.Current.Value))
                 actual++;
+        }
         if (count.Matches(actual))
+        {
+            cursor = snapshot;
+            while (cursor.MoveNext())
+                if (criteria.Matches(cursor.Current.Value))
+                    cursor.Current.MarkVerified();
             return;
+        }
         var performed = new List<string>();
         cursor = snapshot;
         while (cursor.MoveNext())
@@ -75,13 +134,17 @@ public class PropertySetter<T>
     }
 
     /// <summary>Configures assignments to call the base setter.</summary>
-    public void UseBaseImplementation()
+    public void UseBaseImplementation() =>
+        UseBaseImplementation(new PropertySetterSetup<T>(Arg<T>.Any()));
+
+    /// <summary>Configures base invocation belonging to the supplied builder chain.</summary>
+    public void UseBaseImplementation(PropertySetterSetup<T> setup)
     {
+        Register(setup);
+        setup.State.UsesBase = true;
         _hasConfiguredSetter = true;
         _useBaseImplementation = true;
     }
-
-    private MissingImposterException MissingImposter() => new(_displayName + " (setter)");
 
     /// <summary>Performs an assignment and records its outcome.</summary>
     public void Set(T value, Action<T>? baseImplementation = null)
@@ -115,12 +178,17 @@ public class PropertySetter<T>
             throw MissingImposter();
         if (_callbacks is not null)
             foreach (var registration in _callbacks)
-                if (registration.Criteria.Matches(value))
+                if (registration.Setup.Criteria.Matches(value))
                 {
+                    registration.Setup.MarkUsed();
                     registration.Callback(value);
                 }
         if (_useBaseImplementation)
         {
+            if (_setups is not null)
+                foreach (var setup in _setups)
+                    if (setup.State.UsesBase)
+                        setup.MarkUsed();
             return true;
         }
         if (_defaultValue is { IsOn: true })
@@ -142,7 +210,7 @@ public class PropertySetter<T>
         Exception? exception
     ) => new RuntimeInvocation(_displayName, value, sequence, exception);
 
-    /// <summary>Clears recorded interactions while preserving configured behavior.</summary>
+    /// <summary>Clears history without changing setups or their usage.</summary>
     public void ClearInvocations() => _invocationHistory?.Clear();
 
     /// <summary>Returns an entry-ordered snapshot of assignments.</summary>
@@ -171,10 +239,39 @@ public class PropertySetter<T>
                 if (criteria.Matches(entry.Value))
                 {
                     var invocation = CreateInvocation(entry.Value, entry.Sequence, entry.Exception);
+                    invocation.Bind(entry);
                     IImposterInvocation record = invocation;
                     result.Add((TInvocation)record);
                 }
         return InvocationSnapshots.Order(result, orderBySequence);
+    }
+
+    /// <inheritdoc />
+    public IEnumerable<string> UncoveredInteractions()
+    {
+        var history = _invocationHistory;
+        if (history is not null)
+            foreach (var invocation in history)
+                if (!invocation.IsVerified)
+                    yield return Describe(invocation);
+    }
+
+    /// <inheritdoc />
+    public IEnumerable<string> Interactions()
+    {
+        var history = _invocationHistory;
+        if (history is not null)
+            foreach (var invocation in history)
+                yield return Describe(invocation);
+    }
+
+    /// <inheritdoc />
+    public IEnumerable<string> UnusedSetups()
+    {
+        if (_setups is not null)
+            foreach (var setup in _setups)
+                if (setup.IsUnused)
+                    yield return setup.Describe(_displayName);
     }
 
     private sealed class RuntimeInvocation(
@@ -195,4 +292,6 @@ public class PropertySetter<T>
         + (invocation.Value?.ToString() ?? "null")
         + ">"
         + (invocation.Exception is null ? string.Empty : " threw " + invocation.Exception);
+
+    private MissingImposterException MissingImposter() => new(_displayName + " (setter)");
 }

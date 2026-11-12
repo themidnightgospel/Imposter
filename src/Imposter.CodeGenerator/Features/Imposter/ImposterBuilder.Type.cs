@@ -37,6 +37,7 @@ internal readonly ref struct ImposterBuilder
     private readonly List<InterfaceSetupMemberMetadata> _interfaceSetupMembers = [];
     private readonly MemberTypes _memberTypes = new();
     private readonly List<ExpressionSyntax> _invocationSnapshots = [];
+    private readonly List<ExpressionSyntax> _verificationSources = [];
 
     private ImposterBuilder(
         ClassDeclarationBuilder imposterBuilder,
@@ -96,6 +97,7 @@ internal readonly ref struct ImposterBuilder
         _clearBodyBuilder.AddStatement(
             InvocationLifecycleBuilder.ClearChild(property.BuilderField.Name)
         );
+        _verificationSources.Add(IdentifierName(property.BuilderField.Name));
         _invocationSnapshots.Add(
             IdentifierName(property.BuilderField.Name)
                 .Dot(IdentifierName("Snapshot"))
@@ -180,6 +182,7 @@ internal readonly ref struct ImposterBuilder
         _clearBodyBuilder.AddStatement(
             InvocationLifecycleBuilder.ClearChild(@event.BuilderField.Name)
         );
+        _verificationSources.Add(IdentifierName(@event.BuilderField.Name));
         _invocationSnapshots.Add(
             IdentifierName(@event.BuilderField.Name)
                 .Dot(IdentifierName("Snapshot"))
@@ -201,6 +204,7 @@ internal readonly ref struct ImposterBuilder
         _clearBodyBuilder.AddStatement(
             InvocationLifecycleBuilder.ClearChild(indexer.BuilderField.Name)
         );
+        _verificationSources.Add(IdentifierName(indexer.BuilderField.Name));
         _invocationSnapshots.Add(
             IdentifierName(indexer.BuilderField.Name)
                 .Dot(IdentifierName("Snapshot"))
@@ -235,6 +239,7 @@ internal readonly ref struct ImposterBuilder
                     _typeMetadata.InvocationListVariableName
                 )
             )
+            .AddMembers(ImposterVerificationBuilder.Build(_verificationSources))
             .AddMember(
                 new MethodDeclarationBuilder(
                     WellKnownTypes.Void,
@@ -369,6 +374,7 @@ internal readonly ref struct ImposterBuilder
                     .Dot(IdentifierName("Snapshot"))
                     .Call(Argument(SyntaxFactoryHelper.False))
             );
+            result._verificationSources.Add(IdentifierName(method.ImposterField.Name));
         }
         return result;
     }

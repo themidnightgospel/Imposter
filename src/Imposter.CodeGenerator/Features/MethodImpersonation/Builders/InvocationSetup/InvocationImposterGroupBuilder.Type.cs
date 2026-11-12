@@ -1,4 +1,5 @@
-﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Shared;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationSetup;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -22,6 +23,38 @@ internal static partial class InvocationImposterGroupBuilder
                 method.Parameters.HasInputParameters ? ArgumentsCriteriaProperty(method) : null
             )
             .AddMember(InvocationImpostersFieldDeclaration(method))
+            .AddMember(
+                SyntaxFactoryHelper.SingleVariableField(
+                    WellKnownTypes.Bool,
+                    method.MethodInvocationImposterGroup.IsUsedFieldName,
+                    TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.VolatileKeyword))
+                )
+            )
+            .AddMember(
+                SyntaxFactoryHelper.SingleVariableField(
+                    WellKnownTypes.Bool,
+                    method.MethodInvocationImposterGroup.IsLenientFieldName,
+                    TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.VolatileKeyword))
+                )
+            )
+            .AddMember(
+                new MethodDeclarationBuilder(WellKnownTypes.String, "ToString")
+                    .AddModifier(Token(SyntaxKind.PublicKeyword))
+                    .AddModifier(Token(SyntaxKind.OverrideKeyword))
+                    .WithBody(
+                        Block(
+                            ReturnStatement(
+                                MethodDiagnosticBuilder.Expected(
+                                    method,
+                                    IdentifierName(
+                                        MethodInvocationImposterGroupMetadata.ArgumentsCriteriaPropertyName
+                                    )
+                                )
+                            )
+                        )
+                    )
+                    .Build()
+            )
             .AddMember(
                 SyntaxFactoryHelper.SingleVariableField(
                     WellKnownTypes.Bool,

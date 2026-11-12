@@ -9,8 +9,6 @@ using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.Features.Shared.Builders.ThenMethodBuilder;
-using static Imposter.CodeGenerator.Features.Shared.Builders.VerificationFailedBuilder;
-using static Imposter.CodeGenerator.SyntaxHelpers.InterlockedSyntaxHelper;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -27,6 +25,9 @@ internal static partial class GetterImposterBuilderBuilder
 
         var builder = new ClassDeclarationBuilder(property.GetterImposterBuilder.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddBaseType(
+                SimpleBaseType(WellKnownTypes.Imposter.Abstractions.IImposterVerificationSource)
+            )
             .AddBaseType(SimpleBaseType(property.GetterImposterBuilderInterface.TypeSyntax))
             .AddBaseType(
                 SimpleBaseType(property.GetterImposterBuilderInterface.FluentInterfaceTypeSyntax)
@@ -47,8 +48,10 @@ internal static partial class GetterImposterBuilderBuilder
             .AddMember(BuildLastGetterReturnValueField(property))
             .AddMember(
                 SingleVariableField(
-                    property.GetterImposterBuilder.InvocationCountField,
-                    SyntaxKind.PrivateKeyword
+                    property.GetterImposterBuilder.VerificationField.Type,
+                    property.GetterImposterBuilder.VerificationField.Name,
+                    TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword)),
+                    property.GetterImposterBuilder.VerificationField.Type.New()
                 )
             )
             .AddMembers(
@@ -64,9 +67,10 @@ internal static partial class GetterImposterBuilderBuilder
             .AddMember(BuildAddGetterReturnValueMethod(property))
             .AddMember(
                 InvocationLifecycleBuilder.Clear([
-                    InvocationLifecycleBuilder.ClearCounter(
-                        property.GetterImposterBuilder.InvocationCountField.Name
-                    ),
+                    IdentifierName(property.GetterImposterBuilder.VerificationField.Name)
+                        .Dot(IdentifierName("Clear"))
+                        .Call()
+                        .ToStatementSyntax(),
                 ])
             )
             .AddMembers(BuildReturnsMethods(property))
@@ -89,6 +93,7 @@ internal static partial class GetterImposterBuilderBuilder
                 )
             )
             .AddMembers(BuildThenMethods(property))
+            .AddMembers(BuildCounterVerificationMembers(property))
             .AddMember(
                 property.Core.GetterSupportsBaseImplementation
                     ? BuildUseBaseImplementationMethod(property)
@@ -162,6 +167,11 @@ internal static partial class GetterImposterBuilderBuilder
             .WithBody(
                 new BlockBuilder()
                     .AddExpression(turnDefaultBehaviourOff)
+                    .AddExpression(
+                        IdentifierName(getterImposterBuilder.VerificationField.Name)
+                            .Dot(IdentifierName("Configure"))
+                            .Call()
+                    )
                     .AddExpression(
                         LazyCollectionSyntaxHelper
                             .EnsureInitialized(getterImposterBuilder.ReturnValuesField.Name)
@@ -285,6 +295,10 @@ internal static partial class GetterImposterBuilderBuilder
                             )
                         )
                         .ToStatementSyntax(),
+                    IdentifierName(builder.VerificationField.Name)
+                        .Dot(IdentifierName("Configure"))
+                        .Call()
+                        .ToStatementSyntax(),
                     ReturnThis
                 )
             )
@@ -296,20 +310,20 @@ internal static partial class GetterImposterBuilderBuilder
     )
     {
         var count = IdentifierName(builderInterface.CalledMethod.CountParameter.Name);
-        var invocationCount = IdentifierName(builder.InvocationCountField.Name);
 
-        return new MethodDeclarationBuilder(
+        var method = new MethodDeclarationBuilder(
             builderInterface.CalledMethod.ReturnType,
             builderInterface.CalledMethod.Name
         )
             .WithExplicitInterfaceSpecifier(builderInterface.VerificationInterfaceTypeSyntax)
-            .AddParameter(ParameterSyntax(builderInterface.CalledMethod.CountParameter))
+            .AddParameter(ParameterSyntax(builderInterface.CalledMethod.CountParameter));
+        return method
             .WithBody(
                 Block(
-                    IfStatement(
-                        CountDoesNotMatch(count, invocationCount),
-                        ThrowVerificationFailed(count, invocationCount)
-                    )
+                    IdentifierName(builder.VerificationField.Name)
+                        .Dot(IdentifierName("Verify"))
+                        .Call(Argument(count))
+                        .ToStatementSyntax()
                 )
             )
             .Build();
@@ -440,8 +454,13 @@ internal static partial class GetterImposterBuilderBuilder
             .AddParameter(ParameterSyntax(builder.GetMethod.BaseImplementationParameter))
             .WithBody(
                 new BlockBuilder()
-                    .AddExpression(IdentifierName(builder.State.EnsureConfiguredMethodName).Call())
                     .AddStatement(TrackGetterInvocation(builder))
+                    .AddExpression(IdentifierName(builder.State.EnsureConfiguredMethodName).Call())
+                    .AddExpression(
+                        IdentifierName(builder.VerificationField.Name)
+                            .Dot(IdentifierName("Use"))
+                            .Call()
+                    )
                     .AddStatement(InvokeGetterCallbacks(builder))
                     .AddStatement(
                         property.Core.KeepsValue
@@ -519,7 +538,11 @@ internal static partial class GetterImposterBuilderBuilder
 
         static StatementSyntax TrackGetterInvocation(
             in PropertyGetterImposterBuilderMetadata builder
-        ) => InterlockedIncrement(builder.InvocationCountField.Name).ToStatementSyntax();
+        ) =>
+            IdentifierName(builder.VerificationField.Name)
+                .Dot(IdentifierName("Record"))
+                .Call()
+                .ToStatementSyntax();
     }
 
     private static MethodDeclarationSyntax BuildNextReturnValueMethod(

@@ -45,28 +45,51 @@ internal static partial class MethodImposterBuilderBuilder
         var invocationCount = IdentifierName(method.Locals["invocationCount"]);
         var invocationHistory = IdentifierName(method.InvocationHistory.Collection.AsField.Name);
 
-        return new MethodDeclarationBuilder(called.ReturnType, called.Name)
-            .AddParameter(ParameterSyntax(called.CountParameter))
+        var builder = new MethodDeclarationBuilder(called.ReturnType, called.Name).AddParameter(
+            ParameterSyntax(called.CountParameter)
+        );
+        return builder
             .WithExplicitInterfaceSpecifier(method.InvocationVerifierInterface.Syntax)
             .WithBody(
                 Block(
                     LocalVariableDeclarationSyntax(
                         Var,
                         invocationCount.Identifier.Text,
-                        BuildInvocationCountExpression(method)
+                        BuildVerificationCountExpression(method, count)
                     ),
                     IfStatement(
                         CountDoesNotMatch(count, invocationCount),
                         Block(
-                            ThrowVerificationFailed(
-                                count,
-                                invocationCount,
-                                invocationHistory.Dot(IdentifierName("ToString")).Call()
+                            ThrowStatement(
+                                WellKnownTypes.Imposter.Abstractions.VerificationFailedException.New(
+                                    ArgumentListSyntax([
+                                        Argument(count),
+                                        Argument(invocationCount),
+                                        Argument(
+                                            invocationHistory.Dot(IdentifierName("ToString")).Call()
+                                        ),
+                                    ])
+                                )
                             )
                         )
                     )
                 )
             )
             .Build();
+    }
+
+    private static InvocationExpressionSyntax BuildVerificationCountExpression(
+        in ImposterTargetMethodMetadata method,
+        ExpressionSyntax count
+    )
+    {
+        var arguments = new System.Collections.Generic.List<ArgumentSyntax> { Argument(count) };
+        if (method.Parameters.HasInputParameters)
+            arguments.Add(
+                Argument(IdentifierName(method.MethodImposter.Builder.ArgumentsCriteriaField.Name))
+            );
+        return IdentifierName(method.InvocationHistory.Collection.AsField.Name)
+            .Dot(method.WithGenericArguments(InvocationHistoryCollectionMetadata.VerifyMethodName))
+            .Call(ArgumentListSyntax(arguments));
     }
 }

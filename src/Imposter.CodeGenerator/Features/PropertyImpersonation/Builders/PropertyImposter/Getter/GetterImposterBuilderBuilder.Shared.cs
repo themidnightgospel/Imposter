@@ -1,4 +1,5 @@
 ﻿using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -84,6 +85,23 @@ internal static partial class GetterImposterBuilderBuilder
             )
         );
 
+        builder.AddMember(
+            new MethodDeclarationBuilder(
+                builderInterface.ContinuationInterfaceTypeSyntax,
+                VerificationSourceNames.LenientMethodName
+            )
+                .WithExplicitInterfaceSpecifier(builderInterface.ContinuationInterfaceTypeSyntax)
+                .WithBody(
+                    Block(
+                        BaseExpression()
+                            .Dot(IdentifierName("MarkLenient"))
+                            .Call()
+                            .ToStatementSyntax(),
+                        ReturnThis
+                    )
+                )
+                .Build()
+        );
         var called = builderInterface.CalledMethod;
         builder.AddMember(
             new MethodDeclarationBuilder(called.ReturnType, called.Name)

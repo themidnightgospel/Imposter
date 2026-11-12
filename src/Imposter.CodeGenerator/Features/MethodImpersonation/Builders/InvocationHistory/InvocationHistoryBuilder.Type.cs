@@ -80,13 +80,59 @@ internal static partial class InvocationHistoryBuilder
         properties.Add(
             PublicProperty(WellKnownTypes.String, "Member", method.Model.Name.StringLiteral(), true)
         );
+        var stamp = VolatileSyntaxHelper.VolatileRead(
+            InvocationHistoryTypeMetadata.SequenceFieldName
+        );
         properties.Add(
             PublicProperty(
                 WellKnownTypes.Long,
                 "Sequence",
-                IdentifierName(InvocationHistoryTypeMetadata.SequenceFieldName),
+                BinaryExpression(
+                    SyntaxKind.BitwiseAndExpression,
+                    stamp,
+                    WellKnownTypes.Long.Dot(IdentifierName("MaxValue"))
+                ),
                 true
             )
+        );
+        properties.Add(
+            PublicProperty(
+                WellKnownTypes.Bool,
+                "IsVerified",
+                BinaryExpression(
+                    SyntaxKind.LessThanExpression,
+                    stamp,
+                    SyntaxFactoryHelper.NumericLiteral(0)
+                ),
+                true,
+                infrastructure: true
+            )
+        );
+        properties.Add(
+            new MethodDeclarationBuilder(WellKnownTypes.Void, "MarkVerified")
+                .AddModifier(Token(SyntaxKind.InternalKeyword))
+                .AddModifier(Token(SyntaxKind.OverrideKeyword))
+                .WithBody(
+                    Block(
+                        IfStatement(IdentifierName("IsVerified"), ReturnStatement()),
+                        WellKnownTypes
+                            .System.Threading.Volatile.Dot(IdentifierName("Write"))
+                            .Call([
+                                SyntaxFactoryHelper.RefArgument(
+                                    IdentifierName(InvocationHistoryTypeMetadata.SequenceFieldName)
+                                ),
+                                Argument(
+                                    BinaryExpression(
+                                        SyntaxKind.BitwiseOrExpression,
+                                        stamp,
+                                        WellKnownTypes.Long.Dot(IdentifierName("MinValue"))
+                                    )
+                                ),
+                            ])
+                            .ToStatementSyntax()
+                    )
+                )
+                .Build()
         );
         properties.Add(
             PublicProperty(
@@ -103,11 +149,12 @@ internal static partial class InvocationHistoryBuilder
         TypeSyntax type,
         string name,
         ExpressionSyntax value,
-        bool isOverride = false
+        bool isOverride = false,
+        bool infrastructure = false
     )
     {
         var builder = new PropertyDeclarationBuilder(type, name).AddModifier(
-            Token(SyntaxKind.PublicKeyword)
+            Token(infrastructure ? SyntaxKind.InternalKeyword : SyntaxKind.PublicKeyword)
         );
         if (isOverride)
             builder.AddModifier(Token(SyntaxKind.OverrideKeyword));

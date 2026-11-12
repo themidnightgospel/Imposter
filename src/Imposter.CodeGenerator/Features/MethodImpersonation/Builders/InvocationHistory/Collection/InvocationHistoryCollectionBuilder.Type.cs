@@ -29,7 +29,7 @@ internal static partial class InvocationHistoryCollectionBuilder
                     .AddModifier(Token(SyntaxKind.PublicKeyword))
                     .AddModifier(Token(SyntaxKind.AbstractKeyword))
                     .AddBaseType(
-                        SimpleBaseType(WellKnownTypes.Imposter.Abstractions.IImposterInvocation)
+                        SimpleBaseType(WellKnownTypes.Imposter.Abstractions.IVerifiableInvocation)
                     )
                     .AddMember(
                         new PropertyDeclarationBuilder(WellKnownTypes.String, "Member")
@@ -56,6 +56,40 @@ internal static partial class InvocationHistoryCollectionBuilder
                             .Build()
                     )
                     .AddMember(
+                        new PropertyDeclarationBuilder(WellKnownTypes.Bool, "IsVerified")
+                            .AddModifier(Token(SyntaxKind.InternalKeyword))
+                            .AddModifier(Token(SyntaxKind.AbstractKeyword))
+                            .WithGetter()
+                            .Build()
+                    )
+                    .AddMember(
+                        new MethodDeclarationBuilder(WellKnownTypes.Void, "MarkVerified")
+                            .AddModifier(Token(SyntaxKind.InternalKeyword))
+                            .AddModifier(Token(SyntaxKind.AbstractKeyword))
+                            .WithSemicolon()
+                            .Build()
+                    )
+                    .AddMember(
+                        new PropertyDeclarationBuilder(WellKnownTypes.Bool, "IsVerified")
+                            .WithExplicitInterfaceSpecifier(
+                                ExplicitInterfaceSpecifier(
+                                    WellKnownTypes.Imposter.Abstractions.IVerifiableInvocation
+                                )
+                            )
+                            .WithGetterBody(Block(ReturnStatement(IdentifierName("IsVerified"))))
+                            .Build()
+                    )
+                    .AddMember(
+                        new MethodDeclarationBuilder(WellKnownTypes.Void, "MarkVerified")
+                            .WithExplicitInterfaceSpecifier(
+                                WellKnownTypes.Imposter.Abstractions.IVerifiableInvocation
+                            )
+                            .WithBody(
+                                Block(IdentifierName("MarkVerified").Call().ToStatementSyntax())
+                            )
+                            .Build()
+                    )
+                    .AddMember(
                         SingleVariableField(
                             historyType,
                             InvocationHistoryCollectionMetadata.NextFieldName,
@@ -65,11 +99,12 @@ internal static partial class InvocationHistoryCollectionBuilder
                     .Build()
             )
             .AddMember(BuildAddMethod(method))
-            .AddMember(BuildClearMethod())
             .AddMember(BuildRecordFailureMethod(method))
             .AddMember(BuildCountMethod(method))
+            .AddMember(BuildVerifyMethod(method))
             .AddMember(BuildSnapshotMethod(method, false))
             .AddMember(BuildSnapshotMethod(method, true))
+            .AddMember(BuildClearMethod())
             .AddMember(BuildToStringMethod(method))
             .Build();
     }

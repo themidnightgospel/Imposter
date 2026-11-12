@@ -20,10 +20,11 @@ internal static class VerificationFailedBuilder
     internal static IfStatementSyntax ThrowIfCountDoesNotMatch(
         ExpressionSyntax count,
         ExpressionSyntax invocationCount,
-        PerformedInvocations performedInvocations
+        PerformedInvocations performedInvocations,
+        string performedInvocationsName
     )
     {
-        var performedInvocationsList = IdentifierName("performedInvocations");
+        var performedInvocationsList = IdentifierName(performedInvocationsName);
         var stringListType = WellKnownTypes.System.Collections.Generic.List(WellKnownTypes.String);
 
         var historyLoop = ForEachStatement(
