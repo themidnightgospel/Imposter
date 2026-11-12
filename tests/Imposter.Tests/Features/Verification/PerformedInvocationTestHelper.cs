@@ -36,8 +36,10 @@ namespace Imposter.Tests.Features.Verification
             int actual
         )
         {
-            exception.Message.ShouldContain($"expected to be performed {expected}");
-            exception.Message.ShouldContain($"performed {actual} times");
+            exception.Expected.ShouldNotBe(expected.ToString());
+            exception.Message.ShouldStartWith(
+                $"Expected {exception.Expected} {expected}, performed {actual} times."
+            );
         }
 
         internal static string FormatValue(object? value) => $"<{value?.ToString() ?? "null"}>";

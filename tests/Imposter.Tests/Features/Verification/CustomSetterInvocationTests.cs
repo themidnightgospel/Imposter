@@ -8,15 +8,57 @@ namespace Imposter.Tests.Features.Verification
 {
     public class CustomSetterInvocationTests
     {
-        [Fact]
-        public void GivenSpanSetterMatcher_WhenOrderedCheckFails_ShouldDescribeStoredSpanExpectation()
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void GivenSpanSetterMatcher_WhenOrderedCheckFails_ShouldPreserveItsDescriptionAndMatching(
+            bool described
+        )
         {
             var sut = new ISpanPropertySutImposter();
-            var step = sut.Buffer.Setter(SpanArg<byte>.Is(1, 2));
+            var matcher = SpanArg<byte>.Is(1, 2);
+            if (described)
+                matcher = matcher.Describe("two header bytes");
+            var step = sut.Buffer.Setter(matcher);
+            sut.Instance().Buffer = new byte[] { 9, 9 };
+            step.Invocations.ShouldBeEmpty();
+
             var failure = Should.Throw<VerificationFailedException>(() =>
                 Imposters.InOrder().Then(step).Verify()
             );
-            failure.Message.ShouldContain("[<1>, <2>]");
+            failure.Message.ShouldContain(described ? "two header bytes" : "[<1>, <2>]");
+
+            sut.Instance().Buffer = new byte[] { 1, 2 };
+            step.Invocations.Count.ShouldBe(1);
+            Imposters.InOrder().Then(step).Verify();
+        }
+
+        [Fact]
+        public void GivenCustomAccessors_WhenVerificationFails_ShouldExplainReasonAndOtherInteractions()
+        {
+            var sut = new IRefStructPropertySutImposter();
+            sut.Instance().Current = new Bookmark(4);
+            var getterFailure = Should.Throw<VerificationFailedException>(() =>
+                sut.Current.Getter().Called(Count.Once(), "getter phase")
+            );
+            getterFailure.Message.ShouldContain("getter phase");
+            getterFailure.Message.ShouldContain("Other interactions");
+            getterFailure.Message.ShouldContain("Current");
+            sut.ClearInvocations();
+            _ = sut.Instance().Current;
+            var setterFailure = Should.Throw<VerificationFailedException>(() =>
+                sut.Current.Setter().Called(Count.Once(), "setter phase")
+            );
+            setterFailure.Message.ShouldContain("setter phase");
+            setterFailure.Expected.ShouldContain("value: <not captured>");
+
+            var strict = new IRefStructPropertySutImposter(ImposterMode.Explicit);
+            Should
+                .Throw<MissingImposterException>(() => _ = strict.Instance().Current)
+                .Message.ShouldContain("Configured setups");
+            Should
+                .Throw<MissingImposterException>(() => strict.Instance().Current = new Bookmark(4))
+                .Message.ShouldContain("value: <not captured>");
         }
 
         [Fact]
@@ -68,7 +110,11 @@ namespace Imposter.Tests.Features.Verification
             setup.Invocations[0].Exception.ShouldBeSameAs(failure);
             sut.Invocations().Count.ShouldBe(1);
             sut.VerifyAllSetupsUsed();
-            Should.Throw<VerificationFailedException>(() => setup.Called(Count.Never()));
+            Should
+                .Throw<VerificationFailedException>(() =>
+                    setup.Called(Count.Never(), "ref setter reason")
+                )
+                .Message.ShouldContain("ref setter reason");
             Should.Throw<VerificationFailedException>(() => sut.VerifyNoOtherCalls());
             setup.Called(Count.Once());
             sut.VerifyNoOtherCalls();

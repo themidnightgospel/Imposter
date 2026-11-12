@@ -61,6 +61,7 @@ internal static partial class SetterImposterBuilderBuilder
             .AddMembers(BuildSharedVerificationMembers(property))
             .AddMember(BuildCallbackMethod(property))
             .AddMember(BuildCalledMethod(property))
+            .AddMember(BuildCalledMethod(property, withReason: true))
             .AddMember(ThenReturningThis(property.SetterImposterBuilderInterface.ThenMethod))
             .AddMember(BuildUseBaseImplementationEntryMethod(property))
             .Build();
@@ -108,13 +109,16 @@ internal static partial class SetterImposterBuilderBuilder
                         .Assign(criteria)
                         .ToStatementSyntax(),
                 ]);
+            var setupArguments = new List<ArgumentSyntax>
+            {
+                Argument(IdentifierName(metadata.RuntimeCriteriaField.Name)),
+            };
+            if (!property.Core.UsesSharedRuntime)
+                setupArguments.Add(Argument(IdentifierName(metadata.CriteriaField!.Value.Name)));
             constructor.AddStatements([
                 IdentifierName(metadata.SetupField.Name)
                     .Assign(
-                        metadata.SetupField.Type.New(
-                            IdentifierName(metadata.RuntimeCriteriaField.Name)
-                                .ToSingleArgumentList()
-                        )
+                        metadata.SetupField.Type.New(ArgumentListSyntax(setupArguments.ToArray()))
                     )
                     .ToStatementSyntax(),
             ]);
@@ -131,10 +135,21 @@ internal static partial class SetterImposterBuilderBuilder
         return constructor.Build();
     }
 
-    private static MethodDeclarationSyntax BuildCalledMethod(in ImposterPropertyMetadata property)
+    private static MethodDeclarationSyntax BuildCalledMethod(
+        in ImposterPropertyMetadata property,
+        bool withReason = false
+    )
     {
         var called = property.SetterImposterBuilderInterface.CalledMethod;
-        var arguments = SetterImposterArguments(property, called.CountParameter.Name);
+        var arguments = SetterImposterArguments(
+            property,
+            called.CountParameter.Name,
+            useSetup: !property.Core.IsPassedThrough && !property.Core.UsesSharedRuntime
+        );
+        if (withReason)
+            arguments = arguments.AddArguments(
+                Argument(IdentifierName(called.BecauseParameter.Name))
+            );
         var builder = new MethodDeclarationBuilder(
             property.SetterImposterBuilderInterface.CalledMethod.ReturnType,
             property.SetterImposterBuilderInterface.CalledMethod.Name
@@ -145,6 +160,8 @@ internal static partial class SetterImposterBuilderBuilder
             .AddParameter(
                 ParameterSyntax(property.SetterImposterBuilderInterface.CalledMethod.CountParameter)
             );
+        if (withReason)
+            builder.AddParameter(ParameterSyntax(called.BecauseParameter));
         return builder
             .WithBody(
                 Block(

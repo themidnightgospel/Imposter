@@ -171,13 +171,14 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class EchoMaybeDefaultMethodInvocationHistoryCollection
 		{
+			internal EchoMaybeDefaultMethodImposterCollection? SetupSource;
 			internal global::Imposter.Abstractions.IImposter Owner { get; }
 
 			internal EchoMaybeDefaultMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
@@ -342,6 +343,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			{
 				this._echoMaybeDefaultMethodInvocationHistoryCollection = _echoMaybeDefaultMethodInvocationHistoryCollection;
 				this._invocationBehavior = _invocationBehavior;
+				_echoMaybeDefaultMethodInvocationHistoryCollection.SetupSource = this;
 			}
 
 			private readonly global::Imposter.Abstractions.SetupCollection<IEchoMaybeDefaultMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IEchoMaybeDefaultMethodImposter>();
@@ -364,6 +366,14 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				}
 
 				return new EchoMaybeDefaultMethodImposter<T>(_echoMaybeDefaultMethodInvocationHistoryCollection, _invocationBehavior);
+			}
+
+			internal global::System.Collections.Generic.List<string> GetConfiguredSetups()
+			{
+				var setups = new global::System.Collections.Generic.List<string>();
+				foreach (var imposter in _imposters)
+					setups.AddRange(imposter.GetConfiguredSetups());
+				return setups;
 			}
 
 			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
@@ -394,9 +404,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
 			internal volatile bool IsUsed;
 			internal volatile bool IsLenient;
+			internal object? _outcomeDescriptions;
 			public override string ToString()
 			{
-				return "EchoMaybeDefault(" + "value: " + global::Imposter.Abstractions.MatcherDescription.Format(ArgumentsCriteria.value) + ")";
+				return "EchoMaybeDefault(" + "value: " + ArgumentsCriteria.value.ToString() + ")" + " -> " + global::Imposter.Abstractions.DiagnosticValue.Outcomes(_outcomeDescriptions);
 			}
 
 			internal volatile bool HasConfiguredOutcome;
@@ -551,6 +562,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal interface IEchoMaybeDefaultMethodImposter : global::Imposter.Abstractions.IImposterVerificationSource
 		{
+			global::System.Collections.Generic.List<string> GetConfiguredSetups();
 			IEchoMaybeDefaultMethodImposter<TTarget>? As<TTarget>();
 		}
 
@@ -567,6 +579,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
 			global::System.Collections.Generic.IReadOnlyList<EchoMaybeDefaultInvocation<T>> Invocations { get; }
+
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -623,6 +637,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					throw new global::System.NotImplementedException();
 				}
 
+				public global::System.Collections.Generic.List<string> GetConfiguredSetups()
+				{
+					return _target.GetConfiguredSetups();
+				}
+
 				global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
 				{
 					return ((global::Imposter.Abstractions.IImposterVerificationSource)_target).Interactions();
@@ -655,6 +674,18 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				return null;
 			}
 
+			public global::System.Collections.Generic.List<string> GetConfiguredSetups()
+			{
+				var setups = new global::System.Collections.Generic.List<string>();
+				foreach (var group in _invocationImposters)
+				{
+					if (group.HasConfiguredOutcome)
+						setups.Add(group.ToString());
+				}
+
+				return setups;
+			}
+
 			public T? Invoke(T? value, EchoMaybeDefaultDelegate<T>? baseImplementation = null)
 			{
 				T? capturedvalue = value;
@@ -663,7 +694,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					if (matchingInvocationImposterGroup == default)
 					{
 						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-							throw new global::Imposter.Abstractions.MissingImposterException("virtual T? NullableGenericMethodsClass.EchoMaybeDefault<T>(T? value)");
+							throw new global::Imposter.Abstractions.MissingImposterException("EchoMaybeDefault", "EchoMaybeDefault(" + "value: " + global::Imposter.Abstractions.DiagnosticValue.Format(capturedvalue) + ")", _echoMaybeDefaultMethodInvocationHistoryCollection.SetupSource!.GetConfiguredSetups(), "virtual T? NullableGenericMethodsClass.EchoMaybeDefault<T>(T? value)");
 						matchingInvocationImposterGroup = EchoMaybeDefaultMethodInvocationImposterGroup<T>.Default;
 					}
 
@@ -695,6 +726,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw new TException();
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, global::Imposter.Abstractions.DiagnosticValue.Throws<TException>());
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -705,6 +737,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw exception;
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -715,6 +748,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw exceptionGenerator.Invoke(value);
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -722,6 +756,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				IEchoMaybeDefaultMethodInvocationImposterGroupContinuation<T> IEchoMaybeDefaultMethodInvocationImposterGroupCallback<T>.Callback(EchoMaybeDefaultCallbackDelegate<T> callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Callback");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -729,6 +764,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				IEchoMaybeDefaultMethodInvocationImposterGroupContinuation<T> IEchoMaybeDefaultMethodInvocationImposterGroup<T>.Returns(EchoMaybeDefaultDelegate<T> resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -736,6 +772,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				IEchoMaybeDefaultMethodInvocationImposterGroupContinuation<T> IEchoMaybeDefaultMethodInvocationImposterGroup<T>.Returns(T? value_1)
 				{
 					_currentInvocationImposter.Returns(value_1);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -743,6 +780,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				IEchoMaybeDefaultMethodInvocationImposterGroupContinuation<T> IEchoMaybeDefaultMethodInvocationImposterGroup<T>.UseBaseImplementation()
 				{
 					_currentInvocationImposter.UseBaseImplementation();
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "UseBaseImplementation");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -758,7 +796,16 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					var invocationCount = _echoMaybeDefaultMethodInvocationHistoryCollection.Verify<T>(count, _argumentsCriteria);
 					if (!count.Matches(invocationCount))
 					{
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _echoMaybeDefaultMethodInvocationHistoryCollection.ToString());
+						throw new global::Imposter.Abstractions.VerificationFailedException("EchoMaybeDefault", "EchoMaybeDefault(" + "value: " + _argumentsCriteria.value.ToString() + ")", count, invocationCount, _echoMaybeDefaultMethodInvocationHistoryCollection.ToString(), null, _echoMaybeDefaultMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_echoMaybeDefaultMethodInvocationHistoryCollection.Owner) : null);
+					}
+				}
+
+				void EchoMaybeDefaultInvocationVerifier<T>.Called(global::Imposter.Abstractions.Count count, string? because)
+				{
+					var invocationCount = _echoMaybeDefaultMethodInvocationHistoryCollection.Verify<T>(count, _argumentsCriteria);
+					if (!count.Matches(invocationCount))
+					{
+						throw new global::Imposter.Abstractions.VerificationFailedException("EchoMaybeDefault", "EchoMaybeDefault(" + "value: " + _argumentsCriteria.value.ToString() + ")", count, invocationCount, _echoMaybeDefaultMethodInvocationHistoryCollection.ToString(), because, _echoMaybeDefaultMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_echoMaybeDefaultMethodInvocationHistoryCollection.Owner) : null);
 					}
 				}
 
@@ -779,7 +826,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				{
 					get
 					{
-						return "EchoMaybeDefault(" + "value: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.value) + ")";
+						return "EchoMaybeDefault(" + "value: " + _argumentsCriteria.value.ToString() + ")";
 					}
 				}
 
@@ -965,13 +1012,14 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class EchoNullableReferenceMethodInvocationHistoryCollection
 		{
+			internal EchoNullableReferenceMethodImposterCollection? SetupSource;
 			internal global::Imposter.Abstractions.IImposter Owner { get; }
 
 			internal EchoNullableReferenceMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
@@ -1140,6 +1188,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			{
 				this._echoNullableReferenceMethodInvocationHistoryCollection = _echoNullableReferenceMethodInvocationHistoryCollection;
 				this._invocationBehavior = _invocationBehavior;
+				_echoNullableReferenceMethodInvocationHistoryCollection.SetupSource = this;
 			}
 
 			private readonly global::Imposter.Abstractions.SetupCollection<IEchoNullableReferenceMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IEchoNullableReferenceMethodImposter>();
@@ -1164,6 +1213,14 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				}
 
 				return new EchoNullableReferenceMethodImposter<T>(_echoNullableReferenceMethodInvocationHistoryCollection, _invocationBehavior);
+			}
+
+			internal global::System.Collections.Generic.List<string> GetConfiguredSetups()
+			{
+				var setups = new global::System.Collections.Generic.List<string>();
+				foreach (var imposter in _imposters)
+					setups.AddRange(imposter.GetConfiguredSetups());
+				return setups;
 			}
 
 			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
@@ -1195,9 +1252,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
 			internal volatile bool IsUsed;
 			internal volatile bool IsLenient;
+			internal object? _outcomeDescriptions;
 			public override string ToString()
 			{
-				return "EchoNullableReference(" + "value: " + global::Imposter.Abstractions.MatcherDescription.Format(ArgumentsCriteria.value) + ")";
+				return "EchoNullableReference(" + "value: " + ArgumentsCriteria.value.ToString() + ")" + " -> " + global::Imposter.Abstractions.DiagnosticValue.Outcomes(_outcomeDescriptions);
 			}
 
 			internal volatile bool HasConfiguredOutcome;
@@ -1353,6 +1411,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal interface IEchoNullableReferenceMethodImposter : global::Imposter.Abstractions.IImposterVerificationSource
 		{
+			global::System.Collections.Generic.List<string> GetConfiguredSetups();
 			IEchoNullableReferenceMethodImposter<TTarget>? As<TTarget>()
 				where TTarget : class ?, global::System.IDisposable?;
 		}
@@ -1371,6 +1430,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
 			global::System.Collections.Generic.IReadOnlyList<EchoNullableReferenceInvocation<T>> Invocations { get; }
+
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1427,6 +1488,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					throw new global::System.NotImplementedException();
 				}
 
+				public global::System.Collections.Generic.List<string> GetConfiguredSetups()
+				{
+					return _target.GetConfiguredSetups();
+				}
+
 				global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
 				{
 					return ((global::Imposter.Abstractions.IImposterVerificationSource)_target).Interactions();
@@ -1459,6 +1525,18 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				return null;
 			}
 
+			public global::System.Collections.Generic.List<string> GetConfiguredSetups()
+			{
+				var setups = new global::System.Collections.Generic.List<string>();
+				foreach (var group in _invocationImposters)
+				{
+					if (group.HasConfiguredOutcome)
+						setups.Add(group.ToString());
+				}
+
+				return setups;
+			}
+
 			public T Invoke(T value, EchoNullableReferenceDelegate<T>? baseImplementation = null)
 			{
 				T capturedvalue = value;
@@ -1467,7 +1545,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					if (matchingInvocationImposterGroup == default)
 					{
 						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-							throw new global::Imposter.Abstractions.MissingImposterException("virtual T NullableGenericMethodsClass.EchoNullableReference<T>(T value)");
+							throw new global::Imposter.Abstractions.MissingImposterException("EchoNullableReference", "EchoNullableReference(" + "value: " + global::Imposter.Abstractions.DiagnosticValue.Format(capturedvalue) + ")", _echoNullableReferenceMethodInvocationHistoryCollection.SetupSource!.GetConfiguredSetups(), "virtual T NullableGenericMethodsClass.EchoNullableReference<T>(T value)");
 						matchingInvocationImposterGroup = EchoNullableReferenceMethodInvocationImposterGroup<T>.Default;
 					}
 
@@ -1499,6 +1577,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw new TException();
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, global::Imposter.Abstractions.DiagnosticValue.Throws<TException>());
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1509,6 +1588,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw exception;
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1519,6 +1599,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw exceptionGenerator.Invoke(value);
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1526,6 +1607,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				IEchoNullableReferenceMethodInvocationImposterGroupContinuation<T> IEchoNullableReferenceMethodInvocationImposterGroupCallback<T>.Callback(EchoNullableReferenceCallbackDelegate<T> callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Callback");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1533,6 +1615,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				IEchoNullableReferenceMethodInvocationImposterGroupContinuation<T> IEchoNullableReferenceMethodInvocationImposterGroup<T>.Returns(EchoNullableReferenceDelegate<T> resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1540,6 +1623,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				IEchoNullableReferenceMethodInvocationImposterGroupContinuation<T> IEchoNullableReferenceMethodInvocationImposterGroup<T>.Returns(T value_1)
 				{
 					_currentInvocationImposter.Returns(value_1);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1547,6 +1631,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				IEchoNullableReferenceMethodInvocationImposterGroupContinuation<T> IEchoNullableReferenceMethodInvocationImposterGroup<T>.UseBaseImplementation()
 				{
 					_currentInvocationImposter.UseBaseImplementation();
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "UseBaseImplementation");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1562,7 +1647,16 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					var invocationCount = _echoNullableReferenceMethodInvocationHistoryCollection.Verify<T>(count, _argumentsCriteria);
 					if (!count.Matches(invocationCount))
 					{
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _echoNullableReferenceMethodInvocationHistoryCollection.ToString());
+						throw new global::Imposter.Abstractions.VerificationFailedException("EchoNullableReference", "EchoNullableReference(" + "value: " + _argumentsCriteria.value.ToString() + ")", count, invocationCount, _echoNullableReferenceMethodInvocationHistoryCollection.ToString(), null, _echoNullableReferenceMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_echoNullableReferenceMethodInvocationHistoryCollection.Owner) : null);
+					}
+				}
+
+				void EchoNullableReferenceInvocationVerifier<T>.Called(global::Imposter.Abstractions.Count count, string? because)
+				{
+					var invocationCount = _echoNullableReferenceMethodInvocationHistoryCollection.Verify<T>(count, _argumentsCriteria);
+					if (!count.Matches(invocationCount))
+					{
+						throw new global::Imposter.Abstractions.VerificationFailedException("EchoNullableReference", "EchoNullableReference(" + "value: " + _argumentsCriteria.value.ToString() + ")", count, invocationCount, _echoNullableReferenceMethodInvocationHistoryCollection.ToString(), because, _echoNullableReferenceMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_echoNullableReferenceMethodInvocationHistoryCollection.Owner) : null);
 					}
 				}
 
@@ -1583,7 +1677,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				{
 					get
 					{
-						return "EchoNullableReference(" + "value: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.value) + ")";
+						return "EchoNullableReference(" + "value: " + _argumentsCriteria.value.ToString() + ")";
 					}
 				}
 

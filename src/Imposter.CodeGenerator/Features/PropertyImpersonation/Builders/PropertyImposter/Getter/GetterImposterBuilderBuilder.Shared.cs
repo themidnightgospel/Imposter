@@ -20,7 +20,9 @@ internal static partial class GetterImposterBuilderBuilder
             .AddBaseType(SimpleBaseType(property.SharedRuntime.GetterType))
             .AddBaseType(SimpleBaseType(builderInterface.TypeSyntax))
             .AddBaseType(SimpleBaseType(builderInterface.FluentInterfaceTypeSyntax))
-            .AddMember(SharedPropertyBuilder.BuildConstructor(property, getter.Name));
+            .AddMember(
+                SharedPropertyBuilder.BuildConstructor(property, getter.Name, withOwner: true)
+            );
 
         var returns = builderInterface.ReturnsMethod;
         builder.AddMember(
@@ -85,6 +87,25 @@ internal static partial class GetterImposterBuilderBuilder
             )
         );
 
+        var called = builderInterface.CalledMethod;
+        builder.AddMember(
+            new MethodDeclarationBuilder(called.ReturnType, called.Name)
+                .WithExplicitInterfaceSpecifier(builderInterface.VerificationInterfaceTypeSyntax)
+                .AddParameter(ParameterSyntax(called.CountParameter))
+                .AddParameter(ParameterSyntax(called.BecauseParameter))
+                .WithBody(
+                    Block(
+                        BaseExpression()
+                            .Dot(IdentifierName(called.Name))
+                            .Call([
+                                Argument(IdentifierName(called.CountParameter.Name)),
+                                Argument(IdentifierName(called.BecauseParameter.Name)),
+                            ])
+                            .ToStatementSyntax()
+                    )
+                )
+                .Build()
+        );
         builder.AddMember(
             new MethodDeclarationBuilder(
                 builderInterface.ContinuationInterfaceTypeSyntax,
@@ -102,7 +123,6 @@ internal static partial class GetterImposterBuilderBuilder
                 )
                 .Build()
         );
-        var called = builderInterface.CalledMethod;
         builder.AddMember(
             new MethodDeclarationBuilder(called.ReturnType, called.Name)
                 .WithExplicitInterfaceSpecifier(builderInterface.VerificationInterfaceTypeSyntax)

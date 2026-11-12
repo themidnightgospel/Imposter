@@ -52,6 +52,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		public interface IAgePropertyGetterVerifier
 		{
 			void Called(global::Imposter.Abstractions.Count count);
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -86,6 +87,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		public interface IAgePropertySetterVerifier : global::Imposter.Abstractions.IInvocationStep
 		{
 			void Called(global::Imposter.Abstractions.Count count);
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 			global::System.Collections.Generic.IReadOnlyList<AgeSetterInvocation> Invocations { get; }
 		}
 
@@ -165,7 +167,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			{
 				_defaultPropertyBehaviour = new global::Imposter.Abstractions.PropertyValue<int>();
 				_invocationBehavior = invocationBehavior;
-				_getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.IPropertySetupSut.Age");
+				_getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.IPropertySetupSut.Age", owner);
 				_setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.IPropertySetupSut.Age", owner);
 			}
 
@@ -178,7 +180,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			internal class GetterImposterBuilder : global::Imposter.Abstractions.PropertyGetter<int>, IAgePropertyGetterBuilder, IAgePropertyGetterFluentBuilder
 			{
-				internal GetterImposterBuilder(global::Imposter.Abstractions.PropertyValue<int> _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName) : base(_defaultPropertyBehaviour, invocationBehavior, propertyDisplayName)
+				internal GetterImposterBuilder(global::Imposter.Abstractions.PropertyValue<int> _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName, global::Imposter.Abstractions.IImposter owner) : base(_defaultPropertyBehaviour, invocationBehavior, propertyDisplayName, owner)
 				{
 				}
 
@@ -210,6 +212,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 				{
 					base.Callback(callback);
 					return this;
+				}
+
+				void IAgePropertyGetterVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+				{
+					base.Called(count, because);
 				}
 
 				IAgePropertyGetterContinuationBuilder IAgePropertyGetterContinuationBuilder.Lenient()
@@ -274,7 +281,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 					{
 						get
 						{
-							return "set Age(value: " + global::Imposter.Abstractions.MatcherDescription.Format(_runtimeCriteria) + ")";
+							return "set Age(value: " + _runtimeCriteria.ToString() + ")";
 						}
 					}
 
@@ -298,6 +305,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 					void IAgePropertySetterVerifier.Called(global::Imposter.Abstractions.Count count)
 					{
 						_setterImposter.Called(_runtimeCriteria, count);
+					}
+
+					void IAgePropertySetterVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+					{
+						_setterImposter.Called(_runtimeCriteria, count, because);
 					}
 
 					IAgePropertySetterFluentBuilder IAgePropertySetterContinuationBuilder.Then()
@@ -343,6 +355,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		public interface ILastNamePropertySetterVerifier : global::Imposter.Abstractions.IInvocationStep
 		{
 			void Called(global::Imposter.Abstractions.Count count);
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 			global::System.Collections.Generic.IReadOnlyList<LastNameSetterInvocation> Invocations { get; }
 		}
 
@@ -468,7 +481,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 					{
 						get
 						{
-							return "set LastName(value: " + global::Imposter.Abstractions.MatcherDescription.Format(_runtimeCriteria) + ")";
+							return "set LastName(value: " + _runtimeCriteria.ToString() + ")";
 						}
 					}
 
@@ -492,6 +505,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 					void ILastNamePropertySetterVerifier.Called(global::Imposter.Abstractions.Count count)
 					{
 						_setterImposter.Called(_runtimeCriteria, count);
+					}
+
+					void ILastNamePropertySetterVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+					{
+						_setterImposter.Called(_runtimeCriteria, count, because);
 					}
 
 					ILastNamePropertySetterFluentBuilder ILastNamePropertySetterContinuationBuilder.Then()
@@ -537,6 +555,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		public interface INamePropertyGetterVerifier
 		{
 			void Called(global::Imposter.Abstractions.Count count);
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -587,11 +606,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			private readonly global::Imposter.Abstractions.PropertyValue<int> _defaultPropertyBehaviour;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			internal GetterImposterBuilder _getterImposterBuilder;
-			internal NamePropertyBuilder(global::Imposter.Abstractions.ImposterMode invocationBehavior)
+			internal NamePropertyBuilder(global::Imposter.Abstractions.ImposterMode invocationBehavior, global::Imposter.Abstractions.IImposter owner)
 			{
 				_defaultPropertyBehaviour = new global::Imposter.Abstractions.PropertyValue<int>();
 				_invocationBehavior = invocationBehavior;
-				_getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.IPropertySetupSut.Name");
+				_getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.IPropertySetupSut.Name", owner);
 			}
 
 			internal void ClearInvocations()
@@ -602,7 +621,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			internal class GetterImposterBuilder : global::Imposter.Abstractions.PropertyGetter<int>, INamePropertyGetterBuilder, INamePropertyGetterFluentBuilder
 			{
-				internal GetterImposterBuilder(global::Imposter.Abstractions.PropertyValue<int> _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName) : base(_defaultPropertyBehaviour, invocationBehavior, propertyDisplayName)
+				internal GetterImposterBuilder(global::Imposter.Abstractions.PropertyValue<int> _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName, global::Imposter.Abstractions.IImposter owner) : base(_defaultPropertyBehaviour, invocationBehavior, propertyDisplayName, owner)
 				{
 				}
 
@@ -634,6 +653,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 				{
 					base.Callback(callback);
 					return this;
+				}
+
+				void INamePropertyGetterVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+				{
+					base.Called(count, because);
 				}
 
 				INamePropertyGetterContinuationBuilder INamePropertyGetterContinuationBuilder.Lenient()
@@ -685,7 +709,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			this._imposterMode = invocationBehavior;
 			this._AgePropertyBuilderField = new AgePropertyBuilder(this._imposterMode, this);
 			this._LastNamePropertyBuilderField = new LastNamePropertyBuilder(this._imposterMode, this);
-			this._NamePropertyBuilderField = new NamePropertyBuilder(this._imposterMode);
+			this._NamePropertyBuilderField = new NamePropertyBuilder(this._imposterMode, this);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -727,7 +751,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			_NamePropertyBuilderField.ClearInvocations();
 			this._AgePropertyBuilderField = new AgePropertyBuilder(this._imposterMode, this);
 			this._LastNamePropertyBuilderField = new LastNamePropertyBuilder(this._imposterMode, this);
-			this._NamePropertyBuilderField = new NamePropertyBuilder(this._imposterMode);
+			this._NamePropertyBuilderField = new NamePropertyBuilder(this._imposterMode, this);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

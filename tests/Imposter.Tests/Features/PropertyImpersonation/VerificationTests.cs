@@ -30,6 +30,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
             var exception = Should.Throw<VerificationFailedException>(() =>
                 _sut.Age.Getter().Called(Count.Exactly(2))
             );
+            exception.Expected.ShouldContain("Age (getter)");
             exception.Message.ShouldContain("exactly 2 time(s)");
             exception.Message.ShouldContain("performed 1 times");
             exception.PerformedInvocations.ShouldBe("1 read(s)");

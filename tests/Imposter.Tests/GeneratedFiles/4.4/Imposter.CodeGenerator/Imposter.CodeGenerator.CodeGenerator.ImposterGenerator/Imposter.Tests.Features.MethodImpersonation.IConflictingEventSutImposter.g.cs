@@ -52,6 +52,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			IChangedEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Action> handlerCriteria, global::Imposter.Abstractions.Count count);
 			global::Imposter.Abstractions.IInvocationStep Subscribed(global::Imposter.Abstractions.Arg<global::System.Action> criteria);
 			global::Imposter.Abstractions.IInvocationStep Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Action> criteria);
+			IChangedEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.Action> criteria, global::Imposter.Abstractions.Count count, string? because);
+			IChangedEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Action> criteria, global::Imposter.Abstractions.Count count, string? because);
+			IChangedEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Count count, string? because);
+			IChangedEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Action> handlerCriteria, global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -151,7 +155,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				{
 					get
 					{
-						return "Changed" + (_subscription ? " subscribed(handler: " : " unsubscribed(handler: ") + global::Imposter.Abstractions.MatcherDescription.Format(_criteria) + ")";
+						return "Changed" + (_subscription ? " subscribed(handler: " : " unsubscribed(handler: ") + _criteria.ToString() + ")";
 					}
 				}
 
@@ -331,7 +335,55 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed subscribed" + "(" + "handler: " + criteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						global::Imposter.Abstractions.InvocationBuffer<global::System.Action>.MarkVerified(entry);
+				}
+
+				return this;
+			}
+
+			IChangedEventImposterVerificationBuilder IChangedEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::System.Action> criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				var actual = 0;
+				var snapshot = _subscribeHistory == null ? default(global::Imposter.Abstractions.InvocationBuffer<global::System.Action>.Enumerator) : _subscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						actual++;
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_subscribeHistory != null)
+					{
+						foreach (var entry in _subscribeHistory)
+						{
+							performedInvocations.Add("Changed subscribed" + " handler: " + FormatValue(entry.Value));
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed subscribed" + "(" + "handler: " + criteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				cursor = snapshot;
@@ -379,7 +431,55 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed unsubscribed" + "(" + "handler: " + criteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						global::Imposter.Abstractions.InvocationBuffer<global::System.Action>.MarkVerified(entry);
+				}
+
+				return this;
+			}
+
+			IChangedEventImposterVerificationBuilder IChangedEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Action> criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				var actual = 0;
+				var snapshot = _unsubscribeHistory == null ? default(global::Imposter.Abstractions.InvocationBuffer<global::System.Action>.Enumerator) : _unsubscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						actual++;
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_unsubscribeHistory != null)
+					{
+						foreach (var entry in _unsubscribeHistory)
+						{
+							performedInvocations.Add("Changed unsubscribed" + " handler: " + FormatValue(entry.Value));
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed unsubscribed" + "(" + "handler: " + criteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				cursor = snapshot;
@@ -446,7 +546,86 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed raised" + "(" + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				return this;
+			}
+
+			IChangedEventImposterVerificationBuilder IChangedEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = 0;
+				if (_history != null)
+				{
+					foreach (var entry in _history)
+					{
+						if (true)
+						{
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_history != null)
+					{
+						foreach (var entry in _history)
+						{
+							performedInvocations.Add("Changed raised");
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed raised" + "(" + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				return this;
+			}
+
+			IChangedEventImposterVerificationBuilder IChangedEventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Action> handlerCriteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (handlerCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handlerCriteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = 0;
+				if (_handlerInvocations != null)
+				{
+					foreach (var entry in _handlerInvocations)
+					{
+						if (handlerCriteria.Matches(entry))
+						{
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_handlerInvocations != null)
+					{
+						foreach (var entry in _handlerInvocations)
+						{
+							performedInvocations.Add("Changed handler invoked" + " handler: " + FormatValue(entry));
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed handler invoked" + "(" + "handler: " + handlerCriteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				return this;
@@ -488,7 +667,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed handler invoked" + "(" + "handler: " + handlerCriteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				return this;
@@ -521,7 +700,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
@@ -556,6 +735,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			IChanged_1EventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.EventHandler> handlerCriteria, global::Imposter.Abstractions.Count count);
 			global::Imposter.Abstractions.IInvocationStep Subscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria);
 			global::Imposter.Abstractions.IInvocationStep Unsubscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria);
+			IChanged_1EventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count, string? because);
+			IChanged_1EventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count, string? because);
+			IChanged_1EventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object?> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count, string? because);
+			IChanged_1EventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.EventHandler> handlerCriteria, global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -655,7 +838,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				{
 					get
 					{
-						return "Changed" + (_subscription ? " subscribed(handler: " : " unsubscribed(handler: ") + global::Imposter.Abstractions.MatcherDescription.Format(_criteria) + ")";
+						return "Changed" + (_subscription ? " subscribed(handler: " : " unsubscribed(handler: ") + _criteria.ToString() + ")";
 					}
 				}
 
@@ -835,7 +1018,55 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed subscribed" + "(" + "handler: " + criteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						global::Imposter.Abstractions.InvocationBuffer<global::System.EventHandler>.MarkVerified(entry);
+				}
+
+				return this;
+			}
+
+			IChanged_1EventImposterVerificationBuilder IChanged_1EventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				var actual = 0;
+				var snapshot = _subscribeHistory == null ? default(global::Imposter.Abstractions.InvocationBuffer<global::System.EventHandler>.Enumerator) : _subscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						actual++;
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_subscribeHistory != null)
+					{
+						foreach (var entry in _subscribeHistory)
+						{
+							performedInvocations.Add("Changed subscribed" + " handler: " + FormatValue(entry.Value));
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed subscribed" + "(" + "handler: " + criteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				cursor = snapshot;
@@ -883,7 +1114,55 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed unsubscribed" + "(" + "handler: " + criteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						global::Imposter.Abstractions.InvocationBuffer<global::System.EventHandler>.MarkVerified(entry);
+				}
+
+				return this;
+			}
+
+			IChanged_1EventImposterVerificationBuilder IChanged_1EventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				var actual = 0;
+				var snapshot = _unsubscribeHistory == null ? default(global::Imposter.Abstractions.InvocationBuffer<global::System.EventHandler>.Enumerator) : _unsubscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						actual++;
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_unsubscribeHistory != null)
+					{
+						foreach (var entry in _unsubscribeHistory)
+						{
+							performedInvocations.Add("Changed unsubscribed" + " handler: " + FormatValue(entry.Value));
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed unsubscribed" + "(" + "handler: " + criteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				cursor = snapshot;
@@ -960,7 +1239,96 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed raised" + "(" + "sender: " + senderCriteria.ToString() + ", e: " + eCriteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				return this;
+			}
+
+			IChanged_1EventImposterVerificationBuilder IChanged_1EventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object?> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (senderCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(senderCriteria));
+				}
+
+				if (eCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(eCriteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = 0;
+				if (_history != null)
+				{
+					foreach (var entry in _history)
+					{
+						if (senderCriteria.Matches(entry.sender) && eCriteria.Matches(entry.e))
+						{
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_history != null)
+					{
+						foreach (var entry in _history)
+						{
+							performedInvocations.Add("Changed raised" + " sender: " + FormatValue(entry.sender) + " e: " + FormatValue(entry.e));
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed raised" + "(" + "sender: " + senderCriteria.ToString() + ", e: " + eCriteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				return this;
+			}
+
+			IChanged_1EventImposterVerificationBuilder IChanged_1EventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.EventHandler> handlerCriteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (handlerCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handlerCriteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = 0;
+				if (_handlerInvocations != null)
+				{
+					foreach (var entry in _handlerInvocations)
+					{
+						if (handlerCriteria.Matches(entry.Handler))
+						{
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_handlerInvocations != null)
+					{
+						foreach (var entry in _handlerInvocations)
+						{
+							performedInvocations.Add("Changed handler invoked" + " handler: " + FormatValue(entry.Handler) + " sender: " + FormatValue(entry.sender) + " e: " + FormatValue(entry.e));
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed handler invoked" + "(" + "handler: " + handlerCriteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				return this;
@@ -1002,7 +1370,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed handler invoked" + "(" + "handler: " + handlerCriteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				return this;
@@ -1035,7 +1403,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
@@ -1070,6 +1438,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			ICustomEventEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Action> handlerCriteria, global::Imposter.Abstractions.Count count);
 			global::Imposter.Abstractions.IInvocationStep Subscribed(global::Imposter.Abstractions.Arg<global::System.Action> criteria);
 			global::Imposter.Abstractions.IInvocationStep Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Action> criteria);
+			ICustomEventEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.Action> criteria, global::Imposter.Abstractions.Count count, string? because);
+			ICustomEventEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Action> criteria, global::Imposter.Abstractions.Count count, string? because);
+			ICustomEventEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Count count, string? because);
+			ICustomEventEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Action> handlerCriteria, global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1169,7 +1541,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				{
 					get
 					{
-						return "CustomEvent" + (_subscription ? " subscribed(handler: " : " unsubscribed(handler: ") + global::Imposter.Abstractions.MatcherDescription.Format(_criteria) + ")";
+						return "CustomEvent" + (_subscription ? " subscribed(handler: " : " unsubscribed(handler: ") + _criteria.ToString() + ")";
 					}
 				}
 
@@ -1349,7 +1721,55 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomEvent", "CustomEvent subscribed" + "(" + "handler: " + criteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						global::Imposter.Abstractions.InvocationBuffer<global::System.Action>.MarkVerified(entry);
+				}
+
+				return this;
+			}
+
+			ICustomEventEventImposterVerificationBuilder ICustomEventEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::System.Action> criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				var actual = 0;
+				var snapshot = _subscribeHistory == null ? default(global::Imposter.Abstractions.InvocationBuffer<global::System.Action>.Enumerator) : _subscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						actual++;
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_subscribeHistory != null)
+					{
+						foreach (var entry in _subscribeHistory)
+						{
+							performedInvocations.Add("CustomEvent subscribed" + " handler: " + FormatValue(entry.Value));
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomEvent", "CustomEvent subscribed" + "(" + "handler: " + criteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				cursor = snapshot;
@@ -1397,7 +1817,55 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomEvent", "CustomEvent unsubscribed" + "(" + "handler: " + criteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						global::Imposter.Abstractions.InvocationBuffer<global::System.Action>.MarkVerified(entry);
+				}
+
+				return this;
+			}
+
+			ICustomEventEventImposterVerificationBuilder ICustomEventEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Action> criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				var actual = 0;
+				var snapshot = _unsubscribeHistory == null ? default(global::Imposter.Abstractions.InvocationBuffer<global::System.Action>.Enumerator) : _unsubscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						actual++;
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_unsubscribeHistory != null)
+					{
+						foreach (var entry in _unsubscribeHistory)
+						{
+							performedInvocations.Add("CustomEvent unsubscribed" + " handler: " + FormatValue(entry.Value));
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomEvent", "CustomEvent unsubscribed" + "(" + "handler: " + criteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				cursor = snapshot;
@@ -1464,7 +1932,86 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomEvent", "CustomEvent raised" + "(" + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				return this;
+			}
+
+			ICustomEventEventImposterVerificationBuilder ICustomEventEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = 0;
+				if (_history != null)
+				{
+					foreach (var entry in _history)
+					{
+						if (true)
+						{
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_history != null)
+					{
+						foreach (var entry in _history)
+						{
+							performedInvocations.Add("CustomEvent raised");
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomEvent", "CustomEvent raised" + "(" + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				return this;
+			}
+
+			ICustomEventEventImposterVerificationBuilder ICustomEventEventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Action> handlerCriteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (handlerCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handlerCriteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = 0;
+				if (_handlerInvocations != null)
+				{
+					foreach (var entry in _handlerInvocations)
+					{
+						if (handlerCriteria.Matches(entry))
+						{
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_handlerInvocations != null)
+					{
+						foreach (var entry in _handlerInvocations)
+						{
+							performedInvocations.Add("CustomEvent handler invoked" + " handler: " + FormatValue(entry));
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomEvent", "CustomEvent handler invoked" + "(" + "handler: " + handlerCriteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				return this;
@@ -1506,7 +2053,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomEvent", "CustomEvent handler invoked" + "(" + "handler: " + handlerCriteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				return this;
@@ -1539,7 +2086,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 

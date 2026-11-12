@@ -151,7 +151,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
@@ -322,9 +322,10 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
 			internal volatile bool IsUsed;
 			internal volatile bool IsLenient;
+			internal object? _outcomeDescriptions;
 			public override string ToString()
 			{
-				return "Parse(" + "text: " + global::Imposter.Abstractions.MatcherDescription.Format(ArgumentsCriteria.text) + ")";
+				return "Parse(" + "text: " + ArgumentsCriteria.text.ToString() + ")" + " -> " + global::Imposter.Abstractions.DiagnosticValue.Outcomes(_outcomeDescriptions);
 			}
 
 			internal volatile bool HasConfiguredOutcome;
@@ -466,6 +467,8 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
 			global::System.Collections.Generic.IReadOnlyList<ParseInvocation> Invocations { get; }
+
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -496,6 +499,18 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				return null;
 			}
 
+			public global::System.Collections.Generic.List<string> GetConfiguredSetups()
+			{
+				var setups = new global::System.Collections.Generic.List<string>();
+				foreach (var group in _invocationImposters)
+				{
+					if (group.HasConfiguredOutcome)
+						setups.Add(group.ToString());
+				}
+
+				return setups;
+			}
+
 			public int Invoke(global::System.ReadOnlySpan<char> text)
 			{
 				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
@@ -506,7 +521,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					if (matchingInvocationImposterGroup == default)
 					{
 						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-							throw new global::Imposter.Abstractions.MissingImposterException("int ISpanArgumentMatchingService.Parse(ReadOnlySpan<char> text)");
+							throw new global::Imposter.Abstractions.MissingImposterException("Parse", "Parse(" + "text: " + global::Imposter.Abstractions.DiagnosticValue.Format(capturedtext) + ")", GetConfiguredSetups(), "int ISpanArgumentMatchingService.Parse(ReadOnlySpan<char> text)");
 						matchingInvocationImposterGroup = ParseMethodInvocationImposterGroup.Default;
 					}
 
@@ -543,6 +558,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					{
 						throw new TException();
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, global::Imposter.Abstractions.DiagnosticValue.Throws<TException>());
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -553,6 +569,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					{
 						throw exception;
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -563,6 +580,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					{
 						throw exceptionGenerator.Invoke(text);
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -570,6 +588,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				IParseMethodInvocationImposterGroupContinuation IParseMethodInvocationImposterGroupCallback.Callback(ParseCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Callback");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -577,6 +596,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				IParseMethodInvocationImposterGroupContinuation IParseMethodInvocationImposterGroup.Returns(ParseDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -584,6 +604,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				IParseMethodInvocationImposterGroupContinuation IParseMethodInvocationImposterGroup.Returns(int value)
 				{
 					_currentInvocationImposter.Returns(value);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -599,7 +620,16 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					var invocationCount = _parseMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
 					if (!count.Matches(invocationCount))
 					{
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _parseMethodInvocationHistoryCollection.ToString());
+						throw new global::Imposter.Abstractions.VerificationFailedException("Parse", "Parse(" + "text: " + _argumentsCriteria.text.ToString() + ")", count, invocationCount, _parseMethodInvocationHistoryCollection.ToString(), null, _parseMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_parseMethodInvocationHistoryCollection.Owner) : null);
+					}
+				}
+
+				void ParseInvocationVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+				{
+					var invocationCount = _parseMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
+					if (!count.Matches(invocationCount))
+					{
+						throw new global::Imposter.Abstractions.VerificationFailedException("Parse", "Parse(" + "text: " + _argumentsCriteria.text.ToString() + ")", count, invocationCount, _parseMethodInvocationHistoryCollection.ToString(), because, _parseMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_parseMethodInvocationHistoryCollection.Owner) : null);
 					}
 				}
 
@@ -620,7 +650,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				{
 					get
 					{
-						return "Parse(" + "text: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.text) + ")";
+						return "Parse(" + "text: " + _argumentsCriteria.text.ToString() + ")";
 					}
 				}
 

@@ -66,8 +66,7 @@ namespace Imposter.Tests.Features.Verification
             var failure = Should.Throw<VerificationFailedException>(() =>
                 Imposters.InOrder().Then(_sut.Save(1)).Then(_sut.Save(2)).Verify()
             );
-            failure.Message.ShouldContain("-> 2.");
-            failure.Message.ShouldContain("Save(value: <2>)");
+            failure.Expected.ShouldContain("-> 2.");
             failure.PerformedInvocations!.ShouldContain("<1>");
             Should.Throw<VerificationFailedException>(() => ((IImposter)_sut).VerifyNoOtherCalls());
         }

@@ -90,6 +90,7 @@ nav:
   - Verification completeness: verification-completeness.md
   - Ordered verification: ordered-verification.md
   - Invocation History: invocation-history.md
+  - Failure Messages: failure-messages.md
   - Clear and Reset: clear-and-reset.md
   - Implicit vs Explicit: implicit-vs-explicit.md
   - Base Implementation: base-implementation.md

@@ -92,10 +92,34 @@ internal static class EventImposterBuilder
             .AddMember(EventImposterSubscriptionsBuilder.BuildCallbackMethod(@event))
             .AddMember(EventImposterRaiseBuilder.BuildRaiseMethod(@event))
             .AddMember(EventImposterVerificationBuilder.BuildSubscribedVerificationMethod(@event))
+            .AddMember(
+                EventImposterVerificationBuilder.BuildSubscribedVerificationMethod(
+                    @event,
+                    withReason: true
+                )
+            )
             .AddMember(EventImposterVerificationBuilder.BuildUnsubscribedVerificationMethod(@event))
+            .AddMember(
+                EventImposterVerificationBuilder.BuildUnsubscribedVerificationMethod(
+                    @event,
+                    withReason: true
+                )
+            )
             .AddMember(EventImposterSubscriptionsBuilder.BuildOnSubscribeMethod(@event))
             .AddMember(EventImposterSubscriptionsBuilder.BuildOnUnsubscribeMethod(@event))
             .AddMember(EventImposterVerificationBuilder.BuildRaisedVerificationMethod(@event))
+            .AddMember(
+                EventImposterVerificationBuilder.BuildRaisedVerificationMethod(
+                    @event,
+                    withReason: true
+                )
+            )
+            .AddMember(
+                EventImposterVerificationBuilder.BuildHandlerInvokedVerificationMethod(
+                    @event,
+                    withReason: true
+                )
+            )
             .AddMember(
                 EventImposterVerificationBuilder.BuildHandlerInvokedVerificationMethod(@event)
             )

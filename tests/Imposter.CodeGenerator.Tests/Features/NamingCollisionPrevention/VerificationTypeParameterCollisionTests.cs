@@ -22,6 +22,9 @@ public class VerificationTypeParameterCollisionTests
         "interceptorIndex",
         "performedInvocations",
         "Owner",
+        "SetupSource",
+        "_outcomeDescriptions",
+        "GetConfiguredSetups",
         "Snapshot",
         "source",
         "entry",
@@ -109,6 +112,13 @@ public class VerificationTypeParameterCollisionTests
             """,
             $$"""
             var imposter = new IServiceImposter<{{typeArguments}}>();
+            string? reason = null;
+            imposter.Echo(1).Called(Count.Never(), reason);
+            imposter.Number.Getter().Called(Count.Never(), reason);
+            imposter.Number.Setter(Arg<int>.Any()).Called(Count.Never(), reason);
+            imposter[1].Getter().Called(Count.Never(), reason);
+            imposter[1].Setter().Called(Count.Never(), reason);
+            imposter.Changed.Subscribed(Arg<System.Action>.Any(), Count.Never(), reason);
             imposter.Fetch().ReturnsAsync(1);
             _ = imposter.Instance().Fetch();
             imposter.Match<int>(ReadOnlySpanArg<int>.Any(), Arg<int[]>.Any()).Returns(true);
@@ -155,7 +165,7 @@ public class VerificationTypeParameterCollisionTests
             $$"""
             var imposter = new ServiceImposter<{{typeArguments}}>();
             imposter.Number.Setter(Arg<int>.Any()).UseBaseImplementation();
-            imposter.Number.Setter(Arg<int>.Any()).Called(Count.Never());
+            imposter.Number.Setter(Arg<int>.Any()).Called(Count.Never(), "initialization");
             _ = imposter.Number.Setter(Arg<int>.Any()).Invocations;
             imposter.ClearInvocations();
             imposter.Reset();

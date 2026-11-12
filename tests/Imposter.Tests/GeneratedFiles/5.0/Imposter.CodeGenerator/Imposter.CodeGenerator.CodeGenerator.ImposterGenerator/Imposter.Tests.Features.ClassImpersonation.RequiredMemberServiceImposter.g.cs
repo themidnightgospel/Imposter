@@ -110,7 +110,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
@@ -279,9 +279,10 @@ namespace Imposter.Tests.Features.ClassImpersonation
 			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
 			internal volatile bool IsUsed;
 			internal volatile bool IsLenient;
+			internal object? _outcomeDescriptions;
 			public override string ToString()
 			{
-				return "Count(" + ")";
+				return "Count(" + ")" + " -> " + global::Imposter.Abstractions.DiagnosticValue.Outcomes(_outcomeDescriptions);
 			}
 
 			internal volatile bool HasConfiguredOutcome;
@@ -438,6 +439,8 @@ namespace Imposter.Tests.Features.ClassImpersonation
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
 			global::System.Collections.Generic.IReadOnlyList<CountInvocation> Invocations { get; }
+
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -468,6 +471,18 @@ namespace Imposter.Tests.Features.ClassImpersonation
 				return null;
 			}
 
+			public global::System.Collections.Generic.List<string> GetConfiguredSetups()
+			{
+				var setups = new global::System.Collections.Generic.List<string>();
+				foreach (var group in _invocationImposters)
+				{
+					if (group.HasConfiguredOutcome)
+						setups.Add(group.ToString());
+				}
+
+				return setups;
+			}
+
 			public int Invoke(CountDelegate? baseImplementation = null)
 			{
 				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
@@ -477,7 +492,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					if (matchingInvocationImposterGroup == default)
 					{
 						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-							throw new global::Imposter.Abstractions.MissingImposterException("virtual int RequiredMemberService.Count()");
+							throw new global::Imposter.Abstractions.MissingImposterException("Count", "Count(" + ")", GetConfiguredSetups(), "virtual int RequiredMemberService.Count()");
 						matchingInvocationImposterGroup = CountMethodInvocationImposterGroup.Default;
 					}
 
@@ -512,6 +527,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					{
 						throw new TException();
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, global::Imposter.Abstractions.DiagnosticValue.Throws<TException>());
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -522,6 +538,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					{
 						throw exception;
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -532,6 +549,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					{
 						throw exceptionGenerator.Invoke();
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -539,6 +557,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 				ICountMethodInvocationImposterGroupContinuation ICountMethodInvocationImposterGroupCallback.Callback(CountCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Callback");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -546,6 +565,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 				ICountMethodInvocationImposterGroupContinuation ICountMethodInvocationImposterGroup.Returns(CountDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -553,6 +573,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 				ICountMethodInvocationImposterGroupContinuation ICountMethodInvocationImposterGroup.Returns(int value)
 				{
 					_currentInvocationImposter.Returns(value);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -560,6 +581,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 				ICountMethodInvocationImposterGroupContinuation ICountMethodInvocationImposterGroup.UseBaseImplementation()
 				{
 					_currentInvocationImposter.UseBaseImplementation();
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "UseBaseImplementation");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -575,7 +597,16 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					var invocationCount = _countMethodInvocationHistoryCollection.Verify(count);
 					if (!count.Matches(invocationCount))
 					{
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _countMethodInvocationHistoryCollection.ToString());
+						throw new global::Imposter.Abstractions.VerificationFailedException("Count", "Count(" + ")", count, invocationCount, _countMethodInvocationHistoryCollection.ToString(), null, _countMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_countMethodInvocationHistoryCollection.Owner) : null);
+					}
+				}
+
+				void CountInvocationVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+				{
+					var invocationCount = _countMethodInvocationHistoryCollection.Verify(count);
+					if (!count.Matches(invocationCount))
+					{
+						throw new global::Imposter.Abstractions.VerificationFailedException("Count", "Count(" + ")", count, invocationCount, _countMethodInvocationHistoryCollection.ToString(), because, _countMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_countMethodInvocationHistoryCollection.Owner) : null);
 					}
 				}
 
@@ -670,6 +701,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 		public interface ILabelPropertyGetterVerifier
 		{
 			void Called(global::Imposter.Abstractions.Count count);
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -712,6 +744,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 		public interface ILabelPropertySetterVerifier : global::Imposter.Abstractions.IInvocationStep
 		{
 			void Called(global::Imposter.Abstractions.Count count);
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 			global::System.Collections.Generic.IReadOnlyList<LabelSetterInvocation> Invocations { get; }
 		}
 
@@ -798,7 +831,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 			{
 				_defaultPropertyBehaviour = new global::Imposter.Abstractions.PropertyValue<string>();
 				_invocationBehavior = invocationBehavior;
-				_getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImpersonation.RequiredMemberService.Label");
+				_getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImpersonation.RequiredMemberService.Label", owner);
 				_setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.ClassImpersonation.RequiredMemberService.Label", owner);
 			}
 
@@ -811,7 +844,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			internal class GetterImposterBuilder : global::Imposter.Abstractions.PropertyGetter<string>, ILabelPropertyGetterBuilder, ILabelPropertyGetterFluentBuilder, ILabelPropertyGetterUseBaseImplementationBuilder
 			{
-				internal GetterImposterBuilder(global::Imposter.Abstractions.PropertyValue<string> _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName) : base(_defaultPropertyBehaviour, invocationBehavior, propertyDisplayName)
+				internal GetterImposterBuilder(global::Imposter.Abstractions.PropertyValue<string> _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName, global::Imposter.Abstractions.IImposter owner) : base(_defaultPropertyBehaviour, invocationBehavior, propertyDisplayName, owner)
 				{
 				}
 
@@ -843,6 +876,11 @@ namespace Imposter.Tests.Features.ClassImpersonation
 				{
 					base.Callback(callback);
 					return this;
+				}
+
+				void ILabelPropertyGetterVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+				{
+					base.Called(count, because);
 				}
 
 				ILabelPropertyGetterContinuationBuilder ILabelPropertyGetterContinuationBuilder.Lenient()
@@ -924,7 +962,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					{
 						get
 						{
-							return "set Label(value: " + global::Imposter.Abstractions.MatcherDescription.Format(_runtimeCriteria) + ")";
+							return "set Label(value: " + _runtimeCriteria.ToString() + ")";
 						}
 					}
 
@@ -948,6 +986,11 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					void ILabelPropertySetterVerifier.Called(global::Imposter.Abstractions.Count count)
 					{
 						_setterImposter.Called(_runtimeCriteria, count);
+					}
+
+					void ILabelPropertySetterVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+					{
+						_setterImposter.Called(_runtimeCriteria, count, because);
 					}
 
 					ILabelPropertySetterUseBaseImplementationBuilder ILabelPropertySetterContinuationBuilder.Then()

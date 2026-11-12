@@ -42,6 +42,7 @@ internal readonly ref struct ImposterEventMetadata
             "entry",
             "actual",
             "performedInvocations",
+            "because",
             "index",
             "registration",
             "owner",

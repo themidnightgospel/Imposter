@@ -47,6 +47,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		public interface IThrowingPropertySetterVerifier : global::Imposter.Abstractions.IInvocationStep
 		{
 			void Called(global::Imposter.Abstractions.Count count);
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 			global::System.Collections.Generic.IReadOnlyList<ThrowingSetterInvocation> Invocations { get; }
 		}
 
@@ -184,7 +185,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 					{
 						get
 						{
-							return "set Throwing(value: " + global::Imposter.Abstractions.MatcherDescription.Format(_runtimeCriteria) + ")";
+							return "set Throwing(value: " + _runtimeCriteria.ToString() + ")";
 						}
 					}
 
@@ -208,6 +209,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 					void IThrowingPropertySetterVerifier.Called(global::Imposter.Abstractions.Count count)
 					{
 						_setterImposter.Called(_runtimeCriteria, count);
+					}
+
+					void IThrowingPropertySetterVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+					{
+						_setterImposter.Called(_runtimeCriteria, count, because);
 					}
 
 					IThrowingPropertySetterUseBaseImplementationBuilder IThrowingPropertySetterContinuationBuilder.Then()
@@ -265,6 +271,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		public interface IValuePropertyGetterVerifier
 		{
 			void Called(global::Imposter.Abstractions.Count count);
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -307,6 +314,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		public interface IValuePropertySetterVerifier : global::Imposter.Abstractions.IInvocationStep
 		{
 			void Called(global::Imposter.Abstractions.Count count);
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 			global::System.Collections.Generic.IReadOnlyList<ValueSetterInvocation> Invocations { get; }
 		}
 
@@ -393,7 +401,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			{
 				_defaultPropertyBehaviour = new global::Imposter.Abstractions.PropertyValue<int>();
 				_invocationBehavior = invocationBehavior;
-				_getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.VirtualInitOnlyPropertySut.Value");
+				_getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.VirtualInitOnlyPropertySut.Value", owner);
 				_setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.VirtualInitOnlyPropertySut.Value", owner);
 			}
 
@@ -406,7 +414,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			internal class GetterImposterBuilder : global::Imposter.Abstractions.PropertyGetter<int>, IValuePropertyGetterBuilder, IValuePropertyGetterFluentBuilder, IValuePropertyGetterUseBaseImplementationBuilder
 			{
-				internal GetterImposterBuilder(global::Imposter.Abstractions.PropertyValue<int> _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName) : base(_defaultPropertyBehaviour, invocationBehavior, propertyDisplayName)
+				internal GetterImposterBuilder(global::Imposter.Abstractions.PropertyValue<int> _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName, global::Imposter.Abstractions.IImposter owner) : base(_defaultPropertyBehaviour, invocationBehavior, propertyDisplayName, owner)
 				{
 				}
 
@@ -438,6 +446,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 				{
 					base.Callback(callback);
 					return this;
+				}
+
+				void IValuePropertyGetterVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+				{
+					base.Called(count, because);
 				}
 
 				IValuePropertyGetterContinuationBuilder IValuePropertyGetterContinuationBuilder.Lenient()
@@ -524,7 +537,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 					{
 						get
 						{
-							return "set Value(value: " + global::Imposter.Abstractions.MatcherDescription.Format(_runtimeCriteria) + ")";
+							return "set Value(value: " + _runtimeCriteria.ToString() + ")";
 						}
 					}
 
@@ -548,6 +561,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 					void IValuePropertySetterVerifier.Called(global::Imposter.Abstractions.Count count)
 					{
 						_setterImposter.Called(_runtimeCriteria, count);
+					}
+
+					void IValuePropertySetterVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+					{
+						_setterImposter.Called(_runtimeCriteria, count, because);
 					}
 
 					IValuePropertySetterUseBaseImplementationBuilder IValuePropertySetterContinuationBuilder.Then()
@@ -606,6 +624,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		public interface IWriteOnlyPropertySetterVerifier : global::Imposter.Abstractions.IInvocationStep
 		{
 			void Called(global::Imposter.Abstractions.Count count);
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 			global::System.Collections.Generic.IReadOnlyList<WriteOnlySetterInvocation> Invocations { get; }
 		}
 
@@ -743,7 +762,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 					{
 						get
 						{
-							return "set WriteOnly(value: " + global::Imposter.Abstractions.MatcherDescription.Format(_runtimeCriteria) + ")";
+							return "set WriteOnly(value: " + _runtimeCriteria.ToString() + ")";
 						}
 					}
 
@@ -767,6 +786,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 					void IWriteOnlyPropertySetterVerifier.Called(global::Imposter.Abstractions.Count count)
 					{
 						_setterImposter.Called(_runtimeCriteria, count);
+					}
+
+					void IWriteOnlyPropertySetterVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+					{
+						_setterImposter.Called(_runtimeCriteria, count, because);
 					}
 
 					IWriteOnlyPropertySetterUseBaseImplementationBuilder IWriteOnlyPropertySetterContinuationBuilder.Then()

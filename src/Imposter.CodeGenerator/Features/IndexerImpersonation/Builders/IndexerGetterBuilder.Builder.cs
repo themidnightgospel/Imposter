@@ -50,6 +50,15 @@ internal static partial class IndexerGetterBuilder
             )
             .AddMember(ThenReturningThis(indexer.GetterBuilderInterface.ThenMethod))
             .AddMember(
+                ForwardCalled(
+                    builder,
+                    indexer.GetterBuilderInterface.VerificationInterfaceTypeSyntax,
+                    indexer.GetterBuilderInterface.CalledMethod,
+                    IndexerGetterImposterMetadata.CalledMethodName,
+                    withReason: true
+                )
+            )
+            .AddMember(
                 indexer.GetterBuilderInterface.UseBaseImplementationMethod is not null
                     ? BuildGetterBuilderUseBaseImplementationMethod(indexer)
                     : null
@@ -127,7 +136,8 @@ internal static partial class IndexerGetterBuilder
             .WithBody(
                 AddReturnValueAndReturnThis(
                     indexer,
-                    ThrowExpression(IdentifierName(throws.ExceptionParameter.Name))
+                    ThrowExpression(IdentifierName(throws.ExceptionParameter.Name)),
+                    "Throws".StringLiteral()
                 )
             )
             .Build();
@@ -142,7 +152,19 @@ internal static partial class IndexerGetterBuilder
             .WithBody(
                 AddReturnValueAndReturnThis(
                     indexer,
-                    ThrowExpression(IdentifierName(throws.ExceptionTypeParameter.Name).New())
+                    ThrowExpression(IdentifierName(throws.ExceptionTypeParameter.Name).New()),
+                    WellKnownTypes
+                        .Imposter.Abstractions.DiagnosticValue.Dot(
+                            GenericName(
+                                Identifier("Throws"),
+                                TypeArgumentList(
+                                    SingletonSeparatedList<TypeSyntax>(
+                                        IdentifierName(throws.ExceptionTypeParameter.Name)
+                                    )
+                                )
+                            )
+                        )
+                        .Call()
                 )
             )
             .Build();
@@ -160,7 +182,8 @@ internal static partial class IndexerGetterBuilder
                     ThrowExpression(
                         IdentifierName(throws.DelegateParameter.Name)
                             .Call(DelegateArguments(indexer))
-                    )
+                    ),
+                    "Throws".StringLiteral()
                 )
             )
             .Build();
@@ -178,7 +201,8 @@ internal static partial class IndexerGetterBuilder
     // through, and yields outcome. Then returns this for chaining.
     private static BlockSyntax AddReturnValueAndReturnThis(
         in ImposterIndexerMetadata indexer,
-        ExpressionSyntax outcome
+        ExpressionSyntax outcome,
+        ExpressionSyntax? description = null
     )
     {
         var getter = indexer.GetterImplementation;
@@ -198,7 +222,12 @@ internal static partial class IndexerGetterBuilder
                     outcome
                 );
 
-        return CallInvocationImposter(indexer, AddReturnValueMethodName, Argument(generator));
+        return CallInvocationImposter(
+            indexer,
+            AddReturnValueMethodName,
+            description ?? "Returns".StringLiteral(),
+            Argument(generator)
+        );
     }
 
     private static MethodDeclarationSyntax BuildGetterBuilderCallbackMethod(
@@ -214,6 +243,7 @@ internal static partial class IndexerGetterBuilder
                 CallInvocationImposter(
                     indexer,
                     AddCallbackMethodName,
+                    "Callback".StringLiteral(),
                     Argument(IdentifierName(callback.CallbackParameter.Name))
                 )
             )
@@ -234,21 +264,37 @@ internal static partial class IndexerGetterBuilder
             useBaseImplementation.Name
         )
             .WithExplicitInterfaceSpecifier(useBaseImplementation.InterfaceSyntax)
-            .WithBody(CallInvocationImposter(indexer, UseBaseImplementationMethodName))
+            .WithBody(
+                CallInvocationImposter(
+                    indexer,
+                    UseBaseImplementationMethodName,
+                    "UseBaseImplementation".StringLiteral()
+                )
+            )
             .Build();
     }
 
     // The setup's invocation imposter does the work; the builder returns itself so setups chain.
-
     private static BlockSyntax CallInvocationImposter(
         in ImposterIndexerMetadata indexer,
         string methodName,
+        ExpressionSyntax description,
         params ArgumentSyntax[] arguments
     ) =>
         Block(
             IdentifierName(IndexerGetterImposterMetadata.InvocationImposterPropertyName)
                 .Dot(IdentifierName(methodName))
                 .Call(arguments)
+                .ToStatementSyntax(),
+            WellKnownTypes
+                .Imposter.Abstractions.DiagnosticValue.Dot(IdentifierName("AddOutcome"))
+                .Call([
+                    RefArgument(
+                        IdentifierName(IndexerGetterImposterMetadata.InvocationImposterPropertyName)
+                            .Dot(IdentifierName(OutcomeDescriptionsFieldName))
+                    ),
+                    Argument(description),
+                ])
                 .ToStatementSyntax(),
             ReturnThis
         );

@@ -17,6 +17,7 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
     internal const string ArgumentsCriteriaPropertyName = "ArgumentsCriteria";
 
     internal readonly string HasConfiguredOutcomeFieldName;
+    internal readonly string OutcomeDescriptionsFieldName;
     internal readonly string IsUsedFieldName;
     internal readonly string IsLenientFieldName;
 
@@ -53,6 +54,7 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
     internal MethodInvocationImposterGroupMetadata(in ImposterTargetMethodMetadata method)
     {
         HasConfiguredOutcomeFieldName = method.MemberNames.Use("HasConfiguredOutcome");
+        OutcomeDescriptionsFieldName = method.MemberNames.Use("_outcomeDescriptions");
         IsUsedFieldName = method.MemberNames.Use("IsUsed");
         IsLenientFieldName = method.MemberNames.Use("IsLenient");
         Name = $"{method.UniqueName}MethodInvocationImposterGroup";

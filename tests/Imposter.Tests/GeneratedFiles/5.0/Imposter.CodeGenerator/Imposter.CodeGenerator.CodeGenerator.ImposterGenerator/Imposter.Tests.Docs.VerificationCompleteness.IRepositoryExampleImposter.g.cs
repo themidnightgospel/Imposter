@@ -158,7 +158,7 @@ namespace Imposter.Tests.Docs.VerificationCompleteness
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
@@ -329,9 +329,10 @@ namespace Imposter.Tests.Docs.VerificationCompleteness
 			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
 			internal volatile bool IsUsed;
 			internal volatile bool IsLenient;
+			internal object? _outcomeDescriptions;
 			public override string ToString()
 			{
-				return "Load(" + "id: " + global::Imposter.Abstractions.MatcherDescription.Format(ArgumentsCriteria.id) + ")";
+				return "Load(" + "id: " + ArgumentsCriteria.id.ToString() + ")" + " -> " + global::Imposter.Abstractions.DiagnosticValue.Outcomes(_outcomeDescriptions);
 			}
 
 			internal volatile bool HasConfiguredOutcome;
@@ -473,6 +474,8 @@ namespace Imposter.Tests.Docs.VerificationCompleteness
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
 			global::System.Collections.Generic.IReadOnlyList<LoadInvocation> Invocations { get; }
+
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -503,6 +506,18 @@ namespace Imposter.Tests.Docs.VerificationCompleteness
 				return null;
 			}
 
+			public global::System.Collections.Generic.List<string> GetConfiguredSetups()
+			{
+				var setups = new global::System.Collections.Generic.List<string>();
+				foreach (var group in _invocationImposters)
+				{
+					if (group.HasConfiguredOutcome)
+						setups.Add(group.ToString());
+				}
+
+				return setups;
+			}
+
 			public string Invoke(int id)
 			{
 				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
@@ -513,7 +528,7 @@ namespace Imposter.Tests.Docs.VerificationCompleteness
 					if (matchingInvocationImposterGroup == default)
 					{
 						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-							throw new global::Imposter.Abstractions.MissingImposterException("string IRepositoryExample.Load(int id)");
+							throw new global::Imposter.Abstractions.MissingImposterException("Load", "Load(" + "id: " + global::Imposter.Abstractions.DiagnosticValue.Format(capturedid) + ")", GetConfiguredSetups(), "string IRepositoryExample.Load(int id)");
 						matchingInvocationImposterGroup = LoadMethodInvocationImposterGroup.Default;
 					}
 
@@ -550,6 +565,7 @@ namespace Imposter.Tests.Docs.VerificationCompleteness
 					{
 						throw new TException();
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, global::Imposter.Abstractions.DiagnosticValue.Throws<TException>());
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -560,6 +576,7 @@ namespace Imposter.Tests.Docs.VerificationCompleteness
 					{
 						throw exception;
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -570,6 +587,7 @@ namespace Imposter.Tests.Docs.VerificationCompleteness
 					{
 						throw exceptionGenerator.Invoke(id);
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -577,6 +595,7 @@ namespace Imposter.Tests.Docs.VerificationCompleteness
 				ILoadMethodInvocationImposterGroupContinuation ILoadMethodInvocationImposterGroupCallback.Callback(LoadCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Callback");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -584,6 +603,7 @@ namespace Imposter.Tests.Docs.VerificationCompleteness
 				ILoadMethodInvocationImposterGroupContinuation ILoadMethodInvocationImposterGroup.Returns(LoadDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -591,6 +611,7 @@ namespace Imposter.Tests.Docs.VerificationCompleteness
 				ILoadMethodInvocationImposterGroupContinuation ILoadMethodInvocationImposterGroup.Returns(string value)
 				{
 					_currentInvocationImposter.Returns(value);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -606,7 +627,16 @@ namespace Imposter.Tests.Docs.VerificationCompleteness
 					var invocationCount = _loadMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
 					if (!count.Matches(invocationCount))
 					{
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _loadMethodInvocationHistoryCollection.ToString());
+						throw new global::Imposter.Abstractions.VerificationFailedException("Load", "Load(" + "id: " + _argumentsCriteria.id.ToString() + ")", count, invocationCount, _loadMethodInvocationHistoryCollection.ToString(), null, _loadMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_loadMethodInvocationHistoryCollection.Owner) : null);
+					}
+				}
+
+				void LoadInvocationVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+				{
+					var invocationCount = _loadMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
+					if (!count.Matches(invocationCount))
+					{
+						throw new global::Imposter.Abstractions.VerificationFailedException("Load", "Load(" + "id: " + _argumentsCriteria.id.ToString() + ")", count, invocationCount, _loadMethodInvocationHistoryCollection.ToString(), because, _loadMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_loadMethodInvocationHistoryCollection.Owner) : null);
 					}
 				}
 
@@ -627,7 +657,7 @@ namespace Imposter.Tests.Docs.VerificationCompleteness
 				{
 					get
 					{
-						return "Load(" + "id: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.id) + ")";
+						return "Load(" + "id: " + _argumentsCriteria.id.ToString() + ")";
 					}
 				}
 
@@ -783,7 +813,7 @@ namespace Imposter.Tests.Docs.VerificationCompleteness
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
@@ -954,9 +984,10 @@ namespace Imposter.Tests.Docs.VerificationCompleteness
 			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
 			internal volatile bool IsUsed;
 			internal volatile bool IsLenient;
+			internal object? _outcomeDescriptions;
 			public override string ToString()
 			{
-				return "Save(" + "id: " + global::Imposter.Abstractions.MatcherDescription.Format(ArgumentsCriteria.id) + ")";
+				return "Save(" + "id: " + ArgumentsCriteria.id.ToString() + ")" + " -> " + global::Imposter.Abstractions.DiagnosticValue.Outcomes(_outcomeDescriptions);
 			}
 
 			internal volatile bool HasConfiguredOutcome;
@@ -1086,6 +1117,8 @@ namespace Imposter.Tests.Docs.VerificationCompleteness
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
 			global::System.Collections.Generic.IReadOnlyList<SaveInvocation> Invocations { get; }
+
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1116,6 +1149,18 @@ namespace Imposter.Tests.Docs.VerificationCompleteness
 				return null;
 			}
 
+			public global::System.Collections.Generic.List<string> GetConfiguredSetups()
+			{
+				var setups = new global::System.Collections.Generic.List<string>();
+				foreach (var group in _invocationImposters)
+				{
+					if (group.HasConfiguredOutcome)
+						setups.Add(group.ToString());
+				}
+
+				return setups;
+			}
+
 			public void Invoke(int id)
 			{
 				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
@@ -1126,7 +1171,7 @@ namespace Imposter.Tests.Docs.VerificationCompleteness
 					if (matchingInvocationImposterGroup == default)
 					{
 						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-							throw new global::Imposter.Abstractions.MissingImposterException("void IRepositoryExample.Save(int id)");
+							throw new global::Imposter.Abstractions.MissingImposterException("Save", "Save(" + "id: " + global::Imposter.Abstractions.DiagnosticValue.Format(capturedid) + ")", GetConfiguredSetups(), "void IRepositoryExample.Save(int id)");
 						matchingInvocationImposterGroup = SaveMethodInvocationImposterGroup.Default;
 					}
 
@@ -1162,6 +1207,7 @@ namespace Imposter.Tests.Docs.VerificationCompleteness
 					{
 						throw new TException();
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, global::Imposter.Abstractions.DiagnosticValue.Throws<TException>());
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1172,6 +1218,7 @@ namespace Imposter.Tests.Docs.VerificationCompleteness
 					{
 						throw exception;
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1182,6 +1229,7 @@ namespace Imposter.Tests.Docs.VerificationCompleteness
 					{
 						throw exceptionGenerator.Invoke(id);
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1189,6 +1237,7 @@ namespace Imposter.Tests.Docs.VerificationCompleteness
 				ISaveMethodInvocationImposterGroupContinuation ISaveMethodInvocationImposterGroupCallback.Callback(SaveCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Callback");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1204,7 +1253,16 @@ namespace Imposter.Tests.Docs.VerificationCompleteness
 					var invocationCount = _saveMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
 					if (!count.Matches(invocationCount))
 					{
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _saveMethodInvocationHistoryCollection.ToString());
+						throw new global::Imposter.Abstractions.VerificationFailedException("Save", "Save(" + "id: " + _argumentsCriteria.id.ToString() + ")", count, invocationCount, _saveMethodInvocationHistoryCollection.ToString(), null, _saveMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_saveMethodInvocationHistoryCollection.Owner) : null);
+					}
+				}
+
+				void SaveInvocationVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+				{
+					var invocationCount = _saveMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
+					if (!count.Matches(invocationCount))
+					{
+						throw new global::Imposter.Abstractions.VerificationFailedException("Save", "Save(" + "id: " + _argumentsCriteria.id.ToString() + ")", count, invocationCount, _saveMethodInvocationHistoryCollection.ToString(), because, _saveMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_saveMethodInvocationHistoryCollection.Owner) : null);
 					}
 				}
 
@@ -1225,7 +1283,7 @@ namespace Imposter.Tests.Docs.VerificationCompleteness
 				{
 					get
 					{
-						return "Save(" + "id: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.id) + ")";
+						return "Save(" + "id: " + _argumentsCriteria.id.ToString() + ")";
 					}
 				}
 

@@ -38,18 +38,42 @@ internal static partial class InvocationImposterGroupBuilder
                 )
             )
             .AddMember(
+                SyntaxFactoryHelper.SingleVariableField(
+                    WellKnownTypes.Object.ToNullableType(),
+                    method.MethodInvocationImposterGroup.OutcomeDescriptionsFieldName,
+                    SyntaxKind.InternalKeyword
+                )
+            )
+            .AddMember(
                 new MethodDeclarationBuilder(WellKnownTypes.String, "ToString")
                     .AddModifier(Token(SyntaxKind.PublicKeyword))
                     .AddModifier(Token(SyntaxKind.OverrideKeyword))
                     .WithBody(
                         Block(
                             ReturnStatement(
-                                MethodDiagnosticBuilder.Expected(
-                                    method,
-                                    IdentifierName(
-                                        MethodInvocationImposterGroupMetadata.ArgumentsCriteriaPropertyName
+                                MethodDiagnosticBuilder
+                                    .Expected(
+                                        method,
+                                        IdentifierName(
+                                            MethodInvocationImposterGroupMetadata.ArgumentsCriteriaPropertyName
+                                        )
                                     )
-                                )
+                                    .Add(" -> ".StringLiteral())
+                                    .Add(
+                                        WellKnownTypes
+                                            .Imposter.Abstractions.DiagnosticValue.Dot(
+                                                IdentifierName("Outcomes")
+                                            )
+                                            .Call(
+                                                Argument(
+                                                    IdentifierName(
+                                                        method
+                                                            .MethodInvocationImposterGroup
+                                                            .OutcomeDescriptionsFieldName
+                                                    )
+                                                )
+                                            )
+                                    )
                             )
                         )
                     )

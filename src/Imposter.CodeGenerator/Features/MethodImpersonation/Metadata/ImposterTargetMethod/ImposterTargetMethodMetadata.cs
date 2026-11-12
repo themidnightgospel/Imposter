@@ -140,6 +140,8 @@ internal readonly struct ImposterTargetMethodMetadata
             "owner",
             "findings",
             "item",
+            "setups",
+            "group",
             "descriptions",
             "invocation",
             "head",

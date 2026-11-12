@@ -174,13 +174,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class AddItemMethodInvocationHistoryCollection
 		{
+			internal AddItemMethodImposterCollection? SetupSource;
 			internal global::Imposter.Abstractions.IImposter Owner { get; }
 
 			internal AddItemMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
@@ -345,6 +346,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			{
 				this._addItemMethodInvocationHistoryCollection = _addItemMethodInvocationHistoryCollection;
 				this._invocationBehavior = _invocationBehavior;
+				_addItemMethodInvocationHistoryCollection.SetupSource = this;
 			}
 
 			private readonly global::Imposter.Abstractions.SetupCollection<IAddItemMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IAddItemMethodImposter>();
@@ -367,6 +369,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				}
 
 				return new AddItemMethodImposter<TItem>(_addItemMethodInvocationHistoryCollection, _invocationBehavior);
+			}
+
+			internal global::System.Collections.Generic.List<string> GetConfiguredSetups()
+			{
+				var setups = new global::System.Collections.Generic.List<string>();
+				foreach (var imposter in _imposters)
+					setups.AddRange(imposter.GetConfiguredSetups());
+				return setups;
 			}
 
 			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
@@ -397,9 +407,10 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
 			internal volatile bool IsUsed;
 			internal volatile bool IsLenient;
+			internal object? _outcomeDescriptions;
 			public override string ToString()
 			{
-				return "AddItem(" + "item: " + global::Imposter.Abstractions.MatcherDescription.Format(ArgumentsCriteria.item) + ")";
+				return "AddItem(" + "item: " + ArgumentsCriteria.item.ToString() + ")" + " -> " + global::Imposter.Abstractions.DiagnosticValue.Outcomes(_outcomeDescriptions);
 			}
 
 			internal volatile bool HasConfiguredOutcome;
@@ -526,6 +537,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal interface IAddItemMethodImposter : global::Imposter.Abstractions.IImposterVerificationSource
 		{
+			global::System.Collections.Generic.List<string> GetConfiguredSetups();
 			IAddItemMethodImposter<TItemTarget>? As<TItemTarget>();
 		}
 
@@ -542,6 +554,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
 			global::System.Collections.Generic.IReadOnlyList<AddItemInvocation<TItem>> Invocations { get; }
+
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -597,6 +611,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					throw new global::System.NotImplementedException();
 				}
 
+				public global::System.Collections.Generic.List<string> GetConfiguredSetups()
+				{
+					return _target.GetConfiguredSetups();
+				}
+
 				global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
 				{
 					return ((global::Imposter.Abstractions.IImposterVerificationSource)_target).Interactions();
@@ -629,6 +648,18 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				return null;
 			}
 
+			public global::System.Collections.Generic.List<string> GetConfiguredSetups()
+			{
+				var setups = new global::System.Collections.Generic.List<string>();
+				foreach (var group in _invocationImposters)
+				{
+					if (group.HasConfiguredOutcome)
+						setups.Add(group.ToString());
+				}
+
+				return setups;
+			}
+
 			public void Invoke(TItem item)
 			{
 				TItem captureditem = item;
@@ -637,7 +668,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					if (matchingInvocationImposterGroup == default)
 					{
 						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-							throw new global::Imposter.Abstractions.MissingImposterException("void IHaveGenericMethods.AddItem<TItem>(TItem item)");
+							throw new global::Imposter.Abstractions.MissingImposterException("AddItem", "AddItem(" + "item: " + global::Imposter.Abstractions.DiagnosticValue.Format(captureditem) + ")", _addItemMethodInvocationHistoryCollection.SetupSource!.GetConfiguredSetups(), "void IHaveGenericMethods.AddItem<TItem>(TItem item)");
 						matchingInvocationImposterGroup = AddItemMethodInvocationImposterGroup<TItem>.Default;
 					}
 
@@ -668,6 +699,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						throw new TException();
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, global::Imposter.Abstractions.DiagnosticValue.Throws<TException>());
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -678,6 +710,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						throw exception;
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -688,6 +721,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						throw exceptionGenerator.Invoke(item);
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -695,6 +729,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				IAddItemMethodInvocationImposterGroupContinuation<TItem> IAddItemMethodInvocationImposterGroupCallback<TItem>.Callback(AddItemCallbackDelegate<TItem> callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Callback");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -710,7 +745,16 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					var invocationCount = _addItemMethodInvocationHistoryCollection.Verify<TItem>(count, _argumentsCriteria);
 					if (!count.Matches(invocationCount))
 					{
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _addItemMethodInvocationHistoryCollection.ToString());
+						throw new global::Imposter.Abstractions.VerificationFailedException("AddItem", "AddItem(" + "item: " + _argumentsCriteria.item.ToString() + ")", count, invocationCount, _addItemMethodInvocationHistoryCollection.ToString(), null, _addItemMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_addItemMethodInvocationHistoryCollection.Owner) : null);
+					}
+				}
+
+				void AddItemInvocationVerifier<TItem>.Called(global::Imposter.Abstractions.Count count, string? because)
+				{
+					var invocationCount = _addItemMethodInvocationHistoryCollection.Verify<TItem>(count, _argumentsCriteria);
+					if (!count.Matches(invocationCount))
+					{
+						throw new global::Imposter.Abstractions.VerificationFailedException("AddItem", "AddItem(" + "item: " + _argumentsCriteria.item.ToString() + ")", count, invocationCount, _addItemMethodInvocationHistoryCollection.ToString(), because, _addItemMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_addItemMethodInvocationHistoryCollection.Owner) : null);
 					}
 				}
 
@@ -731,7 +775,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				{
 					get
 					{
-						return "AddItem(" + "item: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.item) + ")";
+						return "AddItem(" + "item: " + _argumentsCriteria.item.ToString() + ")";
 					}
 				}
 
@@ -856,13 +900,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class GetValueMethodInvocationHistoryCollection
 		{
+			internal GetValueMethodImposterCollection? SetupSource;
 			internal global::Imposter.Abstractions.IImposter Owner { get; }
 
 			internal GetValueMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
@@ -1027,6 +1072,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			{
 				this._getValueMethodInvocationHistoryCollection = _getValueMethodInvocationHistoryCollection;
 				this._invocationBehavior = _invocationBehavior;
+				_getValueMethodInvocationHistoryCollection.SetupSource = this;
 			}
 
 			private readonly global::Imposter.Abstractions.SetupCollection<IGetValueMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IGetValueMethodImposter>();
@@ -1049,6 +1095,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				}
 
 				return new GetValueMethodImposter<TResult>(_getValueMethodInvocationHistoryCollection, _invocationBehavior);
+			}
+
+			internal global::System.Collections.Generic.List<string> GetConfiguredSetups()
+			{
+				var setups = new global::System.Collections.Generic.List<string>();
+				foreach (var imposter in _imposters)
+					setups.AddRange(imposter.GetConfiguredSetups());
+				return setups;
 			}
 
 			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
@@ -1077,9 +1131,10 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
 			internal volatile bool IsUsed;
 			internal volatile bool IsLenient;
+			internal object? _outcomeDescriptions;
 			public override string ToString()
 			{
-				return "GetValue(" + ")";
+				return "GetValue(" + ")" + " -> " + global::Imposter.Abstractions.DiagnosticValue.Outcomes(_outcomeDescriptions);
 			}
 
 			internal volatile bool HasConfiguredOutcome;
@@ -1217,6 +1272,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal interface IGetValueMethodImposter : global::Imposter.Abstractions.IImposterVerificationSource
 		{
+			global::System.Collections.Generic.List<string> GetConfiguredSetups();
 			IGetValueMethodImposter<TResultTarget>? As<TResultTarget>();
 		}
 
@@ -1233,6 +1289,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
 			global::System.Collections.Generic.IReadOnlyList<GetValueInvocation<TResult>> Invocations { get; }
+
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1289,6 +1347,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					throw new global::System.NotImplementedException();
 				}
 
+				public global::System.Collections.Generic.List<string> GetConfiguredSetups()
+				{
+					return _target.GetConfiguredSetups();
+				}
+
 				global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
 				{
 					return ((global::Imposter.Abstractions.IImposterVerificationSource)_target).Interactions();
@@ -1321,6 +1384,18 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				return null;
 			}
 
+			public global::System.Collections.Generic.List<string> GetConfiguredSetups()
+			{
+				var setups = new global::System.Collections.Generic.List<string>();
+				foreach (var group in _invocationImposters)
+				{
+					if (group.HasConfiguredOutcome)
+						setups.Add(group.ToString());
+				}
+
+				return setups;
+			}
+
 			public TResult Invoke()
 			{
 				{
@@ -1328,7 +1403,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					if (matchingInvocationImposterGroup == default)
 					{
 						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-							throw new global::Imposter.Abstractions.MissingImposterException("TResult IHaveGenericMethods.GetValue<TResult>()");
+							throw new global::Imposter.Abstractions.MissingImposterException("GetValue", "GetValue(" + ")", _getValueMethodInvocationHistoryCollection.SetupSource!.GetConfiguredSetups(), "TResult IHaveGenericMethods.GetValue<TResult>()");
 						matchingInvocationImposterGroup = GetValueMethodInvocationImposterGroup<TResult>.Default;
 					}
 
@@ -1358,6 +1433,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						throw new TException();
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, global::Imposter.Abstractions.DiagnosticValue.Throws<TException>());
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1368,6 +1444,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						throw exception;
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1378,6 +1455,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						throw exceptionGenerator.Invoke();
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1385,6 +1463,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				IGetValueMethodInvocationImposterGroupContinuation<TResult> IGetValueMethodInvocationImposterGroupCallback<TResult>.Callback(GetValueCallbackDelegate<TResult> callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Callback");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1392,6 +1471,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				IGetValueMethodInvocationImposterGroupContinuation<TResult> IGetValueMethodInvocationImposterGroup<TResult>.Returns(GetValueDelegate<TResult> resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1399,6 +1479,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				IGetValueMethodInvocationImposterGroupContinuation<TResult> IGetValueMethodInvocationImposterGroup<TResult>.Returns(TResult value)
 				{
 					_currentInvocationImposter.Returns(value);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1414,7 +1495,16 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					var invocationCount = _getValueMethodInvocationHistoryCollection.Verify<TResult>(count);
 					if (!count.Matches(invocationCount))
 					{
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _getValueMethodInvocationHistoryCollection.ToString());
+						throw new global::Imposter.Abstractions.VerificationFailedException("GetValue", "GetValue(" + ")", count, invocationCount, _getValueMethodInvocationHistoryCollection.ToString(), null, _getValueMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_getValueMethodInvocationHistoryCollection.Owner) : null);
+					}
+				}
+
+				void GetValueInvocationVerifier<TResult>.Called(global::Imposter.Abstractions.Count count, string? because)
+				{
+					var invocationCount = _getValueMethodInvocationHistoryCollection.Verify<TResult>(count);
+					if (!count.Matches(invocationCount))
+					{
+						throw new global::Imposter.Abstractions.VerificationFailedException("GetValue", "GetValue(" + ")", count, invocationCount, _getValueMethodInvocationHistoryCollection.ToString(), because, _getValueMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_getValueMethodInvocationHistoryCollection.Owner) : null);
 					}
 				}
 
@@ -1627,13 +1717,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class ProcessAsyncMethodInvocationHistoryCollection
 		{
+			internal ProcessAsyncMethodImposterCollection? SetupSource;
 			internal global::Imposter.Abstractions.IImposter Owner { get; }
 
 			internal ProcessAsyncMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
@@ -1798,6 +1889,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			{
 				this._processAsyncMethodInvocationHistoryCollection = _processAsyncMethodInvocationHistoryCollection;
 				this._invocationBehavior = _invocationBehavior;
+				_processAsyncMethodInvocationHistoryCollection.SetupSource = this;
 			}
 
 			private readonly global::Imposter.Abstractions.SetupCollection<IProcessAsyncMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IProcessAsyncMethodImposter>();
@@ -1820,6 +1912,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				}
 
 				return new ProcessAsyncMethodImposter<TItem>(_processAsyncMethodInvocationHistoryCollection, _invocationBehavior);
+			}
+
+			internal global::System.Collections.Generic.List<string> GetConfiguredSetups()
+			{
+				var setups = new global::System.Collections.Generic.List<string>();
+				foreach (var imposter in _imposters)
+					setups.AddRange(imposter.GetConfiguredSetups());
+				return setups;
 			}
 
 			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
@@ -1850,9 +1950,10 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
 			internal volatile bool IsUsed;
 			internal volatile bool IsLenient;
+			internal object? _outcomeDescriptions;
 			public override string ToString()
 			{
-				return "ProcessAsync(" + "items: " + global::Imposter.Abstractions.MatcherDescription.Format(ArgumentsCriteria.items) + ")";
+				return "ProcessAsync(" + "items: " + ArgumentsCriteria.items.ToString() + ")" + " -> " + global::Imposter.Abstractions.DiagnosticValue.Outcomes(_outcomeDescriptions);
 			}
 
 			internal volatile bool HasConfiguredOutcome;
@@ -2019,6 +2120,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal interface IProcessAsyncMethodImposter : global::Imposter.Abstractions.IImposterVerificationSource
 		{
+			global::System.Collections.Generic.List<string> GetConfiguredSetups();
 			IProcessAsyncMethodImposter<TItemTarget>? As<TItemTarget>();
 		}
 
@@ -2035,6 +2137,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
 			global::System.Collections.Generic.IReadOnlyList<ProcessAsyncInvocation<TItem>> Invocations { get; }
+
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -2091,6 +2195,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					throw new global::System.NotImplementedException();
 				}
 
+				public global::System.Collections.Generic.List<string> GetConfiguredSetups()
+				{
+					return _target.GetConfiguredSetups();
+				}
+
 				global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
 				{
 					return ((global::Imposter.Abstractions.IImposterVerificationSource)_target).Interactions();
@@ -2123,6 +2232,18 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				return null;
 			}
 
+			public global::System.Collections.Generic.List<string> GetConfiguredSetups()
+			{
+				var setups = new global::System.Collections.Generic.List<string>();
+				foreach (var group in _invocationImposters)
+				{
+					if (group.HasConfiguredOutcome)
+						setups.Add(group.ToString());
+				}
+
+				return setups;
+			}
+
 			public global::System.Threading.Tasks.Task<TItem> Invoke(global::System.Collections.Generic.IEnumerable<TItem> items)
 			{
 				global::System.Collections.Generic.IEnumerable<TItem> captureditems = items;
@@ -2131,7 +2252,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					if (matchingInvocationImposterGroup == default)
 					{
 						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-							throw new global::Imposter.Abstractions.MissingImposterException("Task<TItem> IHaveGenericMethods.ProcessAsync<TItem>(IEnumerable<TItem> items)");
+							throw new global::Imposter.Abstractions.MissingImposterException("ProcessAsync", "ProcessAsync(" + "items: " + global::Imposter.Abstractions.DiagnosticValue.Format(captureditems) + ")", _processAsyncMethodInvocationHistoryCollection.SetupSource!.GetConfiguredSetups(), "Task<TItem> IHaveGenericMethods.ProcessAsync<TItem>(IEnumerable<TItem> items)");
 						matchingInvocationImposterGroup = ProcessAsyncMethodInvocationImposterGroup<TItem>.Default;
 					}
 
@@ -2163,6 +2284,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						throw new TException();
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, global::Imposter.Abstractions.DiagnosticValue.Throws<TException>());
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -2173,6 +2295,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						throw exception;
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -2183,6 +2306,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						throw exceptionGenerator.Invoke(items);
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -2190,6 +2314,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				IProcessAsyncMethodInvocationImposterGroupContinuation<TItem> IProcessAsyncMethodInvocationImposterGroupCallback<TItem>.Callback(ProcessAsyncCallbackDelegate<TItem> callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Callback");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -2197,6 +2322,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				IProcessAsyncMethodInvocationImposterGroupContinuation<TItem> IProcessAsyncMethodInvocationImposterGroup<TItem>.Returns(ProcessAsyncDelegate<TItem> resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -2204,6 +2330,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				IProcessAsyncMethodInvocationImposterGroupContinuation<TItem> IProcessAsyncMethodInvocationImposterGroup<TItem>.Returns(global::System.Threading.Tasks.Task<TItem> value)
 				{
 					_currentInvocationImposter.Returns(value);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -2211,6 +2338,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				IProcessAsyncMethodInvocationImposterGroupContinuation<TItem> IProcessAsyncMethodInvocationImposterGroup<TItem>.ReturnsAsync(TItem value)
 				{
 					_currentInvocationImposter.ReturnsAsync(value);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "ReturnsAsync");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -2218,6 +2346,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				IProcessAsyncMethodInvocationImposterGroupContinuation<TItem> IProcessAsyncMethodInvocationImposterGroup<TItem>.ThrowsAsync(global::System.Exception exception)
 				{
 					_currentInvocationImposter.ThrowsAsync(exception);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "ThrowsAsync");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -2233,7 +2362,16 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					var invocationCount = _processAsyncMethodInvocationHistoryCollection.Verify<TItem>(count, _argumentsCriteria);
 					if (!count.Matches(invocationCount))
 					{
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _processAsyncMethodInvocationHistoryCollection.ToString());
+						throw new global::Imposter.Abstractions.VerificationFailedException("ProcessAsync", "ProcessAsync(" + "items: " + _argumentsCriteria.items.ToString() + ")", count, invocationCount, _processAsyncMethodInvocationHistoryCollection.ToString(), null, _processAsyncMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_processAsyncMethodInvocationHistoryCollection.Owner) : null);
+					}
+				}
+
+				void ProcessAsyncInvocationVerifier<TItem>.Called(global::Imposter.Abstractions.Count count, string? because)
+				{
+					var invocationCount = _processAsyncMethodInvocationHistoryCollection.Verify<TItem>(count, _argumentsCriteria);
+					if (!count.Matches(invocationCount))
+					{
+						throw new global::Imposter.Abstractions.VerificationFailedException("ProcessAsync", "ProcessAsync(" + "items: " + _argumentsCriteria.items.ToString() + ")", count, invocationCount, _processAsyncMethodInvocationHistoryCollection.ToString(), because, _processAsyncMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_processAsyncMethodInvocationHistoryCollection.Owner) : null);
 					}
 				}
 
@@ -2254,7 +2392,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				{
 					get
 					{
-						return "ProcessAsync(" + "items: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.items) + ")";
+						return "ProcessAsync(" + "items: " + _argumentsCriteria.items.ToString() + ")";
 					}
 				}
 
@@ -2446,13 +2584,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class ProcessComplexAsyncMethodInvocationHistoryCollection
 		{
+			internal ProcessComplexAsyncMethodImposterCollection? SetupSource;
 			internal global::Imposter.Abstractions.IImposter Owner { get; }
 
 			internal ProcessComplexAsyncMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
@@ -2617,6 +2756,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			{
 				this._processComplexAsyncMethodInvocationHistoryCollection = _processComplexAsyncMethodInvocationHistoryCollection;
 				this._invocationBehavior = _invocationBehavior;
+				_processComplexAsyncMethodInvocationHistoryCollection.SetupSource = this;
 			}
 
 			private readonly global::Imposter.Abstractions.SetupCollection<IProcessComplexAsyncMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IProcessComplexAsyncMethodImposter>();
@@ -2639,6 +2779,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				}
 
 				return new ProcessComplexAsyncMethodImposter<TItem, TResult>(_processComplexAsyncMethodInvocationHistoryCollection, _invocationBehavior);
+			}
+
+			internal global::System.Collections.Generic.List<string> GetConfiguredSetups()
+			{
+				var setups = new global::System.Collections.Generic.List<string>();
+				foreach (var imposter in _imposters)
+					setups.AddRange(imposter.GetConfiguredSetups());
+				return setups;
 			}
 
 			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
@@ -2669,9 +2817,10 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
 			internal volatile bool IsUsed;
 			internal volatile bool IsLenient;
+			internal object? _outcomeDescriptions;
 			public override string ToString()
 			{
-				return "ProcessComplexAsync(" + "items: " + global::Imposter.Abstractions.MatcherDescription.Format(ArgumentsCriteria.items) + ")";
+				return "ProcessComplexAsync(" + "items: " + ArgumentsCriteria.items.ToString() + ")" + " -> " + global::Imposter.Abstractions.DiagnosticValue.Outcomes(_outcomeDescriptions);
 			}
 
 			internal volatile bool HasConfiguredOutcome;
@@ -2838,6 +2987,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal interface IProcessComplexAsyncMethodImposter : global::Imposter.Abstractions.IImposterVerificationSource
 		{
+			global::System.Collections.Generic.List<string> GetConfiguredSetups();
 			IProcessComplexAsyncMethodImposter<TItemTarget, TResultTarget>? As<TItemTarget, TResultTarget>();
 		}
 
@@ -2854,6 +3004,8 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
 			global::System.Collections.Generic.IReadOnlyList<ProcessComplexAsyncInvocation<TItem, TResult>> Invocations { get; }
+
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -2910,6 +3062,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					throw new global::System.NotImplementedException();
 				}
 
+				public global::System.Collections.Generic.List<string> GetConfiguredSetups()
+				{
+					return _target.GetConfiguredSetups();
+				}
+
 				global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
 				{
 					return ((global::Imposter.Abstractions.IImposterVerificationSource)_target).Interactions();
@@ -2942,6 +3099,18 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				return null;
 			}
 
+			public global::System.Collections.Generic.List<string> GetConfiguredSetups()
+			{
+				var setups = new global::System.Collections.Generic.List<string>();
+				foreach (var group in _invocationImposters)
+				{
+					if (group.HasConfiguredOutcome)
+						setups.Add(group.ToString());
+				}
+
+				return setups;
+			}
+
 			public global::System.Threading.Tasks.Task<TResult> Invoke(global::System.Collections.Generic.IEnumerable<TItem> items)
 			{
 				global::System.Collections.Generic.IEnumerable<TItem> captureditems = items;
@@ -2950,7 +3119,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					if (matchingInvocationImposterGroup == default)
 					{
 						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-							throw new global::Imposter.Abstractions.MissingImposterException("Task<TResult> IHaveGenericMethods.ProcessComplexAsync<TItem, TResult>(IEnumerable<TItem> items)");
+							throw new global::Imposter.Abstractions.MissingImposterException("ProcessComplexAsync", "ProcessComplexAsync(" + "items: " + global::Imposter.Abstractions.DiagnosticValue.Format(captureditems) + ")", _processComplexAsyncMethodInvocationHistoryCollection.SetupSource!.GetConfiguredSetups(), "Task<TResult> IHaveGenericMethods.ProcessComplexAsync<TItem, TResult>(IEnumerable<TItem> items)");
 						matchingInvocationImposterGroup = ProcessComplexAsyncMethodInvocationImposterGroup<TItem, TResult>.Default;
 					}
 
@@ -2982,6 +3151,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						throw new TException();
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, global::Imposter.Abstractions.DiagnosticValue.Throws<TException>());
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -2992,6 +3162,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						throw exception;
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -3002,6 +3173,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					{
 						throw exceptionGenerator.Invoke(items);
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -3009,6 +3181,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				IProcessComplexAsyncMethodInvocationImposterGroupContinuation<TItem, TResult> IProcessComplexAsyncMethodInvocationImposterGroupCallback<TItem, TResult>.Callback(ProcessComplexAsyncCallbackDelegate<TItem, TResult> callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Callback");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -3016,6 +3189,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				IProcessComplexAsyncMethodInvocationImposterGroupContinuation<TItem, TResult> IProcessComplexAsyncMethodInvocationImposterGroup<TItem, TResult>.Returns(ProcessComplexAsyncDelegate<TItem, TResult> resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -3023,6 +3197,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				IProcessComplexAsyncMethodInvocationImposterGroupContinuation<TItem, TResult> IProcessComplexAsyncMethodInvocationImposterGroup<TItem, TResult>.Returns(global::System.Threading.Tasks.Task<TResult> value)
 				{
 					_currentInvocationImposter.Returns(value);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -3030,6 +3205,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				IProcessComplexAsyncMethodInvocationImposterGroupContinuation<TItem, TResult> IProcessComplexAsyncMethodInvocationImposterGroup<TItem, TResult>.ReturnsAsync(TResult value)
 				{
 					_currentInvocationImposter.ReturnsAsync(value);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "ReturnsAsync");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -3037,6 +3213,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				IProcessComplexAsyncMethodInvocationImposterGroupContinuation<TItem, TResult> IProcessComplexAsyncMethodInvocationImposterGroup<TItem, TResult>.ThrowsAsync(global::System.Exception exception)
 				{
 					_currentInvocationImposter.ThrowsAsync(exception);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "ThrowsAsync");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -3052,7 +3229,16 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					var invocationCount = _processComplexAsyncMethodInvocationHistoryCollection.Verify<TItem, TResult>(count, _argumentsCriteria);
 					if (!count.Matches(invocationCount))
 					{
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _processComplexAsyncMethodInvocationHistoryCollection.ToString());
+						throw new global::Imposter.Abstractions.VerificationFailedException("ProcessComplexAsync", "ProcessComplexAsync(" + "items: " + _argumentsCriteria.items.ToString() + ")", count, invocationCount, _processComplexAsyncMethodInvocationHistoryCollection.ToString(), null, _processComplexAsyncMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_processComplexAsyncMethodInvocationHistoryCollection.Owner) : null);
+					}
+				}
+
+				void ProcessComplexAsyncInvocationVerifier<TItem, TResult>.Called(global::Imposter.Abstractions.Count count, string? because)
+				{
+					var invocationCount = _processComplexAsyncMethodInvocationHistoryCollection.Verify<TItem, TResult>(count, _argumentsCriteria);
+					if (!count.Matches(invocationCount))
+					{
+						throw new global::Imposter.Abstractions.VerificationFailedException("ProcessComplexAsync", "ProcessComplexAsync(" + "items: " + _argumentsCriteria.items.ToString() + ")", count, invocationCount, _processComplexAsyncMethodInvocationHistoryCollection.ToString(), because, _processComplexAsyncMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_processComplexAsyncMethodInvocationHistoryCollection.Owner) : null);
 					}
 				}
 
@@ -3073,7 +3259,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				{
 					get
 					{
-						return "ProcessComplexAsync(" + "items: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.items) + ")";
+						return "ProcessComplexAsync(" + "items: " + _argumentsCriteria.items.ToString() + ")";
 					}
 				}
 

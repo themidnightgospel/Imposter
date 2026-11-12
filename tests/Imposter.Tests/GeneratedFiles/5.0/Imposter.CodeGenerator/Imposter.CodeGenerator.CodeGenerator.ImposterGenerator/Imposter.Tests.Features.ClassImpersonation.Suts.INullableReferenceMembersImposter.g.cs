@@ -158,7 +158,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
@@ -329,9 +329,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
 			internal volatile bool IsUsed;
 			internal volatile bool IsLenient;
+			internal object? _outcomeDescriptions;
 			public override string ToString()
 			{
-				return "Find(" + "key: " + global::Imposter.Abstractions.MatcherDescription.Format(ArgumentsCriteria.key) + ")";
+				return "Find(" + "key: " + ArgumentsCriteria.key.ToString() + ")" + " -> " + global::Imposter.Abstractions.DiagnosticValue.Outcomes(_outcomeDescriptions);
 			}
 
 			internal volatile bool HasConfiguredOutcome;
@@ -473,6 +474,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
 			global::System.Collections.Generic.IReadOnlyList<FindInvocation> Invocations { get; }
+
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -503,6 +506,18 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				return null;
 			}
 
+			public global::System.Collections.Generic.List<string> GetConfiguredSetups()
+			{
+				var setups = new global::System.Collections.Generic.List<string>();
+				foreach (var group in _invocationImposters)
+				{
+					if (group.HasConfiguredOutcome)
+						setups.Add(group.ToString());
+				}
+
+				return setups;
+			}
+
 			public string? Invoke(string? key)
 			{
 				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
@@ -513,7 +528,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					if (matchingInvocationImposterGroup == default)
 					{
 						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-							throw new global::Imposter.Abstractions.MissingImposterException("string? INullableReferenceMembers.Find(string? key)");
+							throw new global::Imposter.Abstractions.MissingImposterException("Find", "Find(" + "key: " + global::Imposter.Abstractions.DiagnosticValue.Format(capturedkey) + ")", GetConfiguredSetups(), "string? INullableReferenceMembers.Find(string? key)");
 						matchingInvocationImposterGroup = FindMethodInvocationImposterGroup.Default;
 					}
 
@@ -550,6 +565,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw new TException();
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, global::Imposter.Abstractions.DiagnosticValue.Throws<TException>());
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -560,6 +576,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw exception;
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -570,6 +587,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw exceptionGenerator.Invoke(key);
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -577,6 +595,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				IFindMethodInvocationImposterGroupContinuation IFindMethodInvocationImposterGroupCallback.Callback(FindCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Callback");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -584,6 +603,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				IFindMethodInvocationImposterGroupContinuation IFindMethodInvocationImposterGroup.Returns(FindDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -591,6 +611,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				IFindMethodInvocationImposterGroupContinuation IFindMethodInvocationImposterGroup.Returns(string? value)
 				{
 					_currentInvocationImposter.Returns(value);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -606,7 +627,16 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					var invocationCount = _findMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
 					if (!count.Matches(invocationCount))
 					{
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _findMethodInvocationHistoryCollection.ToString());
+						throw new global::Imposter.Abstractions.VerificationFailedException("Find", "Find(" + "key: " + _argumentsCriteria.key.ToString() + ")", count, invocationCount, _findMethodInvocationHistoryCollection.ToString(), null, _findMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_findMethodInvocationHistoryCollection.Owner) : null);
+					}
+				}
+
+				void FindInvocationVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+				{
+					var invocationCount = _findMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
+					if (!count.Matches(invocationCount))
+					{
+						throw new global::Imposter.Abstractions.VerificationFailedException("Find", "Find(" + "key: " + _argumentsCriteria.key.ToString() + ")", count, invocationCount, _findMethodInvocationHistoryCollection.ToString(), because, _findMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_findMethodInvocationHistoryCollection.Owner) : null);
 					}
 				}
 
@@ -627,7 +657,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				{
 					get
 					{
-						return "Find(" + "key: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.key) + ")";
+						return "Find(" + "key: " + _argumentsCriteria.key.ToString() + ")";
 					}
 				}
 
@@ -807,7 +837,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
@@ -978,9 +1008,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
 			internal volatile bool IsUsed;
 			internal volatile bool IsLenient;
+			internal object? _outcomeDescriptions;
 			public override string ToString()
 			{
-				return "FindAsync(" + "key: " + global::Imposter.Abstractions.MatcherDescription.Format(ArgumentsCriteria.key) + ")";
+				return "FindAsync(" + "key: " + ArgumentsCriteria.key.ToString() + ")" + " -> " + global::Imposter.Abstractions.DiagnosticValue.Outcomes(_outcomeDescriptions);
 			}
 
 			internal volatile bool HasConfiguredOutcome;
@@ -1150,6 +1181,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
 			global::System.Collections.Generic.IReadOnlyList<FindAsyncInvocation> Invocations { get; }
+
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1180,6 +1213,18 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				return null;
 			}
 
+			public global::System.Collections.Generic.List<string> GetConfiguredSetups()
+			{
+				var setups = new global::System.Collections.Generic.List<string>();
+				foreach (var group in _invocationImposters)
+				{
+					if (group.HasConfiguredOutcome)
+						setups.Add(group.ToString());
+				}
+
+				return setups;
+			}
+
 			public global::System.Threading.Tasks.Task<string?> Invoke(string? key)
 			{
 				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
@@ -1190,7 +1235,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					if (matchingInvocationImposterGroup == default)
 					{
 						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-							throw new global::Imposter.Abstractions.MissingImposterException("Task<string?> INullableReferenceMembers.FindAsync(string? key)");
+							throw new global::Imposter.Abstractions.MissingImposterException("FindAsync", "FindAsync(" + "key: " + global::Imposter.Abstractions.DiagnosticValue.Format(capturedkey) + ")", GetConfiguredSetups(), "Task<string?> INullableReferenceMembers.FindAsync(string? key)");
 						matchingInvocationImposterGroup = FindAsyncMethodInvocationImposterGroup.Default;
 					}
 
@@ -1227,6 +1272,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw new TException();
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, global::Imposter.Abstractions.DiagnosticValue.Throws<TException>());
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1237,6 +1283,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw exception;
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1247,6 +1294,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw exceptionGenerator.Invoke(key);
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1254,6 +1302,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				IFindAsyncMethodInvocationImposterGroupContinuation IFindAsyncMethodInvocationImposterGroupCallback.Callback(FindAsyncCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Callback");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1261,6 +1310,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				IFindAsyncMethodInvocationImposterGroupContinuation IFindAsyncMethodInvocationImposterGroup.Returns(FindAsyncDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1268,6 +1318,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				IFindAsyncMethodInvocationImposterGroupContinuation IFindAsyncMethodInvocationImposterGroup.Returns(global::System.Threading.Tasks.Task<string?> value)
 				{
 					_currentInvocationImposter.Returns(value);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1275,6 +1326,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				IFindAsyncMethodInvocationImposterGroupContinuation IFindAsyncMethodInvocationImposterGroup.ReturnsAsync(string? value)
 				{
 					_currentInvocationImposter.ReturnsAsync(value);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "ReturnsAsync");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1282,6 +1334,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				IFindAsyncMethodInvocationImposterGroupContinuation IFindAsyncMethodInvocationImposterGroup.ThrowsAsync(global::System.Exception exception)
 				{
 					_currentInvocationImposter.ThrowsAsync(exception);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "ThrowsAsync");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1297,7 +1350,16 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					var invocationCount = _findAsyncMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
 					if (!count.Matches(invocationCount))
 					{
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _findAsyncMethodInvocationHistoryCollection.ToString());
+						throw new global::Imposter.Abstractions.VerificationFailedException("FindAsync", "FindAsync(" + "key: " + _argumentsCriteria.key.ToString() + ")", count, invocationCount, _findAsyncMethodInvocationHistoryCollection.ToString(), null, _findAsyncMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_findAsyncMethodInvocationHistoryCollection.Owner) : null);
+					}
+				}
+
+				void FindAsyncInvocationVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+				{
+					var invocationCount = _findAsyncMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
+					if (!count.Matches(invocationCount))
+					{
+						throw new global::Imposter.Abstractions.VerificationFailedException("FindAsync", "FindAsync(" + "key: " + _argumentsCriteria.key.ToString() + ")", count, invocationCount, _findAsyncMethodInvocationHistoryCollection.ToString(), because, _findAsyncMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_findAsyncMethodInvocationHistoryCollection.Owner) : null);
 					}
 				}
 
@@ -1318,7 +1380,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				{
 					get
 					{
-						return "FindAsync(" + "key: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.key) + ")";
+						return "FindAsync(" + "key: " + _argumentsCriteria.key.ToString() + ")";
 					}
 				}
 

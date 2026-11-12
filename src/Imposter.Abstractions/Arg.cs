@@ -76,15 +76,57 @@ public class Arg<T>
         _negated = negated;
     }
 
-    internal string DescribeMatcher()
+    /// <summary>Returns a new matcher with a diagnostic description, preserving this matcher's behavior.</summary>
+    /// <param name="description">Text to display instead of the default description.</param>
+    /// <exception cref="ArgumentNullException">The description is null.</exception>
+    public Arg<T> Describe(string description) =>
+        new DescribedArg(this, description ?? throw new ArgumentNullException(nameof(description)));
+
+    /// <summary>Describes this matcher without evaluating its predicate or comparer.</summary>
+    public override string ToString()
     {
         var description = _kind switch
         {
             MatcherKind.Any => "any",
-            MatcherKind.Equality => MatcherDescription.Value(_value),
+            MatcherKind.Equality => DiagnosticValue.Format(_value),
             _ => "<predicate>",
         };
         return _negated ? "not " + description : description;
+    }
+
+    // Only explicitly described and membership matchers need additional diagnostic storage.
+    // Ordinary matchers keep their allocation size and their matching fast path.
+    private sealed class DescribedArg : Arg<T>
+    {
+        private readonly string _description;
+
+        internal DescribedArg(Arg<T> original, string description)
+            : base(
+                original._kind,
+                original._value,
+                original._comparer,
+                original._predicate,
+                original._negated
+            )
+        {
+            _description = description;
+        }
+
+        public override string ToString() => _description;
+    }
+
+    private sealed class MembershipArg : Arg<T>
+    {
+        private readonly T[] _values;
+
+        internal MembershipArg(HashSet<T> lookup, T[] values, bool negated)
+            : base(MatcherKind.Predicate, predicate: lookup.Contains, negated: negated)
+        {
+            _values = values;
+        }
+
+        public override string ToString() =>
+            (_negated ? "not in " : "in ") + DiagnosticValue.Sequence(_values);
     }
 
     /// <summary>
@@ -196,8 +238,7 @@ public class Arg<T>
         if (comparer is null)
             throw new ArgumentNullException(nameof(comparer));
 
-        var lookup = new HashSet<T>(values, comparer);
-        return new(MatcherKind.Predicate, predicate: lookup.Contains);
+        return Membership(values, comparer, false);
     }
 
     /// <summary>
@@ -222,8 +263,18 @@ public class Arg<T>
         if (comparer is null)
             throw new ArgumentNullException(nameof(comparer));
 
-        var lookup = new HashSet<T>(values, comparer);
-        return new(MatcherKind.Predicate, predicate: lookup.Contains, negated: true);
+        return Membership(values, comparer, true);
+    }
+
+    private static Arg<T> Membership(
+        IEnumerable<T> values,
+        IEqualityComparer<T> comparer,
+        bool negated
+    )
+    {
+        var lookup = new HashSet<T>(comparer);
+        var orderedValues = values.Where(lookup.Add).ToArray();
+        return new MembershipArg(lookup, orderedValues, negated);
     }
 
     /// <summary>

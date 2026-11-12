@@ -46,6 +46,7 @@ internal static partial class MethodImposterBuilderBuilder
             .AddMember(constructor)
             .AddMembers(ImplementInvocationImposterGroupInterface(method))
             .AddMember(BuildCalledMethod(method))
+            .AddMember(BuildCalledMethod(method, withReason: true))
             .AddMember(BuildCallCountMethod(method))
             .AddMembers(BuildOrderedStepMembers(method))
             .AddMember(BuildLenientMethod(method))

@@ -8,8 +8,13 @@ namespace Imposter.Abstractions;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public class PropertyGetter<T> : IImposterVerificationSource
 {
+    /// <summary>Gets the generated owner used for failure-only diagnostics.</summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public IImposter? Owner { get; }
+
     private ReturnValueSequence<Func<Func<T>?, T>?>? _returnValues;
     private CallbackCollection<Action>? _callbacks;
+    private object? _outcomeDescriptions;
     private InvocationCounter _counter;
     private volatile bool _isUsed;
     private volatile bool _isLenient;
@@ -24,46 +29,72 @@ public class PropertyGetter<T> : IImposterVerificationSource
     /// <param name="mode">Whether an explicit outcome is required.</param>
     /// <param name="displayName">The property name used in diagnostics.</param>
     protected PropertyGetter(PropertyValue<T> defaultValue, ImposterMode mode, string displayName)
+        : this(defaultValue, mode, displayName, null) { }
+
+    /// <summary>Creates getter state associated with its generated owner.</summary>
+    /// <param name="defaultValue">The value shared with the setter.</param>
+    /// <param name="mode">Whether an explicit outcome is required.</param>
+    /// <param name="displayName">The property name used in diagnostics.</param>
+    /// <param name="owner">The owning imposter, when available.</param>
+    protected PropertyGetter(
+        PropertyValue<T> defaultValue,
+        ImposterMode mode,
+        string displayName,
+        IImposter? owner
+    )
     {
         _defaultValue = defaultValue;
         _mode = mode;
         _displayName = displayName;
+        Owner = owner;
     }
 
     /// <summary>Appends a constant outcome.</summary>
     /// <param name="value">The value to return.</param>
-    protected void Returns(T value) => AddReturnValue(_ => value);
+    protected void Returns(T value) => AddReturnValue(_ => value, "Returns");
 
     /// <summary>Appends a generated outcome.</summary>
     /// <param name="valueGenerator">The factory to invoke on each read.</param>
-    protected void Returns(Func<T> valueGenerator) => AddReturnValue(_ => valueGenerator());
+    protected void Returns(Func<T> valueGenerator) =>
+        AddReturnValue(_ => valueGenerator(), "Returns");
 
     /// <summary>Appends an exception outcome.</summary>
     /// <param name="exception">The exception to throw.</param>
-    protected void Throws(Exception exception) => AddReturnValue(_ => throw exception);
+    protected void Throws(Exception exception) => AddReturnValue(_ => throw exception, "Throws");
 
     /// <summary>Appends an outcome that constructs an exception on each read.</summary>
     /// <typeparam name="TException">The exception type.</typeparam>
     protected void Throws<TException>()
-        where TException : Exception, new() => AddReturnValue(_ => throw new TException());
+        where TException : Exception, new() =>
+        AddReturnValue(_ => throw new TException(), DiagnosticValue.Throws<TException>());
 
     /// <summary>Registers a callback without configuring an outcome.</summary>
     /// <param name="callback">The callback to invoke before the outcome.</param>
     protected void Callback(Action callback)
     {
         LazyInitializer.EnsureInitialized(ref _callbacks)!.Add(callback);
+        DiagnosticValue.AddOutcome(ref _outcomeDescriptions, "Callback");
         _hasConfiguredCallback = true;
     }
 
     /// <summary>Verifies the number of reads, including reads whose callbacks or outcomes threw.</summary>
     /// <param name="count">The expected count.</param>
-    protected void Called(Count count)
+    protected void Called(Count count) => Called(count, null);
+
+    /// <summary>Verifies the number of reads and attaches a reason to a failure.</summary>
+    /// <param name="count">The expected count.</param>
+    /// <param name="because">An optional reason for the expectation.</param>
+    protected void Called(Count count, string? because)
     {
         if (!_counter.Verify(count, out var actual))
             throw new VerificationFailedException(
+                _displayName + " (getter)",
+                _displayName + " (getter)",
                 count,
                 actual,
-                actual == 0 ? null : actual + " read(s)"
+                actual == 0 ? null : actual + " read(s)",
+                because,
+                actual == 0 && Owner is not null ? DiagnosticValue.OtherInteractions(Owner) : null
             );
     }
 
@@ -90,19 +121,24 @@ public class PropertyGetter<T> : IImposterVerificationSource
     IEnumerable<string> IImposterVerificationSource.UnusedSetups()
     {
         if ((_hasConfiguredReturn || _hasConfiguredCallback) && !_isUsed && !_isLenient)
-            yield return _displayName + " (getter)";
+            yield return _displayName
+                + " (getter) -> "
+                + DiagnosticValue.Outcomes(_outcomeDescriptions);
     }
 
     /// <summary>Appends an outcome that calls the base getter.</summary>
     public void UseBaseImplementation() =>
-        AddReturnValue(baseImplementation =>
-            baseImplementation is not null ? baseImplementation() : throw MissingImposter()
+        AddReturnValue(
+            baseImplementation =>
+                baseImplementation is not null ? baseImplementation() : throw MissingImposter(),
+            "UseBaseImplementation"
         );
 
-    private void AddReturnValue(Func<Func<T>?, T> valueGenerator)
+    private void AddReturnValue(Func<Func<T>?, T> valueGenerator, string description)
     {
         _defaultValue.TurnOff();
         LazyInitializer.EnsureInitialized(ref _returnValues)!.Add(valueGenerator);
+        DiagnosticValue.AddOutcome(ref _outcomeDescriptions, description);
         _hasConfiguredReturn = true;
     }
 
@@ -127,5 +163,15 @@ public class PropertyGetter<T> : IImposterVerificationSource
         return outcome is not null ? outcome(baseImplementation) : default!;
     }
 
-    private MissingImposterException MissingImposter() => new(_displayName + " (getter)");
+    private MissingImposterException MissingImposter() =>
+        new(
+            _displayName + " (getter)",
+            "get " + _displayName,
+            _outcomeDescriptions is null
+                ? Array.Empty<string>()
+                : new[]
+                {
+                    _displayName + " (getter) -> " + DiagnosticValue.Outcomes(_outcomeDescriptions),
+                }
+        );
 }

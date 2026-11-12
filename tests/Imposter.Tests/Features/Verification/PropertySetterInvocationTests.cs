@@ -106,18 +106,23 @@ namespace Imposter.Tests.Features.Verification
 
             sut.Value.Setter(5).Invocations[0].Exception.ShouldBeSameAs(failure);
             Should.Throw<VerificationFailedException>(() => sut.VerifyNoInteractions());
+            failure.Message.ShouldContain("<5>");
         }
 
         [Fact]
-        public void GivenFailedVerification_WhenCheckingCoverage_ShouldLeaveCallsUncovered()
+        public void GivenFailedVerification_WhenCheckingCoverage_ShouldLeaveCallsUncoveredAndIncludeReason()
         {
             _sut.Instance().Value = 7;
             var failure = Should.Throw<VerificationFailedException>(() =>
-                _sut.Value.Setter(Arg<int>.Any()).Called(Count.Twice())
+                _sut
+                    .Value.Setter(Arg<int>.Any().Describe("any value"))
+                    .Called(Count.Twice(), "two phases")
             );
 
             failure.PerformedInvocations.ShouldNotBeNull();
             failure.PerformedInvocations.ShouldContain("<7>");
+            failure.Expected.ShouldContain("any value");
+            failure.Message.ShouldContain("two phases");
             Should.Throw<VerificationFailedException>(() => _sut.VerifyNoOtherCalls());
         }
     }

@@ -15,8 +15,6 @@ internal static class FormatValueMethodBuilder
     {
         var valueParameter = ParameterSyntax(WellKnownTypes.Object.ToNullableType(), "value");
 
-        var valueToString = MemberBindingExpression(IdentifierName("ToString")).Call();
-
         return new MethodDeclarationBuilder(WellKnownTypes.String, Name)
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddModifier(Token(SyntaxKind.StaticKeyword))
@@ -24,21 +22,9 @@ internal static class FormatValueMethodBuilder
             .WithBody(
                 Block(
                     ReturnStatement(
-                        "<"
-                            .StringLiteral()
-                            .Add(
-                                ParenthesizedExpression(
-                                    BinaryExpression(
-                                        SyntaxKind.CoalesceExpression,
-                                        ConditionalAccessExpression(
-                                            IdentifierName("value"),
-                                            valueToString
-                                        ),
-                                        "null".StringLiteral()
-                                    )
-                                )
-                            )
-                            .Add(">".StringLiteral())
+                        WellKnownTypes
+                            .Imposter.Abstractions.DiagnosticValue.Dot(IdentifierName("Format"))
+                            .Call(Argument(IdentifierName("value")))
                     )
                 )
             )

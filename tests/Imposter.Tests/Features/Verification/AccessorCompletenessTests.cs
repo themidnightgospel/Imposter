@@ -88,17 +88,22 @@ namespace Imposter.Tests.Features.Verification
             Action<int> handler = _ => { };
             _sut.Instance().Changed += handler;
             var evaluations = 0;
-            var criteria = Arg<Action<int>>.Is(_ =>
-            {
-                evaluations++;
-                return true;
-            });
+            var criteria = Arg<Action<int>>
+                .Is(_ =>
+                {
+                    evaluations++;
+                    return true;
+                })
+                .Describe("registered handler");
             var failure = Should.Throw<VerificationFailedException>(() =>
-                _sut.Changed.Subscribed(criteria, Count.Twice())
+                _sut.Changed.Subscribed(criteria, Count.Twice(), "both listeners must subscribe")
             );
             evaluations.ShouldBe(1);
             failure.PerformedInvocations.ShouldNotBeNull();
             failure.PerformedInvocations.ShouldContain("Changed subscribed");
+            failure.Expected.ShouldContain("Changed subscribed");
+            failure.Expected.ShouldContain("registered handler");
+            failure.Message.ShouldContain("both listeners must subscribe");
             Should.Throw<VerificationFailedException>(() => _sut.VerifyNoOtherCalls());
         }
 

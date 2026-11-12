@@ -264,7 +264,39 @@ internal static partial class MethodImposterBuilder
                     IsExplicit(IdentifierName(method.MethodImposter.InvocationBehaviorFieldName)),
                     ThrowStatement(
                         WellKnownTypes.Imposter.Abstractions.MissingImposterException.New(
-                            method.DisplayName.StringLiteral().ToSingleArgumentList()
+                            ArgumentListSyntax([
+                                Argument(method.Model.Name.StringLiteral()),
+                                Argument(MethodDiagnosticBuilder.Actual(method)),
+                                Argument(
+                                    method.Model.IsGenericMethod
+                                        ? PostfixUnaryExpression(
+                                                SyntaxKind.SuppressNullableWarningExpression,
+                                                IdentifierName(
+                                                        method
+                                                            .InvocationHistory
+                                                            .Collection
+                                                            .AsField
+                                                            .Name
+                                                    )
+                                                    .Dot(
+                                                        IdentifierName(
+                                                            InvocationHistoryCollectionMetadata.SetupSourceFieldName
+                                                        )
+                                                    )
+                                            )
+                                            .Dot(
+                                                IdentifierName(
+                                                    method.MethodImposter.ConfiguredSetupsMethodName
+                                                )
+                                            )
+                                            .Call()
+                                        : IdentifierName(
+                                                method.MethodImposter.ConfiguredSetupsMethodName
+                                            )
+                                            .Call()
+                                ),
+                                Argument(method.DisplayName.StringLiteral()),
+                            ])
                         )
                     )
                 ),

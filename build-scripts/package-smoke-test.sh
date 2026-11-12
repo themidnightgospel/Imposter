@@ -163,7 +163,7 @@ static void ExerciseVerificationLifecycle()
     var instance = imposter.Instance();
     var method = imposter.Now();
     method.Returns(1).Then().Returns(2).Then().Returns(3);
-    var setter = imposter.Offset.Setter(Arg<int>.Any());
+    var setter = imposter.Offset.Setter(Arg<int>.Any().Describe("any offset"));
     setter.Callback(_ => { });
     Require(instance.Now() == 1, "configured method result");
     instance.Offset = 8;
@@ -171,7 +171,8 @@ static void ExerciseVerificationLifecycle()
     Require(snapshot.Count == 2 && snapshot[0].Sequence < snapshot[1].Sequence, "ordered aggregate snapshot");
     Require(method.Invocations[0].Result == 1 && setter.Invocations[0].Value == 8, "typed history values");
 
-    ExpectVerification(() => setter.Called(Count.Twice()), "count failure");
+    var failure = ExpectVerification(() => setter.Called(Count.Twice(), "two phases"), "count failure");
+    Require(failure.Expected.Contains("any offset") && failure.Message.Contains("two phases"), "failure matcher and reason");
     ExpectVerification(() => imposter.VerifyNoOtherCalls(), "failed count must not cover calls");
     Imposters.InOrder().Then(method).Then(setter).Verify();
     imposter.VerifyNoOtherCalls();
@@ -214,7 +215,7 @@ static void ExerciseVerificationLifecycle()
     }
     catch (MissingImposterException missing)
     {
-        Require(!string.IsNullOrEmpty(missing.MethodName), "missing member name");
+        Require(missing.ConfiguredSetups.Count == 0 && missing.Message.Contains("Configured setups"), "missing-setup details");
     }
     Require(strict.Now().Invocations[0].Exception is MissingImposterException, "throwing call history");
     strict.Now().Called(Count.Once());

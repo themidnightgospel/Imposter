@@ -16,9 +16,6 @@ internal static class IndexerInvocationBuilder
             return null;
         var metadata = getter ? indexer.GetterRecord : indexer.SetterRecord;
         var builder = new ClassDeclarationBuilder(metadata.Name)
-            .AddMember(
-                global::Imposter.CodeGenerator.Features.Shared.Builders.FormatValueMethodBuilder.Build()
-            )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddModifier(Token(SyntaxKind.SealedKeyword))
             .AddBaseType(SimpleBaseType(WellKnownTypes.Imposter.Abstractions.InvocationRecord))
@@ -146,7 +143,8 @@ internal static class IndexerInvocationBuilder
             description = description
                 .Add(((first ? "" : ", ") + parameter.Model.Name + ": ").StringLiteral())
                 .Add(
-                    IdentifierName("FormatValue")
+                    WellKnownTypes
+                        .Imposter.Abstractions.DiagnosticValue.Dot(IdentifierName("Format"))
                         .Call(
                             Argument(
                                 IdentifierName("Arguments").Dot(IdentifierName(parameter.FieldName))
@@ -160,7 +158,11 @@ internal static class IndexerInvocationBuilder
         {
             var valueDescription = (getter ? " => " : " = ")
                 .StringLiteral()
-                .Add(IdentifierName("FormatValue").Call(Argument(IdentifierName("_value"))));
+                .Add(
+                    WellKnownTypes
+                        .Imposter.Abstractions.DiagnosticValue.Dot(IdentifierName("Format"))
+                        .Call(Argument(IdentifierName("_value")))
+                );
             description = description.Add(
                 getter
                     ? ParenthesizedExpression(
@@ -181,7 +183,8 @@ internal static class IndexerInvocationBuilder
                     " threw "
                         .StringLiteral()
                         .Add(
-                            IdentifierName("FormatValue")
+                            WellKnownTypes
+                                .Imposter.Abstractions.DiagnosticValue.Dot(IdentifierName("Format"))
                                 .Call(Argument(IdentifierName("Exception")))
                         )
                 )

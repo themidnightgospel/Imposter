@@ -11,6 +11,8 @@ internal readonly struct MethodImposterMetadata
     // Not the criteria's AsMethodMetadata.BaseName: this As converts the imposter to other type arguments.
     internal const string AsMethodName = "As";
 
+    internal const string ConfiguredSetupsMethodBaseName = "GetConfiguredSetups";
+
     // A generic method imposter's nested class, which As returns to impersonate the method for other type arguments.
     internal readonly string AdapterName;
 
@@ -38,6 +40,7 @@ internal readonly struct MethodImposterMetadata
 
     // The method imposter and its collection both keep the imposter's mode in a field of this name.
     internal readonly string InvocationBehaviorFieldName;
+    internal readonly string ConfiguredSetupsMethodName;
     internal readonly string InvokeWithCapturedSpansMethodName;
 
     internal MethodImposterMetadata(in ImposterTargetMethodMetadata method)
@@ -62,6 +65,7 @@ internal readonly struct MethodImposterMetadata
         Collection = new MethodImposterCollectionMetadata($"{Name}Collection", method.MemberNames);
         AsField = new FieldDeclarationMetadata(Name, method.MemberNames);
         InvocationBehaviorFieldName = method.MemberNames.Use("_invocationBehavior");
+        ConfiguredSetupsMethodName = method.MemberNames.Use(ConfiguredSetupsMethodBaseName);
         InvokeWithCapturedSpansMethodName = method.MemberNames.Use("InvokeWithCapturedSpans");
         InvokeMethod = new MethodImposterInvokeMethodMetadata(
             method.ReservedParameterNames,

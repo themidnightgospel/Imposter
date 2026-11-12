@@ -19,6 +19,7 @@ internal readonly record struct InvocationHistoryCollectionMetadata
     internal const string NextFieldName = "Next";
     internal const string VerifyMethodName = "Verify";
     internal const string MarkVerifiedMethodName = "MarkVerified";
+    internal const string SetupSourceFieldName = "SetupSource";
 
     internal readonly string Name;
 

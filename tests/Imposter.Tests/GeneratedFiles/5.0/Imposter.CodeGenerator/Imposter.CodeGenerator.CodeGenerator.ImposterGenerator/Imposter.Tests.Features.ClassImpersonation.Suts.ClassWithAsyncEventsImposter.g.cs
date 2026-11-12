@@ -53,6 +53,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			ICustomAsyncEventEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> handlerCriteria, global::Imposter.Abstractions.Count count);
 			global::Imposter.Abstractions.IInvocationStep Subscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> criteria);
 			global::Imposter.Abstractions.IInvocationStep Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> criteria);
+			ICustomAsyncEventEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> criteria, global::Imposter.Abstractions.Count count, string? because);
+			ICustomAsyncEventEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> criteria, global::Imposter.Abstractions.Count count, string? because);
+			ICustomAsyncEventEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object?> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> argsCriteria, global::Imposter.Abstractions.Count count, string? because);
+			ICustomAsyncEventEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> handlerCriteria, global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -158,7 +162,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				{
 					get
 					{
-						return "CustomAsyncEvent" + (_subscription ? " subscribed(handler: " : " unsubscribed(handler: ") + global::Imposter.Abstractions.MatcherDescription.Format(_criteria) + ")";
+						return "CustomAsyncEvent" + (_subscription ? " subscribed(handler: " : " unsubscribed(handler: ") + _criteria.ToString() + ")";
 					}
 				}
 
@@ -358,7 +362,55 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomAsyncEvent", "CustomAsyncEvent subscribed" + "(" + "handler: " + criteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						global::Imposter.Abstractions.InvocationBuffer<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>.MarkVerified(entry);
+				}
+
+				return this;
+			}
+
+			ICustomAsyncEventEventImposterVerificationBuilder ICustomAsyncEventEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				var actual = 0;
+				var snapshot = _subscribeHistory == null ? default(global::Imposter.Abstractions.InvocationBuffer<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>.Enumerator) : _subscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						actual++;
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_subscribeHistory != null)
+					{
+						foreach (var entry in _subscribeHistory)
+						{
+							performedInvocations.Add("CustomAsyncEvent subscribed" + " handler: " + FormatValue(entry.Value));
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomAsyncEvent", "CustomAsyncEvent subscribed" + "(" + "handler: " + criteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				cursor = snapshot;
@@ -406,7 +458,55 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomAsyncEvent", "CustomAsyncEvent unsubscribed" + "(" + "handler: " + criteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						global::Imposter.Abstractions.InvocationBuffer<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>.MarkVerified(entry);
+				}
+
+				return this;
+			}
+
+			ICustomAsyncEventEventImposterVerificationBuilder ICustomAsyncEventEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				var actual = 0;
+				var snapshot = _unsubscribeHistory == null ? default(global::Imposter.Abstractions.InvocationBuffer<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>.Enumerator) : _unsubscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						actual++;
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_unsubscribeHistory != null)
+					{
+						foreach (var entry in _unsubscribeHistory)
+						{
+							performedInvocations.Add("CustomAsyncEvent unsubscribed" + " handler: " + FormatValue(entry.Value));
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomAsyncEvent", "CustomAsyncEvent unsubscribed" + "(" + "handler: " + criteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				cursor = snapshot;
@@ -483,7 +583,96 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomAsyncEvent", "CustomAsyncEvent raised" + "(" + "sender: " + senderCriteria.ToString() + ", args: " + argsCriteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				return this;
+			}
+
+			ICustomAsyncEventEventImposterVerificationBuilder ICustomAsyncEventEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object?> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> argsCriteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (senderCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(senderCriteria));
+				}
+
+				if (argsCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(argsCriteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = 0;
+				if (_history != null)
+				{
+					foreach (var entry in _history)
+					{
+						if (senderCriteria.Matches(entry.sender) && argsCriteria.Matches(entry.args))
+						{
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_history != null)
+					{
+						foreach (var entry in _history)
+						{
+							performedInvocations.Add("CustomAsyncEvent raised" + " sender: " + FormatValue(entry.sender) + " args: " + FormatValue(entry.args));
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomAsyncEvent", "CustomAsyncEvent raised" + "(" + "sender: " + senderCriteria.ToString() + ", args: " + argsCriteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				return this;
+			}
+
+			ICustomAsyncEventEventImposterVerificationBuilder ICustomAsyncEventEventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> handlerCriteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (handlerCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handlerCriteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = 0;
+				if (_handlerInvocations != null)
+				{
+					foreach (var entry in _handlerInvocations)
+					{
+						if (handlerCriteria.Matches(entry.Handler))
+						{
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_handlerInvocations != null)
+					{
+						foreach (var entry in _handlerInvocations)
+						{
+							performedInvocations.Add("CustomAsyncEvent handler invoked" + " handler: " + FormatValue(entry.Handler) + " sender: " + FormatValue(entry.sender) + " args: " + FormatValue(entry.args));
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomAsyncEvent", "CustomAsyncEvent handler invoked" + "(" + "handler: " + handlerCriteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				return this;
@@ -525,7 +714,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomAsyncEvent", "CustomAsyncEvent handler invoked" + "(" + "handler: " + handlerCriteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				return this;
@@ -582,7 +771,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 
 			ICustomAsyncEventEventImposterBuilder ICustomAsyncEventEventImposterBuilder.UseBaseImplementation()
@@ -624,6 +813,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			ITaskBasedEventEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> handlerCriteria, global::Imposter.Abstractions.Count count);
 			global::Imposter.Abstractions.IInvocationStep Subscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria);
 			global::Imposter.Abstractions.IInvocationStep Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria);
+			ITaskBasedEventEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria, global::Imposter.Abstractions.Count count, string? because);
+			ITaskBasedEventEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria, global::Imposter.Abstractions.Count count, string? because);
+			ITaskBasedEventEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object?> arg1Criteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> arg2Criteria, global::Imposter.Abstractions.Count count, string? because);
+			ITaskBasedEventEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> handlerCriteria, global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -729,7 +922,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				{
 					get
 					{
-						return "TaskBasedEvent" + (_subscription ? " subscribed(handler: " : " unsubscribed(handler: ") + global::Imposter.Abstractions.MatcherDescription.Format(_criteria) + ")";
+						return "TaskBasedEvent" + (_subscription ? " subscribed(handler: " : " unsubscribed(handler: ") + _criteria.ToString() + ")";
 					}
 				}
 
@@ -929,7 +1122,55 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("TaskBasedEvent", "TaskBasedEvent subscribed" + "(" + "handler: " + criteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						global::Imposter.Abstractions.InvocationBuffer<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>.MarkVerified(entry);
+				}
+
+				return this;
+			}
+
+			ITaskBasedEventEventImposterVerificationBuilder ITaskBasedEventEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				var actual = 0;
+				var snapshot = _subscribeHistory == null ? default(global::Imposter.Abstractions.InvocationBuffer<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>.Enumerator) : _subscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						actual++;
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_subscribeHistory != null)
+					{
+						foreach (var entry in _subscribeHistory)
+						{
+							performedInvocations.Add("TaskBasedEvent subscribed" + " handler: " + FormatValue(entry.Value));
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("TaskBasedEvent", "TaskBasedEvent subscribed" + "(" + "handler: " + criteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				cursor = snapshot;
@@ -977,7 +1218,55 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("TaskBasedEvent", "TaskBasedEvent unsubscribed" + "(" + "handler: " + criteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						global::Imposter.Abstractions.InvocationBuffer<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>.MarkVerified(entry);
+				}
+
+				return this;
+			}
+
+			ITaskBasedEventEventImposterVerificationBuilder ITaskBasedEventEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				var actual = 0;
+				var snapshot = _unsubscribeHistory == null ? default(global::Imposter.Abstractions.InvocationBuffer<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>.Enumerator) : _unsubscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						actual++;
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_unsubscribeHistory != null)
+					{
+						foreach (var entry in _unsubscribeHistory)
+						{
+							performedInvocations.Add("TaskBasedEvent unsubscribed" + " handler: " + FormatValue(entry.Value));
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("TaskBasedEvent", "TaskBasedEvent unsubscribed" + "(" + "handler: " + criteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				cursor = snapshot;
@@ -1054,7 +1343,96 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("TaskBasedEvent", "TaskBasedEvent raised" + "(" + "arg1: " + arg1Criteria.ToString() + ", arg2: " + arg2Criteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				return this;
+			}
+
+			ITaskBasedEventEventImposterVerificationBuilder ITaskBasedEventEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object?> arg1Criteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> arg2Criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (arg1Criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(arg1Criteria));
+				}
+
+				if (arg2Criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(arg2Criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = 0;
+				if (_history != null)
+				{
+					foreach (var entry in _history)
+					{
+						if (arg1Criteria.Matches(entry.arg1) && arg2Criteria.Matches(entry.arg2))
+						{
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_history != null)
+					{
+						foreach (var entry in _history)
+						{
+							performedInvocations.Add("TaskBasedEvent raised" + " arg1: " + FormatValue(entry.arg1) + " arg2: " + FormatValue(entry.arg2));
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("TaskBasedEvent", "TaskBasedEvent raised" + "(" + "arg1: " + arg1Criteria.ToString() + ", arg2: " + arg2Criteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				return this;
+			}
+
+			ITaskBasedEventEventImposterVerificationBuilder ITaskBasedEventEventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> handlerCriteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (handlerCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handlerCriteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = 0;
+				if (_handlerInvocations != null)
+				{
+					foreach (var entry in _handlerInvocations)
+					{
+						if (handlerCriteria.Matches(entry.Handler))
+						{
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_handlerInvocations != null)
+					{
+						foreach (var entry in _handlerInvocations)
+						{
+							performedInvocations.Add("TaskBasedEvent handler invoked" + " handler: " + FormatValue(entry.Handler) + " arg1: " + FormatValue(entry.arg1) + " arg2: " + FormatValue(entry.arg2));
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("TaskBasedEvent", "TaskBasedEvent handler invoked" + "(" + "handler: " + handlerCriteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				return this;
@@ -1096,7 +1474,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("TaskBasedEvent", "TaskBasedEvent handler invoked" + "(" + "handler: " + handlerCriteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				return this;
@@ -1153,7 +1531,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 
 			ITaskBasedEventEventImposterBuilder ITaskBasedEventEventImposterBuilder.UseBaseImplementation()
@@ -1195,6 +1573,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			IValueTaskBasedEventEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> handlerCriteria, global::Imposter.Abstractions.Count count);
 			global::Imposter.Abstractions.IInvocationStep Subscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria);
 			global::Imposter.Abstractions.IInvocationStep Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria);
+			IValueTaskBasedEventEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria, global::Imposter.Abstractions.Count count, string? because);
+			IValueTaskBasedEventEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria, global::Imposter.Abstractions.Count count, string? because);
+			IValueTaskBasedEventEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object?> arg1Criteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> arg2Criteria, global::Imposter.Abstractions.Count count, string? because);
+			IValueTaskBasedEventEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> handlerCriteria, global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1300,7 +1682,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				{
 					get
 					{
-						return "ValueTaskBasedEvent" + (_subscription ? " subscribed(handler: " : " unsubscribed(handler: ") + global::Imposter.Abstractions.MatcherDescription.Format(_criteria) + ")";
+						return "ValueTaskBasedEvent" + (_subscription ? " subscribed(handler: " : " unsubscribed(handler: ") + _criteria.ToString() + ")";
 					}
 				}
 
@@ -1500,7 +1882,55 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("ValueTaskBasedEvent", "ValueTaskBasedEvent subscribed" + "(" + "handler: " + criteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						global::Imposter.Abstractions.InvocationBuffer<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>.MarkVerified(entry);
+				}
+
+				return this;
+			}
+
+			IValueTaskBasedEventEventImposterVerificationBuilder IValueTaskBasedEventEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				var actual = 0;
+				var snapshot = _subscribeHistory == null ? default(global::Imposter.Abstractions.InvocationBuffer<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>.Enumerator) : _subscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						actual++;
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_subscribeHistory != null)
+					{
+						foreach (var entry in _subscribeHistory)
+						{
+							performedInvocations.Add("ValueTaskBasedEvent subscribed" + " handler: " + FormatValue(entry.Value));
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("ValueTaskBasedEvent", "ValueTaskBasedEvent subscribed" + "(" + "handler: " + criteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				cursor = snapshot;
@@ -1548,7 +1978,55 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("ValueTaskBasedEvent", "ValueTaskBasedEvent unsubscribed" + "(" + "handler: " + criteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						global::Imposter.Abstractions.InvocationBuffer<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>.MarkVerified(entry);
+				}
+
+				return this;
+			}
+
+			IValueTaskBasedEventEventImposterVerificationBuilder IValueTaskBasedEventEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				var actual = 0;
+				var snapshot = _unsubscribeHistory == null ? default(global::Imposter.Abstractions.InvocationBuffer<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>.Enumerator) : _unsubscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Value))
+						actual++;
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_unsubscribeHistory != null)
+					{
+						foreach (var entry in _unsubscribeHistory)
+						{
+							performedInvocations.Add("ValueTaskBasedEvent unsubscribed" + " handler: " + FormatValue(entry.Value));
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("ValueTaskBasedEvent", "ValueTaskBasedEvent unsubscribed" + "(" + "handler: " + criteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				cursor = snapshot;
@@ -1625,7 +2103,96 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("ValueTaskBasedEvent", "ValueTaskBasedEvent raised" + "(" + "arg1: " + arg1Criteria.ToString() + ", arg2: " + arg2Criteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				return this;
+			}
+
+			IValueTaskBasedEventEventImposterVerificationBuilder IValueTaskBasedEventEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object?> arg1Criteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> arg2Criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (arg1Criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(arg1Criteria));
+				}
+
+				if (arg2Criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(arg2Criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = 0;
+				if (_history != null)
+				{
+					foreach (var entry in _history)
+					{
+						if (arg1Criteria.Matches(entry.arg1) && arg2Criteria.Matches(entry.arg2))
+						{
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_history != null)
+					{
+						foreach (var entry in _history)
+						{
+							performedInvocations.Add("ValueTaskBasedEvent raised" + " arg1: " + FormatValue(entry.arg1) + " arg2: " + FormatValue(entry.arg2));
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("ValueTaskBasedEvent", "ValueTaskBasedEvent raised" + "(" + "arg1: " + arg1Criteria.ToString() + ", arg2: " + arg2Criteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				return this;
+			}
+
+			IValueTaskBasedEventEventImposterVerificationBuilder IValueTaskBasedEventEventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> handlerCriteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (handlerCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handlerCriteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = 0;
+				if (_handlerInvocations != null)
+				{
+					foreach (var entry in _handlerInvocations)
+					{
+						if (handlerCriteria.Matches(entry.Handler))
+						{
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_handlerInvocations != null)
+					{
+						foreach (var entry in _handlerInvocations)
+						{
+							performedInvocations.Add("ValueTaskBasedEvent handler invoked" + " handler: " + FormatValue(entry.Handler) + " arg1: " + FormatValue(entry.arg1) + " arg2: " + FormatValue(entry.arg2));
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("ValueTaskBasedEvent", "ValueTaskBasedEvent handler invoked" + "(" + "handler: " + handlerCriteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				return this;
@@ -1667,7 +2234,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("ValueTaskBasedEvent", "ValueTaskBasedEvent handler invoked" + "(" + "handler: " + handlerCriteria.ToString() + ")", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				return this;
@@ -1724,7 +2291,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 
 			IValueTaskBasedEventEventImposterBuilder IValueTaskBasedEventEventImposterBuilder.UseBaseImplementation()

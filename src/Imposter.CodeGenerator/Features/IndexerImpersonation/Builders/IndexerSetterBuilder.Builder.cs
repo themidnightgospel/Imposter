@@ -36,6 +36,15 @@ internal static partial class IndexerSetterBuilder
             )
             .AddMember(ThenReturningThis(indexer.SetterBuilderInterface.ThenMethod))
             .AddMember(
+                ForwardCalled(
+                    builderMetadata,
+                    indexer.SetterBuilderInterface.VerificationInterfaceTypeSyntax,
+                    indexer.SetterBuilderInterface.CalledMethod,
+                    IndexerSetterImposterMetadata.CalledMethodName,
+                    withReason: true
+                )
+            )
+            .AddMember(
                 indexer.SetterBuilderInterface.UseBaseImplementationMethod is not null
                     ? BuildSetterBuilderUseBaseImplementationMethod(indexer)
                     : null

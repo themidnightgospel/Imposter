@@ -24,7 +24,7 @@
 When verification fails, `VerificationFailedException` is thrown with the message:
 
 ```
-Invocation was expected to be performed {expectedCount} but instead was performed {actualCount} times.
+Expected {memberAndMatchers} {expectedCount}, performed {actualCount} times.
 ```
 
 Examples:
@@ -33,14 +33,16 @@ Examples:
     ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImpersonation/VerificationTests.cs#L26"}
     // Setter expected once for value 34, but no matching write occurred
     imposter.Age.Setter(Arg<int>.Is(34)).Called(Count.Once());
-    // throws: "Invocation was expected to be performed exactly 1 time(s) but instead was performed 0 times."
+    // Throws with the member/matcher expectation, actual count and recorded member history.
 
     // Getter expected at least 2 reads, but only 1
     var _ = service.Age;
     imposter.Age.Getter().Called(Count.AtLeast(2));
-    // throws: "Invocation was expected to be performed at least 2 time(s) but instead was performed 1 times."
+    // Throws with the member/matcher expectation, actual count and recorded member history.
     ```
 
 Tips
 - Use `Arg<T>` matchers to target specific values.
 - Pair verifications with callbacks when you need to capture payloads.
+
+Use `Called(count, because)` to append a reason; `because` accepts null. See [Failure messages](../failure-messages.md) for complete examples, missing-setup diagnostics and other-interaction listings.

@@ -38,5 +38,13 @@ internal static class FluentInterfaceBuilder
         new InterfaceDeclarationBuilder(name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddMember(InterfaceMethod(called.ReturnType, called.Name, called.CountParameter))
+            .AddMember(
+                InterfaceMethod(
+                    called.ReturnType,
+                    called.Name,
+                    called.CountParameter,
+                    called.BecauseParameter
+                )
+            )
             .Build();
 }

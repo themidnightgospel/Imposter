@@ -40,11 +40,6 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public sealed class IndexerSetterInvocation : global::Imposter.Abstractions.InvocationRecord
 		{
-			private static string FormatValue(object? value)
-			{
-				return "<" + (value?.ToString() ?? "null") + ">";
-			}
-
 			public override string Member
 			{
 				get
@@ -79,7 +74,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 			public override string ToString()
 			{
-				return "set " + Member + "(" + "key: " + FormatValue(Arguments.key) + ")" + " = " + FormatValue(_value) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "set " + Member + "(" + "key: " + global::Imposter.Abstractions.DiagnosticValue.Format(Arguments.key) + ")" + " = " + global::Imposter.Abstractions.DiagnosticValue.Format(_value) + (Exception == null ? "" : " threw " + global::Imposter.Abstractions.DiagnosticValue.Format(Exception));
 			}
 		}
 
@@ -260,10 +255,10 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 					if (_callbacks != null)
 						foreach (var setup in _callbacks)
 							if (!setup.Criteria.SetterUsed && !setup.Criteria.SetterLenient)
-								yield return "set Imposter.Tests.Features.IndexerImpersonation.ISetterOnlyIndexerSetupSut.this[int key]" + "[" + "key: " + global::Imposter.Abstractions.MatcherDescription.Format(setup.Criteria.key) + "]" + " -> Callback";
+								yield return "set Imposter.Tests.Features.IndexerImpersonation.ISetterOnlyIndexerSetupSut.this[int key]" + "[" + "key: " + setup.Criteria.key.ToString() + "]" + " -> Callback";
 				}
 
-				public void Called(IndexerIndexerArgumentsCriteria criteria, global::Imposter.Abstractions.Count count)
+				public void Called(IndexerIndexerArgumentsCriteria criteria, global::Imposter.Abstractions.Count count, string? because = null)
 				{
 					global::Imposter.Abstractions.InvocationHistory<IndexerSetterInvocation>.Enumerator snapshot = _invocationHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<IndexerSetterInvocation>.Enumerator) : _invocationHistory.GetEnumerator();
 					var cursor = snapshot;
@@ -285,7 +280,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 							}
 						}
 
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations));
+						throw new global::Imposter.Abstractions.VerificationFailedException(_propertyDisplayName, "set " + _propertyDisplayName + "[" + "key: " + criteria.key.ToString() + "]", count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 					}
 
 					cursor = snapshot;
@@ -303,7 +298,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 					IndexerIndexerArguments arguments = new IndexerIndexerArguments(key);
 					try
 					{
-						EnsureSetterConfigured();
+						EnsureSetterConfigured(key, value);
 						bool matchedCallback = false;
 						if (_callbacks != null)
 						{
@@ -372,11 +367,12 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 					return true;
 				}
 
-				private void EnsureSetterConfigured()
+				private void EnsureSetterConfigured(int key, int value)
 				{
 					if ((_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit) && !global::System.Threading.Volatile.Read(ref _hasConfiguredSetter))
 					{
-						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
+						IndexerIndexerArguments arguments = new IndexerIndexerArguments(key);
+						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)", "set " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(arguments.key) }) + "]" + " = " + FormatValue(value), new global::System.Collections.Generic.List<string>());
 					}
 				}
 
@@ -414,7 +410,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 					{
 						get
 						{
-							return "set this[]" + "(" + "key: " + global::Imposter.Abstractions.MatcherDescription.Format(_criteria.key) + ")";
+							return "set this[]" + "(" + "key: " + _criteria.key.ToString() + ")";
 						}
 					}
 
@@ -439,19 +435,24 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 					void IIndexerIndexerSetterVerifier.Called(global::Imposter.Abstractions.Count count)
 					{
-						_setterImposter.Called(_criteria, count);
+						_setterImposter.Called(_criteria, count, null);
 					}
 
 					IIndexerIndexerSetterFluentBuilder IIndexerIndexerSetterContinuationBuilder.Then()
 					{
 						return this;
 					}
+
+					void IIndexerIndexerSetterVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+					{
+						_setterImposter.Called(_criteria, count, because);
+					}
 				}
 			}
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
@@ -477,6 +478,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 		public interface IIndexerIndexerSetterVerifier
 		{
 			void Called(global::Imposter.Abstractions.Count count);
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 			global::System.Collections.Generic.IReadOnlyList<IndexerSetterInvocation> Invocations { get; }
 		}
 

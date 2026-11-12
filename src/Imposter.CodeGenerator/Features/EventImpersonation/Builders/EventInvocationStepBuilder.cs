@@ -90,11 +90,9 @@ internal static class EventInvocationStepBuilder
                             )
                         )
                         .Add(
-                            WellKnownTypes
-                                .Imposter.Abstractions.MatcherDescription.Dot(
-                                    IdentifierName("Format")
-                                )
-                                .Call(Argument(IdentifierName(step.Criteria.Name)))
+                            IdentifierName(step.Criteria.Name)
+                                .Dot(IdentifierName("ToString"))
+                                .Call()
                         )
                         .Add(")".StringLiteral()),
                     @event.Core.CreateParameterNameSet(),

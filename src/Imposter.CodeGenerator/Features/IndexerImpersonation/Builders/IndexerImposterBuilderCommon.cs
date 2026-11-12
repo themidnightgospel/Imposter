@@ -46,12 +46,15 @@ internal static class IndexerImposterBuilderCommon
         in IndexerAccessorBuilderMetadata builder,
         NameSyntax verificationInterface,
         in CalledMethodMetadata called,
-        string imposterMethodName
+        string imposterMethodName,
+        bool withReason = false
     )
     {
         var method = new MethodDeclarationBuilder(called.ReturnType, called.Name)
             .WithExplicitInterfaceSpecifier(verificationInterface)
             .AddParameter(ParameterSyntax(called.CountParameter));
+        if (withReason)
+            method.AddParameter(ParameterSyntax(called.BecauseParameter));
         return method
             .WithBody(
                 Block(
@@ -60,6 +63,9 @@ internal static class IndexerImposterBuilderCommon
                         .Call([
                             Argument(IdentifierName(builder.CriteriaFieldName)),
                             Argument(IdentifierName(called.CountParameter.Name)),
+                            Argument(
+                                withReason ? IdentifierName(called.BecauseParameter.Name) : Null
+                            ),
                         ])
                         .ToStatementSyntax()
                 )
@@ -80,9 +86,10 @@ internal static class IndexerImposterBuilderCommon
             description = description
                 .Add(((first ? "" : ", ") + parameter.Name + ": ").StringLiteral())
                 .Add(
-                    WellKnownTypes
-                        .Imposter.Abstractions.MatcherDescription.Dot(IdentifierName("Format"))
-                        .Call(Argument(criteria.Dot(IdentifierName(parameter.FieldName))))
+                    criteria
+                        .Dot(IdentifierName(parameter.FieldName))
+                        .Dot(IdentifierName("ToString"))
+                        .Call()
                 );
             first = false;
         }

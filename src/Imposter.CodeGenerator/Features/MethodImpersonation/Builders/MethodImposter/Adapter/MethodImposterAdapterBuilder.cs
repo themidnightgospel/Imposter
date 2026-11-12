@@ -74,6 +74,27 @@ internal static class MethodImposterAdapterBuilder
             )
             .AddMember(BuildAdapterHasMatchingInvocationImposterGroupMethod(method, adapterNames))
             .AddMember(BuildAdapterAsMethod(method))
+            .AddMember(
+                new MethodDeclarationBuilder(
+                    WellKnownTypes.System.Collections.Generic.List(WellKnownTypes.String),
+                    method.MethodImposter.ConfiguredSetupsMethodName
+                )
+                    .AddModifier(Token(SyntaxKind.PublicKeyword))
+                    .WithBody(
+                        Block(
+                            ReturnStatement(
+                                IdentifierName(adapterNames.TargetFieldName)
+                                    .Dot(
+                                        IdentifierName(
+                                            method.MethodImposter.ConfiguredSetupsMethodName
+                                        )
+                                    )
+                                    .Call()
+                            )
+                        )
+                    )
+                    .Build()
+            )
             .AddMembers(BuildVerificationForwarders(adapterNames.TargetFieldName))
             .Build();
 

@@ -69,11 +69,13 @@ For a method with a return value, retain the builder before configuring it: `var
 When verification fails, `VerificationFailedException` is thrown. The message includes both the expected/actual counts and, when available, a textual list of performed invocations:
 
 ```
-Invocation was expected to be performed {expectedCount} but instead was performed {actualCount} times.
-Performed invocations:
+Expected {memberAndMatchers} {expectedCount}, performed {actualCount} times.
+Performed invocations of {member}:
 {invocation1}
 {invocation2}
 ...
 ```
 
 Use this list to quickly see which calls were actually made and why the verification did not match your expectations.
+
+Use `Called(count, because)` to append a reason; `because` accepts null. See [Failure messages](../failure-messages.md) for complete examples, missing-setup diagnostics and other-interaction listings.

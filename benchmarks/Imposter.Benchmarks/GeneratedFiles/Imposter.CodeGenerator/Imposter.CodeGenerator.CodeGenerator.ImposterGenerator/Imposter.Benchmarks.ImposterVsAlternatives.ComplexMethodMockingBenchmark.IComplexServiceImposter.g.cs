@@ -179,7 +179,7 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
@@ -350,9 +350,10 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
 			internal volatile bool IsUsed;
 			internal volatile bool IsLenient;
+			internal object? _outcomeDescriptions;
 			public override string ToString()
 			{
-				return "Process(" + "route: " + global::Imposter.Abstractions.MatcherDescription.Format(ArgumentsCriteria.route) + ", severity: " + global::Imposter.Abstractions.MatcherDescription.Format(ArgumentsCriteria.severity) + ", context: " + global::Imposter.Abstractions.MatcherDescription.Format(ArgumentsCriteria.context) + ")";
+				return "Process(" + "route: " + ArgumentsCriteria.route.ToString() + ", severity: " + ArgumentsCriteria.severity.ToString() + ", context: " + ArgumentsCriteria.context.ToString() + ")" + " -> " + global::Imposter.Abstractions.DiagnosticValue.Outcomes(_outcomeDescriptions);
 			}
 
 			internal volatile bool HasConfiguredOutcome;
@@ -494,6 +495,8 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
 			global::System.Collections.Generic.IReadOnlyList<ProcessInvocation> Invocations { get; }
+
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -524,6 +527,18 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 				return null;
 			}
 
+			public global::System.Collections.Generic.List<string> GetConfiguredSetups()
+			{
+				var setups = new global::System.Collections.Generic.List<string>();
+				foreach (var group in _invocationImposters)
+				{
+					if (group.HasConfiguredOutcome)
+						setups.Add(group.ToString());
+				}
+
+				return setups;
+			}
+
 			public string Invoke(string route, int severity, global::Imposter.Benchmarks.ImposterVsAlternatives.ComplexMethodMockingBenchmark.OperationContext context)
 			{
 				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
@@ -536,7 +551,7 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 					if (matchingInvocationImposterGroup == default)
 					{
 						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-							throw new global::Imposter.Abstractions.MissingImposterException("string ComplexMethodMockingBenchmark.IComplexService.Process(string route, int severity, ComplexMethodMockingBenchmark.OperationContext context)");
+							throw new global::Imposter.Abstractions.MissingImposterException("Process", "Process(" + "route: " + global::Imposter.Abstractions.DiagnosticValue.Format(capturedroute) + ", severity: " + global::Imposter.Abstractions.DiagnosticValue.Format(capturedseverity) + ", context: " + global::Imposter.Abstractions.DiagnosticValue.Format(capturedcontext) + ")", GetConfiguredSetups(), "string ComplexMethodMockingBenchmark.IComplexService.Process(string route, int severity, ComplexMethodMockingBenchmark.OperationContext context)");
 						matchingInvocationImposterGroup = ProcessMethodInvocationImposterGroup.Default;
 					}
 
@@ -573,6 +588,7 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 					{
 						throw new TException();
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, global::Imposter.Abstractions.DiagnosticValue.Throws<TException>());
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -583,6 +599,7 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 					{
 						throw exception;
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -593,6 +610,7 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 					{
 						throw exceptionGenerator.Invoke(route, severity, context);
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -600,6 +618,7 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 				IProcessMethodInvocationImposterGroupContinuation IProcessMethodInvocationImposterGroupCallback.Callback(ProcessCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Callback");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -607,6 +626,7 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 				IProcessMethodInvocationImposterGroupContinuation IProcessMethodInvocationImposterGroup.Returns(ProcessDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -614,6 +634,7 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 				IProcessMethodInvocationImposterGroupContinuation IProcessMethodInvocationImposterGroup.Returns(string value)
 				{
 					_currentInvocationImposter.Returns(value);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -629,7 +650,16 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 					var invocationCount = _processMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
 					if (!count.Matches(invocationCount))
 					{
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _processMethodInvocationHistoryCollection.ToString());
+						throw new global::Imposter.Abstractions.VerificationFailedException("Process", "Process(" + "route: " + _argumentsCriteria.route.ToString() + ", severity: " + _argumentsCriteria.severity.ToString() + ", context: " + _argumentsCriteria.context.ToString() + ")", count, invocationCount, _processMethodInvocationHistoryCollection.ToString(), null, _processMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_processMethodInvocationHistoryCollection.Owner) : null);
+					}
+				}
+
+				void ProcessInvocationVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+				{
+					var invocationCount = _processMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
+					if (!count.Matches(invocationCount))
+					{
+						throw new global::Imposter.Abstractions.VerificationFailedException("Process", "Process(" + "route: " + _argumentsCriteria.route.ToString() + ", severity: " + _argumentsCriteria.severity.ToString() + ", context: " + _argumentsCriteria.context.ToString() + ")", count, invocationCount, _processMethodInvocationHistoryCollection.ToString(), because, _processMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_processMethodInvocationHistoryCollection.Owner) : null);
 					}
 				}
 
@@ -650,7 +680,7 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 				{
 					get
 					{
-						return "Process(" + "route: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.route) + ", severity: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.severity) + ", context: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.context) + ")";
+						return "Process(" + "route: " + _argumentsCriteria.route.ToString() + ", severity: " + _argumentsCriteria.severity.ToString() + ", context: " + _argumentsCriteria.context.ToString() + ")";
 					}
 				}
 

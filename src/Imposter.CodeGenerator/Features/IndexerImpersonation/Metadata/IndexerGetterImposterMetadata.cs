@@ -55,6 +55,7 @@ internal readonly struct IndexerGetterImposterMetadata
     internal readonly TypeSyntax ReturnHandlerType;
 
     internal readonly string FindGetterInvocationImposterMethodName;
+    internal readonly string ConfiguredSetupsMethodName;
 
     internal IndexerGetterImposterMetadata(in ImposterIndexerMetadata indexer)
     {
@@ -70,6 +71,7 @@ internal readonly struct IndexerGetterImposterMetadata
             names.Use(ImposterIndexerCoreMetadata.BaseImplementationParameterName)
         );
         FindGetterInvocationImposterMethodName = names.Use("FindGetterInvocationImposter");
+        ConfiguredSetupsMethodName = names.Use("GetConfiguredSetups");
 
         ReturnGeneratorType = indexer.Core.HasGeneratedValueDelegates
             ? indexer.Delegates.ReturnGeneratorDelegateType
@@ -112,6 +114,7 @@ internal readonly struct IndexerGetterImposterMetadata
     internal readonly struct GetterInvocationMetadata
     {
         internal const string HasConfiguredReturnFieldName = "HasConfiguredReturn";
+        internal const string OutcomeDescriptionsFieldName = "_outcomeDescriptions";
 
         internal const string BareMatchVariableName = "bareMatch";
 
