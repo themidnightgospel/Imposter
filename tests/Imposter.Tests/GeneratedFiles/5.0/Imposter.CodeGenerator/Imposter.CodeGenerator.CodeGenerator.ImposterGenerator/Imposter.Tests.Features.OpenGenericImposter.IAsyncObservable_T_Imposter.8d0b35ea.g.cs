@@ -13,10 +13,10 @@ using global::Imposter.Tests.Features.OpenGenericImposter;
 namespace Imposter.Tests.Features.OpenGenericImposter
 {
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-	public sealed class IAsyncObservableImposter<T> : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.OpenGenericImposter.IAsyncObservable<T>>, IAsyncObservableImposter<T>.IAsyncObservableSetup
+	public sealed class IAsyncObservableImposter<T> : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.OpenGenericImposter.IAsyncObservable<T>>, IAsyncObservableImposter<T>.IAsyncObservableSetup
 	{
 		private readonly OnNextMethodImposter _onNextMethodImposter;
-		private readonly OnNextMethodInvocationHistoryCollection _onNextMethodInvocationHistoryCollection = new OnNextMethodInvocationHistoryCollection();
+		private readonly OnNextMethodInvocationHistoryCollection _onNextMethodInvocationHistoryCollection;
 		public IOnNextMethodImposterBuilder OnNext(global::Imposter.Abstractions.Arg<T> item)
 		{
 			return new OnNextMethodImposter.Builder(_onNextMethodImposter, _onNextMethodInvocationHistoryCollection, new OnNextArgumentsCriteria(item));
@@ -63,30 +63,64 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IOnNextMethodInvocationHistory
+		internal interface IOnNextMethodInvocationHistory
 		{
 			bool Matches(OnNextArgumentsCriteria criteria);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class OnNextMethodInvocationHistory : OnNextMethodInvocationHistoryCollection.Node, IOnNextMethodInvocationHistory
+		public sealed class OnNextInvocation : OnNextMethodInvocationHistoryCollection.Node, IOnNextMethodInvocationHistory
 		{
 			internal readonly T captureditem;
-			internal readonly global::System.Exception? Exception;
-			public OnNextMethodInvocationHistory(T captureditem, global::System.Exception? Exception)
+			internal readonly global::System.Exception? _exception;
+			private readonly long _sequence;
+			public T Item
 			{
-				this.captureditem = captureditem;
-				this.Exception = Exception;
+				get
+				{
+					return captureditem;
+				}
 			}
 
-			public bool Matches(OnNextArgumentsCriteria criteria)
+			public override string Member
+			{
+				get
+				{
+					return "OnNext";
+				}
+			}
+
+			public override long Sequence
+			{
+				get
+				{
+					return _sequence;
+				}
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public OnNextInvocation(T captureditem, global::System.Exception? exception, long sequence)
+			{
+				this.captureditem = captureditem;
+				this._exception = exception;
+				this._sequence = sequence;
+			}
+
+			bool IOnNextMethodInvocationHistory.Matches(OnNextArgumentsCriteria criteria)
 			{
 				return criteria.MatchesCaptured(captureditem);
 			}
 
 			public override string ToString()
 			{
-				return "OnNext(" + global::System.String.Join(", ", new[] { "item: " + FormatValue(captureditem) }) + ")" + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "OnNext(" + global::System.String.Join(", ", new[] { "item: " + FormatValue(captureditem) }) + ")" + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -96,12 +130,16 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class OnNextMethodInvocationHistoryCollection
+		public class OnNextMethodInvocationHistoryCollection
 		{
 			private OnNextMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IImposterInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+
 				internal OnNextMethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -134,6 +172,33 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				}
 
 				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, orderBySequence);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<OnNextInvocation> MatchingInvocations(OnNextArgumentsCriteria criteria)
+			{
+				var result = new global::System.Collections.Generic.List<OnNextInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((IOnNextMethodInvocationHistory)entry).Matches(criteria))
+						result.Add((OnNextInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
 			}
 
 			public override string ToString()
@@ -280,6 +345,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<OnNextInvocation> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -312,25 +378,24 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 			public void Invoke(T item)
 			{
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
 				T captureditem = item;
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(captureditem);
-				if (matchingInvocationImposterGroup == default)
-				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-					{
-						throw new global::Imposter.Abstractions.MissingImposterException("void IAsyncObservable<T>.OnNext(T item)");
-					}
-
-					matchingInvocationImposterGroup = OnNextMethodInvocationImposterGroup.Default;
-				}
-
 				try
 				{
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(captureditem);
+					if (matchingInvocationImposterGroup == default)
+					{
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("void IAsyncObservable<T>.OnNext(T item)");
+						matchingInvocationImposterGroup = OnNextMethodInvocationImposterGroup.Default;
+					}
+
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void IAsyncObservable<T>.OnNext(T item)", item);
-					_onNextMethodInvocationHistoryCollection.Add(new OnNextMethodInvocationHistory(captureditem, default));
+					_onNextMethodInvocationHistoryCollection.Add(new OnNextInvocation(captureditem, default, invocationSequence));
 				}
-				catch (global::System.Exception ex) when (_onNextMethodInvocationHistoryCollection.RecordFailure(new OnNextMethodInvocationHistory(captureditem, ex)))
+				catch (global::System.Exception ex)
 				{
+					_onNextMethodInvocationHistoryCollection.RecordFailure(new OnNextInvocation(captureditem, ex, invocationSequence));
 					throw;
 				}
 			}
@@ -407,6 +472,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				{
 					return _onNextMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
+
+				global::System.Collections.Generic.IReadOnlyList<OnNextInvocation> OnNextInvocationVerifier.Invocations
+				{
+					get
+					{
+						return _onNextMethodInvocationHistoryCollection.MatchingInvocations(_argumentsCriteria);
+					}
+				}
 			}
 		}
 
@@ -428,8 +501,16 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 		public IAsyncObservableImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._onNextMethodInvocationHistoryCollection = new OnNextMethodInvocationHistoryCollection();
 			this._onNextMethodImposter = new OnNextMethodImposter(_onNextMethodInvocationHistoryCollection, invocationBehavior);
 			this._imposterInstance = new ImposterTargetInstance(this);
+		}
+
+		global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> global::Imposter.Abstractions.IImposter.Invocations()
+		{
+			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+			invocations.AddRange(_onNextMethodInvocationHistoryCollection.Snapshot(false));
+			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

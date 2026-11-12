@@ -38,7 +38,7 @@ internal readonly struct EventImposterBuilderFieldsMetadata
         var callbackType = WellKnownTypes.Imposter.Abstractions.CallbackCollection(
             core.HandlerTypeSyntax
         );
-        var handlerHistoryType = WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(
+        var handlerHistoryType = WellKnownTypes.Imposter.Abstractions.InvocationBuffer(
             core.HandlerTypeSyntax
         );
         var activeHandlersType = WellKnownTypes.Imposter.Abstractions.EventHandlerCollection(
@@ -59,7 +59,6 @@ internal readonly struct EventImposterBuilderFieldsMetadata
             Token(SyntaxKind.ReadOnlyKeyword)
         );
         var fieldNames = core.CreateParameterNameSet();
-
         ActiveHandlers = new FieldMetadata(fieldNames.Use("_activeHandlers"), activeHandlersType);
         Callbacks = new FieldMetadata(fieldNames.Use("_callbacks"), callbackType);
         History = new FieldMetadata(fieldNames.Use("_history"), historyType);

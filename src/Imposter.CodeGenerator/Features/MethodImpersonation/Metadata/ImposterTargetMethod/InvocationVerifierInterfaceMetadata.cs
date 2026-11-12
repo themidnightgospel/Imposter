@@ -21,12 +21,13 @@ internal readonly struct InvocationVerifierInterfaceMetadata
     internal readonly TypeParameterListSyntax? TypeParameterList;
 
     internal readonly IReadOnlyList<TypeParameterConstraintClauseSyntax> ConstraintClauses;
+    internal readonly TypeSyntax InvocationRecordType;
 
     internal InvocationVerifierInterfaceMetadata(in ImposterTargetMethodMetadata method)
     {
         Name = $"{method.UniqueName}InvocationVerifier";
         Syntax = SyntaxFactoryHelper.WithMethodGenericArguments(method.GenericTypeArguments, Name);
-        CalledMethod = new CalledMethodMetadata();
+        CalledMethod = new CalledMethodMetadata(method.ReservedParameterNames.CreateNameSet());
 
         // A type parameter cannot share the name of a member declared on this interface.
         var calledMethodName = CalledMethod.Name;
@@ -38,7 +39,9 @@ internal readonly struct InvocationVerifierInterfaceMetadata
         var declarationTypeArguments = method
             .Model.TypeParameters.Select(parameter =>
                 IdentifierName(
-                    parameter.Name == CallCountMethodName || parameter.Name == calledMethodName
+                    parameter.Name == CallCountMethodName
+                    || parameter.Name == calledMethodName
+                    || parameter.Name == "Invocations"
                         ? Identifier(names.Use(parameter.Name))
                         : SyntaxFactoryHelper.EscapedIdentifier(parameter.Name)
                 )
@@ -49,6 +52,7 @@ internal readonly struct InvocationVerifierInterfaceMetadata
             method.Model.TypeParameters,
             declarationTypeArguments
         );
+        InvocationRecordType = (TypeSyntax)renamer.Visit(method.InvocationHistory.Syntax);
         ConstraintClauses = method
             .GenericTypeConstraintClauses.Select(clause =>
                 (TypeParameterConstraintClauseSyntax)renamer.Visit(clause)

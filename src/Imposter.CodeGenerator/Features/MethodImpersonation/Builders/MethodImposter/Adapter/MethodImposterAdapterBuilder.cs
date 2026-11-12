@@ -60,6 +60,11 @@ internal static class MethodImposterAdapterBuilder
                     .Build()
             )
             .AddMember(BuildAdapterInvokeMethod(method, adapterNames))
+            .AddMember(
+                method.CanReuseCapturedSpansAcrossAdapters
+                    ? BuildAdapterInvokeMethod(method, adapterNames, reuseCapturedSpans: true)
+                    : null
+            )
             .AddMember(BuildAdapterHasMatchingInvocationImposterGroupMethod(method, adapterNames))
             .AddMember(BuildAdapterAsMethod(method))
             .Build();
@@ -69,7 +74,8 @@ internal static class MethodImposterAdapterBuilder
 
     private static MethodDeclarationSyntax BuildAdapterInvokeMethod(
         in ImposterTargetMethodMetadata method,
-        in AdapterNames adapterNames
+        in AdapterNames adapterNames,
+        bool reuseCapturedSpans = false
     )
     {
         var body = new List<StatementSyntax>();
@@ -80,6 +86,26 @@ internal static class MethodImposterAdapterBuilder
             method.Parameters.ParameterListSyntaxIncludingNullable
         );
 
+        if (reuseCapturedSpans)
+        {
+            var capturedNames = method.InvocationHistory.ArgumentFields;
+            var capturedParameters = method
+                .Parameters.InputParameterMetadata.Where(parameter => parameter.IsSpan)
+                .Select(parameter =>
+                    ParameterSyntax(
+                        parameter.NullableAwareKeptTypeSyntax,
+                        capturedNames[parameter.Name]
+                    )
+                );
+            parameterList = parameterList.WithParameters(
+                parameterList.Parameters.InsertRange(0, capturedParameters)
+            );
+            invokeArguments.AddRange(
+                method
+                    .Parameters.InputParameterMetadata.Where(parameter => parameter.IsSpan)
+                    .Select(parameter => Argument(IdentifierName(capturedNames[parameter.Name])))
+            );
+        }
         var adaptedParameterNames = adapterNames.AdaptedParameterNames;
         foreach (var parameter in method.Parameters.AllParameterMetadata)
         {
@@ -118,7 +144,9 @@ internal static class MethodImposterAdapterBuilder
                     postInvokeActions.Add(CastBackToCaller(method));
                     break;
                 case RefKind.Out:
-                    invokeArguments.Add(PassThroughLocal(SyntaxKind.OutKeyword, initializer: null));
+                    invokeArguments.Add(
+                        PassThroughLocal(SyntaxKind.OutKeyword, DefaultNonNullable)
+                    );
                     postInvokeActions.Add(CastBackToCaller(method));
                     break;
                 case RefKinds.RefReadOnlyParameter:
@@ -167,35 +195,57 @@ internal static class MethodImposterAdapterBuilder
         }
 
         var invokeExpression = IdentifierName(adapterNames.TargetFieldName)
-            .Dot(IdentifierName(MethodImposterInvokeMethodMetadata.Name))
+            .Dot(
+                IdentifierName(
+                    reuseCapturedSpans
+                        ? method.MethodImposter.InvokeWithCapturedSpansMethodName
+                        : MethodImposterInvokeMethodMetadata.Name
+                )
+            )
             .Call(invokeArguments);
+
+        var invocation = new List<StatementSyntax>();
 
         if (method.HasReturnValue)
         {
-            body.Add(
+            invocation.Add(
                 LocalVariableDeclarationSyntax(
                     Var,
                     adapterNames.InvokeResultVariableName,
                     invokeExpression
                 )
             );
-            body.AddRange(postInvokeActions);
-
-            body.Add(ReturnStatement(AdaptedResult(method, adapterNames)));
+            invocation.Add(ReturnStatement(AdaptedResult(method, adapterNames)));
         }
         else
         {
-            body.Add(invokeExpression.ToStatementSyntax());
-            body.AddRange(postInvokeActions);
+            invocation.Add(invokeExpression.ToStatementSyntax());
         }
 
         return new MethodDeclarationBuilder(
             method.InTargetTypeArguments(method.NullableAwareReturnTypeSyntax),
-            MethodImposterInvokeMethodMetadata.Name
+            reuseCapturedSpans
+                ? method.MethodImposter.InvokeWithCapturedSpansMethodName
+                : MethodImposterInvokeMethodMetadata.Name
         )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithParameterList(parameterList)
-            .WithBody(Block(body))
+            .WithBody(
+                Block(
+                    body.Concat(
+                        postInvokeActions.Count == 0
+                            ? invocation
+                            : new StatementSyntax[]
+                            {
+                                TryStatement(
+                                    Block(invocation),
+                                    default,
+                                    FinallyClause(Block(postInvokeActions))
+                                ),
+                            }
+                    )
+                )
+            )
             .Build();
     }
 

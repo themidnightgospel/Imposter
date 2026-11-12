@@ -11,6 +11,8 @@ internal readonly ref struct ImposterEventMetadata
 {
     internal readonly ImposterEventCoreMetadata Core;
 
+    internal readonly LocalNamesMetadata Locals;
+
     internal readonly EventImposterBuilderInterfaceMetadata BuilderInterface;
 
     internal readonly EventImposterBuilderMetadata Builder;
@@ -33,6 +35,13 @@ internal readonly ref struct ImposterEventMetadata
     )
     {
         Core = new ImposterEventCoreMetadata(@event, uniqueName);
+        Locals = new LocalNamesMetadata(
+            Core.CreateParameterNameSet(),
+            "entry",
+            "actual",
+            "performedInvocations",
+            "interceptor"
+        );
         BuilderInterface = new EventImposterBuilderInterfaceMetadata(Core);
         Builder = new EventImposterBuilderMetadata(Core);
         BuilderField = new FieldMetadata(

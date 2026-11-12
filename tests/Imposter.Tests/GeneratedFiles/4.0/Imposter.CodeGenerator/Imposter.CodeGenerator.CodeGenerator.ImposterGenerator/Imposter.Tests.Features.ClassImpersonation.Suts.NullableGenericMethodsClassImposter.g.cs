@@ -13,12 +13,12 @@ using global::Imposter.Tests.Features.ClassImpersonation.Suts;
 namespace Imposter.Tests.Features.ClassImpersonation.Suts
 {
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-	public sealed class NullableGenericMethodsClassImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.NullableGenericMethodsClass>
+	public sealed class NullableGenericMethodsClassImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.NullableGenericMethodsClass>
 	{
 		private readonly EchoNullableReferenceMethodImposterCollection _echoNullableReferenceMethodImposterCollection;
 		private readonly EchoMaybeDefaultMethodImposterCollection _echoMaybeDefaultMethodImposterCollection;
-		private readonly EchoNullableReferenceMethodInvocationHistoryCollection _echoNullableReferenceMethodInvocationHistoryCollection = new EchoNullableReferenceMethodInvocationHistoryCollection();
-		private readonly EchoMaybeDefaultMethodInvocationHistoryCollection _echoMaybeDefaultMethodInvocationHistoryCollection = new EchoMaybeDefaultMethodInvocationHistoryCollection();
+		private readonly EchoNullableReferenceMethodInvocationHistoryCollection _echoNullableReferenceMethodInvocationHistoryCollection;
+		private readonly EchoMaybeDefaultMethodInvocationHistoryCollection _echoMaybeDefaultMethodInvocationHistoryCollection;
 		public IEchoNullableReferenceMethodImposterBuilder<T> EchoNullableReference<T>(global::Imposter.Abstractions.Arg<T> value)
 			where T : class ?, global::System.IDisposable?
 		{
@@ -83,32 +83,74 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IEchoMaybeDefaultMethodInvocationHistory
+		internal interface IEchoMaybeDefaultMethodInvocationHistory
 		{
 			bool Matches<TTarget>(EchoMaybeDefaultArgumentsCriteria<TTarget> criteria);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class EchoMaybeDefaultMethodInvocationHistory<T> : EchoMaybeDefaultMethodInvocationHistoryCollection.Node, IEchoMaybeDefaultMethodInvocationHistory
+		public sealed class EchoMaybeDefaultInvocation<T> : EchoMaybeDefaultMethodInvocationHistoryCollection.Node, IEchoMaybeDefaultMethodInvocationHistory
 		{
 			internal readonly T? capturedvalue;
-			internal readonly T? Result;
-			internal readonly global::System.Exception? Exception;
-			public EchoMaybeDefaultMethodInvocationHistory(T? capturedvalue, T? Result, global::System.Exception? Exception)
+			internal readonly T? _result;
+			internal readonly global::System.Exception? _exception;
+			private readonly long _sequence;
+			public T? Value
 			{
-				this.capturedvalue = capturedvalue;
-				this.Result = Result;
-				this.Exception = Exception;
+				get
+				{
+					return capturedvalue;
+				}
 			}
 
-			public bool Matches<TTarget>(EchoMaybeDefaultArgumentsCriteria<TTarget> criteria)
+			public T? Result
+			{
+				get
+				{
+					return _result;
+				}
+			}
+
+			public override string Member
+			{
+				get
+				{
+					return "EchoMaybeDefault";
+				}
+			}
+
+			public override long Sequence
+			{
+				get
+				{
+					return _sequence;
+				}
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public EchoMaybeDefaultInvocation(T? capturedvalue, T? result, global::System.Exception? exception, long sequence)
+			{
+				this.capturedvalue = capturedvalue;
+				this._result = result;
+				this._exception = exception;
+				this._sequence = sequence;
+			}
+
+			bool IEchoMaybeDefaultMethodInvocationHistory.Matches<TTarget>(EchoMaybeDefaultArgumentsCriteria<TTarget> criteria)
 			{
 				return (typeof(TTarget) == typeof(T)) && ((EchoMaybeDefaultArgumentsCriteria<T>)(object)criteria).MatchesCaptured(capturedvalue);
 			}
 
 			public override string ToString()
 			{
-				return "EchoMaybeDefault(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(capturedvalue) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "EchoMaybeDefault(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(capturedvalue) }) + ")" + " => " + FormatValue(_result) + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -118,12 +160,16 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class EchoMaybeDefaultMethodInvocationHistoryCollection
+		public class EchoMaybeDefaultMethodInvocationHistoryCollection
 		{
 			private EchoMaybeDefaultMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IImposterInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+
 				internal EchoMaybeDefaultMethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -156,6 +202,33 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				}
 
 				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, orderBySequence);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<EchoMaybeDefaultInvocation<T>> MatchingInvocations<T>(EchoMaybeDefaultArgumentsCriteria<T> criteria)
+			{
+				var result = new global::System.Collections.Generic.List<EchoMaybeDefaultInvocation<T>>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((IEchoMaybeDefaultMethodInvocationHistory)entry).Matches<T>(criteria))
+						result.Add((EchoMaybeDefaultInvocation<T>)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
 			}
 
 			public override string ToString()
@@ -377,6 +450,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<EchoMaybeDefaultInvocation<T>> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -453,26 +527,17 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			public T? Invoke(T? value, EchoMaybeDefaultDelegate<T>? baseImplementation = null)
 			{
 				T? capturedvalue = value;
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedvalue);
-				if (matchingInvocationImposterGroup == default)
 				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedvalue);
+					if (matchingInvocationImposterGroup == default)
 					{
-						throw new global::Imposter.Abstractions.MissingImposterException("virtual T? NullableGenericMethodsClass.EchoMaybeDefault<T>(T? value)");
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("virtual T? NullableGenericMethodsClass.EchoMaybeDefault<T>(T? value)");
+						matchingInvocationImposterGroup = EchoMaybeDefaultMethodInvocationImposterGroup<T>.Default;
 					}
 
-					matchingInvocationImposterGroup = EchoMaybeDefaultMethodInvocationImposterGroup<T>.Default;
-				}
-
-				try
-				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual T? NullableGenericMethodsClass.EchoMaybeDefault<T>(T? value)", value, baseImplementation);
-					_echoMaybeDefaultMethodInvocationHistoryCollection.Add(new EchoMaybeDefaultMethodInvocationHistory<T>(capturedvalue, result, default));
 					return result;
-				}
-				catch (global::System.Exception ex) when (_echoMaybeDefaultMethodInvocationHistoryCollection.RecordFailure(new EchoMaybeDefaultMethodInvocationHistory<T>(capturedvalue, default !, ex)))
-				{
-					throw;
 				}
 			}
 
@@ -570,6 +635,14 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				{
 					return _echoMaybeDefaultMethodInvocationHistoryCollection.Count<T>(_argumentsCriteria);
 				}
+
+				global::System.Collections.Generic.IReadOnlyList<EchoMaybeDefaultInvocation<T>> EchoMaybeDefaultInvocationVerifier<T>.Invocations
+				{
+					get
+					{
+						return _echoMaybeDefaultMethodInvocationHistoryCollection.MatchingInvocations<T>(_argumentsCriteria);
+					}
+				}
 			}
 		}
 
@@ -627,34 +700,75 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IEchoNullableReferenceMethodInvocationHistory
+		internal interface IEchoNullableReferenceMethodInvocationHistory
 		{
 			bool Matches<TTarget>(EchoNullableReferenceArgumentsCriteria<TTarget> criteria)
 				where TTarget : class ?, global::System.IDisposable?;
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class EchoNullableReferenceMethodInvocationHistory<T> : EchoNullableReferenceMethodInvocationHistoryCollection.Node, IEchoNullableReferenceMethodInvocationHistory where T : class ?, global::System.IDisposable?
+		public sealed class EchoNullableReferenceInvocation<T> : EchoNullableReferenceMethodInvocationHistoryCollection.Node, IEchoNullableReferenceMethodInvocationHistory where T : class ?, global::System.IDisposable?
 		{
 			internal readonly T capturedvalue;
-			internal readonly T? Result;
-			internal readonly global::System.Exception? Exception;
-			public EchoNullableReferenceMethodInvocationHistory(T capturedvalue, T? Result, global::System.Exception? Exception)
+			internal readonly T? _result;
+			internal readonly global::System.Exception? _exception;
+			private readonly long _sequence;
+			public T Value
 			{
-				this.capturedvalue = capturedvalue;
-				this.Result = Result;
-				this.Exception = Exception;
+				get
+				{
+					return capturedvalue;
+				}
 			}
 
-			public bool Matches<TTarget>(EchoNullableReferenceArgumentsCriteria<TTarget> criteria)
-				where TTarget : class ?, global::System.IDisposable?
+			public T? Result
+			{
+				get
+				{
+					return _result;
+				}
+			}
+
+			public override string Member
+			{
+				get
+				{
+					return "EchoNullableReference";
+				}
+			}
+
+			public override long Sequence
+			{
+				get
+				{
+					return _sequence;
+				}
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public EchoNullableReferenceInvocation(T capturedvalue, T? result, global::System.Exception? exception, long sequence)
+			{
+				this.capturedvalue = capturedvalue;
+				this._result = result;
+				this._exception = exception;
+				this._sequence = sequence;
+			}
+
+			bool IEchoNullableReferenceMethodInvocationHistory.Matches<TTarget>(EchoNullableReferenceArgumentsCriteria<TTarget> criteria)
 			{
 				return (typeof(TTarget) == typeof(T)) && ((EchoNullableReferenceArgumentsCriteria<T>)(object)criteria).MatchesCaptured(capturedvalue);
 			}
 
 			public override string ToString()
 			{
-				return "EchoNullableReference(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(capturedvalue) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "EchoNullableReference(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(capturedvalue) }) + ")" + " => " + FormatValue(_result) + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -664,12 +778,16 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class EchoNullableReferenceMethodInvocationHistoryCollection
+		public class EchoNullableReferenceMethodInvocationHistoryCollection
 		{
 			private EchoNullableReferenceMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IImposterInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+
 				internal EchoNullableReferenceMethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -703,6 +821,34 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				}
 
 				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, orderBySequence);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<EchoNullableReferenceInvocation<T>> MatchingInvocations<T>(EchoNullableReferenceArgumentsCriteria<T> criteria)
+				where T : class ?, global::System.IDisposable?
+			{
+				var result = new global::System.Collections.Generic.List<EchoNullableReferenceInvocation<T>>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((IEchoNullableReferenceMethodInvocationHistory)entry).Matches<T>(criteria))
+						result.Add((EchoNullableReferenceInvocation<T>)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
 			}
 
 			public override string ToString()
@@ -930,6 +1076,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<EchoNullableReferenceInvocation<T>> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1006,26 +1153,17 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			public T Invoke(T value, EchoNullableReferenceDelegate<T>? baseImplementation = null)
 			{
 				T capturedvalue = value;
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedvalue);
-				if (matchingInvocationImposterGroup == default)
 				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedvalue);
+					if (matchingInvocationImposterGroup == default)
 					{
-						throw new global::Imposter.Abstractions.MissingImposterException("virtual T NullableGenericMethodsClass.EchoNullableReference<T>(T value)");
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("virtual T NullableGenericMethodsClass.EchoNullableReference<T>(T value)");
+						matchingInvocationImposterGroup = EchoNullableReferenceMethodInvocationImposterGroup<T>.Default;
 					}
 
-					matchingInvocationImposterGroup = EchoNullableReferenceMethodInvocationImposterGroup<T>.Default;
-				}
-
-				try
-				{
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual T NullableGenericMethodsClass.EchoNullableReference<T>(T value)", value, baseImplementation);
-					_echoNullableReferenceMethodInvocationHistoryCollection.Add(new EchoNullableReferenceMethodInvocationHistory<T>(capturedvalue, result, default));
 					return result;
-				}
-				catch (global::System.Exception ex) when (_echoNullableReferenceMethodInvocationHistoryCollection.RecordFailure(new EchoNullableReferenceMethodInvocationHistory<T>(capturedvalue, default !, ex)))
-				{
-					throw;
 				}
 			}
 
@@ -1123,14 +1261,32 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				{
 					return _echoNullableReferenceMethodInvocationHistoryCollection.Count<T>(_argumentsCriteria);
 				}
+
+				global::System.Collections.Generic.IReadOnlyList<EchoNullableReferenceInvocation<T>> EchoNullableReferenceInvocationVerifier<T>.Invocations
+				{
+					get
+					{
+						return _echoNullableReferenceMethodInvocationHistoryCollection.MatchingInvocations<T>(_argumentsCriteria);
+					}
+				}
 			}
 		}
 
 		public NullableGenericMethodsClassImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._echoNullableReferenceMethodInvocationHistoryCollection = new EchoNullableReferenceMethodInvocationHistoryCollection();
+			this._echoMaybeDefaultMethodInvocationHistoryCollection = new EchoMaybeDefaultMethodInvocationHistoryCollection();
 			this._echoNullableReferenceMethodImposterCollection = new EchoNullableReferenceMethodImposterCollection(_echoNullableReferenceMethodInvocationHistoryCollection, invocationBehavior);
 			this._echoMaybeDefaultMethodImposterCollection = new EchoMaybeDefaultMethodImposterCollection(_echoMaybeDefaultMethodInvocationHistoryCollection, invocationBehavior);
 			this._imposterInstance = new ImposterTargetInstance(this);
+		}
+
+		global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> global::Imposter.Abstractions.IImposter.Invocations()
+		{
+			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+			invocations.AddRange(_echoNullableReferenceMethodInvocationHistoryCollection.Snapshot(false));
+			invocations.AddRange(_echoMaybeDefaultMethodInvocationHistoryCollection.Snapshot(false));
+			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1150,7 +1306,25 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					return base.EchoNullableReference<T>(value);
 				}
 
-				return _imposter._echoNullableReferenceMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<T>(value).Invoke(value, base.EchoNullableReference<T>);
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
+				global::System.Exception? invocationException = null;
+				T capturedvalue = value;
+				T? invocationResult = default !;
+				try
+				{
+					var returnedValue = _imposter._echoNullableReferenceMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<T>(value).Invoke(value, base.EchoNullableReference<T>);
+					invocationResult = returnedValue;
+					return returnedValue;
+				}
+				catch (global::System.Exception caughtInvocationException)
+				{
+					invocationException = caughtInvocationException;
+					throw;
+				}
+				finally
+				{
+					_imposter._echoNullableReferenceMethodInvocationHistoryCollection.Add(new EchoNullableReferenceInvocation<T>(capturedvalue, invocationResult, invocationException, invocationSequence));
+				}
 			}
 
 			public override T? EchoMaybeDefault<T>(T? value)
@@ -1161,7 +1335,25 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					return base.EchoMaybeDefault<T>(value);
 				}
 
-				return _imposter._echoMaybeDefaultMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<T>(value).Invoke(value, base.EchoMaybeDefault<T>);
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
+				global::System.Exception? invocationException = null;
+				T? capturedvalue = value;
+				T? invocationResult = default !;
+				try
+				{
+					var returnedValue = _imposter._echoMaybeDefaultMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<T>(value).Invoke(value, base.EchoMaybeDefault<T>);
+					invocationResult = returnedValue;
+					return returnedValue;
+				}
+				catch (global::System.Exception caughtInvocationException)
+				{
+					invocationException = caughtInvocationException;
+					throw;
+				}
+				finally
+				{
+					_imposter._echoMaybeDefaultMethodInvocationHistoryCollection.Add(new EchoMaybeDefaultInvocation<T>(capturedvalue, invocationResult, invocationException, invocationSequence));
+				}
 			}
 		}
 	}

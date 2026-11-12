@@ -45,6 +45,20 @@ internal readonly struct IndexerParameterMetadata
         FieldName = Name
             is "Equals"
                 or "GetHashCode"
+                or "ToString"
+                or "GetType"
+                or "ReferenceEquals"
+                or "MemberwiseClone"
+                or "Finalize"
+                or "Member"
+                or "Sequence"
+                or "Exception"
+                or "Next"
+                or "CompleteInvocation"
+                or "Arguments"
+                or "Result"
+                or "Value"
+                or "_value"
                 or IndexerArgumentsCriteriaMetadata.MatchesMethodName
             ? fieldNames.Use(Name)
             : Name;
@@ -76,8 +90,11 @@ internal readonly struct IndexerParameterMetadata
     // Passes this parameter, or a copy of it, to a member that declares the same parameter. A span key's array
     // converts to the span by itself, and a dynamic key passes as an object (see SyntaxFactoryHelper.AsObject).
     internal ArgumentSyntax ForwardingArgument(string variableName) =>
-        Model.Span is not null ? Argument(IdentifierName(variableName))
+        ForwardingArgument(IdentifierName(variableName));
+
+    internal ArgumentSyntax ForwardingArgument(ExpressionSyntax variable) =>
+        Model.Span is not null ? Argument(variable)
         : SyntaxFactoryHelper.PassesAsObject(Model)
-            ? Argument(SyntaxFactoryHelper.AsObject(IdentifierName(variableName), Model.Type))
-        : SyntaxFactoryHelper.ForwardingArgument(variableName, Model.RefKind);
+            ? Argument(SyntaxFactoryHelper.AsObject(variable, Model.Type))
+        : SyntaxFactoryHelper.ForwardingArgument(variable, Model.RefKind);
 }

@@ -21,7 +21,7 @@ internal static partial class InvocationHistoryCollectionBuilder
             .WithTypeParameters(method.GenericTypeParameterListSyntax)
             .AddConstraintClauses(method.GenericTypeConstraintClauses)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .AddParameter(GetParameter(method))
+            .AddParameter(GetParameter(method, names))
             .WithBody(
                 new BlockBuilder()
                     .AddStatement(
@@ -47,7 +47,8 @@ internal static partial class InvocationHistoryCollectionBuilder
                                         )
                                     )
                                     .Call(
-                                        GetMatchesMethodArguments(method)?.ToSingleArgumentList()
+                                        GetMatchesMethodArguments(method, names)
+                                            ?.ToSingleArgumentList()
                                     ),
                                 PostfixUnaryExpression(
                                         SyntaxKind.PostIncrementExpression,
@@ -62,23 +63,25 @@ internal static partial class InvocationHistoryCollectionBuilder
             )
             .Build();
 
-        static ParameterSyntax? GetParameter(in ImposterTargetMethodMetadata method)
+        static ParameterSyntax? GetParameter(
+            in ImposterTargetMethodMetadata method,
+            in InvocationHistoryCollectionCountMethodMetadata names
+        )
         {
             return method.Parameters.HasInputParameters
                 ? ParameterSyntax(
                     method.ArgumentsCriteria.Syntax,
-                    InvocationHistoryCollectionCountMethodMetadata.ArgumentsCriteriaParameterName
+                    names.ArgumentsCriteriaParameterName
                 )
                 : null;
         }
 
-        static ArgumentSyntax? GetMatchesMethodArguments(in ImposterTargetMethodMetadata method) =>
+        static ArgumentSyntax? GetMatchesMethodArguments(
+            in ImposterTargetMethodMetadata method,
+            in InvocationHistoryCollectionCountMethodMetadata names
+        ) =>
             method.Parameters.HasInputParameters
-                ? Argument(
-                    IdentifierName(
-                        InvocationHistoryCollectionCountMethodMetadata.ArgumentsCriteriaParameterName
-                    )
-                )
+                ? Argument(IdentifierName(names.ArgumentsCriteriaParameterName))
                 : null;
     }
 }

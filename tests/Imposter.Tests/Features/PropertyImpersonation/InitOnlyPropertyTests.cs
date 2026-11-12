@@ -164,7 +164,8 @@ namespace Imposter.Tests.Features.PropertyImpersonation
                     InitOnlyAccessor.Invoke(instance, nameof(instance.Value), 42)
                 );
                 instance.BaseInitCount.ShouldBe(0);
-                sut.Value.Setter(42).Called(Count.Never());
+                // Missing-setup failures are invocations too.
+                sut.Value.Setter(42).Called(Count.Once());
             }
         }
     }

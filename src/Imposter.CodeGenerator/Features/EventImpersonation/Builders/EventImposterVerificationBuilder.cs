@@ -17,7 +17,8 @@ internal static class EventImposterVerificationBuilder
 {
     // A history entry, as the verification predicates read it. The performed-invocations description reuses a
     // predicate's body inside its own loop over the history, so both declare the entry by this one name.
-    private static readonly IdentifierNameSyntax Entry = IdentifierName("entry");
+    private static IdentifierNameSyntax Entry(in ImposterEventMetadata @event) =>
+        IdentifierName(@event.Locals["entry"]);
 
     internal static MethodDeclarationSyntax BuildSubscribedVerificationMethod(
         in ImposterEventMetadata @event
@@ -61,9 +62,13 @@ internal static class EventImposterVerificationBuilder
                     @event,
                     historyField: history,
                     criteriaParameterNames: [criteriaName],
-                    predicate: Matches(criteriaName, Entry),
+                    predicate: Matches(criteriaName, Entry(@event).Dot(IdentifierName("Value"))),
                     descriptionFactory: handler =>
-                        BuildSubscriptionDescription(eventName, action, handler)
+                        BuildSubscriptionDescription(
+                            eventName,
+                            action,
+                            handler.Dot(IdentifierName("Value"))
+                        )
                 )
             )
             .Build();
@@ -107,12 +112,13 @@ internal static class EventImposterVerificationBuilder
     {
         var historyEntry = @event.Builder.Fields.HistoryEntry;
         var criteria = @event.Builder.Methods.RaisedCriteriaParameters;
+        var entry = Entry(@event);
         return @event
             .Core.MatchedParameters.Select(
                 (parameter, index) =>
                     (ExpressionSyntax)Matches(
                         criteria[index].Name,
-                        historyEntry.ParameterValue(Entry, parameter)
+                        historyEntry.ParameterValue(entry, parameter)
                     )
             )
             .DefaultIfEmpty(True)
@@ -141,7 +147,7 @@ internal static class EventImposterVerificationBuilder
                     @event,
                     historyField: @event.Builder.Fields.HandlerInvocations,
                     criteriaParameterNames: [criteriaName],
-                    predicate: Matches(criteriaName, handlerInvocationEntry.Handler(Entry)),
+                    predicate: Matches(criteriaName, handlerInvocationEntry.Handler(Entry(@event))),
                     descriptionFactory: entry =>
                         BuildHandlerInvocationDescription(
                             eventName,
@@ -154,7 +160,7 @@ internal static class EventImposterVerificationBuilder
             .Build();
     }
 
-    // The predicate and the description read the history entry as Entry.
+    // The predicate and the description read the history entry as Entry(@event).
     private static BlockSyntax BuildHistoryVerificationBody(
         in ImposterEventMetadata @event,
         in FieldMetadata historyField,
@@ -174,11 +180,18 @@ internal static class EventImposterVerificationBuilder
         blockBuilder.AddStatement(ThrowIfNull(countParameterName));
 
         AddEnsureCountMatchesStatements(
+            @event,
             blockBuilder,
             countParameterName,
             IdentifierName(historyField.Name),
             predicate,
-            BuildHistoryFailureBody(historyField, descriptionFactory, predicate, countParameterName)
+            BuildHistoryFailureBody(
+                @event,
+                historyField,
+                descriptionFactory,
+                predicate,
+                countParameterName
+            )
         );
 
         blockBuilder.AddStatement(ReturnThis);
@@ -190,6 +203,7 @@ internal static class EventImposterVerificationBuilder
         IdentifierName(criteria).Dot(IdentifierName("Matches")).Call(Argument(value));
 
     private static void AddEnsureCountMatchesStatements(
+        in ImposterEventMetadata @event,
         BlockBuilder blockBuilder,
         string countParameterName,
         ExpressionSyntax history,
@@ -197,7 +211,7 @@ internal static class EventImposterVerificationBuilder
         BlockSyntax failureBody
     )
     {
-        var actual = IdentifierName("actual");
+        var actual = IdentifierName(@event.Locals["actual"]);
         var expected = IdentifierName(countParameterName);
         blockBuilder.AddStatement(
             LocalVariableDeclarationSyntax(
@@ -210,7 +224,7 @@ internal static class EventImposterVerificationBuilder
             LazyCollectionSyntaxHelper.UnlessNull(
                 ForEachStatement(
                     Var,
-                    Entry.Identifier,
+                    Entry(@event).Identifier,
                     history,
                     Block(
                         IfStatement(
@@ -230,6 +244,7 @@ internal static class EventImposterVerificationBuilder
     }
 
     private static BlockSyntax BuildHistoryFailureBody(
+        in ImposterEventMetadata @event,
         in FieldMetadata historyField,
         Func<ExpressionSyntax, ExpressionSyntax> descriptionFactory,
         ExpressionSyntax predicateBody,
@@ -237,7 +252,7 @@ internal static class EventImposterVerificationBuilder
     )
     {
         var stringListType = WellKnownTypes.System.Collections.Generic.List(WellKnownTypes.String);
-        var performedInvocations = IdentifierName("performedInvocations");
+        var performedInvocations = IdentifierName(@event.Locals["performedInvocations"]);
 
         return Block(
             LocalVariableDeclarationSyntax(
@@ -248,7 +263,7 @@ internal static class EventImposterVerificationBuilder
             LazyCollectionSyntaxHelper.UnlessNull(
                 ForEachStatement(
                     Var,
-                    Entry.Identifier,
+                    Entry(@event).Identifier,
                     IdentifierName(historyField.Name),
                     Block(
                         IfStatement(
@@ -256,7 +271,7 @@ internal static class EventImposterVerificationBuilder
                             Block(
                                 performedInvocations
                                     .Dot(IdentifierName("Add"))
-                                    .Call(Argument(descriptionFactory(Entry)))
+                                    .Call(Argument(descriptionFactory(Entry(@event))))
                                     .ToStatementSyntax()
                             )
                         )
@@ -266,7 +281,7 @@ internal static class EventImposterVerificationBuilder
             performedInvocations.Dot(IdentifierName("Reverse")).Call().ToStatementSyntax(),
             ThrowVerificationFailed(
                 IdentifierName(countParameterName),
-                IdentifierName("actual"),
+                IdentifierName(@event.Locals["actual"]),
                 JoinWithNewLines(performedInvocations)
             )
         );

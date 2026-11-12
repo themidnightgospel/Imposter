@@ -13,10 +13,10 @@ using global::Imposter.Tests.Features.Docs.ArgumentsMatching;
 namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 {
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-	public sealed class IRefReadOnlyArgumentMatchingServiceImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.ArgumentsMatching.IRefReadOnlyArgumentMatchingService>, IRefReadOnlyArgumentMatchingServiceImposter.IRefReadOnlyArgumentMatchingServiceSetup
+	public sealed class IRefReadOnlyArgumentMatchingServiceImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.ArgumentsMatching.IRefReadOnlyArgumentMatchingService>, IRefReadOnlyArgumentMatchingServiceImposter.IRefReadOnlyArgumentMatchingServiceSetup
 	{
 		private readonly DoubleMethodImposter _doubleMethodImposter;
-		private readonly DoubleMethodInvocationHistoryCollection _doubleMethodInvocationHistoryCollection = new DoubleMethodInvocationHistoryCollection();
+		private readonly DoubleMethodInvocationHistoryCollection _doubleMethodInvocationHistoryCollection;
 		public IDoubleMethodImposterBuilder Double(global::Imposter.Abstractions.Arg<int> value)
 		{
 			return new DoubleMethodImposter.Builder(_doubleMethodImposter, _doubleMethodInvocationHistoryCollection, new DoubleArgumentsCriteria(value));
@@ -63,32 +63,74 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IDoubleMethodInvocationHistory
+		internal interface IDoubleMethodInvocationHistory
 		{
 			bool Matches(DoubleArgumentsCriteria criteria);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class DoubleMethodInvocationHistory : DoubleMethodInvocationHistoryCollection.Node, IDoubleMethodInvocationHistory
+		public sealed class DoubleInvocation : DoubleMethodInvocationHistoryCollection.Node, IDoubleMethodInvocationHistory
 		{
 			internal readonly int capturedvalue;
-			internal readonly int? Result;
-			internal readonly global::System.Exception? Exception;
-			public DoubleMethodInvocationHistory(int capturedvalue, int? Result, global::System.Exception? Exception)
+			internal readonly int? _result;
+			internal readonly global::System.Exception? _exception;
+			private readonly long _sequence;
+			public int Value
 			{
-				this.capturedvalue = capturedvalue;
-				this.Result = Result;
-				this.Exception = Exception;
+				get
+				{
+					return capturedvalue;
+				}
 			}
 
-			public bool Matches(DoubleArgumentsCriteria criteria)
+			public int? Result
+			{
+				get
+				{
+					return _result;
+				}
+			}
+
+			public override string Member
+			{
+				get
+				{
+					return "Double";
+				}
+			}
+
+			public override long Sequence
+			{
+				get
+				{
+					return _sequence;
+				}
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public DoubleInvocation(int capturedvalue, int? result, global::System.Exception? exception, long sequence)
+			{
+				this.capturedvalue = capturedvalue;
+				this._result = result;
+				this._exception = exception;
+				this._sequence = sequence;
+			}
+
+			bool IDoubleMethodInvocationHistory.Matches(DoubleArgumentsCriteria criteria)
 			{
 				return criteria.MatchesCaptured(capturedvalue);
 			}
 
 			public override string ToString()
 			{
-				return "Double(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(capturedvalue) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Double(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(capturedvalue) }) + ")" + " => " + FormatValue(_result) + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -98,12 +140,16 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class DoubleMethodInvocationHistoryCollection
+		public class DoubleMethodInvocationHistoryCollection
 		{
 			private DoubleMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IImposterInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+
 				internal DoubleMethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -136,6 +182,33 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				}
 
 				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, orderBySequence);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<DoubleInvocation> MatchingInvocations(DoubleArgumentsCriteria criteria)
+			{
+				var result = new global::System.Collections.Generic.List<DoubleInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((IDoubleMethodInvocationHistory)entry).Matches(criteria))
+						result.Add((DoubleInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
 			}
 
 			public override string ToString()
@@ -294,6 +367,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<DoubleInvocation> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -326,26 +400,25 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			public int Invoke(ref readonly int value)
 			{
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
 				int capturedvalue = value;
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedvalue);
-				if (matchingInvocationImposterGroup == default)
-				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-					{
-						throw new global::Imposter.Abstractions.MissingImposterException("int IRefReadOnlyArgumentMatchingService.Double(ref readonly int value)");
-					}
-
-					matchingInvocationImposterGroup = DoubleMethodInvocationImposterGroup.Default;
-				}
-
 				try
 				{
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedvalue);
+					if (matchingInvocationImposterGroup == default)
+					{
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("int IRefReadOnlyArgumentMatchingService.Double(ref readonly int value)");
+						matchingInvocationImposterGroup = DoubleMethodInvocationImposterGroup.Default;
+					}
+
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "int IRefReadOnlyArgumentMatchingService.Double(ref readonly int value)", in value);
-					_doubleMethodInvocationHistoryCollection.Add(new DoubleMethodInvocationHistory(capturedvalue, result, default));
+					_doubleMethodInvocationHistoryCollection.Add(new DoubleInvocation(capturedvalue, result, default, invocationSequence));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_doubleMethodInvocationHistoryCollection.RecordFailure(new DoubleMethodInvocationHistory(capturedvalue, default !, ex)))
+				catch (global::System.Exception ex)
 				{
+					_doubleMethodInvocationHistoryCollection.RecordFailure(new DoubleInvocation(capturedvalue, default !, ex, invocationSequence));
 					throw;
 				}
 			}
@@ -436,6 +509,14 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				{
 					return _doubleMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
+
+				global::System.Collections.Generic.IReadOnlyList<DoubleInvocation> DoubleInvocationVerifier.Invocations
+				{
+					get
+					{
+						return _doubleMethodInvocationHistoryCollection.MatchingInvocations(_argumentsCriteria);
+					}
+				}
 			}
 		}
 
@@ -457,8 +538,16 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 		public IRefReadOnlyArgumentMatchingServiceImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._doubleMethodInvocationHistoryCollection = new DoubleMethodInvocationHistoryCollection();
 			this._doubleMethodImposter = new DoubleMethodImposter(_doubleMethodInvocationHistoryCollection, invocationBehavior);
 			this._imposterInstance = new ImposterTargetInstance(this);
+		}
+
+		global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> global::Imposter.Abstractions.IImposter.Invocations()
+		{
+			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+			invocations.AddRange(_doubleMethodInvocationHistoryCollection.Snapshot(false));
+			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

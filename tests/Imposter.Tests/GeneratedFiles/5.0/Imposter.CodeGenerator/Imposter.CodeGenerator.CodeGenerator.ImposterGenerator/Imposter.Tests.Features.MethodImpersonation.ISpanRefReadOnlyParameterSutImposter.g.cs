@@ -13,10 +13,10 @@ using global::Imposter.Tests.Features.MethodImpersonation;
 namespace Imposter.Tests.Features.MethodImpersonation
 {
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-	public sealed class ISpanRefReadOnlyParameterSutImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.ISpanRefReadOnlyParameterSut>, ISpanRefReadOnlyParameterSutImposter.ISpanRefReadOnlyParameterSutSetup
+	public sealed class ISpanRefReadOnlyParameterSutImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.ISpanRefReadOnlyParameterSut>, ISpanRefReadOnlyParameterSutImposter.ISpanRefReadOnlyParameterSutSetup
 	{
 		private readonly CountMethodImposter _countMethodImposter;
-		private readonly CountMethodInvocationHistoryCollection _countMethodInvocationHistoryCollection = new CountMethodInvocationHistoryCollection();
+		private readonly CountMethodInvocationHistoryCollection _countMethodInvocationHistoryCollection;
 		public ICountMethodImposterBuilder Count(global::Imposter.Abstractions.ReadOnlySpanArg<byte> data)
 		{
 			return new CountMethodImposter.Builder(_countMethodImposter, _countMethodInvocationHistoryCollection, new CountArgumentsCriteria(data));
@@ -63,32 +63,74 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface ICountMethodInvocationHistory
+		internal interface ICountMethodInvocationHistory
 		{
 			bool Matches(CountArgumentsCriteria criteria);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class CountMethodInvocationHistory : CountMethodInvocationHistoryCollection.Node, ICountMethodInvocationHistory
+		public sealed class CountInvocation : CountMethodInvocationHistoryCollection.Node, ICountMethodInvocationHistory
 		{
 			internal readonly byte[] captureddata;
-			internal readonly int? Result;
-			internal readonly global::System.Exception? Exception;
-			public CountMethodInvocationHistory(byte[] captureddata, int? Result, global::System.Exception? Exception)
+			internal readonly int? _result;
+			internal readonly global::System.Exception? _exception;
+			private readonly long _sequence;
+			public global::System.ReadOnlyMemory<byte> Data
 			{
-				this.captureddata = captureddata;
-				this.Result = Result;
-				this.Exception = Exception;
+				get
+				{
+					return captureddata;
+				}
 			}
 
-			public bool Matches(CountArgumentsCriteria criteria)
+			public int? Result
+			{
+				get
+				{
+					return _result;
+				}
+			}
+
+			public override string Member
+			{
+				get
+				{
+					return "Count";
+				}
+			}
+
+			public override long Sequence
+			{
+				get
+				{
+					return _sequence;
+				}
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public CountInvocation(byte[] captureddata, int? result, global::System.Exception? exception, long sequence)
+			{
+				this.captureddata = captureddata;
+				this._result = result;
+				this._exception = exception;
+				this._sequence = sequence;
+			}
+
+			bool ICountMethodInvocationHistory.Matches(CountArgumentsCriteria criteria)
 			{
 				return criteria.MatchesCaptured(captureddata);
 			}
 
 			public override string ToString()
 			{
-				return "Count(" + global::System.String.Join(", ", new[] { "data: " + FormatValue(captureddata) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Count(" + global::System.String.Join(", ", new[] { "data: " + FormatValue(captureddata) }) + ")" + " => " + FormatValue(_result) + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -98,12 +140,16 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class CountMethodInvocationHistoryCollection
+		public class CountMethodInvocationHistoryCollection
 		{
 			private CountMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IImposterInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+
 				internal CountMethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -136,6 +182,33 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, orderBySequence);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<CountInvocation> MatchingInvocations(CountArgumentsCriteria criteria)
+			{
+				var result = new global::System.Collections.Generic.List<CountInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((ICountMethodInvocationHistory)entry).Matches(criteria))
+						result.Add((CountInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
 			}
 
 			public override string ToString()
@@ -294,6 +367,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<CountInvocation> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -326,26 +400,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public int Invoke(ref readonly global::System.ReadOnlySpan<byte> data)
 			{
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
 				byte[] captureddata = data.ToArray();
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(captureddata);
-				if (matchingInvocationImposterGroup == default)
-				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-					{
-						throw new global::Imposter.Abstractions.MissingImposterException("int ISpanRefReadOnlyParameterSut.Count(ref readonly ReadOnlySpan<byte> data)");
-					}
-
-					matchingInvocationImposterGroup = CountMethodInvocationImposterGroup.Default;
-				}
-
 				try
 				{
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(captureddata);
+					if (matchingInvocationImposterGroup == default)
+					{
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("int ISpanRefReadOnlyParameterSut.Count(ref readonly ReadOnlySpan<byte> data)");
+						matchingInvocationImposterGroup = CountMethodInvocationImposterGroup.Default;
+					}
+
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "int ISpanRefReadOnlyParameterSut.Count(ref readonly ReadOnlySpan<byte> data)", in data);
-					_countMethodInvocationHistoryCollection.Add(new CountMethodInvocationHistory(captureddata, result, default));
+					_countMethodInvocationHistoryCollection.Add(new CountInvocation(captureddata, result, default, invocationSequence));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_countMethodInvocationHistoryCollection.RecordFailure(new CountMethodInvocationHistory(captureddata, default !, ex)))
+				catch (global::System.Exception ex)
 				{
+					_countMethodInvocationHistoryCollection.RecordFailure(new CountInvocation(captureddata, default !, ex, invocationSequence));
 					throw;
 				}
 			}
@@ -436,6 +509,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				{
 					return _countMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
+
+				global::System.Collections.Generic.IReadOnlyList<CountInvocation> CountInvocationVerifier.Invocations
+				{
+					get
+					{
+						return _countMethodInvocationHistoryCollection.MatchingInvocations(_argumentsCriteria);
+					}
+				}
 			}
 		}
 
@@ -457,8 +538,16 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 		public ISpanRefReadOnlyParameterSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._countMethodInvocationHistoryCollection = new CountMethodInvocationHistoryCollection();
 			this._countMethodImposter = new CountMethodImposter(_countMethodInvocationHistoryCollection, invocationBehavior);
 			this._imposterInstance = new ImposterTargetInstance(this);
+		}
+
+		global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> global::Imposter.Abstractions.IImposter.Invocations()
+		{
+			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+			invocations.AddRange(_countMethodInvocationHistoryCollection.Snapshot(false));
+			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

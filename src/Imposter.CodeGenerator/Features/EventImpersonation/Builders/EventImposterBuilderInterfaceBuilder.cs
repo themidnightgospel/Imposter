@@ -69,8 +69,12 @@ internal static class EventImposterBuilderInterfaceBuilder
         var verificationInterface = @event.BuilderInterface.VerificationInterfaceTypeSyntax;
         var methods = @event.Builder.Methods;
 
-        return new InterfaceDeclarationBuilder(@event.BuilderInterface.VerificationInterfaceName)
+        var result = new InterfaceDeclarationBuilder(
+            @event.BuilderInterface.VerificationInterfaceName
+        )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddMember(EventHistoryBuilder.Build(@event, true, false))
+            .AddMember(EventHistoryBuilder.Build(@event, false, false))
             .AddMember(
                 InterfaceMethod(
                     verificationInterface,
@@ -103,6 +107,7 @@ internal static class EventImposterBuilderInterfaceBuilder
                 )
             )
             .Build();
+        return result;
     }
 
     // Raise takes the event delegate's parameters, which the core metadata holds as syntax.

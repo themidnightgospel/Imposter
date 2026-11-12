@@ -32,9 +32,10 @@ internal static class IndexerGetterImposterBuilderInterfaceBuilder
                 indexer.GetterBuilderInterface.ThenMethod
             ),
             VerificationInterface(
-                indexer.GetterBuilderInterface.VerificationInterfaceName,
-                indexer.GetterBuilderInterface.CalledMethod
-            ),
+                    indexer.GetterBuilderInterface.VerificationInterfaceName,
+                    indexer.GetterBuilderInterface.CalledMethod
+                )
+                .AddMembers(IndexerHistoryBuilder.Invocations(indexer, true, false)),
             BuildFluentInterface(indexer),
             BuildBuilderInterface(indexer),
         ];

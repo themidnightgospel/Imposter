@@ -42,7 +42,7 @@ internal static partial class MethodImposterBuilderBuilder
     {
         var called = method.InvocationVerifierInterface.CalledMethod;
         var count = IdentifierName(called.CountParameter.Name);
-        var invocationCount = IdentifierName("invocationCount");
+        var invocationCount = IdentifierName(method.Locals["invocationCount"]);
         var invocationHistory = IdentifierName(method.InvocationHistory.Collection.AsField.Name);
 
         return new MethodDeclarationBuilder(called.ReturnType, called.Name)

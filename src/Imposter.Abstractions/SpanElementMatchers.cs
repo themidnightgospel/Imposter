@@ -3,7 +3,11 @@
 // The element checks behind SpanArg<T> and ReadOnlySpanArg<T>, which match an imposter's copy of a span argument.
 internal static class SpanElementMatchers
 {
-    internal static Func<T[], bool> SequenceEqualTo<T>(T[] expected, IEqualityComparer<T> comparer)
+    internal static Func<T[], bool> SequenceEqualTo<T>(
+        T[] expected,
+        IEqualityComparer<T> comparer,
+        out T[] captured
+    )
     {
         if (expected is null)
             throw new ArgumentNullException(nameof(expected));
@@ -11,6 +15,7 @@ internal static class SpanElementMatchers
             throw new ArgumentNullException(nameof(comparer));
 
         var elements = (T[])expected.Clone();
+        captured = elements;
         return actual => actual.SequenceEqual(elements, comparer);
     }
 

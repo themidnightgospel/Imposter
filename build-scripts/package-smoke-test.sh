@@ -153,7 +153,52 @@ ExerciseValue(1.234m);
 ExerciseValue(Guid.NewGuid());
 ExerciseValue<Func<int>>(() => 42);
 
-Console.WriteLine($"Packed property runtime passed on .NET {Environment.Version}.");
+ExerciseInvocationHistory();
+
+Console.WriteLine($"Packed property and verification runtime passed on .NET {Environment.Version}.");
+
+static void ExerciseInvocationHistory()
+{
+    var imposter = new IClockImposter();
+    var instance = imposter.Instance();
+    var method = imposter.Now();
+    method.Returns(1).Then().Returns(2);
+    var setter = imposter.Offset.Setter(Arg<int>.Any());
+    setter.Callback(_ => { });
+    Require(instance.Now() == 1, "configured method result");
+    instance.Offset = 8;
+    var snapshot = imposter.Invocations();
+    Require(snapshot.Count == 2 && snapshot[0].Sequence < snapshot[1].Sequence, "ordered aggregate snapshot");
+    Require(method.Invocations[0].Result == 1 && setter.Invocations[0].Value == 8, "typed history values");
+
+    ExpectVerification(() => setter.Called(Count.Twice()), "count failure");
+    method.Called(Count.Once());
+    setter.Called(Count.Once());
+    Require(instance.Now() == 2 && instance.Offset == 8, "history inspection preserves outcome position and stored value");
+    Require(snapshot.Count == 2 && method.Invocations.Count == 2, "snapshot membership stays stable after later calls");
+    method.Called(Count.Twice());
+    imposter.Offset.Getter().Called(Count.Once());
+
+    var strict = new IClockImposter(ImposterMode.Explicit);
+    try
+    {
+        strict.Instance().Now();
+        throw new Exception("An unconfigured strict method was accepted.");
+    }
+    catch (MissingImposterException missing)
+    {
+        Require(!string.IsNullOrEmpty(missing.MethodName), "missing member name");
+    }
+    Require(strict.Now().Invocations[0].Exception is MissingImposterException, "throwing call history");
+    strict.Now().Called(Count.Once());
+}
+
+static VerificationFailedException ExpectVerification(Action action, string scenario)
+{
+    try { action(); }
+    catch (VerificationFailedException failure) { return failure; }
+    throw new Exception("Packed verification runtime failed: " + scenario);
+}
 
 static void ExerciseValue<T>(T value)
 {

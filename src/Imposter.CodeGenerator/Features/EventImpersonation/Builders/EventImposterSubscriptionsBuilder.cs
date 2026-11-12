@@ -68,13 +68,7 @@ internal static class EventImposterSubscriptionsBuilder
             .AddStatement(
                 UpdateActiveHandlers(@event, handlerIdentifier, method.ActiveHandlersOperation)
             )
-            .AddExpression(
-                LazyCollectionSyntaxHelper
-                    .EnsureInitialized(history.Name)
-                    .Dot(ConcurrentStackSyntaxHelper.Push)
-                    .Call(Argument(handlerIdentifier))
-            )
-            .AddStatement(ForEachInterceptor(interceptors, method.HandlerParameter.Name));
+            .AddStatement(ForEachInterceptor(@event, interceptors, method.HandlerParameter.Name));
 
         if (method.BaseImplementationParameter is { } baseImplementation)
         {
@@ -83,7 +77,54 @@ internal static class EventImposterSubscriptionsBuilder
             );
         }
 
-        return methodBuilder.WithBody(blockBuilder.Build()).Build();
+        var names = @event.Core.CreateParameterNameSet();
+        var sequence = IdentifierName(names.Use("invocationSequence"));
+        var failure = IdentifierName(names.Use("invocationFailure"));
+        var caught = IdentifierName(names.Use("caughtException"));
+        return methodBuilder
+            .WithBody(
+                Block(
+                    LocalVariableDeclarationSyntax(
+                        WellKnownTypes.Long,
+                        sequence.Identifier.Text,
+                        WellKnownTypes
+                            .Imposter.Abstractions.InvocationSequence.Dot(IdentifierName("Next"))
+                            .Call()
+                    ),
+                    LocalVariableDeclarationSyntax(
+                        WellKnownTypes.System.Exception.ToNullableType(),
+                        failure.Identifier.Text,
+                        Null
+                    ),
+                    TryStatement(
+                        blockBuilder.Build(),
+                        SingletonList(
+                            CatchClause(
+                                CatchDeclaration(
+                                    WellKnownTypes.System.Exception,
+                                    caught.Identifier
+                                ),
+                                null,
+                                Block(failure.Assign(caught).ToStatementSyntax(), ThrowStatement())
+                            )
+                        ),
+                        FinallyClause(
+                            Block(
+                                LazyCollectionSyntaxHelper
+                                    .EnsureInitialized(history.Name)
+                                    .Dot(IdentifierName("Add"))
+                                    .Call([
+                                        Argument(handlerIdentifier),
+                                        Argument(sequence),
+                                        Argument(failure),
+                                    ])
+                                    .ToStatementSyntax()
+                            )
+                        )
+                    )
+                )
+            )
+            .Build();
     }
 
     internal static MethodDeclarationSyntax BuildCallbackMethod(in ImposterEventMetadata @event)
@@ -142,16 +183,17 @@ internal static class EventImposterSubscriptionsBuilder
             .ToStatementSyntax();
 
     private static StatementSyntax ForEachInterceptor(
+        in ImposterEventMetadata @event,
         in FieldMetadata interceptorsField,
         string handlerIdentifier
     ) =>
         LazyCollectionSyntaxHelper.UnlessNull(
             ForEachStatement(
                 Var,
-                Identifier("interceptor"),
+                Identifier(@event.Locals["interceptor"]),
                 IdentifierName(interceptorsField.Name),
                 Block(
-                    IdentifierName("interceptor")
+                    IdentifierName(@event.Locals["interceptor"])
                         .Call(Argument(IdentifierName(handlerIdentifier)))
                         .ToStatementSyntax()
                 )

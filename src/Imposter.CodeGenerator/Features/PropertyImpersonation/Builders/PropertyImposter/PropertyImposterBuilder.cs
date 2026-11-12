@@ -11,12 +11,13 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.PropertyImposter;
 
-internal static class PropertyImposterBuilder
+internal static partial class PropertyImposterBuilder
 {
     internal static ClassDeclarationSyntax Build(in ImposterPropertyMetadata property) =>
         new ClassDeclarationBuilder(property.ImposterBuilder.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(property.ImposterBuilderInterface.Syntax))
+            .AddMember(BuildSnapshot(property))
             // The default (auto-property) behaviour stores the last value set so the getter can return it.
             .AddMember(
                 property.Core.KeepsValue

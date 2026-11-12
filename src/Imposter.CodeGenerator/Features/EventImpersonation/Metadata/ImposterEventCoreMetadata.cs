@@ -8,6 +8,7 @@ namespace Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 
 internal readonly ref struct ImposterEventCoreMetadata
 {
+    private readonly string[] _scopeNames;
     internal readonly string Name;
 
     internal readonly string UniqueName;
@@ -43,6 +44,7 @@ internal readonly ref struct ImposterEventCoreMetadata
 
     internal ImposterEventCoreMetadata(EventModel @event, string uniqueName)
     {
+        _scopeNames = ScopeNames.In(@event.ContainingType).ToArray();
         UniqueName = uniqueName;
         Name = @event.Name;
         DisplayName = @event.DisplayName;
@@ -83,5 +85,5 @@ internal readonly ref struct ImposterEventCoreMetadata
 
     // The builder's raise methods take the delegate's parameters, so the names they declare or refer to avoid these.
     internal NameSet CreateParameterNameSet() =>
-        new(Parameters.Select(parameter => parameter.Name));
+        new(Parameters.Select(parameter => parameter.Name).Concat(_scopeNames));
 }

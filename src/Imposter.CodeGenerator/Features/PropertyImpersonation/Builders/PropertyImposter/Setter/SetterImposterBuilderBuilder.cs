@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -9,7 +10,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.PropertyImposter.Setter;
 
-internal static class SetterImposterBuilderBuilder
+internal static partial class SetterImposterBuilderBuilder
 {
     internal static ClassDeclarationSyntax Build(in ImposterPropertyMetadata property)
     {
@@ -42,10 +43,19 @@ internal static class SetterImposterBuilderBuilder
             )
             .AddMember(
                 property.SetterImposter.Builder.CriteriaField is { } criteriaField
+                && !property.Core.UsesSharedRuntime
                     ? SinglePrivateReadonlyVariableField(criteriaField)
                     : null
             )
+            .AddMember(
+                !property.Core.IsPassedThrough
+                    ? SinglePrivateReadonlyVariableField(
+                        property.SetterImposter.Builder.RuntimeCriteriaField
+                    )
+                    : null
+            )
             .AddMember(BuildConstructor(property))
+            .AddMembers(BuildInvocationProperty(property))
             .AddMember(BuildCallbackMethod(property))
             .AddMember(BuildCalledMethod(property))
             .AddMember(ThenReturningThis(property.SetterImposterBuilderInterface.ThenMethod))
@@ -63,11 +73,39 @@ internal static class SetterImposterBuilderBuilder
             .WithModifiers(Token(SyntaxKind.InternalKeyword))
             .AddParameter(property.SetterImposter.Builder.SetterImposterField);
 
-        if (property.SetterImposter.Builder.CriteriaField is { } criteriaField)
+        if (property.SetterImposter.Builder.CriteriaField is not null)
         {
-            constructor.AddParameter(criteriaField);
+            constructor.AddParameter(property.SetterImposter.Builder.CriteriaField!.Value);
         }
 
+        if (!property.Core.IsPassedThrough)
+        {
+            var metadata = property.SetterImposter.Builder;
+            ExpressionSyntax criteria = IdentifierName(metadata.CriteriaField!.Value.Name);
+            if (!property.Core.UsesSharedRuntime)
+                criteria = metadata
+                    .RuntimeCriteriaField.Type.Dot(IdentifierName("Is"))
+                    .Call(
+                        Argument(
+                            SimpleLambdaExpression(
+                                Parameter(Identifier(property.Core.Locals["setterValue"])),
+                                criteria
+                                    .Dot(IdentifierName("Matches"))
+                                    .Call(
+                                        Argument(
+                                            IdentifierName(property.Core.Locals["setterValue"])
+                                        )
+                                    )
+                            )
+                        )
+                    );
+            if (!property.Core.UsesSharedRuntime)
+                constructor.AddStatements([
+                    IdentifierName(metadata.RuntimeCriteriaField.Name)
+                        .Assign(criteria)
+                        .ToStatementSyntax(),
+                ]);
+        }
         return constructor.Build();
     }
 
@@ -145,9 +183,11 @@ internal static class SetterImposterBuilderBuilder
     )
     {
         var arguments = new List<ArgumentSyntax>();
-        if (property.SetterImposter.Builder.CriteriaField is { } criteriaField)
+        if (property.SetterImposter.Builder.CriteriaField is not null)
         {
-            arguments.Add(Argument(IdentifierName(criteriaField.Name)));
+            arguments.Add(
+                Argument(IdentifierName(property.SetterImposter.Builder.RuntimeCriteriaField.Name))
+            );
         }
 
         arguments.Add(Argument(IdentifierName(argumentName)));

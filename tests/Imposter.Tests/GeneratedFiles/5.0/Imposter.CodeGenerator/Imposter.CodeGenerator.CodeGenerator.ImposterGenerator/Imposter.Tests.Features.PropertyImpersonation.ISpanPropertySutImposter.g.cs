@@ -13,7 +13,7 @@ using global::Imposter.Tests.Features.PropertyImpersonation;
 namespace Imposter.Tests.Features.PropertyImpersonation
 {
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-	public sealed class ISpanPropertySutImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImpersonation.ISpanPropertySut>, ISpanPropertySutImposter.ISpanPropertySutSetup
+	public sealed class ISpanPropertySutImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImpersonation.ISpanPropertySut>, ISpanPropertySutImposter.ISpanPropertySutSetup
 	{
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.PropertyImpersonation.ISpanPropertySut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImpersonation.ISpanPropertySut>.Instance()
@@ -83,11 +83,36 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		public interface IBufferPropertySetterVerifier
 		{
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<BufferSetterInvocation> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IBufferPropertySetterBuilder : IBufferPropertySetterCallbackBuilder, IBufferPropertySetterVerifier
 		{
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public sealed class BufferSetterInvocation : global::Imposter.Abstractions.PropertySetterInvocation<byte[]>
+		{
+			public override string Member
+			{
+				get
+				{
+					return "Buffer";
+				}
+			}
+
+			public global::System.ReadOnlyMemory<byte> Value
+			{
+				get
+				{
+					return StoredValue;
+				}
+			}
+
+			internal BufferSetterInvocation(byte[] setterValue, long setterSequence, global::System.Exception? setterException) : base((byte[])setterValue, setterSequence, setterException)
+			{
+			}
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -100,6 +125,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class BufferPropertyBuilder : IBufferPropertyBuilder
 		{
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+			{
+				return _setterImposter.Snapshot(orderBySequence);
+			}
+
 			private readonly global::Imposter.Abstractions.PropertyValue<byte[]> _defaultPropertyBehaviour;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			internal SetterImposter _setterImposter;
@@ -213,73 +243,20 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			}
 
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal class SetterImposter
+			internal class SetterImposter : global::Imposter.Abstractions.PropertySetter<byte[]>
 			{
-				private global::Imposter.Abstractions.CallbackCollection<global::System.Tuple<global::Imposter.Abstractions.SpanArg<byte>, global::System.Action<byte[]>>>? _callbacks;
-				private global::System.Collections.Concurrent.ConcurrentStack<byte[]>? _invocationHistory;
-				private readonly global::Imposter.Abstractions.PropertyValue<byte[]> _defaultPropertyBehaviour;
-				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
-				private readonly string _propertyDisplayName;
-				private bool _hasConfiguredSetter;
-				internal SetterImposter(global::Imposter.Abstractions.PropertyValue<byte[]> _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName)
+				internal SetterImposter(global::Imposter.Abstractions.PropertyValue<byte[]> _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName) : base(_defaultPropertyBehaviour, invocationBehavior, propertyDisplayName)
 				{
-					this._defaultPropertyBehaviour = _defaultPropertyBehaviour;
-					this._invocationBehavior = invocationBehavior;
-					this._propertyDisplayName = propertyDisplayName;
 				}
 
-				internal void Callback(global::Imposter.Abstractions.SpanArg<byte> criteria, global::System.Action<byte[]> callback)
+				protected override global::Imposter.Abstractions.PropertySetterInvocation<byte[]> CreateInvocation(byte[] setterValue, long setterSequence, global::System.Exception? setterException)
 				{
-					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(new global::System.Tuple<global::Imposter.Abstractions.SpanArg<byte>, global::System.Action<byte[]>>(criteria, callback));
-					_hasConfiguredSetter = true;
+					return new BufferSetterInvocation((byte[])setterValue, setterSequence, setterException);
 				}
 
-				void Called(global::Imposter.Abstractions.SpanArg<byte> criteria, global::Imposter.Abstractions.Count count)
+				public override byte[] CaptureInvocationValue(byte[] setterValue)
 				{
-					var invocationCount = _invocationHistory != null ? _invocationHistory.Count(criteria.Matches) : 0;
-					if (!count.Matches(invocationCount))
-					{
-						var performedInvocations = new global::System.Collections.Generic.List<string>();
-						if (_invocationHistory != null)
-						{
-							foreach (var value in _invocationHistory)
-							{
-								performedInvocations.Add("set " + _propertyDisplayName + " = " + FormatValue(value));
-							}
-						}
-
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations));
-					}
-				}
-
-				internal void Set(byte[] value, global::System.Action<byte[]>? baseImplementation = null)
-				{
-					EnsureSetterConfigured();
-					global::System.Threading.LazyInitializer.EnsureInitialized(ref _invocationHistory).Push(value);
-					if (_callbacks != null)
-					{
-						foreach (var(criteria, setterCallback)in _callbacks)
-						{
-							if (criteria.Matches(value))
-								setterCallback(value);
-						}
-					}
-
-					if (_defaultPropertyBehaviour.IsOn)
-					{
-						_defaultPropertyBehaviour.Write(value);
-					}
-				}
-
-				private void EnsureSetterConfigured()
-				{
-					if ((_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit) && !_hasConfiguredSetter)
-						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
-				}
-
-				private static string FormatValue(object? value)
-				{
-					return "<" + (value?.ToString() ?? "null") + ">";
+					return (byte[])setterValue.Clone();
 				}
 
 				[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -287,21 +264,31 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 				{
 					private readonly SetterImposter _setterImposter;
 					private readonly global::Imposter.Abstractions.SpanArg<byte> _criteria;
+					private readonly global::Imposter.Abstractions.Arg<byte[]> _runtimeCriteria;
 					internal Builder(SetterImposter _setterImposter, global::Imposter.Abstractions.SpanArg<byte> _criteria)
 					{
 						this._setterImposter = _setterImposter;
 						this._criteria = _criteria;
+						_runtimeCriteria = global::Imposter.Abstractions.Arg<byte[]>.Is(setterValue => _criteria.Matches(setterValue));
+					}
+
+					global::System.Collections.Generic.IReadOnlyList<BufferSetterInvocation> IBufferPropertySetterVerifier.Invocations
+					{
+						get
+						{
+							return _setterImposter.MatchingInvocations<BufferSetterInvocation>(_runtimeCriteria);
+						}
 					}
 
 					IBufferPropertySetterContinuationBuilder IBufferPropertySetterCallbackBuilder.Callback(global::System.Action<byte[]> callback)
 					{
-						_setterImposter.Callback(_criteria, callback);
+						_setterImposter.Callback(_runtimeCriteria, callback);
 						return this;
 					}
 
 					void IBufferPropertySetterVerifier.Called(global::Imposter.Abstractions.Count count)
 					{
-						_setterImposter.Called(_criteria, count);
+						_setterImposter.Called(_runtimeCriteria, count);
 					}
 
 					IBufferPropertySetterFluentBuilder IBufferPropertySetterContinuationBuilder.Then()
@@ -372,6 +359,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class NamePropertyBuilder : INamePropertyBuilder
 		{
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+			{
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>(), orderBySequence);
+			}
+
 			private readonly global::Imposter.Abstractions.PropertyValue<char[]> _defaultPropertyBehaviour;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			internal GetterImposterBuilder _getterImposterBuilder;
@@ -510,6 +502,14 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			this._BufferPropertyBuilderField = new BufferPropertyBuilder(invocationBehavior);
 			this._NamePropertyBuilderField = new NamePropertyBuilder(invocationBehavior);
 			this._imposterInstance = new ImposterTargetInstance(this);
+		}
+
+		global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> global::Imposter.Abstractions.IImposter.Invocations()
+		{
+			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+			invocations.AddRange(_BufferPropertyBuilderField.Snapshot(false));
+			invocations.AddRange(_NamePropertyBuilderField.Snapshot(false));
+			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

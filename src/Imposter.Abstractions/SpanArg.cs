@@ -19,10 +19,12 @@ public sealed class SpanArg<T>
     private static readonly SpanArg<T> AnyInstance = new(_ => true);
 
     private readonly Func<T[], bool> _matches;
+    private readonly T[]? _expected;
 
-    private SpanArg(Func<T[], bool> matches)
+    private SpanArg(Func<T[], bool> matches, T[]? expected = null)
     {
         _matches = matches;
+        _expected = expected;
     }
 
     /// <summary>
@@ -30,6 +32,11 @@ public sealed class SpanArg<T>
     /// </summary>
     /// <param name="elements">The span argument's elements.</param>
     public bool Matches(T[] elements) => _matches(elements);
+
+    /// <summary>Indicates whether matching keeps the captured array private to the generated imposter.</summary>
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public bool CanReuseCapturedArray =>
+        _expected is not null || ReferenceEquals(_matches, AnyInstance._matches);
 
     /// <summary>
     /// Matches any span.
@@ -51,8 +58,11 @@ public sealed class SpanArg<T>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="expected"/> or <paramref name="comparer"/> is <see langword="null"/>.
     /// </exception>
-    public static SpanArg<T> Is(T[] expected, IEqualityComparer<T> comparer) =>
-        new(SpanElementMatchers.SequenceEqualTo(expected, comparer));
+    public static SpanArg<T> Is(T[] expected, IEqualityComparer<T> comparer)
+    {
+        var matcher = SpanElementMatchers.SequenceEqualTo(expected, comparer, out var elements);
+        return new(matcher, elements);
+    }
 
     /// <summary>
     /// Matches a span whose elements satisfy <paramref name="predicate"/>.

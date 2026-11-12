@@ -1,4 +1,4 @@
-namespace Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
+﻿namespace Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 
 internal readonly struct IndexerAccessorBuilderMetadata(string imposterFieldName)
 {

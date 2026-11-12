@@ -30,6 +30,7 @@ internal static partial class IndexerGetterBuilder
                 indexer.GetterBuilderInterface.FluentInterfaceTypeSyntax
             )
             .AddMember(BuildGetterBuilderInvocationProperty(indexer.GetterImplementation))
+            .AddMember(IndexerHistoryBuilder.Invocations(indexer, true, true))
             .AddMember(BuildGetterBuilderReturnsValueMethod(indexer, returns))
             .AddMember(BuildGetterBuilderReturnsFuncMethod(indexer, returns))
             .AddMember(BuildGetterBuilderReturnsDelegateMethod(indexer, returns))

@@ -13,10 +13,10 @@ using global::Imposter.Tests.Features.MethodImpersonation;
 namespace Imposter.Tests.Features.MethodImpersonation
 {
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-	public sealed class IDiscountServiceSutImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IDiscountServiceSut>, IDiscountServiceSutImposter.IDiscountServiceSutSetup
+	public sealed class IDiscountServiceSutImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IDiscountServiceSut>, IDiscountServiceSutImposter.IDiscountServiceSutSetup
 	{
 		private readonly CalculateMethodImposter _calculateMethodImposter;
-		private readonly CalculateMethodInvocationHistoryCollection _calculateMethodInvocationHistoryCollection = new CalculateMethodInvocationHistoryCollection();
+		private readonly CalculateMethodInvocationHistoryCollection _calculateMethodInvocationHistoryCollection;
 		public ICalculateMethodImposterBuilder Calculate(global::Imposter.Abstractions.Arg<global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.InvoiceItem>?> invoicItems, global::Imposter.Abstractions.Arg<global::System.Collections.Generic.IDictionary<global::Imposter.Tests.Features.MethodImpersonation.Product, global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.History>>?> purchaceHistory)
 		{
 			return new CalculateMethodImposter.Builder(_calculateMethodImposter, _calculateMethodInvocationHistoryCollection, new CalculateArgumentsCriteria(invoicItems, purchaceHistory));
@@ -67,34 +67,84 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface ICalculateMethodInvocationHistory
+		internal interface ICalculateMethodInvocationHistory
 		{
 			bool Matches(CalculateArgumentsCriteria criteria);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class CalculateMethodInvocationHistory : CalculateMethodInvocationHistoryCollection.Node, ICalculateMethodInvocationHistory
+		public sealed class CalculateInvocation : CalculateMethodInvocationHistoryCollection.Node, ICalculateMethodInvocationHistory
 		{
 			internal readonly global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.InvoiceItem>? capturedinvoicItems;
 			internal readonly global::System.Collections.Generic.IDictionary<global::Imposter.Tests.Features.MethodImpersonation.Product, global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.History>>? capturedpurchaceHistory;
-			internal readonly decimal? Result;
-			internal readonly global::System.Exception? Exception;
-			public CalculateMethodInvocationHistory(global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.InvoiceItem>? capturedinvoicItems, global::System.Collections.Generic.IDictionary<global::Imposter.Tests.Features.MethodImpersonation.Product, global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.History>>? capturedpurchaceHistory, decimal? Result, global::System.Exception? Exception)
+			internal readonly decimal? _result;
+			internal readonly global::System.Exception? _exception;
+			private readonly long _sequence;
+			public global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.InvoiceItem>? InvoicItems
+			{
+				get
+				{
+					return capturedinvoicItems;
+				}
+			}
+
+			public global::System.Collections.Generic.IDictionary<global::Imposter.Tests.Features.MethodImpersonation.Product, global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.History>>? PurchaceHistory
+			{
+				get
+				{
+					return capturedpurchaceHistory;
+				}
+			}
+
+			public decimal? Result
+			{
+				get
+				{
+					return _result;
+				}
+			}
+
+			public override string Member
+			{
+				get
+				{
+					return "Calculate";
+				}
+			}
+
+			public override long Sequence
+			{
+				get
+				{
+					return _sequence;
+				}
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public CalculateInvocation(global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.InvoiceItem>? capturedinvoicItems, global::System.Collections.Generic.IDictionary<global::Imposter.Tests.Features.MethodImpersonation.Product, global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.History>>? capturedpurchaceHistory, decimal? result, global::System.Exception? exception, long sequence)
 			{
 				this.capturedinvoicItems = capturedinvoicItems;
 				this.capturedpurchaceHistory = capturedpurchaceHistory;
-				this.Result = Result;
-				this.Exception = Exception;
+				this._result = result;
+				this._exception = exception;
+				this._sequence = sequence;
 			}
 
-			public bool Matches(CalculateArgumentsCriteria criteria)
+			bool ICalculateMethodInvocationHistory.Matches(CalculateArgumentsCriteria criteria)
 			{
 				return criteria.MatchesCaptured(capturedinvoicItems, capturedpurchaceHistory);
 			}
 
 			public override string ToString()
 			{
-				return "Calculate(" + global::System.String.Join(", ", new[] { "invoicItems: " + FormatValue(capturedinvoicItems), "purchaceHistory: " + FormatValue(capturedpurchaceHistory) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Calculate(" + global::System.String.Join(", ", new[] { "invoicItems: " + FormatValue(capturedinvoicItems), "purchaceHistory: " + FormatValue(capturedpurchaceHistory) }) + ")" + " => " + FormatValue(_result) + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -104,12 +154,16 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class CalculateMethodInvocationHistoryCollection
+		public class CalculateMethodInvocationHistoryCollection
 		{
 			private CalculateMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IImposterInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+
 				internal CalculateMethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -142,6 +196,33 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, orderBySequence);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<CalculateInvocation> MatchingInvocations(CalculateArgumentsCriteria criteria)
+			{
+				var result = new global::System.Collections.Generic.List<CalculateInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((ICalculateMethodInvocationHistory)entry).Matches(criteria))
+						result.Add((CalculateInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
 			}
 
 			public override string ToString()
@@ -300,6 +381,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<CalculateInvocation> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -332,27 +414,26 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public decimal Invoke(global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.InvoiceItem>? invoicItems, global::System.Collections.Generic.IDictionary<global::Imposter.Tests.Features.MethodImpersonation.Product, global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.History>>? purchaceHistory)
 			{
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
 				global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.InvoiceItem>? capturedinvoicItems = invoicItems;
 				global::System.Collections.Generic.IDictionary<global::Imposter.Tests.Features.MethodImpersonation.Product, global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.History>>? capturedpurchaceHistory = purchaceHistory;
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedinvoicItems, capturedpurchaceHistory);
-				if (matchingInvocationImposterGroup == default)
-				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-					{
-						throw new global::Imposter.Abstractions.MissingImposterException("decimal IDiscountServiceSut.Calculate(IEnumerable<InvoiceItem>? invoicItems, IDictionary<Product, IEnumerable<History>>? purchaceHistory)");
-					}
-
-					matchingInvocationImposterGroup = CalculateMethodInvocationImposterGroup.Default;
-				}
-
 				try
 				{
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedinvoicItems, capturedpurchaceHistory);
+					if (matchingInvocationImposterGroup == default)
+					{
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("decimal IDiscountServiceSut.Calculate(IEnumerable<InvoiceItem>? invoicItems, IDictionary<Product, IEnumerable<History>>? purchaceHistory)");
+						matchingInvocationImposterGroup = CalculateMethodInvocationImposterGroup.Default;
+					}
+
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "decimal IDiscountServiceSut.Calculate(IEnumerable<InvoiceItem>? invoicItems, IDictionary<Product, IEnumerable<History>>? purchaceHistory)", invoicItems, purchaceHistory);
-					_calculateMethodInvocationHistoryCollection.Add(new CalculateMethodInvocationHistory(capturedinvoicItems, capturedpurchaceHistory, result, default));
+					_calculateMethodInvocationHistoryCollection.Add(new CalculateInvocation(capturedinvoicItems, capturedpurchaceHistory, result, default, invocationSequence));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_calculateMethodInvocationHistoryCollection.RecordFailure(new CalculateMethodInvocationHistory(capturedinvoicItems, capturedpurchaceHistory, default !, ex)))
+				catch (global::System.Exception ex)
 				{
+					_calculateMethodInvocationHistoryCollection.RecordFailure(new CalculateInvocation(capturedinvoicItems, capturedpurchaceHistory, default !, ex, invocationSequence));
 					throw;
 				}
 			}
@@ -443,6 +524,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				{
 					return _calculateMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
+
+				global::System.Collections.Generic.IReadOnlyList<CalculateInvocation> CalculateInvocationVerifier.Invocations
+				{
+					get
+					{
+						return _calculateMethodInvocationHistoryCollection.MatchingInvocations(_argumentsCriteria);
+					}
+				}
 			}
 		}
 
@@ -464,8 +553,16 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 		public IDiscountServiceSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._calculateMethodInvocationHistoryCollection = new CalculateMethodInvocationHistoryCollection();
 			this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, invocationBehavior);
 			this._imposterInstance = new ImposterTargetInstance(this);
+		}
+
+		global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> global::Imposter.Abstractions.IImposter.Invocations()
+		{
+			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+			invocations.AddRange(_calculateMethodInvocationHistoryCollection.Snapshot(false));
+			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

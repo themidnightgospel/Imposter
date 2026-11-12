@@ -13,14 +13,14 @@ using global::Imposter.Tests.Features.MethodImpersonation;
 namespace Imposter.Tests.Features.MethodImpersonation
 {
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-	public sealed class IMyCollectionSutImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IMyCollectionSut>, IMyCollectionSutImposter.IMyCollectionSutSetup, IMyCollectionSutImposter.IEnumerableSetup, IMyCollectionSutImposter.IEnumerableSetup_1
+	public sealed class IMyCollectionSutImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IMyCollectionSut>, IMyCollectionSutImposter.IMyCollectionSutSetup, IMyCollectionSutImposter.IEnumerableSetup, IMyCollectionSutImposter.IEnumerableSetup_1
 	{
 		private readonly AddMethodImposter _addMethodImposter;
 		private readonly GetEnumeratorMethodImposter _getEnumeratorMethodImposter;
 		private readonly GetEnumerator_1MethodImposter _getEnumerator_1MethodImposter;
-		private readonly AddMethodInvocationHistoryCollection _addMethodInvocationHistoryCollection = new AddMethodInvocationHistoryCollection();
-		private readonly GetEnumeratorMethodInvocationHistoryCollection _getEnumeratorMethodInvocationHistoryCollection = new GetEnumeratorMethodInvocationHistoryCollection();
-		private readonly GetEnumerator_1MethodInvocationHistoryCollection _getEnumerator_1MethodInvocationHistoryCollection = new GetEnumerator_1MethodInvocationHistoryCollection();
+		private readonly AddMethodInvocationHistoryCollection _addMethodInvocationHistoryCollection;
+		private readonly GetEnumeratorMethodInvocationHistoryCollection _getEnumeratorMethodInvocationHistoryCollection;
+		private readonly GetEnumerator_1MethodInvocationHistoryCollection _getEnumerator_1MethodInvocationHistoryCollection;
 		public IAddMethodImposterBuilder Add(global::Imposter.Abstractions.Arg<string> item)
 		{
 			return new AddMethodImposter.Builder(_addMethodImposter, _addMethodInvocationHistoryCollection, new AddArgumentsCriteria(item));
@@ -77,30 +77,64 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IAddMethodInvocationHistory
+		internal interface IAddMethodInvocationHistory
 		{
 			bool Matches(AddArgumentsCriteria criteria);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class AddMethodInvocationHistory : AddMethodInvocationHistoryCollection.Node, IAddMethodInvocationHistory
+		public sealed class AddInvocation : AddMethodInvocationHistoryCollection.Node, IAddMethodInvocationHistory
 		{
 			internal readonly string captureditem;
-			internal readonly global::System.Exception? Exception;
-			public AddMethodInvocationHistory(string captureditem, global::System.Exception? Exception)
+			internal readonly global::System.Exception? _exception;
+			private readonly long _sequence;
+			public string Item
 			{
-				this.captureditem = captureditem;
-				this.Exception = Exception;
+				get
+				{
+					return captureditem;
+				}
 			}
 
-			public bool Matches(AddArgumentsCriteria criteria)
+			public override string Member
+			{
+				get
+				{
+					return "Add";
+				}
+			}
+
+			public override long Sequence
+			{
+				get
+				{
+					return _sequence;
+				}
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public AddInvocation(string captureditem, global::System.Exception? exception, long sequence)
+			{
+				this.captureditem = captureditem;
+				this._exception = exception;
+				this._sequence = sequence;
+			}
+
+			bool IAddMethodInvocationHistory.Matches(AddArgumentsCriteria criteria)
 			{
 				return criteria.MatchesCaptured(captureditem);
 			}
 
 			public override string ToString()
 			{
-				return "Add(" + global::System.String.Join(", ", new[] { "item: " + FormatValue(captureditem) }) + ")" + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Add(" + global::System.String.Join(", ", new[] { "item: " + FormatValue(captureditem) }) + ")" + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -110,12 +144,16 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class AddMethodInvocationHistoryCollection
+		public class AddMethodInvocationHistoryCollection
 		{
 			private AddMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IImposterInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+
 				internal AddMethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -148,6 +186,33 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, orderBySequence);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<AddInvocation> MatchingInvocations(AddArgumentsCriteria criteria)
+			{
+				var result = new global::System.Collections.Generic.List<AddInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((IAddMethodInvocationHistory)entry).Matches(criteria))
+						result.Add((AddInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
 			}
 
 			public override string ToString()
@@ -294,6 +359,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<AddInvocation> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -326,25 +392,24 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public void Invoke(string item)
 			{
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
 				string captureditem = item;
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(captureditem);
-				if (matchingInvocationImposterGroup == default)
-				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-					{
-						throw new global::Imposter.Abstractions.MissingImposterException("void IMyCollectionSut.Add(string item)");
-					}
-
-					matchingInvocationImposterGroup = AddMethodInvocationImposterGroup.Default;
-				}
-
 				try
 				{
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(captureditem);
+					if (matchingInvocationImposterGroup == default)
+					{
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("void IMyCollectionSut.Add(string item)");
+						matchingInvocationImposterGroup = AddMethodInvocationImposterGroup.Default;
+					}
+
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void IMyCollectionSut.Add(string item)", item);
-					_addMethodInvocationHistoryCollection.Add(new AddMethodInvocationHistory(captureditem, default));
+					_addMethodInvocationHistoryCollection.Add(new AddInvocation(captureditem, default, invocationSequence));
 				}
-				catch (global::System.Exception ex) when (_addMethodInvocationHistoryCollection.RecordFailure(new AddMethodInvocationHistory(captureditem, ex)))
+				catch (global::System.Exception ex)
 				{
+					_addMethodInvocationHistoryCollection.RecordFailure(new AddInvocation(captureditem, ex, invocationSequence));
 					throw;
 				}
 			}
@@ -421,6 +486,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				{
 					return _addMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
+
+				global::System.Collections.Generic.IReadOnlyList<AddInvocation> AddInvocationVerifier.Invocations
+				{
+					get
+					{
+						return _addMethodInvocationHistoryCollection.MatchingInvocations(_argumentsCriteria);
+					}
+				}
 			}
 		}
 
@@ -428,30 +501,64 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public delegate void GetEnumerator_1CallbackDelegate();
 		public delegate global::System.Exception GetEnumerator_1ExceptionGeneratorDelegate();
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IGetEnumerator_1MethodInvocationHistory
+		internal interface IGetEnumerator_1MethodInvocationHistory
 		{
 			bool Matches();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class GetEnumerator_1MethodInvocationHistory : GetEnumerator_1MethodInvocationHistoryCollection.Node, IGetEnumerator_1MethodInvocationHistory
+		public sealed class GetEnumerator_1Invocation : GetEnumerator_1MethodInvocationHistoryCollection.Node, IGetEnumerator_1MethodInvocationHistory
 		{
-			internal readonly global::System.Collections.IEnumerator? Result;
-			internal readonly global::System.Exception? Exception;
-			public GetEnumerator_1MethodInvocationHistory(global::System.Collections.IEnumerator? Result, global::System.Exception? Exception)
+			internal readonly global::System.Collections.IEnumerator? _result;
+			internal readonly global::System.Exception? _exception;
+			private readonly long _sequence;
+			public global::System.Collections.IEnumerator? Result
 			{
-				this.Result = Result;
-				this.Exception = Exception;
+				get
+				{
+					return _result;
+				}
 			}
 
-			public bool Matches()
+			public override string Member
+			{
+				get
+				{
+					return "GetEnumerator";
+				}
+			}
+
+			public override long Sequence
+			{
+				get
+				{
+					return _sequence;
+				}
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public GetEnumerator_1Invocation(global::System.Collections.IEnumerator? result, global::System.Exception? exception, long sequence)
+			{
+				this._result = result;
+				this._exception = exception;
+				this._sequence = sequence;
+			}
+
+			bool IGetEnumerator_1MethodInvocationHistory.Matches()
 			{
 				return true;
 			}
 
 			public override string ToString()
 			{
-				return "GetEnumerator(" + "" + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "GetEnumerator(" + "" + ")" + " => " + FormatValue(_result) + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -461,12 +568,16 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class GetEnumerator_1MethodInvocationHistoryCollection
+		public class GetEnumerator_1MethodInvocationHistoryCollection
 		{
 			private GetEnumerator_1MethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IImposterInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+
 				internal GetEnumerator_1MethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -499,6 +610,33 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, orderBySequence);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<GetEnumerator_1Invocation> MatchingInvocations()
+			{
+				var result = new global::System.Collections.Generic.List<GetEnumerator_1Invocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((IGetEnumerator_1MethodInvocationHistory)entry).Matches())
+						result.Add((GetEnumerator_1Invocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
 			}
 
 			public override string ToString()
@@ -654,6 +792,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<GetEnumerator_1Invocation> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -686,25 +825,24 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public global::System.Collections.IEnumerator Invoke()
 			{
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup();
-				if (matchingInvocationImposterGroup == default)
-				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-					{
-						throw new global::Imposter.Abstractions.MissingImposterException("IEnumerator IEnumerable.GetEnumerator()");
-					}
-
-					matchingInvocationImposterGroup = GetEnumerator_1MethodInvocationImposterGroup.Default;
-				}
-
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
 				try
 				{
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup();
+					if (matchingInvocationImposterGroup == default)
+					{
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("IEnumerator IEnumerable.GetEnumerator()");
+						matchingInvocationImposterGroup = GetEnumerator_1MethodInvocationImposterGroup.Default;
+					}
+
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "IEnumerator IEnumerable.GetEnumerator()");
-					_getEnumerator_1MethodInvocationHistoryCollection.Add(new GetEnumerator_1MethodInvocationHistory(result, default));
+					_getEnumerator_1MethodInvocationHistoryCollection.Add(new GetEnumerator_1Invocation(result, default, invocationSequence));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_getEnumerator_1MethodInvocationHistoryCollection.RecordFailure(new GetEnumerator_1MethodInvocationHistory(default !, ex)))
+				catch (global::System.Exception ex)
 				{
+					_getEnumerator_1MethodInvocationHistoryCollection.RecordFailure(new GetEnumerator_1Invocation(default !, ex, invocationSequence));
 					throw;
 				}
 			}
@@ -793,6 +931,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				{
 					return _getEnumerator_1MethodInvocationHistoryCollection.Count();
 				}
+
+				global::System.Collections.Generic.IReadOnlyList<GetEnumerator_1Invocation> GetEnumerator_1InvocationVerifier.Invocations
+				{
+					get
+					{
+						return _getEnumerator_1MethodInvocationHistoryCollection.MatchingInvocations();
+					}
+				}
 			}
 		}
 
@@ -800,30 +946,64 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public delegate void GetEnumeratorCallbackDelegate();
 		public delegate global::System.Exception GetEnumeratorExceptionGeneratorDelegate();
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IGetEnumeratorMethodInvocationHistory
+		internal interface IGetEnumeratorMethodInvocationHistory
 		{
 			bool Matches();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class GetEnumeratorMethodInvocationHistory : GetEnumeratorMethodInvocationHistoryCollection.Node, IGetEnumeratorMethodInvocationHistory
+		public sealed class GetEnumeratorInvocation : GetEnumeratorMethodInvocationHistoryCollection.Node, IGetEnumeratorMethodInvocationHistory
 		{
-			internal readonly global::System.Collections.Generic.IEnumerator<string>? Result;
-			internal readonly global::System.Exception? Exception;
-			public GetEnumeratorMethodInvocationHistory(global::System.Collections.Generic.IEnumerator<string>? Result, global::System.Exception? Exception)
+			internal readonly global::System.Collections.Generic.IEnumerator<string>? _result;
+			internal readonly global::System.Exception? _exception;
+			private readonly long _sequence;
+			public global::System.Collections.Generic.IEnumerator<string>? Result
 			{
-				this.Result = Result;
-				this.Exception = Exception;
+				get
+				{
+					return _result;
+				}
 			}
 
-			public bool Matches()
+			public override string Member
+			{
+				get
+				{
+					return "GetEnumerator";
+				}
+			}
+
+			public override long Sequence
+			{
+				get
+				{
+					return _sequence;
+				}
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public GetEnumeratorInvocation(global::System.Collections.Generic.IEnumerator<string>? result, global::System.Exception? exception, long sequence)
+			{
+				this._result = result;
+				this._exception = exception;
+				this._sequence = sequence;
+			}
+
+			bool IGetEnumeratorMethodInvocationHistory.Matches()
 			{
 				return true;
 			}
 
 			public override string ToString()
 			{
-				return "GetEnumerator(" + "" + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "GetEnumerator(" + "" + ")" + " => " + FormatValue(_result) + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
@@ -833,12 +1013,16 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class GetEnumeratorMethodInvocationHistoryCollection
+		public class GetEnumeratorMethodInvocationHistoryCollection
 		{
 			private GetEnumeratorMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IImposterInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+
 				internal GetEnumeratorMethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -871,6 +1055,33 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, orderBySequence);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<GetEnumeratorInvocation> MatchingInvocations()
+			{
+				var result = new global::System.Collections.Generic.List<GetEnumeratorInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((IGetEnumeratorMethodInvocationHistory)entry).Matches())
+						result.Add((GetEnumeratorInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
 			}
 
 			public override string ToString()
@@ -1026,6 +1237,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<GetEnumeratorInvocation> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1058,25 +1270,24 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			public global::System.Collections.Generic.IEnumerator<string> Invoke()
 			{
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup();
-				if (matchingInvocationImposterGroup == default)
-				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-					{
-						throw new global::Imposter.Abstractions.MissingImposterException("IEnumerator<string> IEnumerable<string>.GetEnumerator()");
-					}
-
-					matchingInvocationImposterGroup = GetEnumeratorMethodInvocationImposterGroup.Default;
-				}
-
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
 				try
 				{
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup();
+					if (matchingInvocationImposterGroup == default)
+					{
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("IEnumerator<string> IEnumerable<string>.GetEnumerator()");
+						matchingInvocationImposterGroup = GetEnumeratorMethodInvocationImposterGroup.Default;
+					}
+
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "IEnumerator<string> IEnumerable<string>.GetEnumerator()");
-					_getEnumeratorMethodInvocationHistoryCollection.Add(new GetEnumeratorMethodInvocationHistory(result, default));
+					_getEnumeratorMethodInvocationHistoryCollection.Add(new GetEnumeratorInvocation(result, default, invocationSequence));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_getEnumeratorMethodInvocationHistoryCollection.RecordFailure(new GetEnumeratorMethodInvocationHistory(default !, ex)))
+				catch (global::System.Exception ex)
 				{
+					_getEnumeratorMethodInvocationHistoryCollection.RecordFailure(new GetEnumeratorInvocation(default !, ex, invocationSequence));
 					throw;
 				}
 			}
@@ -1165,6 +1376,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				{
 					return _getEnumeratorMethodInvocationHistoryCollection.Count();
 				}
+
+				global::System.Collections.Generic.IReadOnlyList<GetEnumeratorInvocation> GetEnumeratorInvocationVerifier.Invocations
+				{
+					get
+					{
+						return _getEnumeratorMethodInvocationHistoryCollection.MatchingInvocations();
+					}
+				}
 			}
 		}
 
@@ -1218,6 +1437,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class CountPropertyBuilder : ICountPropertyBuilder
 		{
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
+			{
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>(), orderBySequence);
+			}
+
 			private readonly global::Imposter.Abstractions.PropertyValue<int> _defaultPropertyBehaviour;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			internal GetterImposterBuilder _getterImposterBuilder;
@@ -1335,11 +1559,24 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 		public IMyCollectionSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._addMethodInvocationHistoryCollection = new AddMethodInvocationHistoryCollection();
+			this._getEnumeratorMethodInvocationHistoryCollection = new GetEnumeratorMethodInvocationHistoryCollection();
+			this._getEnumerator_1MethodInvocationHistoryCollection = new GetEnumerator_1MethodInvocationHistoryCollection();
 			this._addMethodImposter = new AddMethodImposter(_addMethodInvocationHistoryCollection, invocationBehavior);
 			this._getEnumeratorMethodImposter = new GetEnumeratorMethodImposter(_getEnumeratorMethodInvocationHistoryCollection, invocationBehavior);
 			this._getEnumerator_1MethodImposter = new GetEnumerator_1MethodImposter(_getEnumerator_1MethodInvocationHistoryCollection, invocationBehavior);
 			this._CountPropertyBuilderField = new CountPropertyBuilder(invocationBehavior);
 			this._imposterInstance = new ImposterTargetInstance(this);
+		}
+
+		global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> global::Imposter.Abstractions.IImposter.Invocations()
+		{
+			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+			invocations.AddRange(_addMethodInvocationHistoryCollection.Snapshot(false));
+			invocations.AddRange(_getEnumeratorMethodInvocationHistoryCollection.Snapshot(false));
+			invocations.AddRange(_getEnumerator_1MethodInvocationHistoryCollection.Snapshot(false));
+			invocations.AddRange(_CountPropertyBuilderField.Snapshot(false));
+			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

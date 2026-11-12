@@ -65,7 +65,9 @@ jobs:
       # Test targets deliberately call virtual members from constructors, and thread helpers catch all worker
       # exceptions to report them on the test thread. Drop those two rules only when all locations are under
       # tests/; retain findings with source or unresolved locations.
-      - name: Drop generated output and intentional test findings
+      # InvocationBufferTests deliberately forces GC to check that histories release unreachable objects.
+      # Allow GC only in these exact test files, with every location resolved; calls elsewhere remain reported.
+      - name: Drop generated output and intentional findings
         run: |
           for sarif in sarif-results/*.sarif; do
             jq '
@@ -79,6 +81,20 @@ jobs:
                     and ((.locations // []) | length > 0)
                     and all(.locations[]?;
                       (.physicalLocation.artifactLocation.uri // "") | startswith("tests/")
+                    )
+                  ) | not
+                )
+                | select(
+                  (
+                    ((.locations // []) | length > 0)
+                    and (
+                      (
+                        .ruleId == "cs/call-to-gc"
+                        and all(.locations[]?;
+                          (.physicalLocation.artifactLocation.uri // "") as $uri
+                          | $uri == "tests/Imposter.Abstractions.Tests/InvocationBufferTests.cs"
+                        )
+                      )
                     )
                   ) | not
                 )

@@ -323,7 +323,12 @@ internal static partial class InvocationImposterGroupBuilder
         if (!method.ReturnType.IsValueTask)
         {
             return completeAfter.Call(
-                ArgumentListSyntax([Argument(result), Argument(callbackTasks)])
+                ArgumentListSyntax([
+                    Argument(
+                        PostfixUnaryExpression(SyntaxKind.SuppressNullableWarningExpression, result)
+                    ),
+                    Argument(callbackTasks),
+                ])
             );
         }
 

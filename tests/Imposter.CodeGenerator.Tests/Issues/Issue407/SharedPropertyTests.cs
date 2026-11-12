@@ -49,8 +49,9 @@ public class SharedPropertyTests
             )
         );
         var source = context.RunGenerator().GeneratedSources.Single();
-        // The entire one-property file was 390 lines before the extraction (including its fluent API).
-        source.SourceText.Lines.Count.ShouldBeLessThan(260);
+        // The public history, lifecycle and verification APIs add generated declarations.
+        // Bound the complete file while the structural checks below ensure runtime machinery stays shared.
+        source.SourceText.Lines.Count.ShouldBeLessThan(450);
         var classes = source
             .SyntaxTree.GetRoot()
             .DescendantNodes()

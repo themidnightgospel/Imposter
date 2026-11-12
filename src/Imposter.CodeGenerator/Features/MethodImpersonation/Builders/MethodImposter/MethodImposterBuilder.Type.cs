@@ -1,4 +1,5 @@
-﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.MethodImposter.Adapter;
+﻿using System.Linq;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.MethodImposter.Adapter;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.MethodImposter.Builder;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -38,7 +39,13 @@ internal static partial class MethodImposterBuilder
                     : null
             )
             .AddMember(BuildFindMatchingInvocationImposterGroupMethod(method))
-            .AddMember(InvokeMethod(method))
+            .AddMember(InvokeMethod(method, !method.Model.IsGenericMethod))
+            .AddMember(
+                method.Model.IsGenericMethod
+                && method.Parameters.InputParameterMetadata.Any(p => p.IsSpan)
+                    ? InvokeMethod(method, recordHistory: false, reuseCapturedSpans: true)
+                    : null
+            )
             .AddMember(MethodImposterBuilderBuilder.Build(method))
             .Build();
     }

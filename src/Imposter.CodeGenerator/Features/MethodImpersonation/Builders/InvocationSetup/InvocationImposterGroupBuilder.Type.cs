@@ -65,7 +65,7 @@ internal static partial class InvocationImposterGroupBuilder
                 .AddParameter(
                     SyntaxFactoryHelper.ParameterSyntax(
                         method.ArgumentsCriteria.Syntax,
-                        "argumentsCriteria"
+                        method.Locals["argumentsCriteria"]
                     )
                 )
                 .WithBody(
@@ -73,7 +73,7 @@ internal static partial class InvocationImposterGroupBuilder
                         IdentifierName(
                                 MethodInvocationImposterGroupMetadata.ArgumentsCriteriaPropertyName
                             )
-                            .Assign(IdentifierName("argumentsCriteria"))
+                            .Assign(IdentifierName(method.Locals["argumentsCriteria"]))
                             .ToStatementSyntax()
                     )
                 )

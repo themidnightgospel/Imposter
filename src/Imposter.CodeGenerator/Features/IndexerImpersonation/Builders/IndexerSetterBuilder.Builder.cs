@@ -23,6 +23,7 @@ internal static partial class IndexerSetterBuilder
                 indexer.SetterBuilderInterface.FluentInterfaceTypeSyntax
             )
             .AddMember(BuildSetterBuilderCallbackMethod(indexer))
+            .AddMember(IndexerHistoryBuilder.Invocations(indexer, false, true))
             .AddMember(
                 ForwardCalled(
                     builderMetadata,

@@ -105,6 +105,8 @@ internal static partial class IndexerSetterBuilder
             .AddMember(BuildSetterCallbackMethod(indexer))
             .AddMember(BuildSetterCalledMethod(indexer))
             .AddMember(BuildSetterSetMethod(indexer, baseCriteriaLoop, invokedBaseIdentifier))
+            .AddMember(IndexerHistoryBuilder.Snapshot(indexer, false))
+            .AddMember(IndexerHistoryBuilder.Matching(indexer, false))
             .AddMember(BuildEnsureSetterConfiguredMethod(indexer))
             .AddMember(BuildMarkSetterConfiguredMethod(indexer))
             .AddMember(useBaseImplementationMethod)
@@ -173,35 +175,33 @@ internal static partial class IndexerSetterBuilder
             indexer.SetterBuilderInterface.CalledMethod.CountParameter
         );
         var invocationHistoryIdentifier = IdentifierName(setter.InvocationHistoryField.Name);
-        var invocationCount = IdentifierName("invocationCount");
-        var entryIdentifier = IdentifierName("entry");
+        var invocationCount = IdentifierName(indexer.Locals["invocationCount"]);
+        var entryIdentifier = IdentifierName(indexer.Locals["entry"]);
         // An entry is the keys alone for a value passed through, which the history can't keep.
-        ExpressionSyntax entryArguments = !indexer.Core.IsValuePassedThrough
-            ? entryIdentifier.Dot(
-                IdentifierName(IndexerSetterImposterMetadata.HistoryArgumentsElementName)
-            )
-            : entryIdentifier;
+        ExpressionSyntax entryArguments = entryIdentifier.Dot(
+            IdentifierName(IndexerSetterImposterMetadata.HistoryArgumentsElementName)
+        );
 
         var invocationCountDeclaration = LocalVariableDeclarationSyntax(
             WellKnownTypes.Int,
             invocationCount.Identifier.Text,
-            LazyCollectionSyntaxHelper.CountOrZero(
+            NumericLiteral(0)
+        );
+        var countEntry = IdentifierName(indexer.Locals["entry"]);
+        var countLoop = LazyCollectionSyntaxHelper.UnlessNull(
+            ForEachStatement(
+                Var,
+                countEntry.Identifier,
                 invocationHistoryIdentifier,
-                invocationHistoryIdentifier
-                    .Dot(IdentifierName("Count"))
-                    .Call(
-                        Argument(
-                            entryIdentifier.Identifier.Lambda(
-                                IdentifierName(setter.CriteriaParameterName)
-                                    .Dot(
-                                        IdentifierName(
-                                            IndexerArgumentsCriteriaMetadata.MatchesMethodName
-                                        )
-                                    )
-                                    .Call(Argument(entryArguments))
-                            )
-                        )
+                Block(
+                    IfStatement(
+                        IdentifierName(setter.CriteriaParameterName)
+                            .Dot(IdentifierName(IndexerArgumentsCriteriaMetadata.MatchesMethodName))
+                            .Call(Argument(countEntry.Dot(IdentifierName("Arguments")))),
+                        PostfixUnaryExpression(SyntaxKind.PostIncrementExpression, invocationCount)
+                            .ToStatementSyntax()
                     )
+                )
             )
         );
 
@@ -233,6 +233,7 @@ internal static partial class IndexerSetterBuilder
             .WithBody(
                 Block(
                     invocationCountDeclaration,
+                    countLoop,
                     ThrowIfCountDoesNotMatch(
                         IdentifierName(countParameter.Identifier),
                         invocationCount,
@@ -300,14 +301,6 @@ internal static partial class IndexerSetterBuilder
             .AddStatement(
                 IdentifierName(setter.EnsureSetterConfiguredMethodName).Call().ToStatementSyntax()
             )
-            .AddStatement(CreateArgumentsDeclaration(indexer, setter.ArgumentsVariableName))
-            .AddStatement(
-                LazyCollectionSyntaxHelper
-                    .EnsureInitialized(setter.InvocationHistoryField.Name)
-                    .Dot(ConcurrentStackSyntaxHelper.Push)
-                    .Call(Argument(HistoryEntry(indexer, argumentsVariable, value)))
-                    .ToStatementSyntax()
-            )
             .AddStatement(
                 defaultBehaviourField is null
                     ? null
@@ -350,7 +343,7 @@ internal static partial class IndexerSetterBuilder
         )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameters(parameters.ToArray())
-            .WithBody(bodyBuilder.Build())
+            .WithBody(IndexerHistoryBuilder.BuildBody(indexer, false, bodyBuilder.Build()))
             .Build();
     }
 
@@ -495,14 +488,6 @@ internal static partial class IndexerSetterBuilder
     }
 
     // The history keeps the keys with the value, or the keys alone for a value passed through.
-    private static ExpressionSyntax HistoryEntry(
-        in ImposterIndexerMetadata indexer,
-        ExpressionSyntax arguments,
-        ExpressionSyntax value
-    ) =>
-        !indexer.Core.IsValuePassedThrough
-            ? TupleExpression(SeparatedList<ArgumentSyntax>([Argument(arguments), Argument(value)]))
-            : arguments;
 
     private static MethodDeclarationSyntax BuildEnsureSetterConfiguredMethod(
         in ImposterIndexerMetadata indexer

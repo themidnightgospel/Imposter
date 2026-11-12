@@ -5,6 +5,11 @@
 /// </summary>
 public static class ImposterExtensions
 {
+    /// <summary>Returns a snapshot of the imposter's recorded interactions in entry order.</summary>
+    /// <param name="imposter">The imposter whose interactions are returned.</param>
+    public static IReadOnlyList<IImposterInvocation> Invocations(this IImposter imposter) =>
+        imposter.Invocations();
+
     /// <summary>
     /// Retrieves the underlying instance from an object that exposes an imposter instance.
     /// </summary>

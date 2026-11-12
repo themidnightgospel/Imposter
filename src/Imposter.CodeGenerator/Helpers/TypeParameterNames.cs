@@ -50,8 +50,8 @@ internal static class TypeParameterNames
             ? NamesInImposters(declaringType).ToArray()
             : [];
         var reservedMemberNames = typeParameter.DeclaringMethod is not null
-            ? GeneratedMethodMemberNames.Reserved
-            : Enumerable.Empty<string>();
+            ? GeneratedMethodMemberNames.Reserved.Concat(GeneratedVerificationNames.Reserved)
+            : GeneratedVerificationNames.Reserved;
 
         return
             SyntaxFacts.GetContextualKeywordKind(typeParameter.Name) != SyntaxKind.None

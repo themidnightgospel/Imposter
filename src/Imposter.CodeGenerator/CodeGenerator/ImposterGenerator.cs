@@ -404,6 +404,8 @@ public sealed class ImposterGenerator : IIncrementalGenerator
                     [
                         .. IndexerDelegatesBuilder.Build(indexer),
                         IndexerArgumentsBuilder.Build(indexer),
+                        IndexerInvocationBuilder.Build(indexer, true),
+                        IndexerInvocationBuilder.Build(indexer, false),
                         IndexerArgumentsCriteriaBuilder.Build(indexer),
                         IndexerImposterBuilder.Build(indexer),
                         .. IndexerGetterImposterBuilderInterfaceBuilder.Build(indexer),

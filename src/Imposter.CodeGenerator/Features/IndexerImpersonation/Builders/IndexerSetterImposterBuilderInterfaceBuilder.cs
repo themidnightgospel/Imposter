@@ -30,9 +30,10 @@ internal static class IndexerSetterImposterBuilderInterfaceBuilder
             ),
             BuildFluentInterface(indexer),
             VerificationInterface(
-                indexer.SetterBuilderInterface.VerificationInterfaceName,
-                indexer.SetterBuilderInterface.CalledMethod
-            ),
+                    indexer.SetterBuilderInterface.VerificationInterfaceName,
+                    indexer.SetterBuilderInterface.CalledMethod
+                )
+                .AddMembers(IndexerHistoryBuilder.Invocations(indexer, false, false)),
             BuildBuilderInterface(indexer),
         ];
     }

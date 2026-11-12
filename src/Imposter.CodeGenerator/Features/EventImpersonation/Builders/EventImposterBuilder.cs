@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.Shared.Builders;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -19,7 +20,48 @@ internal static class EventImposterBuilder
             .AddBaseType(SimpleBaseType(@event.BuilderInterface.SetupInterfaceTypeSyntax))
             .AddBaseType(SimpleBaseType(@event.BuilderInterface.VerificationInterfaceTypeSyntax))
             .AddMembers(BuildFields(@event))
-            .AddMember(BuildConstructor(@event))
+            .AddMember(EventHistoryBuilder.Build(@event, true, true))
+            .AddMember(EventHistoryBuilder.Build(@event, false, true))
+            .AddMember(
+                new MethodDeclarationBuilder(
+                    WellKnownTypes.System.Collections.Generic.IReadOnlyList(
+                        WellKnownTypes.Imposter.Abstractions.IImposterInvocation
+                    ),
+                    "Snapshot"
+                )
+                    .AddModifier(Token(SyntaxKind.InternalKeyword))
+                    .AddParameter(
+                        ParameterSyntax(
+                                WellKnownTypes.Bool,
+                                @event.Core.CreateParameterNameSet().Use("orderBySequence")
+                            )
+                            .WithDefault(EqualsValueClause(True))
+                    )
+                    .WithBody(
+                        Block(
+                            ReturnStatement(
+                                WellKnownTypes
+                                    .Imposter.Abstractions.InvocationSnapshots.Dot(
+                                        IdentifierName("Combine")
+                                    )
+                                    .Call([
+                                        Argument(EventHistoryBuilder.Snapshot(@event, true, false)),
+                                        Argument(
+                                            EventHistoryBuilder.Snapshot(@event, false, false)
+                                        ),
+                                        Argument(
+                                            IdentifierName(
+                                                @event
+                                                    .Core.CreateParameterNameSet()
+                                                    .Use("orderBySequence")
+                                            )
+                                        ),
+                                    ])
+                            )
+                        )
+                    )
+                    .Build()
+            )
             .AddMember(EventImposterSubscriptionsBuilder.BuildSubscribeMethod(@event))
             .AddMember(EventImposterSubscriptionsBuilder.BuildUnsubscribeMethod(@event))
             .AddMember(EventImposterSubscriptionsBuilder.BuildCallbackMethod(@event))
@@ -52,7 +94,6 @@ internal static class EventImposterBuilder
 
         members.AddRange(EventImposterSubscriptionsBuilder.BuildFields(@event));
         members.AddRange(EventImposterRaiseBuilder.BuildFields(@event));
-
         if (@event.Core.SupportsBaseImplementation)
         {
             members.Add(SingleVariableField(@event.Builder.Fields.UseBaseImplementation));
@@ -61,12 +102,6 @@ internal static class EventImposterBuilder
 
         return members.ToArray();
     }
-
-    private static ConstructorDeclarationSyntax BuildConstructor(in ImposterEventMetadata @event) =>
-        new ConstructorBuilder(@event.Builder.Name)
-            .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
-            .WithBody(Block())
-            .Build();
 
     private static MethodDeclarationSyntax? BuildUseBaseImplementationMethod(
         in ImposterEventMetadata @event

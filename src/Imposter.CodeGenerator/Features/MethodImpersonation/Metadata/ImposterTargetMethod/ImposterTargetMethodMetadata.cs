@@ -23,6 +23,8 @@ internal readonly struct ImposterTargetMethodMetadata
 
     internal readonly ReservedParameterNames ReservedParameterNames;
 
+    internal readonly LocalNamesMetadata Locals;
+
     internal readonly MethodInvocationImposterGroupMetadata MethodInvocationImposterGroup;
 
     internal readonly MethodInvocationImposterMetadata MethodInvocationImposter;
@@ -61,6 +63,9 @@ internal readonly struct ImposterTargetMethodMetadata
     internal readonly bool KeepsResult;
 
     internal readonly bool SupportsBaseImplementation;
+
+    // A compatible adapter can reuse a captured span only when its element type needs no conversion.
+    internal readonly bool CanReuseCapturedSpansAcrossAdapters;
 
     internal readonly string UniqueName;
 
@@ -124,7 +129,20 @@ internal readonly struct ImposterTargetMethodMetadata
 
         Parameters = new ImposterTargetMethodParametersMetadata(Model.Parameters);
         ReservedParameterNames = new ReservedParameterNames(
-            Model.Parameters.Select(p => p.Name).Concat([UniqueName, Model.ContainingNamespace])
+            Model
+                .Parameters.Select(p => p.Name)
+                .Concat(Model.TypeParameters.Select(p => p.Name))
+                .Concat(Model.ContainingTypeTypeParameterNames)
+                .Concat([UniqueName, Model.ContainingNamespace])
+        );
+        Locals = new LocalNamesMetadata(
+            ReservedParameterNames.CreateNameSet(),
+            "descriptions",
+            "invocation",
+            "head",
+            "invocationHistory",
+            "invocationCount",
+            "argumentsCriteria"
         );
         // The method's generic members, such as Throws<TException>(), are declared inside the imposter and, for a
         // generic method, inside types that take the method's type parameters, so their names avoid both.
@@ -135,6 +153,8 @@ internal readonly struct ImposterTargetMethodMetadata
             Model
                 .Parameters.Select(parameter => parameter.Name)
                 .Concat(Model.TypeParameters.Select(typeParameter => typeParameter.Name))
+                .Concat(Model.ContainingTypeTypeParameterNames)
+                .Concat(targetTypeParameterNames)
         );
         GenericTypeArguments = Model
             .TypeParameters.Select(p =>
@@ -166,16 +186,12 @@ internal readonly struct ImposterTargetMethodMetadata
             ? new TypeParameterRenamer(Model.TypeParameters, TargetGenericTypeArguments)
             : null;
         _targetTypeParameterRenamer = targetRenamer;
-        if (GenericTypeConstraintClauses.Count > 0)
-        {
-            TargetGenericTypeConstraintClauses = GenericTypeConstraintClauses
-                .Select(c => (TypeParameterConstraintClauseSyntax)targetRenamer!.Visit(c))
-                .ToArray();
-        }
-        else
-        {
-            TargetGenericTypeConstraintClauses = [];
-        }
+        TargetGenericTypeConstraintClauses =
+            GenericTypeConstraintClauses.Count > 0
+                ? GenericTypeConstraintClauses
+                    .Select(c => (TypeParameterConstraintClauseSyntax)targetRenamer!.Visit(c))
+                    .ToArray()
+                : [];
 
         Delegate = TypeMetadataFactory.Create($"{uniqueName}Delegate", GenericTypeArguments);
         CallbackDelegate = TypeMetadataFactory.Create(
@@ -226,6 +242,34 @@ internal readonly struct ImposterTargetMethodMetadata
             ExplicitInterfaceSpecifier = null;
             ImposterInstanceMethodModifiers = ImposterInstanceModifierBuilder.For(Model);
         }
+        CanReuseCapturedSpansAcrossAdapters = ComputeCanReuseCapturedSpansAcrossAdapters(
+            Parameters,
+            targetRenamer
+        );
+    }
+
+    private static bool ComputeCanReuseCapturedSpansAcrossAdapters(
+        in ImposterTargetMethodParametersMetadata parameters,
+        TypeParameterRenamer? renamer
+    )
+    {
+        var hasSpan = false;
+        for (var index = 0; index < parameters.InputParameterMetadata.Count; index++)
+        {
+            var parameter = parameters.InputParameterMetadata[index];
+            if (!parameter.IsSpan)
+                continue;
+            hasSpan = true;
+            if (
+                !parameter.NullableAwareKeptTypeSyntax.IsEquivalentTo(
+                    renamer is null
+                        ? parameter.NullableAwareKeptTypeSyntax
+                        : renamer.Visit(parameter.NullableAwareKeptTypeSyntax)
+                )
+            )
+                return false;
+        }
+        return hasSpan;
     }
 
     internal TypeSyntax InTargetTypeArguments(TypeSyntax type) =>
