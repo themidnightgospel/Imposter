@@ -212,6 +212,13 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class GenericAllRefKindMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal GenericAllRefKindMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private GenericAllRefKindMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -320,6 +327,25 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter(long sequence, GenericAllRefKindArgumentsCriteria criteria, out global::Imposter.Abstractions.InvocationMatch match)
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((IGenericAllRefKindMethodInvocationHistory)entry).Matches(criteria))
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -504,7 +530,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IGenericAllRefKindMethodImposterBuilder : IGenericAllRefKindMethodInvocationImposterGroup, IGenericAllRefKindMethodInvocationImposterGroupCallback, GenericAllRefKindInvocationVerifier
+		public interface IGenericAllRefKindMethodImposterBuilder : IGenericAllRefKindMethodInvocationImposterGroup, IGenericAllRefKindMethodInvocationImposterGroupCallback, GenericAllRefKindInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
@@ -646,6 +672,27 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					return _genericAllRefKindMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
 
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _genericAllRefKindMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "GenericAllRefKind(" + "o: " + "any" + ", r: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.r) + ", d: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.d) + ", args: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.args) + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _genericAllRefKindMethodInvocationHistoryCollection.TryFindAfter(sequence, _argumentsCriteria, out match);
+				}
+
 				IGenericAllRefKindMethodInvocationImposterGroupContinuation IGenericAllRefKindMethodInvocationImposterGroupContinuation.Lenient()
 				{
 					_invocationImposterGroup.IsLenient = true;
@@ -769,6 +816,13 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class GetNumberMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal GetNumberMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private GetNumberMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -877,6 +931,25 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((IGetNumberMethodInvocationHistory)entry).Matches())
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -1051,7 +1124,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IGetNumberMethodImposterBuilder : IGetNumberMethodInvocationImposterGroup, IGetNumberMethodInvocationImposterGroupCallback, GetNumberInvocationVerifier
+		public interface IGetNumberMethodImposterBuilder : IGetNumberMethodInvocationImposterGroup, IGetNumberMethodInvocationImposterGroupCallback, GetNumberInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
@@ -1185,6 +1258,27 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 				int GetNumberInvocationVerifier.CallCount()
 				{
 					return _getNumberMethodInvocationHistoryCollection.Count();
+				}
+
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _getNumberMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "GetNumber(" + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _getNumberMethodInvocationHistoryCollection.TryFindAfter(sequence, out match);
 				}
 
 				IGetNumberMethodInvocationImposterGroupContinuation IGetNumberMethodInvocationImposterGroupContinuation.Lenient()
@@ -1351,6 +1445,13 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class IncrementMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal IncrementMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private IncrementMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -1459,6 +1560,25 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter(long sequence, IncrementArgumentsCriteria criteria, out global::Imposter.Abstractions.InvocationMatch match)
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((IIncrementMethodInvocationHistory)entry).Matches(criteria))
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -1636,7 +1756,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IIncrementMethodImposterBuilder : IIncrementMethodInvocationImposterGroup, IIncrementMethodInvocationImposterGroupCallback, IncrementInvocationVerifier
+		public interface IIncrementMethodImposterBuilder : IIncrementMethodInvocationImposterGroup, IIncrementMethodInvocationImposterGroupCallback, IncrementInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
@@ -1775,6 +1895,27 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					return _incrementMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
 
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _incrementMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "Increment(" + "v: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.v) + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _incrementMethodInvocationHistoryCollection.TryFindAfter(sequence, _argumentsCriteria, out match);
+				}
+
 				IIncrementMethodInvocationImposterGroupContinuation IIncrementMethodInvocationImposterGroupContinuation.Lenient()
 				{
 					_invocationImposterGroup.IsLenient = true;
@@ -1841,9 +1982,9 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 		public ICallbackServiceImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
 			this._imposterMode = invocationBehavior;
-			this._getNumberMethodInvocationHistoryCollection = new GetNumberMethodInvocationHistoryCollection();
-			this._incrementMethodInvocationHistoryCollection = new IncrementMethodInvocationHistoryCollection();
-			this._genericAllRefKindMethodInvocationHistoryCollection = new GenericAllRefKindMethodInvocationHistoryCollection();
+			this._getNumberMethodInvocationHistoryCollection = new GetNumberMethodInvocationHistoryCollection(this);
+			this._incrementMethodInvocationHistoryCollection = new IncrementMethodInvocationHistoryCollection(this);
+			this._genericAllRefKindMethodInvocationHistoryCollection = new GenericAllRefKindMethodInvocationHistoryCollection(this);
 			this._getNumberMethodImposter = new GetNumberMethodImposter(_getNumberMethodInvocationHistoryCollection, this._imposterMode);
 			this._incrementMethodImposter = new IncrementMethodImposter(_incrementMethodInvocationHistoryCollection, this._imposterMode);
 			this._genericAllRefKindMethodImposter = new GenericAllRefKindMethodImposter(_genericAllRefKindMethodInvocationHistoryCollection, this._imposterMode);
@@ -1886,9 +2027,9 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 			_getNumberMethodInvocationHistoryCollection.Clear();
 			_incrementMethodInvocationHistoryCollection.Clear();
 			_genericAllRefKindMethodInvocationHistoryCollection.Clear();
-			this._getNumberMethodInvocationHistoryCollection = new GetNumberMethodInvocationHistoryCollection();
-			this._incrementMethodInvocationHistoryCollection = new IncrementMethodInvocationHistoryCollection();
-			this._genericAllRefKindMethodInvocationHistoryCollection = new GenericAllRefKindMethodInvocationHistoryCollection();
+			this._getNumberMethodInvocationHistoryCollection = new GetNumberMethodInvocationHistoryCollection(this);
+			this._incrementMethodInvocationHistoryCollection = new IncrementMethodInvocationHistoryCollection(this);
+			this._genericAllRefKindMethodInvocationHistoryCollection = new GenericAllRefKindMethodInvocationHistoryCollection(this);
 			this._getNumberMethodImposter = new GetNumberMethodImposter(_getNumberMethodInvocationHistoryCollection, this._imposterMode);
 			this._incrementMethodImposter = new IncrementMethodImposter(_incrementMethodInvocationHistoryCollection, this._imposterMode);
 			this._genericAllRefKindMethodImposter = new GenericAllRefKindMethodImposter(_genericAllRefKindMethodInvocationHistoryCollection, this._imposterMode);

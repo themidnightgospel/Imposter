@@ -117,6 +117,13 @@ namespace Imposter.Tests.Features.ClassImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class GetMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal GetMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private GetMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -225,6 +232,25 @@ namespace Imposter.Tests.Features.ClassImpersonation
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((IGetMethodInvocationHistory)entry).Matches())
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -415,7 +441,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IGetMethodImposterBuilder : IGetMethodInvocationImposterGroup, IGetMethodInvocationImposterGroupCallback, GetInvocationVerifier
+		public interface IGetMethodImposterBuilder : IGetMethodInvocationImposterGroup, IGetMethodInvocationImposterGroupCallback, GetInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
@@ -558,6 +584,27 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					return _getMethodInvocationHistoryCollection.Count();
 				}
 
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _getMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "Get(" + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _getMethodInvocationHistoryCollection.TryFindAfter(sequence, out match);
+				}
+
 				IGetMethodInvocationImposterGroupContinuation IGetMethodInvocationImposterGroupContinuation.Lenient()
 				{
 					_invocationImposterGroup.IsLenient = true;
@@ -596,7 +643,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 		public ConstructorVirtualMethodTargetImposter(bool invokeMember, global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
 			this._imposterMode = invocationBehavior;
-			this._getMethodInvocationHistoryCollection = new GetMethodInvocationHistoryCollection();
+			this._getMethodInvocationHistoryCollection = new GetMethodInvocationHistoryCollection(this);
 			this._getMethodImposter = new GetMethodImposter(_getMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this, invokeMember);
 		}
@@ -631,7 +678,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 		void global::Imposter.Abstractions.IImposter.Reset()
 		{
 			_getMethodInvocationHistoryCollection.Clear();
-			this._getMethodInvocationHistoryCollection = new GetMethodInvocationHistoryCollection();
+			this._getMethodInvocationHistoryCollection = new GetMethodInvocationHistoryCollection(this);
 			this._getMethodImposter = new GetMethodImposter(_getMethodInvocationHistoryCollection, this._imposterMode);
 		}
 

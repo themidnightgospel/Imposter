@@ -9,6 +9,17 @@ namespace Imposter.Tests.Features.Verification
     public class CustomSetterInvocationTests
     {
         [Fact]
+        public void GivenSpanSetterMatcher_WhenOrderedCheckFails_ShouldDescribeStoredSpanExpectation()
+        {
+            var sut = new ISpanPropertySutImposter();
+            var step = sut.Buffer.Setter(SpanArg<byte>.Is(1, 2));
+            var failure = Should.Throw<VerificationFailedException>(() =>
+                Imposters.InOrder().Then(step).Verify()
+            );
+            failure.Message.ShouldContain("[<1>, <2>]");
+        }
+
+        [Fact]
         public void GivenSpanSetter_WhenRecorded_ShouldCaptureReadOnlyValueAndSupportCoverageAndReset()
         {
             var sut = new ISpanPropertySutImposter();
@@ -27,6 +38,8 @@ namespace Imposter.Tests.Features.Verification
             sut.VerifyAllSetupsUsed();
             setup.Called(Count.Once());
             sut.VerifyNoOtherCalls();
+            Imposters.InOrder().Then(setup).Verify();
+            sut.VerifyNoOtherCalls();
 
             sut.ClearInvocations();
             setup.Called(Count.Never());
@@ -40,7 +53,7 @@ namespace Imposter.Tests.Features.Verification
         }
 
         [Fact]
-        public void GivenRefStructSetter_WhenCallbackThrows_ShouldRecordExceptionAndCoverOnVerification()
+        public void GivenRefStructSetter_WhenCallbackThrows_ShouldRecordExceptionAndCoverInOrder()
         {
             var sut = new IRefStructPropertySutImposter();
             var failure = new InvalidOperationException("callback failed");
@@ -58,6 +71,8 @@ namespace Imposter.Tests.Features.Verification
             Should.Throw<VerificationFailedException>(() => setup.Called(Count.Never()));
             Should.Throw<VerificationFailedException>(() => sut.VerifyNoOtherCalls());
             setup.Called(Count.Once());
+            sut.VerifyNoOtherCalls();
+            Imposters.InOrder().Then(setup).Verify();
             sut.VerifyNoOtherCalls();
             sut.ClearInvocations();
             setup.Called(Count.Never());

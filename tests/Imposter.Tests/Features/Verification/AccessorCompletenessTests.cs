@@ -38,6 +38,43 @@ namespace Imposter.Tests.Features.Verification
         }
 
         [Fact]
+        public void GivenSegmentedEventHistory_WhenMaterializingMultipleSnapshots_ShouldShareCoverage()
+        {
+            Action<int> handler = _ => { };
+            for (var i = 0; i < 70; i++)
+                _sut.Instance().Changed -= handler;
+            var snapshot = _sut.Changed.Unsubscriptions;
+            snapshot.Count.ShouldBe(70);
+            for (var i = 0; i < 70; i++)
+                _sut.Instance().Changed -= handler;
+
+            snapshot.Count.ShouldBe(70);
+            _sut.Changed.Unsubscribed(handler, Count.Exactly(140));
+            foreach (var invocation in snapshot)
+                ((IVerifiableInvocation)invocation).IsVerified.ShouldBeTrue();
+            foreach (var invocation in _sut.Changed.Unsubscriptions)
+                ((IVerifiableInvocation)invocation).IsVerified.ShouldBeTrue();
+            _sut.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public void GivenRetainedEventSnapshot_WhenCleared_ShouldKeepCoverageSeparateFromNewHistory()
+        {
+            Action<int> handler = _ => { };
+            _sut.Instance().Changed += handler;
+            var old = _sut.Changed.Subscriptions[0];
+            _sut.ClearInvocations();
+            _sut.Instance().Changed += handler;
+
+            ((IVerifiableInvocation)old).MarkVerified();
+            ((IVerifiableInvocation)_sut.Changed.Subscriptions[0]).IsVerified.ShouldBeFalse();
+            old.Handler.ShouldBeSameAs(handler);
+            Should.Throw<VerificationFailedException>(() => _sut.VerifyNoOtherCalls());
+            _sut.Changed.Subscribed(handler, Count.Once());
+            _sut.VerifyNoOtherCalls();
+        }
+
+        [Fact]
         public void GivenNoSetupsOrCalls_WhenCheckingCompleteness_ShouldPass()
         {
             _sut.VerifyAllSetupsUsed();
@@ -84,13 +121,15 @@ namespace Imposter.Tests.Features.Verification
         }
 
         [Fact]
-        public void GivenIndexerInteractions_WhenVerified_ShouldCoverOnlyMatchingRecords()
+        public void GivenIndexerInteractions_WhenOrdered_ShouldCoverOnlySelectedRecords()
         {
             _sut.Instance()[1] = 5;
             _sut.Instance()[1].ShouldBe(5);
             _sut.Instance()[2] = 6;
             _sut[1].Setter().Called(Count.Once());
             _sut[1].Getter().Called(Count.Once());
+            Should.Throw<VerificationFailedException>(() => _sut.VerifyNoOtherCalls());
+            Imposters.InOrder().Then(_sut[1].Setter()).Then(_sut[1].Getter()).Verify();
             Should.Throw<VerificationFailedException>(() => _sut.VerifyNoOtherCalls());
             _sut[2].Setter().Called(Count.Once());
             _sut.VerifyNoOtherCalls();

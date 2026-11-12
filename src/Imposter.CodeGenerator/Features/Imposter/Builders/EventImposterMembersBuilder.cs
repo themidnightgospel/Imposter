@@ -37,7 +37,11 @@ internal readonly ref struct EventImposterMembersBuilder(
         memberInitializationBuilder.AddStatement(
             ThisExpression()
                 .Dot(IdentifierName(@event.BuilderField.Name))
-                .Assign(@event.Builder.TypeSyntax.New())
+                .Assign(
+                    @event.Builder.TypeSyntax.New(
+                        SyntaxFactoryHelper.ArgumentListSyntax([Argument(ThisExpression())])
+                    )
+                )
                 .ToStatementSyntax()
         );
 

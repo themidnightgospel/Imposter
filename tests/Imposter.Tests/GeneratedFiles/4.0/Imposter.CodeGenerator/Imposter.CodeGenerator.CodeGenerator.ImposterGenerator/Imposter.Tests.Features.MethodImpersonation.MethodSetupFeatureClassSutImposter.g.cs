@@ -207,6 +207,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class BuildLabelAsyncMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal BuildLabelAsyncMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private BuildLabelAsyncMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -315,6 +322,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter(long sequence, BuildLabelAsyncArgumentsCriteria criteria, out global::Imposter.Abstractions.InvocationMatch match)
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((IBuildLabelAsyncMethodInvocationHistory)entry).Matches(criteria))
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -538,7 +564,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IBuildLabelAsyncMethodImposterBuilder : IBuildLabelAsyncMethodInvocationImposterGroup, IBuildLabelAsyncMethodInvocationImposterGroupCallback, BuildLabelAsyncInvocationVerifier
+		public interface IBuildLabelAsyncMethodImposterBuilder : IBuildLabelAsyncMethodInvocationImposterGroup, IBuildLabelAsyncMethodInvocationImposterGroupCallback, BuildLabelAsyncInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
@@ -697,6 +723,27 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				int BuildLabelAsyncInvocationVerifier.CallCount()
 				{
 					return _buildLabelAsyncMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+				}
+
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _buildLabelAsyncMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "BuildLabelAsync(" + "prefix: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.prefix) + ", suffix: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.suffix) + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _buildLabelAsyncMethodInvocationHistoryCollection.TryFindAfter(sequence, _argumentsCriteria, out match);
 				}
 
 				IBuildLabelAsyncMethodInvocationImposterGroupContinuation IBuildLabelAsyncMethodInvocationImposterGroupContinuation.Lenient()
@@ -863,6 +910,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class IntSingleParamMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal IntSingleParamMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private IntSingleParamMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -971,6 +1025,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter(long sequence, IntSingleParamArgumentsCriteria criteria, out global::Imposter.Abstractions.InvocationMatch match)
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((IIntSingleParamMethodInvocationHistory)entry).Matches(criteria))
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -1164,7 +1237,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IIntSingleParamMethodImposterBuilder : IIntSingleParamMethodInvocationImposterGroup, IIntSingleParamMethodInvocationImposterGroupCallback, IntSingleParamInvocationVerifier
+		public interface IIntSingleParamMethodImposterBuilder : IIntSingleParamMethodInvocationImposterGroup, IIntSingleParamMethodInvocationImposterGroupCallback, IntSingleParamInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
@@ -1308,6 +1381,27 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				int IntSingleParamInvocationVerifier.CallCount()
 				{
 					return _intSingleParamMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+				}
+
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _intSingleParamMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "IntSingleParam(" + "age: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.age) + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _intSingleParamMethodInvocationHistoryCollection.TryFindAfter(sequence, _argumentsCriteria, out match);
 				}
 
 				IIntSingleParamMethodInvocationImposterGroupContinuation IIntSingleParamMethodInvocationImposterGroupContinuation.Lenient()
@@ -1500,6 +1594,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class RefOutWithParamsMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal RefOutWithParamsMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private RefOutWithParamsMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -1608,6 +1709,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter(long sequence, RefOutWithParamsArgumentsCriteria criteria, out global::Imposter.Abstractions.InvocationMatch match)
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((IRefOutWithParamsMethodInvocationHistory)entry).Matches(criteria))
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -1808,7 +1928,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IRefOutWithParamsMethodImposterBuilder : IRefOutWithParamsMethodInvocationImposterGroup, IRefOutWithParamsMethodInvocationImposterGroupCallback, RefOutWithParamsInvocationVerifier
+		public interface IRefOutWithParamsMethodImposterBuilder : IRefOutWithParamsMethodInvocationImposterGroup, IRefOutWithParamsMethodInvocationImposterGroupCallback, RefOutWithParamsInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
@@ -1954,6 +2074,27 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				int RefOutWithParamsInvocationVerifier.CallCount()
 				{
 					return _refOutWithParamsMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+				}
+
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _refOutWithParamsMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "RefOutWithParams(" + "seed: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.seed) + ", doubled: " + "any" + ", adjustments: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.adjustments) + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _refOutWithParamsMethodInvocationHistoryCollection.TryFindAfter(sequence, _argumentsCriteria, out match);
 				}
 
 				IRefOutWithParamsMethodInvocationImposterGroupContinuation IRefOutWithParamsMethodInvocationImposterGroupContinuation.Lenient()
@@ -2148,6 +2289,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class SumAsyncMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal SumAsyncMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private SumAsyncMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -2256,6 +2404,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter(long sequence, SumAsyncArgumentsCriteria criteria, out global::Imposter.Abstractions.InvocationMatch match)
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((ISumAsyncMethodInvocationHistory)entry).Matches(criteria))
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -2479,7 +2646,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface ISumAsyncMethodImposterBuilder : ISumAsyncMethodInvocationImposterGroup, ISumAsyncMethodInvocationImposterGroupCallback, SumAsyncInvocationVerifier
+		public interface ISumAsyncMethodImposterBuilder : ISumAsyncMethodInvocationImposterGroup, ISumAsyncMethodInvocationImposterGroupCallback, SumAsyncInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
@@ -2638,6 +2805,27 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				int SumAsyncInvocationVerifier.CallCount()
 				{
 					return _sumAsyncMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+				}
+
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _sumAsyncMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "SumAsync(" + "left: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.left) + ", right: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.right) + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _sumAsyncMethodInvocationHistoryCollection.TryFindAfter(sequence, _argumentsCriteria, out match);
 				}
 
 				ISumAsyncMethodInvocationImposterGroupContinuation ISumAsyncMethodInvocationImposterGroupContinuation.Lenient()
@@ -2804,6 +2992,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class ThrowingCalculationMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal ThrowingCalculationMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private ThrowingCalculationMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -2912,6 +3107,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter(long sequence, ThrowingCalculationArgumentsCriteria criteria, out global::Imposter.Abstractions.InvocationMatch match)
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((IThrowingCalculationMethodInvocationHistory)entry).Matches(criteria))
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -3105,7 +3319,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IThrowingCalculationMethodImposterBuilder : IThrowingCalculationMethodInvocationImposterGroup, IThrowingCalculationMethodInvocationImposterGroupCallback, ThrowingCalculationInvocationVerifier
+		public interface IThrowingCalculationMethodImposterBuilder : IThrowingCalculationMethodInvocationImposterGroup, IThrowingCalculationMethodInvocationImposterGroupCallback, ThrowingCalculationInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
@@ -3249,6 +3463,27 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				int ThrowingCalculationInvocationVerifier.CallCount()
 				{
 					return _throwingCalculationMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+				}
+
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _throwingCalculationMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "ThrowingCalculation(" + "value: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.value) + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _throwingCalculationMethodInvocationHistoryCollection.TryFindAfter(sequence, _argumentsCriteria, out match);
 				}
 
 				IThrowingCalculationMethodInvocationImposterGroupContinuation IThrowingCalculationMethodInvocationImposterGroupContinuation.Lenient()
@@ -3405,6 +3640,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class VoidWithSideEffectMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal VoidWithSideEffectMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private VoidWithSideEffectMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -3513,6 +3755,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter(long sequence, VoidWithSideEffectArgumentsCriteria criteria, out global::Imposter.Abstractions.InvocationMatch match)
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((IVoidWithSideEffectMethodInvocationHistory)entry).Matches(criteria))
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -3692,7 +3953,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IVoidWithSideEffectMethodImposterBuilder : IVoidWithSideEffectMethodInvocationImposterGroup, IVoidWithSideEffectMethodInvocationImposterGroupCallback, VoidWithSideEffectInvocationVerifier
+		public interface IVoidWithSideEffectMethodImposterBuilder : IVoidWithSideEffectMethodInvocationImposterGroup, IVoidWithSideEffectMethodInvocationImposterGroupCallback, VoidWithSideEffectInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
@@ -3823,6 +4084,27 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					return _voidWithSideEffectMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
 
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _voidWithSideEffectMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "VoidWithSideEffect(" + "delta: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.delta) + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _voidWithSideEffectMethodInvocationHistoryCollection.TryFindAfter(sequence, _argumentsCriteria, out match);
+				}
+
 				IVoidWithSideEffectMethodInvocationImposterGroupContinuation IVoidWithSideEffectMethodInvocationImposterGroupContinuation.Lenient()
 				{
 					_invocationImposterGroup.IsLenient = true;
@@ -3861,12 +4143,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public MethodSetupFeatureClassSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
 			this._imposterMode = invocationBehavior;
-			this._intSingleParamMethodInvocationHistoryCollection = new IntSingleParamMethodInvocationHistoryCollection();
-			this._voidWithSideEffectMethodInvocationHistoryCollection = new VoidWithSideEffectMethodInvocationHistoryCollection();
-			this._sumAsyncMethodInvocationHistoryCollection = new SumAsyncMethodInvocationHistoryCollection();
-			this._buildLabelAsyncMethodInvocationHistoryCollection = new BuildLabelAsyncMethodInvocationHistoryCollection();
-			this._refOutWithParamsMethodInvocationHistoryCollection = new RefOutWithParamsMethodInvocationHistoryCollection();
-			this._throwingCalculationMethodInvocationHistoryCollection = new ThrowingCalculationMethodInvocationHistoryCollection();
+			this._intSingleParamMethodInvocationHistoryCollection = new IntSingleParamMethodInvocationHistoryCollection(this);
+			this._voidWithSideEffectMethodInvocationHistoryCollection = new VoidWithSideEffectMethodInvocationHistoryCollection(this);
+			this._sumAsyncMethodInvocationHistoryCollection = new SumAsyncMethodInvocationHistoryCollection(this);
+			this._buildLabelAsyncMethodInvocationHistoryCollection = new BuildLabelAsyncMethodInvocationHistoryCollection(this);
+			this._refOutWithParamsMethodInvocationHistoryCollection = new RefOutWithParamsMethodInvocationHistoryCollection(this);
+			this._throwingCalculationMethodInvocationHistoryCollection = new ThrowingCalculationMethodInvocationHistoryCollection(this);
 			this._intSingleParamMethodImposter = new IntSingleParamMethodImposter(_intSingleParamMethodInvocationHistoryCollection, this._imposterMode);
 			this._voidWithSideEffectMethodImposter = new VoidWithSideEffectMethodImposter(_voidWithSideEffectMethodInvocationHistoryCollection, this._imposterMode);
 			this._sumAsyncMethodImposter = new SumAsyncMethodImposter(_sumAsyncMethodInvocationHistoryCollection, this._imposterMode);
@@ -3921,12 +4203,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			_buildLabelAsyncMethodInvocationHistoryCollection.Clear();
 			_refOutWithParamsMethodInvocationHistoryCollection.Clear();
 			_throwingCalculationMethodInvocationHistoryCollection.Clear();
-			this._intSingleParamMethodInvocationHistoryCollection = new IntSingleParamMethodInvocationHistoryCollection();
-			this._voidWithSideEffectMethodInvocationHistoryCollection = new VoidWithSideEffectMethodInvocationHistoryCollection();
-			this._sumAsyncMethodInvocationHistoryCollection = new SumAsyncMethodInvocationHistoryCollection();
-			this._buildLabelAsyncMethodInvocationHistoryCollection = new BuildLabelAsyncMethodInvocationHistoryCollection();
-			this._refOutWithParamsMethodInvocationHistoryCollection = new RefOutWithParamsMethodInvocationHistoryCollection();
-			this._throwingCalculationMethodInvocationHistoryCollection = new ThrowingCalculationMethodInvocationHistoryCollection();
+			this._intSingleParamMethodInvocationHistoryCollection = new IntSingleParamMethodInvocationHistoryCollection(this);
+			this._voidWithSideEffectMethodInvocationHistoryCollection = new VoidWithSideEffectMethodInvocationHistoryCollection(this);
+			this._sumAsyncMethodInvocationHistoryCollection = new SumAsyncMethodInvocationHistoryCollection(this);
+			this._buildLabelAsyncMethodInvocationHistoryCollection = new BuildLabelAsyncMethodInvocationHistoryCollection(this);
+			this._refOutWithParamsMethodInvocationHistoryCollection = new RefOutWithParamsMethodInvocationHistoryCollection(this);
+			this._throwingCalculationMethodInvocationHistoryCollection = new ThrowingCalculationMethodInvocationHistoryCollection(this);
 			this._intSingleParamMethodImposter = new IntSingleParamMethodImposter(_intSingleParamMethodInvocationHistoryCollection, this._imposterMode);
 			this._voidWithSideEffectMethodImposter = new VoidWithSideEffectMethodImposter(_voidWithSideEffectMethodInvocationHistoryCollection, this._imposterMode);
 			this._sumAsyncMethodImposter = new SumAsyncMethodImposter(_sumAsyncMethodInvocationHistoryCollection, this._imposterMode);

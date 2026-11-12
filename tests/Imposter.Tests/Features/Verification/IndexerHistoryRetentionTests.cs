@@ -44,7 +44,7 @@ namespace Imposter.Tests.Features.Verification
         }
 
         [Fact]
-        public void GivenOptionalIndexerKey_WhenReadingAndWriting_ShouldRetainValuesAndHistory()
+        public void GivenOptionalIndexerKey_WhenReadingAndWriting_ShouldRetainValuesAndOrderedHistory()
         {
             var sut = new IOptionalIndexerKeyTargetImposter();
             sut.Instance()[0] = 42;
@@ -53,6 +53,8 @@ namespace Imposter.Tests.Features.Verification
             sut[0].Getter().Invocations[0].Result.ShouldBe(42);
             sut[0].Setter().Called(Count.Once());
             sut[0].Getter().Called(Count.Once());
+            sut.VerifyNoOtherCalls();
+            Imposters.InOrder().Then(sut[0].Setter()).Then(sut[0].Getter()).Verify();
             sut.VerifyNoOtherCalls();
             sut[0].Getter().Returns(17);
             sut.Instance()[0].ShouldBe(17);

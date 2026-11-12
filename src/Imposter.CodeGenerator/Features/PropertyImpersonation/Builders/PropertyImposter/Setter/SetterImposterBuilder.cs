@@ -39,12 +39,19 @@ internal static partial class SetterImposterBuilder
                     .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
                     .AddParameter(ParameterSyntax(mode))
                     .AddParameter(ParameterSyntax(displayName))
+                    .AddParameter(
+                        ParameterSyntax(
+                            WellKnownTypes.Imposter.Abstractions.IImposter,
+                            property.Core.Locals["owner"]
+                        )
+                    )
                     .WithInitializer(
                         ConstructorInitializer(
                             SyntaxKind.BaseConstructorInitializer,
                             ArgumentListSyntax([
                                 Argument(IdentifierName(mode.Name)),
                                 Argument(IdentifierName(displayName.Name)),
+                                Argument(IdentifierName(property.Core.Locals["owner"])),
                             ])
                         )
                     )

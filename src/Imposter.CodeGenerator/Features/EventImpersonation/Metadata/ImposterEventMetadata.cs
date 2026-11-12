@@ -44,6 +44,7 @@ internal readonly ref struct ImposterEventMetadata
             "performedInvocations",
             "index",
             "registration",
+            "owner",
             "interceptor",
             "interceptorIndex"
         );

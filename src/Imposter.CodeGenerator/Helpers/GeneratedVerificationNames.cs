@@ -11,9 +11,11 @@ internal static class GeneratedVerificationNames
 {
     internal static readonly HashSet<string> Reserved =
     [
+        InvocationStepNames.TryFindAfterMethodName,
         "Invocations",
         InvocationLifecycleBuilder.ClearMethodName,
         InvocationHistoryCollectionMetadata.ClearMethodName,
+        InvocationStepNames.OwnerPropertyName,
         "Snapshot",
         "MatchingInvocations",
         "CreateInvocation",

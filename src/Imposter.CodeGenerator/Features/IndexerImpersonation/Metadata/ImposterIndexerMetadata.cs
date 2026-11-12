@@ -76,6 +76,7 @@ internal readonly ref struct ImposterIndexerMetadata
             "invocationCount",
             "entry",
             "performedInvocations",
+            "owner",
             "criteria",
             "arguments",
             "value",

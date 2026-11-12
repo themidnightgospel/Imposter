@@ -10,7 +10,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
         private readonly IRefReadOnlyIndexerSutImposter _sut = new IRefReadOnlyIndexerSutImposter();
 
         [Fact]
-        public void GivenRefReadonlyKey_WhenUsingDefaultStorage_ShouldCaptureAndVerifyKeyByValue()
+        public void GivenRefReadonlyKey_WhenUsingDefaultStorage_ShouldCaptureKeyByValueAndOrderCalls()
         {
             var key = 3;
             _sut.Instance()[in key] = 17;
@@ -20,6 +20,8 @@ namespace Imposter.Tests.Features.IndexerImpersonation
             _sut[3].Getter().Invocations[0].Result.ShouldBe(17);
             _sut[3].Setter().Called(Count.Once());
             _sut[3].Getter().Called(Count.Once());
+            _sut.VerifyNoOtherCalls();
+            Imposters.InOrder().Then(_sut[3].Setter()).Then(_sut[3].Getter()).Verify();
             _sut.VerifyNoOtherCalls();
         }
 

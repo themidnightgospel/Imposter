@@ -19,6 +19,8 @@ internal readonly ref struct ImposterIndexerCoreMetadata
 
     internal readonly bool HasSetter;
 
+    internal readonly string Name;
+
     internal readonly string DisplayName;
 
     internal readonly IndexerParameterMetadata[] Parameters;
@@ -139,6 +141,7 @@ internal readonly ref struct ImposterIndexerCoreMetadata
             indexer.IsClassMember && indexer.Getter is { IsAbstract: false };
         SetterSupportsBaseImplementation =
             indexer.IsClassMember && indexer.Setter is { IsAbstract: false };
+        Name = indexer.Name;
         DisplayName = indexer.DisplayName;
     }
 

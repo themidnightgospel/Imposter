@@ -136,6 +136,7 @@ internal static class IndexerImposterBuilder
                             Argument(IdentifierName(indexer.Builder.DefaultBehaviourField.Name)),
                             Argument(IdentifierName(invocationBehaviorParameter.Identifier.Text)),
                             Argument(IdentifierName(propertyDisplayNameParameter.Identifier.Text)),
+                            Argument(IdentifierName(indexer.Locals["owner"])),
                         ])
                     )
                 )
@@ -153,6 +154,7 @@ internal static class IndexerImposterBuilder
 
         setterArguments.Add(Argument(IdentifierName(invocationBehaviorParameter.Identifier.Text)));
         setterArguments.Add(Argument(IdentifierName(propertyDisplayNameParameter.Identifier.Text)));
+        setterArguments.Add(Argument(IdentifierName(indexer.Locals["owner"])));
         var setterInitialization = indexer.Core.HasSetter
             ? ThisExpression()
                 .Dot(IdentifierName(indexer.Builder.SetterImposterField.Name))
@@ -170,6 +172,12 @@ internal static class IndexerImposterBuilder
             .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
             .AddParameter(invocationBehaviorParameter)
             .AddParameter(propertyDisplayNameParameter)
+            .AddParameter(
+                ParameterSyntax(
+                    WellKnownTypes.Imposter.Abstractions.IImposter,
+                    indexer.Locals["owner"]
+                )
+            )
             .WithBody(bodyBuilder.Build())
             .Build();
     }

@@ -82,6 +82,47 @@ public sealed class EventSubscriptionInvocation<THandler> : InvocationRecord
         string member,
         bool isSubscription,
         bool orderBySequence
+    ) => Materialize(history, member, isSubscription, orderBySequence);
+
+    /// <summary>Selects the earliest matching event entry without materializing a record.</summary>
+    /// <param name="history">The event action history.</param>
+    /// <param name="criteria">The handler matcher.</param>
+    /// <param name="sequence">The exclusive lower entry-stamp bound.</param>
+    /// <param name="match">The selection, or default when no entry matches.</param>
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public static bool TryFindAfter(
+        InvocationBuffer<THandler>? history,
+        long sequence,
+        Arg<THandler> criteria,
+        out InvocationMatch match
+    )
+    {
+        if (criteria is null)
+            throw new ArgumentNullException(nameof(criteria));
+        var cursor = history?.GetEnumerator() ?? default;
+        var found = false;
+        match = default;
+        while (cursor.MoveNext())
+        {
+            var entry = cursor.Current;
+            if (
+                entry.Sequence > sequence
+                && (!found || entry.Sequence < match.Sequence)
+                && criteria.Matches(entry.Value)
+            )
+            {
+                match = entry.Match;
+                found = true;
+            }
+        }
+        return found;
+    }
+
+    private static IReadOnlyList<EventSubscriptionInvocation<THandler>> Materialize(
+        InvocationBuffer<THandler>? history,
+        string member,
+        bool isSubscription,
+        bool orderBySequence
     )
     {
         var result = new List<EventSubscriptionInvocation<THandler>>();

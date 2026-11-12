@@ -172,6 +172,13 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class SaveAsyncMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal SaveAsyncMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private SaveAsyncMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -280,6 +287,25 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter(long sequence, SaveAsyncArgumentsCriteria criteria, out global::Imposter.Abstractions.InvocationMatch match)
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((ISaveAsyncMethodInvocationHistory)entry).Matches(criteria))
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -485,7 +511,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface ISaveAsyncMethodImposterBuilder : ISaveAsyncMethodInvocationImposterGroup, ISaveAsyncMethodInvocationImposterGroupCallback, SaveAsyncInvocationVerifier
+		public interface ISaveAsyncMethodImposterBuilder : ISaveAsyncMethodInvocationImposterGroup, ISaveAsyncMethodInvocationImposterGroupCallback, SaveAsyncInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
@@ -638,6 +664,27 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					return _saveAsyncMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
 
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _saveAsyncMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "SaveAsync(" + "name: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.name) + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _saveAsyncMethodInvocationHistoryCollection.TryFindAfter(sequence, _argumentsCriteria, out match);
+				}
+
 				ISaveAsyncMethodInvocationImposterGroupContinuation ISaveAsyncMethodInvocationImposterGroupContinuation.Lenient()
 				{
 					_invocationImposterGroup.IsLenient = true;
@@ -692,7 +739,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 		public IAsyncCallbackServiceImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
 			this._imposterMode = invocationBehavior;
-			this._saveAsyncMethodInvocationHistoryCollection = new SaveAsyncMethodInvocationHistoryCollection();
+			this._saveAsyncMethodInvocationHistoryCollection = new SaveAsyncMethodInvocationHistoryCollection(this);
 			this._saveAsyncMethodImposter = new SaveAsyncMethodImposter(_saveAsyncMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
@@ -727,7 +774,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 		void global::Imposter.Abstractions.IImposter.Reset()
 		{
 			_saveAsyncMethodInvocationHistoryCollection.Clear();
-			this._saveAsyncMethodInvocationHistoryCollection = new SaveAsyncMethodInvocationHistoryCollection();
+			this._saveAsyncMethodInvocationHistoryCollection = new SaveAsyncMethodInvocationHistoryCollection(this);
 			this._saveAsyncMethodImposter = new SaveAsyncMethodImposter(_saveAsyncMethodInvocationHistoryCollection, this._imposterMode);
 		}
 

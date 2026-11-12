@@ -13,11 +13,14 @@ internal readonly struct EventImposterBuilderMetadata
 
     internal readonly EventImposterBuilderMethodsMetadata Methods;
 
+    internal readonly EventInvocationStepMetadata InvocationStep;
+
     internal EventImposterBuilderMetadata(in ImposterEventCoreMetadata core)
     {
         Name = $"{core.UniqueName}EventImposterBuilder";
         TypeSyntax = IdentifierName(Name);
         Fields = new EventImposterBuilderFieldsMetadata(core);
         Methods = new EventImposterBuilderMethodsMetadata(core);
+        InvocationStep = new EventInvocationStepMetadata(core, TypeSyntax);
     }
 }

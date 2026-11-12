@@ -158,6 +158,13 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class CalculateMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal CalculateMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private CalculateMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -266,6 +273,25 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter(long sequence, CalculateArgumentsCriteria criteria, out global::Imposter.Abstractions.InvocationMatch match)
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((ICalculateMethodInvocationHistory)entry).Matches(criteria))
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -459,7 +485,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface ICalculateMethodImposterBuilder : ICalculateMethodInvocationImposterGroup, ICalculateMethodInvocationImposterGroupCallback, CalculateInvocationVerifier
+		public interface ICalculateMethodImposterBuilder : ICalculateMethodInvocationImposterGroup, ICalculateMethodInvocationImposterGroupCallback, CalculateInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
@@ -605,6 +631,27 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					return _calculateMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
 
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _calculateMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "Calculate(" + "input: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.input) + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _calculateMethodInvocationHistoryCollection.TryFindAfter(sequence, _argumentsCriteria, out match);
+				}
+
 				ICalculateMethodInvocationImposterGroupContinuation ICalculateMethodInvocationImposterGroupContinuation.Lenient()
 				{
 					_invocationImposterGroup.IsLenient = true;
@@ -643,7 +690,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		public MultiConstructorClassImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
 			this._imposterMode = invocationBehavior;
-			this._calculateMethodInvocationHistoryCollection = new CalculateMethodInvocationHistoryCollection();
+			this._calculateMethodInvocationHistoryCollection = new CalculateMethodInvocationHistoryCollection(this);
 			this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
@@ -651,7 +698,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		public MultiConstructorClassImposter(int value, string label, global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
 			this._imposterMode = invocationBehavior;
-			this._calculateMethodInvocationHistoryCollection = new CalculateMethodInvocationHistoryCollection();
+			this._calculateMethodInvocationHistoryCollection = new CalculateMethodInvocationHistoryCollection(this);
 			this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this, value, label);
 		}
@@ -659,7 +706,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		public MultiConstructorClassImposter(global::System.Guid correlationId, global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
 			this._imposterMode = invocationBehavior;
-			this._calculateMethodInvocationHistoryCollection = new CalculateMethodInvocationHistoryCollection();
+			this._calculateMethodInvocationHistoryCollection = new CalculateMethodInvocationHistoryCollection(this);
 			this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this, correlationId);
 		}
@@ -667,7 +714,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		public MultiConstructorClassImposter(in global::System.Guid correlationId, global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
 			this._imposterMode = invocationBehavior;
-			this._calculateMethodInvocationHistoryCollection = new CalculateMethodInvocationHistoryCollection();
+			this._calculateMethodInvocationHistoryCollection = new CalculateMethodInvocationHistoryCollection(this);
 			this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this, in correlationId);
 		}
@@ -675,7 +722,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		public MultiConstructorClassImposter(bool enabled, global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
 			this._imposterMode = invocationBehavior;
-			this._calculateMethodInvocationHistoryCollection = new CalculateMethodInvocationHistoryCollection();
+			this._calculateMethodInvocationHistoryCollection = new CalculateMethodInvocationHistoryCollection(this);
 			this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this, enabled);
 		}
@@ -710,7 +757,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		void global::Imposter.Abstractions.IImposter.Reset()
 		{
 			_calculateMethodInvocationHistoryCollection.Clear();
-			this._calculateMethodInvocationHistoryCollection = new CalculateMethodInvocationHistoryCollection();
+			this._calculateMethodInvocationHistoryCollection = new CalculateMethodInvocationHistoryCollection(this);
 			this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, this._imposterMode);
 		}
 

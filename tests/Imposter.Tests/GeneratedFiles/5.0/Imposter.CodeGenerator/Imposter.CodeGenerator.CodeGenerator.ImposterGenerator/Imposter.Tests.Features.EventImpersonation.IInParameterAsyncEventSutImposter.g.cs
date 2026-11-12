@@ -50,6 +50,8 @@ namespace Imposter.Tests.Features.EventImpersonation
 			ITaskHappenedEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.InParameterTaskHandler> criteria, global::Imposter.Abstractions.Count count);
 			ITaskHappenedEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<int> valueCriteria, global::Imposter.Abstractions.Count count);
 			ITaskHappenedEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.InParameterTaskHandler> handlerCriteria, global::Imposter.Abstractions.Count count);
+			global::Imposter.Abstractions.IInvocationStep Subscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.InParameterTaskHandler> criteria);
+			global::Imposter.Abstractions.IInvocationStep Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.InParameterTaskHandler> criteria);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -114,10 +116,71 @@ namespace Imposter.Tests.Features.EventImpersonation
 			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.InParameterTaskHandler>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<int>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.InParameterTaskHandler Handler, int value)>? _handlerInvocations;
+			private readonly global::Imposter.Abstractions.IImposter Owner;
 			private int _subscribeUsed;
 			private int _unsubscribeUsed;
 			private int _callbacksUsed;
 			private bool _isLenient;
+			internal TaskHappenedEventImposterBuilder(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			private sealed class InvocationStep : global::Imposter.Abstractions.IInvocationStep
+			{
+				private readonly TaskHappenedEventImposterBuilder _parent;
+				private readonly global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.InParameterTaskHandler> _criteria;
+				private readonly bool _subscription;
+				internal InvocationStep(TaskHappenedEventImposterBuilder _parent, global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.InParameterTaskHandler> _criteria, bool _subscription)
+				{
+					this._parent = _parent;
+					this._criteria = _criteria;
+					this._subscription = _subscription;
+				}
+
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _parent.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "TaskHappened" + (_subscription ? " subscribed(handler: " : " unsubscribed(handler: ") + global::Imposter.Abstractions.MatcherDescription.Format(_criteria) + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.InParameterTaskHandler>.TryFindAfter(_subscription ? _parent._subscribeHistory : _parent._unsubscribeHistory, sequence, _criteria, out match);
+				}
+			}
+
+			global::Imposter.Abstractions.IInvocationStep ITaskHappenedEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.InParameterTaskHandler> criteria)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				return new InvocationStep(this, criteria, true);
+			}
+
+			global::Imposter.Abstractions.IInvocationStep ITaskHappenedEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.InParameterTaskHandler> criteria)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				return new InvocationStep(this, criteria, false);
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.InParameterTaskHandler>> ITaskHappenedEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -520,6 +583,8 @@ namespace Imposter.Tests.Features.EventImpersonation
 			IValueTaskHappenedEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.InParameterValueTaskHandler> criteria, global::Imposter.Abstractions.Count count);
 			IValueTaskHappenedEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<int> valueCriteria, global::Imposter.Abstractions.Count count);
 			IValueTaskHappenedEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.InParameterValueTaskHandler> handlerCriteria, global::Imposter.Abstractions.Count count);
+			global::Imposter.Abstractions.IInvocationStep Subscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.InParameterValueTaskHandler> criteria);
+			global::Imposter.Abstractions.IInvocationStep Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.InParameterValueTaskHandler> criteria);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -584,10 +649,71 @@ namespace Imposter.Tests.Features.EventImpersonation
 			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.InParameterValueTaskHandler>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<int>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.InParameterValueTaskHandler Handler, int value)>? _handlerInvocations;
+			private readonly global::Imposter.Abstractions.IImposter Owner;
 			private int _subscribeUsed;
 			private int _unsubscribeUsed;
 			private int _callbacksUsed;
 			private bool _isLenient;
+			internal ValueTaskHappenedEventImposterBuilder(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			private sealed class InvocationStep : global::Imposter.Abstractions.IInvocationStep
+			{
+				private readonly ValueTaskHappenedEventImposterBuilder _parent;
+				private readonly global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.InParameterValueTaskHandler> _criteria;
+				private readonly bool _subscription;
+				internal InvocationStep(ValueTaskHappenedEventImposterBuilder _parent, global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.InParameterValueTaskHandler> _criteria, bool _subscription)
+				{
+					this._parent = _parent;
+					this._criteria = _criteria;
+					this._subscription = _subscription;
+				}
+
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _parent.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "ValueTaskHappened" + (_subscription ? " subscribed(handler: " : " unsubscribed(handler: ") + global::Imposter.Abstractions.MatcherDescription.Format(_criteria) + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.InParameterValueTaskHandler>.TryFindAfter(_subscription ? _parent._subscribeHistory : _parent._unsubscribeHistory, sequence, _criteria, out match);
+				}
+			}
+
+			global::Imposter.Abstractions.IInvocationStep IValueTaskHappenedEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.InParameterValueTaskHandler> criteria)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				return new InvocationStep(this, criteria, true);
+			}
+
+			global::Imposter.Abstractions.IInvocationStep IValueTaskHappenedEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.InParameterValueTaskHandler> criteria)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				return new InvocationStep(this, criteria, false);
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.InParameterValueTaskHandler>> IValueTaskHappenedEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -980,8 +1106,8 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 		public IInParameterAsyncEventSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
-			this._TaskHappened = new TaskHappenedEventImposterBuilder();
-			this._ValueTaskHappened = new ValueTaskHappenedEventImposterBuilder();
+			this._TaskHappened = new TaskHappenedEventImposterBuilder(this);
+			this._ValueTaskHappened = new ValueTaskHappenedEventImposterBuilder(this);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -1018,8 +1144,8 @@ namespace Imposter.Tests.Features.EventImpersonation
 		{
 			_TaskHappened.ClearInvocations();
 			_ValueTaskHappened.ClearInvocations();
-			this._TaskHappened = new TaskHappenedEventImposterBuilder();
-			this._ValueTaskHappened = new ValueTaskHappenedEventImposterBuilder();
+			this._TaskHappened = new TaskHappenedEventImposterBuilder(this);
+			this._ValueTaskHappened = new ValueTaskHappenedEventImposterBuilder(this);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

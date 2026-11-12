@@ -56,11 +56,6 @@ internal readonly record struct InvocationHistoryTypeMetadata
                     )
                 )
                 .Concat(
-                    method.TargetGenericTypeArguments.Select(parameter =>
-                        parameter.Identifier.ValueText
-                    )
-                )
-                .Concat(
                     new[]
                     {
                         Name,

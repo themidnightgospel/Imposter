@@ -1,5 +1,6 @@
 ﻿using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 using Imposter.CodeGenerator.Helpers;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -51,6 +52,7 @@ internal static class IndexerSetterImposterBuilderInterfaceBuilder
     {
         var builder = new InterfaceDeclarationBuilder(indexer.SetterBuilderInterface.Name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddBaseType(SimpleBaseType(WellKnownTypes.Imposter.Abstractions.IInvocationStep))
             .AddBaseType(SimpleBaseType(indexer.SetterBuilderInterface.CallbackInterfaceTypeSyntax))
             .AddBaseType(
                 SimpleBaseType(indexer.SetterBuilderInterface.VerificationInterfaceTypeSyntax)

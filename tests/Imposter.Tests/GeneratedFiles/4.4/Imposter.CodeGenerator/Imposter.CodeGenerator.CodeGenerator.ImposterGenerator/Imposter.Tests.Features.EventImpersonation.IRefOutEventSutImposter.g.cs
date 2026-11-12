@@ -50,6 +50,8 @@ namespace Imposter.Tests.Features.EventImpersonation
 			IChangedEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.RefHandler> criteria, global::Imposter.Abstractions.Count count);
 			IChangedEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<int> valueCriteria, global::Imposter.Abstractions.Count count);
 			IChangedEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.RefHandler> handlerCriteria, global::Imposter.Abstractions.Count count);
+			global::Imposter.Abstractions.IInvocationStep Subscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.RefHandler> criteria);
+			global::Imposter.Abstractions.IInvocationStep Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.RefHandler> criteria);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -114,10 +116,71 @@ namespace Imposter.Tests.Features.EventImpersonation
 			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.RefHandler>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<int>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.RefHandler Handler, int value)>? _handlerInvocations;
+			private readonly global::Imposter.Abstractions.IImposter Owner;
 			private int _subscribeUsed;
 			private int _unsubscribeUsed;
 			private int _callbacksUsed;
 			private bool _isLenient;
+			internal ChangedEventImposterBuilder(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			private sealed class InvocationStep : global::Imposter.Abstractions.IInvocationStep
+			{
+				private readonly ChangedEventImposterBuilder _parent;
+				private readonly global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.RefHandler> _criteria;
+				private readonly bool _subscription;
+				internal InvocationStep(ChangedEventImposterBuilder _parent, global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.RefHandler> _criteria, bool _subscription)
+				{
+					this._parent = _parent;
+					this._criteria = _criteria;
+					this._subscription = _subscription;
+				}
+
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _parent.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "Changed" + (_subscription ? " subscribed(handler: " : " unsubscribed(handler: ") + global::Imposter.Abstractions.MatcherDescription.Format(_criteria) + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.RefHandler>.TryFindAfter(_subscription ? _parent._subscribeHistory : _parent._unsubscribeHistory, sequence, _criteria, out match);
+				}
+			}
+
+			global::Imposter.Abstractions.IInvocationStep IChangedEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.RefHandler> criteria)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				return new InvocationStep(this, criteria, true);
+			}
+
+			global::Imposter.Abstractions.IInvocationStep IChangedEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.RefHandler> criteria)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				return new InvocationStep(this, criteria, false);
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.RefHandler>> IChangedEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -496,6 +559,8 @@ namespace Imposter.Tests.Features.EventImpersonation
 			IChangedAsyncEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.RefTaskHandler> criteria, global::Imposter.Abstractions.Count count);
 			IChangedAsyncEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<int> valueCriteria, global::Imposter.Abstractions.Count count);
 			IChangedAsyncEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.RefTaskHandler> handlerCriteria, global::Imposter.Abstractions.Count count);
+			global::Imposter.Abstractions.IInvocationStep Subscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.RefTaskHandler> criteria);
+			global::Imposter.Abstractions.IInvocationStep Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.RefTaskHandler> criteria);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -560,10 +625,71 @@ namespace Imposter.Tests.Features.EventImpersonation
 			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.RefTaskHandler>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<int>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.RefTaskHandler Handler, int value)>? _handlerInvocations;
+			private readonly global::Imposter.Abstractions.IImposter Owner;
 			private int _subscribeUsed;
 			private int _unsubscribeUsed;
 			private int _callbacksUsed;
 			private bool _isLenient;
+			internal ChangedAsyncEventImposterBuilder(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			private sealed class InvocationStep : global::Imposter.Abstractions.IInvocationStep
+			{
+				private readonly ChangedAsyncEventImposterBuilder _parent;
+				private readonly global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.RefTaskHandler> _criteria;
+				private readonly bool _subscription;
+				internal InvocationStep(ChangedAsyncEventImposterBuilder _parent, global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.RefTaskHandler> _criteria, bool _subscription)
+				{
+					this._parent = _parent;
+					this._criteria = _criteria;
+					this._subscription = _subscription;
+				}
+
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _parent.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "ChangedAsync" + (_subscription ? " subscribed(handler: " : " unsubscribed(handler: ") + global::Imposter.Abstractions.MatcherDescription.Format(_criteria) + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.RefTaskHandler>.TryFindAfter(_subscription ? _parent._subscribeHistory : _parent._unsubscribeHistory, sequence, _criteria, out match);
+				}
+			}
+
+			global::Imposter.Abstractions.IInvocationStep IChangedAsyncEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.RefTaskHandler> criteria)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				return new InvocationStep(this, criteria, true);
+			}
+
+			global::Imposter.Abstractions.IInvocationStep IChangedAsyncEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.RefTaskHandler> criteria)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				return new InvocationStep(this, criteria, false);
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.RefTaskHandler>> IChangedAsyncEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -966,6 +1092,8 @@ namespace Imposter.Tests.Features.EventImpersonation
 			IRequestedEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.OutHandler> criteria, global::Imposter.Abstractions.Count count);
 			IRequestedEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<int> valueCriteria, global::Imposter.Abstractions.Count count);
 			IRequestedEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.OutHandler> handlerCriteria, global::Imposter.Abstractions.Count count);
+			global::Imposter.Abstractions.IInvocationStep Subscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.OutHandler> criteria);
+			global::Imposter.Abstractions.IInvocationStep Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.OutHandler> criteria);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1030,10 +1158,71 @@ namespace Imposter.Tests.Features.EventImpersonation
 			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.OutHandler>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<int>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.OutHandler Handler, int value)>? _handlerInvocations;
+			private readonly global::Imposter.Abstractions.IImposter Owner;
 			private int _subscribeUsed;
 			private int _unsubscribeUsed;
 			private int _callbacksUsed;
 			private bool _isLenient;
+			internal RequestedEventImposterBuilder(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			private sealed class InvocationStep : global::Imposter.Abstractions.IInvocationStep
+			{
+				private readonly RequestedEventImposterBuilder _parent;
+				private readonly global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.OutHandler> _criteria;
+				private readonly bool _subscription;
+				internal InvocationStep(RequestedEventImposterBuilder _parent, global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.OutHandler> _criteria, bool _subscription)
+				{
+					this._parent = _parent;
+					this._criteria = _criteria;
+					this._subscription = _subscription;
+				}
+
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _parent.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "Requested" + (_subscription ? " subscribed(handler: " : " unsubscribed(handler: ") + global::Imposter.Abstractions.MatcherDescription.Format(_criteria) + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.OutHandler>.TryFindAfter(_subscription ? _parent._subscribeHistory : _parent._unsubscribeHistory, sequence, _criteria, out match);
+				}
+			}
+
+			global::Imposter.Abstractions.IInvocationStep IRequestedEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.OutHandler> criteria)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				return new InvocationStep(this, criteria, true);
+			}
+
+			global::Imposter.Abstractions.IInvocationStep IRequestedEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.OutHandler> criteria)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				return new InvocationStep(this, criteria, false);
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.OutHandler>> IRequestedEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -1407,9 +1596,9 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 		public IRefOutEventSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
-			this._Changed = new ChangedEventImposterBuilder();
-			this._ChangedAsync = new ChangedAsyncEventImposterBuilder();
-			this._Requested = new RequestedEventImposterBuilder();
+			this._Changed = new ChangedEventImposterBuilder(this);
+			this._ChangedAsync = new ChangedAsyncEventImposterBuilder(this);
+			this._Requested = new RequestedEventImposterBuilder(this);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -1449,9 +1638,9 @@ namespace Imposter.Tests.Features.EventImpersonation
 			_Changed.ClearInvocations();
 			_ChangedAsync.ClearInvocations();
 			_Requested.ClearInvocations();
-			this._Changed = new ChangedEventImposterBuilder();
-			this._ChangedAsync = new ChangedAsyncEventImposterBuilder();
-			this._Requested = new RequestedEventImposterBuilder();
+			this._Changed = new ChangedEventImposterBuilder(this);
+			this._ChangedAsync = new ChangedAsyncEventImposterBuilder(this);
+			this._Requested = new RequestedEventImposterBuilder(this);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

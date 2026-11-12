@@ -3,6 +3,9 @@
 /// <summary>Verification helpers that operate across several imposters.</summary>
 public static class Imposters
 {
+    /// <summary>Starts an ordered verification of member interactions.</summary>
+    public static InvocationOrder InOrder() => new();
+
     /// <summary>Verifies that every recorded interaction has been covered by a successful check.</summary>
     /// <param name="imposters">The imposters to verify.</param>
     public static void VerifyNoOtherCalls(params IImposter[] imposters) =>

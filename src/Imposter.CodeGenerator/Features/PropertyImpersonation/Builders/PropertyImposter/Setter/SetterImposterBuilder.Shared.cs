@@ -16,7 +16,9 @@ internal static partial class SetterImposterBuilder
         var builder = new ClassDeclarationBuilder(setter.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(property.SharedRuntime.SetterType))
-            .AddMember(SharedPropertyBuilder.BuildConstructor(property, setter.Name))
+            .AddMember(
+                SharedPropertyBuilder.BuildConstructor(property, setter.Name, withOwner: true)
+            )
             .AddMember(
                 new MethodDeclarationBuilder(
                     WellKnownTypes.Imposter.Abstractions.PropertySetterInvocation(

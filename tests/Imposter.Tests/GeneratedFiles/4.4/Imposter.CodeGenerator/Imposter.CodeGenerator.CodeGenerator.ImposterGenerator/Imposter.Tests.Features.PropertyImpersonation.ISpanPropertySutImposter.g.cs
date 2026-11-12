@@ -83,7 +83,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IBufferPropertySetterVerifier
+		public interface IBufferPropertySetterVerifier : global::Imposter.Abstractions.IInvocationStep
 		{
 			void Called(global::Imposter.Abstractions.Count count);
 			global::System.Collections.Generic.IReadOnlyList<BufferSetterInvocation> Invocations { get; }
@@ -161,12 +161,12 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			internal SetterImposter _setterImposter;
 			internal GetterImposterBuilder _getterImposterBuilder;
-			internal BufferPropertyBuilder(global::Imposter.Abstractions.ImposterMode invocationBehavior)
+			internal BufferPropertyBuilder(global::Imposter.Abstractions.ImposterMode invocationBehavior, global::Imposter.Abstractions.IImposter owner)
 			{
 				_defaultPropertyBehaviour = new global::Imposter.Abstractions.PropertyValue<byte[]>();
 				_invocationBehavior = invocationBehavior;
 				_getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.ISpanPropertySut.Buffer");
-				_setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.ISpanPropertySut.Buffer");
+				_setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.ISpanPropertySut.Buffer", owner);
 			}
 
 			internal void ClearInvocations()
@@ -306,7 +306,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			internal class SetterImposter : global::Imposter.Abstractions.PropertySetter<byte[]>
 			{
-				internal SetterImposter(global::Imposter.Abstractions.PropertyValue<byte[]> _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName) : base(_defaultPropertyBehaviour, invocationBehavior, propertyDisplayName)
+				internal SetterImposter(global::Imposter.Abstractions.PropertyValue<byte[]> _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName, global::Imposter.Abstractions.IImposter owner) : base(_defaultPropertyBehaviour, invocationBehavior, propertyDisplayName, owner)
 				{
 				}
 
@@ -341,6 +341,27 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 						{
 							return _setterImposter.MatchingInvocations<BufferSetterInvocation>(_runtimeCriteria);
 						}
+					}
+
+					global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+					{
+						get
+						{
+							return _setterImposter.Owner!;
+						}
+					}
+
+					string global::Imposter.Abstractions.IInvocationStep.Description
+					{
+						get
+						{
+							return "set Buffer(value: " + global::Imposter.Abstractions.MatcherDescription.Format(_criteria) + ")";
+						}
+					}
+
+					bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+					{
+						return _setterImposter.TryFindAfter(sequence, _runtimeCriteria, out match);
 					}
 
 					IBufferPropertySetterContinuationBuilder IBufferPropertySetterContinuationBuilder.Lenient()
@@ -624,7 +645,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		public ISpanPropertySutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
 			this._imposterMode = invocationBehavior;
-			this._BufferPropertyBuilderField = new BufferPropertyBuilder(this._imposterMode);
+			this._BufferPropertyBuilderField = new BufferPropertyBuilder(this._imposterMode, this);
 			this._NamePropertyBuilderField = new NamePropertyBuilder(this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
@@ -662,7 +683,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		{
 			_BufferPropertyBuilderField.ClearInvocations();
 			_NamePropertyBuilderField.ClearInvocations();
-			this._BufferPropertyBuilderField = new BufferPropertyBuilder(this._imposterMode);
+			this._BufferPropertyBuilderField = new BufferPropertyBuilder(this._imposterMode, this);
 			this._NamePropertyBuilderField = new NamePropertyBuilder(this._imposterMode);
 		}
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -12,7 +13,8 @@ internal static class SharedPropertyBuilder
 {
     internal static ConstructorDeclarationSyntax BuildConstructor(
         in ImposterPropertyMetadata property,
-        string className
+        string className,
+        bool withOwner = false
     )
     {
         var mode = PropertyAccessorStateMetadata.InvocationBehaviorParameter;
@@ -35,6 +37,17 @@ internal static class SharedPropertyBuilder
         constructor.AddParameter(ParameterSyntax(mode)).AddParameter(ParameterSyntax(displayName));
         arguments.Add(Argument(IdentifierName(mode.Name)));
         arguments.Add(Argument(IdentifierName(displayName.Name)));
+
+        if (withOwner)
+        {
+            constructor.AddParameter(
+                ParameterSyntax(
+                    WellKnownTypes.Imposter.Abstractions.IImposter,
+                    property.Core.Locals["owner"]
+                )
+            );
+            arguments.Add(Argument(IdentifierName(property.Core.Locals["owner"])));
+        }
 
         return constructor
             .WithInitializer(

@@ -1,5 +1,6 @@
 ﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationHistory;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -17,6 +18,33 @@ internal static partial class InvocationHistoryCollectionBuilder
 
         return new ClassDeclarationBuilder(method.InvocationHistory.Collection.Name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddMember(
+                new PropertyDeclarationBuilder(
+                    WellKnownTypes.Imposter.Abstractions.IImposter,
+                    InvocationStepNames.OwnerPropertyName
+                )
+                    .AddModifier(Token(SyntaxKind.InternalKeyword))
+                    .WithGetter()
+                    .Build()
+            )
+            .AddMember(
+                new ConstructorBuilder(method.InvocationHistory.Collection.Name)
+                    .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
+                    .AddParameter(
+                        ParameterSyntax(
+                            WellKnownTypes.Imposter.Abstractions.IImposter,
+                            method.Locals["owner"]
+                        )
+                    )
+                    .WithBody(
+                        Block(
+                            IdentifierName(InvocationStepNames.OwnerPropertyName)
+                                .Assign(IdentifierName(method.Locals["owner"]))
+                                .ToStatementSyntax()
+                        )
+                    )
+                    .Build()
+            )
             .AddMember(
                 SingleVariableField(
                     historyType,
@@ -104,6 +132,7 @@ internal static partial class InvocationHistoryCollectionBuilder
             .AddMember(BuildVerifyMethod(method))
             .AddMember(BuildSnapshotMethod(method, false))
             .AddMember(BuildSnapshotMethod(method, true))
+            .AddMember(BuildTryFindAfterMethod(method))
             .AddMember(BuildClearMethod())
             .AddMember(BuildToStringMethod(method))
             .Build();

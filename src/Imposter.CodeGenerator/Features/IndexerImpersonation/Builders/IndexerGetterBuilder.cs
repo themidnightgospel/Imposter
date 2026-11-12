@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.Shared.Builders;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -84,10 +85,18 @@ internal static partial class IndexerGetterBuilder
             .AddMember(LazyCollectionSyntaxHelper.Field(getter.InvocationHistoryField))
             .AddMember(SinglePrivateReadonlyVariableField(getter.InvocationBehaviorField))
             .AddMember(SinglePrivateReadonlyVariableField(getter.PropertyDisplayNameField))
+            .AddMember(
+                SingleVariableField(
+                    WellKnownTypes.Imposter.Abstractions.IImposter,
+                    InvocationStepNames.OwnerPropertyName,
+                    TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.ReadOnlyKeyword))
+                )
+            )
             .AddMember(BuildGetterConstructor(indexer))
             .AddMember(BuildGetterGetMethod(indexer))
             .AddMember(IndexerHistoryBuilder.Snapshot(indexer, true))
             .AddMember(IndexerHistoryBuilder.Matching(indexer, true))
+            .AddMember(IndexerInvocationStepBuilder.Build(indexer, true))
             .AddMember(BuildFindGetterInvocationImposterMethod(indexer))
             .AddMember(BuildGetOrCreateMethod(indexer))
             .AddBaseType(
