@@ -23,7 +23,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 		public ICustomAsyncEventEventImposterBuilder CustomAsyncEvent => _CustomAsyncEvent;
 
-		private readonly CustomAsyncEventEventImposterBuilder _CustomAsyncEvent;
+		private CustomAsyncEventEventImposterBuilder _CustomAsyncEvent;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ICustomAsyncEventEventImposterBuilder : ICustomAsyncEventEventImposterSetupBuilder, ICustomAsyncEventEventImposterVerificationBuilder
 		{
@@ -65,6 +65,14 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs> Handler, object? sender, global::System.EventArgs args)>? _handlerInvocations;
 			private bool _useBaseImplementation;
 			private readonly string _eventDisplayName = "Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithAsyncEvents.CustomAsyncEvent";
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>> ICustomAsyncEventEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -451,7 +459,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 		public ITaskBasedEventEventImposterBuilder TaskBasedEvent => _TaskBasedEvent;
 
-		private readonly TaskBasedEventEventImposterBuilder _TaskBasedEvent;
+		private TaskBasedEventEventImposterBuilder _TaskBasedEvent;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ITaskBasedEventEventImposterBuilder : ITaskBasedEventEventImposterSetupBuilder, ITaskBasedEventEventImposterVerificationBuilder
 		{
@@ -493,6 +501,14 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task> Handler, object? arg1, global::System.EventArgs arg2)>? _handlerInvocations;
 			private bool _useBaseImplementation;
 			private readonly string _eventDisplayName = "Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithAsyncEvents.TaskBasedEvent";
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>> ITaskBasedEventEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -879,7 +895,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 		public IValueTaskBasedEventEventImposterBuilder ValueTaskBasedEvent => _ValueTaskBasedEvent;
 
-		private readonly ValueTaskBasedEventEventImposterBuilder _ValueTaskBasedEvent;
+		private ValueTaskBasedEventEventImposterBuilder _ValueTaskBasedEvent;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IValueTaskBasedEventEventImposterBuilder : IValueTaskBasedEventEventImposterSetupBuilder, IValueTaskBasedEventEventImposterVerificationBuilder
 		{
@@ -921,6 +937,14 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> Handler, object? arg1, global::System.EventArgs arg2)>? _handlerInvocations;
 			private bool _useBaseImplementation;
 			private readonly string _eventDisplayName = "Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithAsyncEvents.ValueTaskBasedEvent";
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>> IValueTaskBasedEventEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -1320,6 +1344,23 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			invocations.AddRange(_TaskBasedEvent.Snapshot(false));
 			invocations.AddRange(_ValueTaskBasedEvent.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_CustomAsyncEvent.ClearInvocations();
+			_TaskBasedEvent.ClearInvocations();
+			_ValueTaskBasedEvent.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_CustomAsyncEvent.ClearInvocations();
+			_TaskBasedEvent.ClearInvocations();
+			_ValueTaskBasedEvent.ClearInvocations();
+			this._CustomAsyncEvent = new CustomAsyncEventEventImposterBuilder();
+			this._TaskBasedEvent = new TaskBasedEventEventImposterBuilder();
+			this._ValueTaskBasedEvent = new ValueTaskBasedEventEventImposterBuilder();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

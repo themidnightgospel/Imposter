@@ -15,12 +15,12 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IOpenGenericWithMethodGenericsImposter<T> : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.OpenGenericImposter.IOpenGenericWithMethodGenerics<T>>, IOpenGenericWithMethodGenericsImposter<T>.IOpenGenericWithMethodGenericsSetup
 	{
-		private readonly DoSomethingMethodImposterCollection _doSomethingMethodImposterCollection;
-		private readonly TransformMethodImposterCollection _transformMethodImposterCollection;
-		private readonly MapMethodImposterCollection _mapMethodImposterCollection;
-		private readonly DoSomethingMethodInvocationHistoryCollection _doSomethingMethodInvocationHistoryCollection;
-		private readonly TransformMethodInvocationHistoryCollection _transformMethodInvocationHistoryCollection;
-		private readonly MapMethodInvocationHistoryCollection _mapMethodInvocationHistoryCollection;
+		private DoSomethingMethodImposterCollection _doSomethingMethodImposterCollection;
+		private TransformMethodImposterCollection _transformMethodImposterCollection;
+		private MapMethodImposterCollection _mapMethodImposterCollection;
+		private DoSomethingMethodInvocationHistoryCollection _doSomethingMethodInvocationHistoryCollection;
+		private TransformMethodInvocationHistoryCollection _transformMethodInvocationHistoryCollection;
+		private MapMethodInvocationHistoryCollection _mapMethodInvocationHistoryCollection;
 		public IDoSomethingMethodImposterBuilder<TArg> DoSomething<TArg>(global::Imposter.Abstractions.Arg<TArg> arg)
 		{
 			return new DoSomethingMethodImposter<TArg>.Builder(_doSomethingMethodImposterCollection, _doSomethingMethodInvocationHistoryCollection, new DoSomethingArgumentsCriteria<TArg>(arg));
@@ -36,6 +36,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			return new MapMethodImposter<TSource, TResult>.Builder(_mapMethodImposterCollection, _mapMethodInvocationHistoryCollection, new MapArgumentsCriteria<TSource, TResult>(source));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.OpenGenericImposter.IOpenGenericWithMethodGenerics<T> global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.OpenGenericImposter.IOpenGenericWithMethodGenerics<T>>.Instance()
 		{
@@ -178,6 +179,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(DoSomethingMethodInvocationHistoryCollection.Node invocationHistory)
@@ -737,6 +743,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(MapMethodInvocationHistoryCollection.Node invocationHistory)
@@ -1326,6 +1337,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(TransformMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1795,12 +1811,13 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 		public IOpenGenericWithMethodGenericsImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._doSomethingMethodInvocationHistoryCollection = new DoSomethingMethodInvocationHistoryCollection();
 			this._transformMethodInvocationHistoryCollection = new TransformMethodInvocationHistoryCollection();
 			this._mapMethodInvocationHistoryCollection = new MapMethodInvocationHistoryCollection();
-			this._doSomethingMethodImposterCollection = new DoSomethingMethodImposterCollection(_doSomethingMethodInvocationHistoryCollection, invocationBehavior);
-			this._transformMethodImposterCollection = new TransformMethodImposterCollection(_transformMethodInvocationHistoryCollection, invocationBehavior);
-			this._mapMethodImposterCollection = new MapMethodImposterCollection(_mapMethodInvocationHistoryCollection, invocationBehavior);
+			this._doSomethingMethodImposterCollection = new DoSomethingMethodImposterCollection(_doSomethingMethodInvocationHistoryCollection, this._imposterMode);
+			this._transformMethodImposterCollection = new TransformMethodImposterCollection(_transformMethodInvocationHistoryCollection, this._imposterMode);
+			this._mapMethodImposterCollection = new MapMethodImposterCollection(_mapMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -1811,6 +1828,26 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			invocations.AddRange(_transformMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_mapMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_doSomethingMethodInvocationHistoryCollection.Clear();
+			_transformMethodInvocationHistoryCollection.Clear();
+			_mapMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_doSomethingMethodInvocationHistoryCollection.Clear();
+			_transformMethodInvocationHistoryCollection.Clear();
+			_mapMethodInvocationHistoryCollection.Clear();
+			this._doSomethingMethodInvocationHistoryCollection = new DoSomethingMethodInvocationHistoryCollection();
+			this._transformMethodInvocationHistoryCollection = new TransformMethodInvocationHistoryCollection();
+			this._mapMethodInvocationHistoryCollection = new MapMethodInvocationHistoryCollection();
+			this._doSomethingMethodImposterCollection = new DoSomethingMethodImposterCollection(_doSomethingMethodInvocationHistoryCollection, this._imposterMode);
+			this._transformMethodImposterCollection = new TransformMethodImposterCollection(_transformMethodInvocationHistoryCollection, this._imposterMode);
+			this._mapMethodImposterCollection = new MapMethodImposterCollection(_mapMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

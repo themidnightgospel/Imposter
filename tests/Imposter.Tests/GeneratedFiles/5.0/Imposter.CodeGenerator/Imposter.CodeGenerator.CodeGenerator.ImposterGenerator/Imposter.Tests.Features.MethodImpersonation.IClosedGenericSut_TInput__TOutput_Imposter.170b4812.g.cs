@@ -15,13 +15,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	internal sealed class IClosedGenericSutImposter<TInput, TOutput> : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSut<TInput, TOutput>>, IClosedGenericSutImposter<TInput, TOutput>.IClosedGenericSutSetup
 	{
-		private readonly GenericMethodMethodImposter _genericMethodMethodImposter;
-		private readonly GenericMethodMethodInvocationHistoryCollection _genericMethodMethodInvocationHistoryCollection;
+		private GenericMethodMethodImposter _genericMethodMethodImposter;
+		private GenericMethodMethodInvocationHistoryCollection _genericMethodMethodInvocationHistoryCollection;
 		public IGenericMethodMethodImposterBuilder GenericMethod(global::Imposter.Abstractions.Arg<TInput> age)
 		{
 			return new GenericMethodMethodImposter.Builder(_genericMethodMethodImposter, _genericMethodMethodInvocationHistoryCollection, new GenericMethodArgumentsCriteria(age));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSut<TInput, TOutput> global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IClosedGenericSut<TInput, TOutput>>.Instance()
 		{
@@ -162,6 +163,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(GenericMethodMethodInvocationHistoryCollection.Node invocationHistory)
@@ -538,8 +544,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 		public IClosedGenericSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._genericMethodMethodInvocationHistoryCollection = new GenericMethodMethodInvocationHistoryCollection();
-			this._genericMethodMethodImposter = new GenericMethodMethodImposter(_genericMethodMethodInvocationHistoryCollection, invocationBehavior);
+			this._genericMethodMethodImposter = new GenericMethodMethodImposter(_genericMethodMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -548,6 +555,18 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
 			invocations.AddRange(_genericMethodMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_genericMethodMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_genericMethodMethodInvocationHistoryCollection.Clear();
+			this._genericMethodMethodInvocationHistoryCollection = new GenericMethodMethodInvocationHistoryCollection();
+			this._genericMethodMethodImposter = new GenericMethodMethodImposter(_genericMethodMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

@@ -15,18 +15,18 @@ namespace Imposter.Tests.Features.CallAllocations
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IAsyncAllocationSutImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.CallAllocations.IAsyncAllocationSut>, IAsyncAllocationSutImposter.IAsyncAllocationSutSetup
 	{
-		private readonly GetAsyncMethodImposter _getAsyncMethodImposter;
-		private readonly PeekAsyncMethodImposter _peekAsyncMethodImposter;
-		private readonly RunAsyncMethodImposter _runAsyncMethodImposter;
-		private readonly RunValueAsyncMethodImposter _runValueAsyncMethodImposter;
-		private readonly GetByReferenceAsyncMethodImposter _getByReferenceAsyncMethodImposter;
-		private readonly GetDynamicAsyncMethodImposter _getDynamicAsyncMethodImposter;
-		private readonly GetAsyncMethodInvocationHistoryCollection _getAsyncMethodInvocationHistoryCollection;
-		private readonly PeekAsyncMethodInvocationHistoryCollection _peekAsyncMethodInvocationHistoryCollection;
-		private readonly RunAsyncMethodInvocationHistoryCollection _runAsyncMethodInvocationHistoryCollection;
-		private readonly RunValueAsyncMethodInvocationHistoryCollection _runValueAsyncMethodInvocationHistoryCollection;
-		private readonly GetByReferenceAsyncMethodInvocationHistoryCollection _getByReferenceAsyncMethodInvocationHistoryCollection;
-		private readonly GetDynamicAsyncMethodInvocationHistoryCollection _getDynamicAsyncMethodInvocationHistoryCollection;
+		private GetAsyncMethodImposter _getAsyncMethodImposter;
+		private PeekAsyncMethodImposter _peekAsyncMethodImposter;
+		private RunAsyncMethodImposter _runAsyncMethodImposter;
+		private RunValueAsyncMethodImposter _runValueAsyncMethodImposter;
+		private GetByReferenceAsyncMethodImposter _getByReferenceAsyncMethodImposter;
+		private GetDynamicAsyncMethodImposter _getDynamicAsyncMethodImposter;
+		private GetAsyncMethodInvocationHistoryCollection _getAsyncMethodInvocationHistoryCollection;
+		private PeekAsyncMethodInvocationHistoryCollection _peekAsyncMethodInvocationHistoryCollection;
+		private RunAsyncMethodInvocationHistoryCollection _runAsyncMethodInvocationHistoryCollection;
+		private RunValueAsyncMethodInvocationHistoryCollection _runValueAsyncMethodInvocationHistoryCollection;
+		private GetByReferenceAsyncMethodInvocationHistoryCollection _getByReferenceAsyncMethodInvocationHistoryCollection;
+		private GetDynamicAsyncMethodInvocationHistoryCollection _getDynamicAsyncMethodInvocationHistoryCollection;
 		public IGetAsyncMethodImposterBuilder GetAsync(global::Imposter.Abstractions.Arg<int> key)
 		{
 			return new GetAsyncMethodImposter.Builder(_getAsyncMethodImposter, _getAsyncMethodInvocationHistoryCollection, new GetAsyncArgumentsCriteria(key));
@@ -57,6 +57,7 @@ namespace Imposter.Tests.Features.CallAllocations
 			return new GetDynamicAsyncMethodImposter.Builder(_getDynamicAsyncMethodImposter, _getDynamicAsyncMethodInvocationHistoryCollection);
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.CallAllocations.IAsyncAllocationSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.CallAllocations.IAsyncAllocationSut>.Instance()
 		{
@@ -211,6 +212,11 @@ namespace Imposter.Tests.Features.CallAllocations
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(GetAsyncMethodInvocationHistoryCollection.Node invocationHistory)
@@ -787,6 +793,11 @@ namespace Imposter.Tests.Features.CallAllocations
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(GetByReferenceAsyncMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1293,6 +1304,11 @@ namespace Imposter.Tests.Features.CallAllocations
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(GetDynamicAsyncMethodInvocationHistoryCollection.Node invocationHistory)
@@ -1823,6 +1839,11 @@ namespace Imposter.Tests.Features.CallAllocations
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(PeekAsyncMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -2330,6 +2351,11 @@ namespace Imposter.Tests.Features.CallAllocations
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(RunAsyncMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -2800,6 +2826,11 @@ namespace Imposter.Tests.Features.CallAllocations
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(RunValueAsyncMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -3223,18 +3254,19 @@ namespace Imposter.Tests.Features.CallAllocations
 
 		public IAsyncAllocationSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._getAsyncMethodInvocationHistoryCollection = new GetAsyncMethodInvocationHistoryCollection();
 			this._peekAsyncMethodInvocationHistoryCollection = new PeekAsyncMethodInvocationHistoryCollection();
 			this._runAsyncMethodInvocationHistoryCollection = new RunAsyncMethodInvocationHistoryCollection();
 			this._runValueAsyncMethodInvocationHistoryCollection = new RunValueAsyncMethodInvocationHistoryCollection();
 			this._getByReferenceAsyncMethodInvocationHistoryCollection = new GetByReferenceAsyncMethodInvocationHistoryCollection();
 			this._getDynamicAsyncMethodInvocationHistoryCollection = new GetDynamicAsyncMethodInvocationHistoryCollection();
-			this._getAsyncMethodImposter = new GetAsyncMethodImposter(_getAsyncMethodInvocationHistoryCollection, invocationBehavior);
-			this._peekAsyncMethodImposter = new PeekAsyncMethodImposter(_peekAsyncMethodInvocationHistoryCollection, invocationBehavior);
-			this._runAsyncMethodImposter = new RunAsyncMethodImposter(_runAsyncMethodInvocationHistoryCollection, invocationBehavior);
-			this._runValueAsyncMethodImposter = new RunValueAsyncMethodImposter(_runValueAsyncMethodInvocationHistoryCollection, invocationBehavior);
-			this._getByReferenceAsyncMethodImposter = new GetByReferenceAsyncMethodImposter(_getByReferenceAsyncMethodInvocationHistoryCollection, invocationBehavior);
-			this._getDynamicAsyncMethodImposter = new GetDynamicAsyncMethodImposter(_getDynamicAsyncMethodInvocationHistoryCollection, invocationBehavior);
+			this._getAsyncMethodImposter = new GetAsyncMethodImposter(_getAsyncMethodInvocationHistoryCollection, this._imposterMode);
+			this._peekAsyncMethodImposter = new PeekAsyncMethodImposter(_peekAsyncMethodInvocationHistoryCollection, this._imposterMode);
+			this._runAsyncMethodImposter = new RunAsyncMethodImposter(_runAsyncMethodInvocationHistoryCollection, this._imposterMode);
+			this._runValueAsyncMethodImposter = new RunValueAsyncMethodImposter(_runValueAsyncMethodInvocationHistoryCollection, this._imposterMode);
+			this._getByReferenceAsyncMethodImposter = new GetByReferenceAsyncMethodImposter(_getByReferenceAsyncMethodInvocationHistoryCollection, this._imposterMode);
+			this._getDynamicAsyncMethodImposter = new GetDynamicAsyncMethodImposter(_getDynamicAsyncMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -3248,6 +3280,38 @@ namespace Imposter.Tests.Features.CallAllocations
 			invocations.AddRange(_getByReferenceAsyncMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_getDynamicAsyncMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_getAsyncMethodInvocationHistoryCollection.Clear();
+			_peekAsyncMethodInvocationHistoryCollection.Clear();
+			_runAsyncMethodInvocationHistoryCollection.Clear();
+			_runValueAsyncMethodInvocationHistoryCollection.Clear();
+			_getByReferenceAsyncMethodInvocationHistoryCollection.Clear();
+			_getDynamicAsyncMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_getAsyncMethodInvocationHistoryCollection.Clear();
+			_peekAsyncMethodInvocationHistoryCollection.Clear();
+			_runAsyncMethodInvocationHistoryCollection.Clear();
+			_runValueAsyncMethodInvocationHistoryCollection.Clear();
+			_getByReferenceAsyncMethodInvocationHistoryCollection.Clear();
+			_getDynamicAsyncMethodInvocationHistoryCollection.Clear();
+			this._getAsyncMethodInvocationHistoryCollection = new GetAsyncMethodInvocationHistoryCollection();
+			this._peekAsyncMethodInvocationHistoryCollection = new PeekAsyncMethodInvocationHistoryCollection();
+			this._runAsyncMethodInvocationHistoryCollection = new RunAsyncMethodInvocationHistoryCollection();
+			this._runValueAsyncMethodInvocationHistoryCollection = new RunValueAsyncMethodInvocationHistoryCollection();
+			this._getByReferenceAsyncMethodInvocationHistoryCollection = new GetByReferenceAsyncMethodInvocationHistoryCollection();
+			this._getDynamicAsyncMethodInvocationHistoryCollection = new GetDynamicAsyncMethodInvocationHistoryCollection();
+			this._getAsyncMethodImposter = new GetAsyncMethodImposter(_getAsyncMethodInvocationHistoryCollection, this._imposterMode);
+			this._peekAsyncMethodImposter = new PeekAsyncMethodImposter(_peekAsyncMethodInvocationHistoryCollection, this._imposterMode);
+			this._runAsyncMethodImposter = new RunAsyncMethodImposter(_runAsyncMethodInvocationHistoryCollection, this._imposterMode);
+			this._runValueAsyncMethodImposter = new RunValueAsyncMethodImposter(_runValueAsyncMethodInvocationHistoryCollection, this._imposterMode);
+			this._getByReferenceAsyncMethodImposter = new GetByReferenceAsyncMethodImposter(_getByReferenceAsyncMethodInvocationHistoryCollection, this._imposterMode);
+			this._getDynamicAsyncMethodImposter = new GetDynamicAsyncMethodImposter(_getDynamicAsyncMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

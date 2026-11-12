@@ -15,13 +15,14 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IRefReadOnlyArgumentMatchingServiceImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.ArgumentsMatching.IRefReadOnlyArgumentMatchingService>, IRefReadOnlyArgumentMatchingServiceImposter.IRefReadOnlyArgumentMatchingServiceSetup
 	{
-		private readonly DoubleMethodImposter _doubleMethodImposter;
-		private readonly DoubleMethodInvocationHistoryCollection _doubleMethodInvocationHistoryCollection;
+		private DoubleMethodImposter _doubleMethodImposter;
+		private DoubleMethodInvocationHistoryCollection _doubleMethodInvocationHistoryCollection;
 		public IDoubleMethodImposterBuilder Double(global::Imposter.Abstractions.Arg<int> value)
 		{
 			return new DoubleMethodImposter.Builder(_doubleMethodImposter, _doubleMethodInvocationHistoryCollection, new DoubleArgumentsCriteria(value));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.Docs.ArgumentsMatching.IRefReadOnlyArgumentMatchingService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.ArgumentsMatching.IRefReadOnlyArgumentMatchingService>.Instance()
 		{
@@ -162,6 +163,11 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(DoubleMethodInvocationHistoryCollection.Node invocationHistory)
@@ -538,8 +544,9 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 		public IRefReadOnlyArgumentMatchingServiceImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._doubleMethodInvocationHistoryCollection = new DoubleMethodInvocationHistoryCollection();
-			this._doubleMethodImposter = new DoubleMethodImposter(_doubleMethodInvocationHistoryCollection, invocationBehavior);
+			this._doubleMethodImposter = new DoubleMethodImposter(_doubleMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -548,6 +555,18 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
 			invocations.AddRange(_doubleMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_doubleMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_doubleMethodInvocationHistoryCollection.Clear();
+			this._doubleMethodInvocationHistoryCollection = new DoubleMethodInvocationHistoryCollection();
+			this._doubleMethodImposter = new DoubleMethodImposter(_doubleMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

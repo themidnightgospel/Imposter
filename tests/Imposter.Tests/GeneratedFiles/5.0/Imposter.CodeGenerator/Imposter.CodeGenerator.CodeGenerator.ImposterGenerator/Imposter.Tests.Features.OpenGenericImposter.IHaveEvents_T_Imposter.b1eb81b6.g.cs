@@ -23,7 +23,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 		public IDiagnosticPayloadPublishedEventImposterBuilder DiagnosticPayloadPublished => _DiagnosticPayloadPublished;
 
-		private readonly DiagnosticPayloadPublishedEventImposterBuilder _DiagnosticPayloadPublished;
+		private DiagnosticPayloadPublishedEventImposterBuilder _DiagnosticPayloadPublished;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IDiagnosticPayloadPublishedEventImposterBuilder : IDiagnosticPayloadPublishedEventImposterSetupBuilder, IDiagnosticPayloadPublishedEventImposterVerificationBuilder
 		{
@@ -62,6 +62,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			private global::Imposter.Abstractions.CallbackCollection<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<(object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> Handler, object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)>? _handlerInvocations;
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>> IDiagnosticPayloadPublishedEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -398,7 +406,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 		public ILegacyPayloadAvailableEventImposterBuilder LegacyPayloadAvailable => _LegacyPayloadAvailable;
 
-		private readonly LegacyPayloadAvailableEventImposterBuilder _LegacyPayloadAvailable;
+		private LegacyPayloadAvailableEventImposterBuilder _LegacyPayloadAvailable;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ILegacyPayloadAvailableEventImposterBuilder : ILegacyPayloadAvailableEventImposterSetupBuilder, ILegacyPayloadAvailableEventImposterVerificationBuilder
 		{
@@ -437,6 +445,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			private global::Imposter.Abstractions.CallbackCollection<global::System.EventHandler>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<(object? sender, global::System.EventArgs e)>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.EventHandler Handler, object? sender, global::System.EventArgs e)>? _handlerInvocations;
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>> ILegacyPayloadAvailableEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -773,7 +789,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 		public IPayloadAvailableEventImposterBuilder PayloadAvailable => _PayloadAvailable;
 
-		private readonly PayloadAvailableEventImposterBuilder _PayloadAvailable;
+		private PayloadAvailableEventImposterBuilder _PayloadAvailable;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IPayloadAvailableEventImposterBuilder : IPayloadAvailableEventImposterSetupBuilder, IPayloadAvailableEventImposterVerificationBuilder
 		{
@@ -812,6 +828,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			private global::Imposter.Abstractions.CallbackCollection<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<(object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> Handler, object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)>? _handlerInvocations;
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>> IPayloadAvailableEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -1182,6 +1206,23 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			invocations.AddRange(_LegacyPayloadAvailable.Snapshot(false));
 			invocations.AddRange(_PayloadAvailable.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_DiagnosticPayloadPublished.ClearInvocations();
+			_LegacyPayloadAvailable.ClearInvocations();
+			_PayloadAvailable.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_DiagnosticPayloadPublished.ClearInvocations();
+			_LegacyPayloadAvailable.ClearInvocations();
+			_PayloadAvailable.ClearInvocations();
+			this._DiagnosticPayloadPublished = new DiagnosticPayloadPublishedEventImposterBuilder();
+			this._LegacyPayloadAvailable = new LegacyPayloadAvailableEventImposterBuilder();
+			this._PayloadAvailable = new PayloadAvailableEventImposterBuilder();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

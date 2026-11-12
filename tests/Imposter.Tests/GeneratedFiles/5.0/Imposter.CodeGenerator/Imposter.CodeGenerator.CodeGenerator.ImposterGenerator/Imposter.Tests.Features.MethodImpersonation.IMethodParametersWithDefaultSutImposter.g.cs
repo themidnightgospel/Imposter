@@ -15,38 +15,38 @@ namespace Imposter.Tests.Features.MethodImpersonation
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IMethodParametersWithDefaultSutImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IMethodParametersWithDefaultSut>, IMethodParametersWithDefaultSutImposter.IMethodParametersWithDefaultSutSetup
 	{
-		private readonly BoolDefaultMethodImposter _boolDefaultMethodImposter;
-		private readonly IntDefaultMethodImposter _intDefaultMethodImposter;
-		private readonly DoubleDefaultMethodImposter _doubleDefaultMethodImposter;
-		private readonly NullableDefaultMethodImposter _nullableDefaultMethodImposter;
-		private readonly FloatDefaultMethodImposter _floatDefaultMethodImposter;
-		private readonly DecimalDefaultMethodImposter _decimalDefaultMethodImposter;
-		private readonly CharDefaultMethodImposter _charDefaultMethodImposter;
-		private readonly EnumDefaultMethodImposter _enumDefaultMethodImposter;
-		private readonly NameDefaultMethodImposter _nameDefaultMethodImposter;
-		private readonly NullableRefMethodImposter _nullableRefMethodImposter;
-		private readonly NullableOutMethodImposter _nullableOutMethodImposter;
-		private readonly NullableInMethodImposter _nullableInMethodImposter;
-		private readonly NullableParamsMethodImposter _nullableParamsMethodImposter;
-		private readonly RequiredThenOptionalMethodImposter _requiredThenOptionalMethodImposter;
-		private readonly OptionalThenParamsMethodImposter _optionalThenParamsMethodImposter;
-		private readonly MultipleOptionalsMethodImposter _multipleOptionalsMethodImposter;
-		private readonly BoolDefaultMethodInvocationHistoryCollection _boolDefaultMethodInvocationHistoryCollection;
-		private readonly IntDefaultMethodInvocationHistoryCollection _intDefaultMethodInvocationHistoryCollection;
-		private readonly DoubleDefaultMethodInvocationHistoryCollection _doubleDefaultMethodInvocationHistoryCollection;
-		private readonly NullableDefaultMethodInvocationHistoryCollection _nullableDefaultMethodInvocationHistoryCollection;
-		private readonly FloatDefaultMethodInvocationHistoryCollection _floatDefaultMethodInvocationHistoryCollection;
-		private readonly DecimalDefaultMethodInvocationHistoryCollection _decimalDefaultMethodInvocationHistoryCollection;
-		private readonly CharDefaultMethodInvocationHistoryCollection _charDefaultMethodInvocationHistoryCollection;
-		private readonly EnumDefaultMethodInvocationHistoryCollection _enumDefaultMethodInvocationHistoryCollection;
-		private readonly NameDefaultMethodInvocationHistoryCollection _nameDefaultMethodInvocationHistoryCollection;
-		private readonly NullableRefMethodInvocationHistoryCollection _nullableRefMethodInvocationHistoryCollection;
-		private readonly NullableOutMethodInvocationHistoryCollection _nullableOutMethodInvocationHistoryCollection;
-		private readonly NullableInMethodInvocationHistoryCollection _nullableInMethodInvocationHistoryCollection;
-		private readonly NullableParamsMethodInvocationHistoryCollection _nullableParamsMethodInvocationHistoryCollection;
-		private readonly RequiredThenOptionalMethodInvocationHistoryCollection _requiredThenOptionalMethodInvocationHistoryCollection;
-		private readonly OptionalThenParamsMethodInvocationHistoryCollection _optionalThenParamsMethodInvocationHistoryCollection;
-		private readonly MultipleOptionalsMethodInvocationHistoryCollection _multipleOptionalsMethodInvocationHistoryCollection;
+		private BoolDefaultMethodImposter _boolDefaultMethodImposter;
+		private IntDefaultMethodImposter _intDefaultMethodImposter;
+		private DoubleDefaultMethodImposter _doubleDefaultMethodImposter;
+		private NullableDefaultMethodImposter _nullableDefaultMethodImposter;
+		private FloatDefaultMethodImposter _floatDefaultMethodImposter;
+		private DecimalDefaultMethodImposter _decimalDefaultMethodImposter;
+		private CharDefaultMethodImposter _charDefaultMethodImposter;
+		private EnumDefaultMethodImposter _enumDefaultMethodImposter;
+		private NameDefaultMethodImposter _nameDefaultMethodImposter;
+		private NullableRefMethodImposter _nullableRefMethodImposter;
+		private NullableOutMethodImposter _nullableOutMethodImposter;
+		private NullableInMethodImposter _nullableInMethodImposter;
+		private NullableParamsMethodImposter _nullableParamsMethodImposter;
+		private RequiredThenOptionalMethodImposter _requiredThenOptionalMethodImposter;
+		private OptionalThenParamsMethodImposter _optionalThenParamsMethodImposter;
+		private MultipleOptionalsMethodImposter _multipleOptionalsMethodImposter;
+		private BoolDefaultMethodInvocationHistoryCollection _boolDefaultMethodInvocationHistoryCollection;
+		private IntDefaultMethodInvocationHistoryCollection _intDefaultMethodInvocationHistoryCollection;
+		private DoubleDefaultMethodInvocationHistoryCollection _doubleDefaultMethodInvocationHistoryCollection;
+		private NullableDefaultMethodInvocationHistoryCollection _nullableDefaultMethodInvocationHistoryCollection;
+		private FloatDefaultMethodInvocationHistoryCollection _floatDefaultMethodInvocationHistoryCollection;
+		private DecimalDefaultMethodInvocationHistoryCollection _decimalDefaultMethodInvocationHistoryCollection;
+		private CharDefaultMethodInvocationHistoryCollection _charDefaultMethodInvocationHistoryCollection;
+		private EnumDefaultMethodInvocationHistoryCollection _enumDefaultMethodInvocationHistoryCollection;
+		private NameDefaultMethodInvocationHistoryCollection _nameDefaultMethodInvocationHistoryCollection;
+		private NullableRefMethodInvocationHistoryCollection _nullableRefMethodInvocationHistoryCollection;
+		private NullableOutMethodInvocationHistoryCollection _nullableOutMethodInvocationHistoryCollection;
+		private NullableInMethodInvocationHistoryCollection _nullableInMethodInvocationHistoryCollection;
+		private NullableParamsMethodInvocationHistoryCollection _nullableParamsMethodInvocationHistoryCollection;
+		private RequiredThenOptionalMethodInvocationHistoryCollection _requiredThenOptionalMethodInvocationHistoryCollection;
+		private OptionalThenParamsMethodInvocationHistoryCollection _optionalThenParamsMethodInvocationHistoryCollection;
+		private MultipleOptionalsMethodInvocationHistoryCollection _multipleOptionalsMethodInvocationHistoryCollection;
 		public IBoolDefaultMethodImposterBuilder BoolDefault(global::Imposter.Abstractions.Arg<bool> flag)
 		{
 			return new BoolDefaultMethodImposter.Builder(_boolDefaultMethodImposter, _boolDefaultMethodInvocationHistoryCollection, new BoolDefaultArgumentsCriteria(flag));
@@ -127,6 +127,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			return new MultipleOptionalsMethodImposter.Builder(_multipleOptionalsMethodImposter, _multipleOptionalsMethodInvocationHistoryCollection, new MultipleOptionalsArgumentsCriteria(command, validate, timeout));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.MethodImpersonation.IMethodParametersWithDefaultSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IMethodParametersWithDefaultSut>.Instance()
 		{
@@ -267,6 +268,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(BoolDefaultMethodInvocationHistoryCollection.Node invocationHistory)
@@ -761,6 +767,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(CharDefaultMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1251,6 +1262,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(DecimalDefaultMethodInvocationHistoryCollection.Node invocationHistory)
@@ -1745,6 +1761,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(DoubleDefaultMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -2235,6 +2256,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(EnumDefaultMethodInvocationHistoryCollection.Node invocationHistory)
@@ -2729,6 +2755,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(FloatDefaultMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -3219,6 +3250,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(IntDefaultMethodInvocationHistoryCollection.Node invocationHistory)
@@ -3741,6 +3777,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(MultipleOptionalsMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -4235,6 +4276,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(NameDefaultMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -4725,6 +4771,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(NullableDefaultMethodInvocationHistoryCollection.Node invocationHistory)
@@ -5219,6 +5270,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(NullableInMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -5678,6 +5734,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(NullableOutMethodInvocationHistoryCollection.Node invocationHistory)
@@ -6174,6 +6235,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(NullableParamsMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -6664,6 +6730,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(NullableRefMethodInvocationHistoryCollection.Node invocationHistory)
@@ -7186,6 +7257,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(OptionalThenParamsMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -7694,6 +7770,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(RequiredThenOptionalMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -8159,6 +8240,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 		public IMethodParametersWithDefaultSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._boolDefaultMethodInvocationHistoryCollection = new BoolDefaultMethodInvocationHistoryCollection();
 			this._intDefaultMethodInvocationHistoryCollection = new IntDefaultMethodInvocationHistoryCollection();
 			this._doubleDefaultMethodInvocationHistoryCollection = new DoubleDefaultMethodInvocationHistoryCollection();
@@ -8175,22 +8257,22 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			this._requiredThenOptionalMethodInvocationHistoryCollection = new RequiredThenOptionalMethodInvocationHistoryCollection();
 			this._optionalThenParamsMethodInvocationHistoryCollection = new OptionalThenParamsMethodInvocationHistoryCollection();
 			this._multipleOptionalsMethodInvocationHistoryCollection = new MultipleOptionalsMethodInvocationHistoryCollection();
-			this._boolDefaultMethodImposter = new BoolDefaultMethodImposter(_boolDefaultMethodInvocationHistoryCollection, invocationBehavior);
-			this._intDefaultMethodImposter = new IntDefaultMethodImposter(_intDefaultMethodInvocationHistoryCollection, invocationBehavior);
-			this._doubleDefaultMethodImposter = new DoubleDefaultMethodImposter(_doubleDefaultMethodInvocationHistoryCollection, invocationBehavior);
-			this._nullableDefaultMethodImposter = new NullableDefaultMethodImposter(_nullableDefaultMethodInvocationHistoryCollection, invocationBehavior);
-			this._floatDefaultMethodImposter = new FloatDefaultMethodImposter(_floatDefaultMethodInvocationHistoryCollection, invocationBehavior);
-			this._decimalDefaultMethodImposter = new DecimalDefaultMethodImposter(_decimalDefaultMethodInvocationHistoryCollection, invocationBehavior);
-			this._charDefaultMethodImposter = new CharDefaultMethodImposter(_charDefaultMethodInvocationHistoryCollection, invocationBehavior);
-			this._enumDefaultMethodImposter = new EnumDefaultMethodImposter(_enumDefaultMethodInvocationHistoryCollection, invocationBehavior);
-			this._nameDefaultMethodImposter = new NameDefaultMethodImposter(_nameDefaultMethodInvocationHistoryCollection, invocationBehavior);
-			this._nullableRefMethodImposter = new NullableRefMethodImposter(_nullableRefMethodInvocationHistoryCollection, invocationBehavior);
-			this._nullableOutMethodImposter = new NullableOutMethodImposter(_nullableOutMethodInvocationHistoryCollection, invocationBehavior);
-			this._nullableInMethodImposter = new NullableInMethodImposter(_nullableInMethodInvocationHistoryCollection, invocationBehavior);
-			this._nullableParamsMethodImposter = new NullableParamsMethodImposter(_nullableParamsMethodInvocationHistoryCollection, invocationBehavior);
-			this._requiredThenOptionalMethodImposter = new RequiredThenOptionalMethodImposter(_requiredThenOptionalMethodInvocationHistoryCollection, invocationBehavior);
-			this._optionalThenParamsMethodImposter = new OptionalThenParamsMethodImposter(_optionalThenParamsMethodInvocationHistoryCollection, invocationBehavior);
-			this._multipleOptionalsMethodImposter = new MultipleOptionalsMethodImposter(_multipleOptionalsMethodInvocationHistoryCollection, invocationBehavior);
+			this._boolDefaultMethodImposter = new BoolDefaultMethodImposter(_boolDefaultMethodInvocationHistoryCollection, this._imposterMode);
+			this._intDefaultMethodImposter = new IntDefaultMethodImposter(_intDefaultMethodInvocationHistoryCollection, this._imposterMode);
+			this._doubleDefaultMethodImposter = new DoubleDefaultMethodImposter(_doubleDefaultMethodInvocationHistoryCollection, this._imposterMode);
+			this._nullableDefaultMethodImposter = new NullableDefaultMethodImposter(_nullableDefaultMethodInvocationHistoryCollection, this._imposterMode);
+			this._floatDefaultMethodImposter = new FloatDefaultMethodImposter(_floatDefaultMethodInvocationHistoryCollection, this._imposterMode);
+			this._decimalDefaultMethodImposter = new DecimalDefaultMethodImposter(_decimalDefaultMethodInvocationHistoryCollection, this._imposterMode);
+			this._charDefaultMethodImposter = new CharDefaultMethodImposter(_charDefaultMethodInvocationHistoryCollection, this._imposterMode);
+			this._enumDefaultMethodImposter = new EnumDefaultMethodImposter(_enumDefaultMethodInvocationHistoryCollection, this._imposterMode);
+			this._nameDefaultMethodImposter = new NameDefaultMethodImposter(_nameDefaultMethodInvocationHistoryCollection, this._imposterMode);
+			this._nullableRefMethodImposter = new NullableRefMethodImposter(_nullableRefMethodInvocationHistoryCollection, this._imposterMode);
+			this._nullableOutMethodImposter = new NullableOutMethodImposter(_nullableOutMethodInvocationHistoryCollection, this._imposterMode);
+			this._nullableInMethodImposter = new NullableInMethodImposter(_nullableInMethodInvocationHistoryCollection, this._imposterMode);
+			this._nullableParamsMethodImposter = new NullableParamsMethodImposter(_nullableParamsMethodInvocationHistoryCollection, this._imposterMode);
+			this._requiredThenOptionalMethodImposter = new RequiredThenOptionalMethodImposter(_requiredThenOptionalMethodInvocationHistoryCollection, this._imposterMode);
+			this._optionalThenParamsMethodImposter = new OptionalThenParamsMethodImposter(_optionalThenParamsMethodInvocationHistoryCollection, this._imposterMode);
+			this._multipleOptionalsMethodImposter = new MultipleOptionalsMethodImposter(_multipleOptionalsMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -8214,6 +8296,78 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			invocations.AddRange(_optionalThenParamsMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_multipleOptionalsMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_boolDefaultMethodInvocationHistoryCollection.Clear();
+			_intDefaultMethodInvocationHistoryCollection.Clear();
+			_doubleDefaultMethodInvocationHistoryCollection.Clear();
+			_nullableDefaultMethodInvocationHistoryCollection.Clear();
+			_floatDefaultMethodInvocationHistoryCollection.Clear();
+			_decimalDefaultMethodInvocationHistoryCollection.Clear();
+			_charDefaultMethodInvocationHistoryCollection.Clear();
+			_enumDefaultMethodInvocationHistoryCollection.Clear();
+			_nameDefaultMethodInvocationHistoryCollection.Clear();
+			_nullableRefMethodInvocationHistoryCollection.Clear();
+			_nullableOutMethodInvocationHistoryCollection.Clear();
+			_nullableInMethodInvocationHistoryCollection.Clear();
+			_nullableParamsMethodInvocationHistoryCollection.Clear();
+			_requiredThenOptionalMethodInvocationHistoryCollection.Clear();
+			_optionalThenParamsMethodInvocationHistoryCollection.Clear();
+			_multipleOptionalsMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_boolDefaultMethodInvocationHistoryCollection.Clear();
+			_intDefaultMethodInvocationHistoryCollection.Clear();
+			_doubleDefaultMethodInvocationHistoryCollection.Clear();
+			_nullableDefaultMethodInvocationHistoryCollection.Clear();
+			_floatDefaultMethodInvocationHistoryCollection.Clear();
+			_decimalDefaultMethodInvocationHistoryCollection.Clear();
+			_charDefaultMethodInvocationHistoryCollection.Clear();
+			_enumDefaultMethodInvocationHistoryCollection.Clear();
+			_nameDefaultMethodInvocationHistoryCollection.Clear();
+			_nullableRefMethodInvocationHistoryCollection.Clear();
+			_nullableOutMethodInvocationHistoryCollection.Clear();
+			_nullableInMethodInvocationHistoryCollection.Clear();
+			_nullableParamsMethodInvocationHistoryCollection.Clear();
+			_requiredThenOptionalMethodInvocationHistoryCollection.Clear();
+			_optionalThenParamsMethodInvocationHistoryCollection.Clear();
+			_multipleOptionalsMethodInvocationHistoryCollection.Clear();
+			this._boolDefaultMethodInvocationHistoryCollection = new BoolDefaultMethodInvocationHistoryCollection();
+			this._intDefaultMethodInvocationHistoryCollection = new IntDefaultMethodInvocationHistoryCollection();
+			this._doubleDefaultMethodInvocationHistoryCollection = new DoubleDefaultMethodInvocationHistoryCollection();
+			this._nullableDefaultMethodInvocationHistoryCollection = new NullableDefaultMethodInvocationHistoryCollection();
+			this._floatDefaultMethodInvocationHistoryCollection = new FloatDefaultMethodInvocationHistoryCollection();
+			this._decimalDefaultMethodInvocationHistoryCollection = new DecimalDefaultMethodInvocationHistoryCollection();
+			this._charDefaultMethodInvocationHistoryCollection = new CharDefaultMethodInvocationHistoryCollection();
+			this._enumDefaultMethodInvocationHistoryCollection = new EnumDefaultMethodInvocationHistoryCollection();
+			this._nameDefaultMethodInvocationHistoryCollection = new NameDefaultMethodInvocationHistoryCollection();
+			this._nullableRefMethodInvocationHistoryCollection = new NullableRefMethodInvocationHistoryCollection();
+			this._nullableOutMethodInvocationHistoryCollection = new NullableOutMethodInvocationHistoryCollection();
+			this._nullableInMethodInvocationHistoryCollection = new NullableInMethodInvocationHistoryCollection();
+			this._nullableParamsMethodInvocationHistoryCollection = new NullableParamsMethodInvocationHistoryCollection();
+			this._requiredThenOptionalMethodInvocationHistoryCollection = new RequiredThenOptionalMethodInvocationHistoryCollection();
+			this._optionalThenParamsMethodInvocationHistoryCollection = new OptionalThenParamsMethodInvocationHistoryCollection();
+			this._multipleOptionalsMethodInvocationHistoryCollection = new MultipleOptionalsMethodInvocationHistoryCollection();
+			this._boolDefaultMethodImposter = new BoolDefaultMethodImposter(_boolDefaultMethodInvocationHistoryCollection, this._imposterMode);
+			this._intDefaultMethodImposter = new IntDefaultMethodImposter(_intDefaultMethodInvocationHistoryCollection, this._imposterMode);
+			this._doubleDefaultMethodImposter = new DoubleDefaultMethodImposter(_doubleDefaultMethodInvocationHistoryCollection, this._imposterMode);
+			this._nullableDefaultMethodImposter = new NullableDefaultMethodImposter(_nullableDefaultMethodInvocationHistoryCollection, this._imposterMode);
+			this._floatDefaultMethodImposter = new FloatDefaultMethodImposter(_floatDefaultMethodInvocationHistoryCollection, this._imposterMode);
+			this._decimalDefaultMethodImposter = new DecimalDefaultMethodImposter(_decimalDefaultMethodInvocationHistoryCollection, this._imposterMode);
+			this._charDefaultMethodImposter = new CharDefaultMethodImposter(_charDefaultMethodInvocationHistoryCollection, this._imposterMode);
+			this._enumDefaultMethodImposter = new EnumDefaultMethodImposter(_enumDefaultMethodInvocationHistoryCollection, this._imposterMode);
+			this._nameDefaultMethodImposter = new NameDefaultMethodImposter(_nameDefaultMethodInvocationHistoryCollection, this._imposterMode);
+			this._nullableRefMethodImposter = new NullableRefMethodImposter(_nullableRefMethodInvocationHistoryCollection, this._imposterMode);
+			this._nullableOutMethodImposter = new NullableOutMethodImposter(_nullableOutMethodInvocationHistoryCollection, this._imposterMode);
+			this._nullableInMethodImposter = new NullableInMethodImposter(_nullableInMethodInvocationHistoryCollection, this._imposterMode);
+			this._nullableParamsMethodImposter = new NullableParamsMethodImposter(_nullableParamsMethodInvocationHistoryCollection, this._imposterMode);
+			this._requiredThenOptionalMethodImposter = new RequiredThenOptionalMethodImposter(_requiredThenOptionalMethodInvocationHistoryCollection, this._imposterMode);
+			this._optionalThenParamsMethodImposter = new OptionalThenParamsMethodImposter(_optionalThenParamsMethodInvocationHistoryCollection, this._imposterMode);
+			this._multipleOptionalsMethodImposter = new MultipleOptionalsMethodImposter(_multipleOptionalsMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

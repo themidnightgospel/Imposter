@@ -15,18 +15,18 @@ namespace Imposter.Tests.Features.MethodImpersonation
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class MethodSetupFeatureClassSutImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.MethodSetupFeatureClassSut>
 	{
-		private readonly IntSingleParamMethodImposter _intSingleParamMethodImposter;
-		private readonly VoidWithSideEffectMethodImposter _voidWithSideEffectMethodImposter;
-		private readonly SumAsyncMethodImposter _sumAsyncMethodImposter;
-		private readonly BuildLabelAsyncMethodImposter _buildLabelAsyncMethodImposter;
-		private readonly RefOutWithParamsMethodImposter _refOutWithParamsMethodImposter;
-		private readonly ThrowingCalculationMethodImposter _throwingCalculationMethodImposter;
-		private readonly IntSingleParamMethodInvocationHistoryCollection _intSingleParamMethodInvocationHistoryCollection;
-		private readonly VoidWithSideEffectMethodInvocationHistoryCollection _voidWithSideEffectMethodInvocationHistoryCollection;
-		private readonly SumAsyncMethodInvocationHistoryCollection _sumAsyncMethodInvocationHistoryCollection;
-		private readonly BuildLabelAsyncMethodInvocationHistoryCollection _buildLabelAsyncMethodInvocationHistoryCollection;
-		private readonly RefOutWithParamsMethodInvocationHistoryCollection _refOutWithParamsMethodInvocationHistoryCollection;
-		private readonly ThrowingCalculationMethodInvocationHistoryCollection _throwingCalculationMethodInvocationHistoryCollection;
+		private IntSingleParamMethodImposter _intSingleParamMethodImposter;
+		private VoidWithSideEffectMethodImposter _voidWithSideEffectMethodImposter;
+		private SumAsyncMethodImposter _sumAsyncMethodImposter;
+		private BuildLabelAsyncMethodImposter _buildLabelAsyncMethodImposter;
+		private RefOutWithParamsMethodImposter _refOutWithParamsMethodImposter;
+		private ThrowingCalculationMethodImposter _throwingCalculationMethodImposter;
+		private IntSingleParamMethodInvocationHistoryCollection _intSingleParamMethodInvocationHistoryCollection;
+		private VoidWithSideEffectMethodInvocationHistoryCollection _voidWithSideEffectMethodInvocationHistoryCollection;
+		private SumAsyncMethodInvocationHistoryCollection _sumAsyncMethodInvocationHistoryCollection;
+		private BuildLabelAsyncMethodInvocationHistoryCollection _buildLabelAsyncMethodInvocationHistoryCollection;
+		private RefOutWithParamsMethodInvocationHistoryCollection _refOutWithParamsMethodInvocationHistoryCollection;
+		private ThrowingCalculationMethodInvocationHistoryCollection _throwingCalculationMethodInvocationHistoryCollection;
 		public IIntSingleParamMethodImposterBuilder IntSingleParam(global::Imposter.Abstractions.Arg<int> age)
 		{
 			return new IntSingleParamMethodImposter.Builder(_intSingleParamMethodImposter, _intSingleParamMethodInvocationHistoryCollection, new IntSingleParamArgumentsCriteria(age));
@@ -57,6 +57,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			return new ThrowingCalculationMethodImposter.Builder(_throwingCalculationMethodImposter, _throwingCalculationMethodInvocationHistoryCollection, new ThrowingCalculationArgumentsCriteria(value));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.MethodImpersonation.MethodSetupFeatureClassSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.MethodSetupFeatureClassSut>.Instance()
 		{
@@ -211,6 +212,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(BuildLabelAsyncMethodInvocationHistoryCollection.Node invocationHistory)
@@ -773,6 +779,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(IntSingleParamMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1312,6 +1323,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(RefOutWithParamsMethodInvocationHistoryCollection.Node invocationHistory)
@@ -1864,6 +1880,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(SumAsyncMethodInvocationHistoryCollection.Node invocationHistory)
@@ -2426,6 +2447,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(ThrowingCalculationMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -2931,6 +2957,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(VoidWithSideEffectMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -3283,18 +3314,19 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 		public MethodSetupFeatureClassSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._intSingleParamMethodInvocationHistoryCollection = new IntSingleParamMethodInvocationHistoryCollection();
 			this._voidWithSideEffectMethodInvocationHistoryCollection = new VoidWithSideEffectMethodInvocationHistoryCollection();
 			this._sumAsyncMethodInvocationHistoryCollection = new SumAsyncMethodInvocationHistoryCollection();
 			this._buildLabelAsyncMethodInvocationHistoryCollection = new BuildLabelAsyncMethodInvocationHistoryCollection();
 			this._refOutWithParamsMethodInvocationHistoryCollection = new RefOutWithParamsMethodInvocationHistoryCollection();
 			this._throwingCalculationMethodInvocationHistoryCollection = new ThrowingCalculationMethodInvocationHistoryCollection();
-			this._intSingleParamMethodImposter = new IntSingleParamMethodImposter(_intSingleParamMethodInvocationHistoryCollection, invocationBehavior);
-			this._voidWithSideEffectMethodImposter = new VoidWithSideEffectMethodImposter(_voidWithSideEffectMethodInvocationHistoryCollection, invocationBehavior);
-			this._sumAsyncMethodImposter = new SumAsyncMethodImposter(_sumAsyncMethodInvocationHistoryCollection, invocationBehavior);
-			this._buildLabelAsyncMethodImposter = new BuildLabelAsyncMethodImposter(_buildLabelAsyncMethodInvocationHistoryCollection, invocationBehavior);
-			this._refOutWithParamsMethodImposter = new RefOutWithParamsMethodImposter(_refOutWithParamsMethodInvocationHistoryCollection, invocationBehavior);
-			this._throwingCalculationMethodImposter = new ThrowingCalculationMethodImposter(_throwingCalculationMethodInvocationHistoryCollection, invocationBehavior);
+			this._intSingleParamMethodImposter = new IntSingleParamMethodImposter(_intSingleParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._voidWithSideEffectMethodImposter = new VoidWithSideEffectMethodImposter(_voidWithSideEffectMethodInvocationHistoryCollection, this._imposterMode);
+			this._sumAsyncMethodImposter = new SumAsyncMethodImposter(_sumAsyncMethodInvocationHistoryCollection, this._imposterMode);
+			this._buildLabelAsyncMethodImposter = new BuildLabelAsyncMethodImposter(_buildLabelAsyncMethodInvocationHistoryCollection, this._imposterMode);
+			this._refOutWithParamsMethodImposter = new RefOutWithParamsMethodImposter(_refOutWithParamsMethodInvocationHistoryCollection, this._imposterMode);
+			this._throwingCalculationMethodImposter = new ThrowingCalculationMethodImposter(_throwingCalculationMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -3308,6 +3340,38 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			invocations.AddRange(_refOutWithParamsMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_throwingCalculationMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_intSingleParamMethodInvocationHistoryCollection.Clear();
+			_voidWithSideEffectMethodInvocationHistoryCollection.Clear();
+			_sumAsyncMethodInvocationHistoryCollection.Clear();
+			_buildLabelAsyncMethodInvocationHistoryCollection.Clear();
+			_refOutWithParamsMethodInvocationHistoryCollection.Clear();
+			_throwingCalculationMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_intSingleParamMethodInvocationHistoryCollection.Clear();
+			_voidWithSideEffectMethodInvocationHistoryCollection.Clear();
+			_sumAsyncMethodInvocationHistoryCollection.Clear();
+			_buildLabelAsyncMethodInvocationHistoryCollection.Clear();
+			_refOutWithParamsMethodInvocationHistoryCollection.Clear();
+			_throwingCalculationMethodInvocationHistoryCollection.Clear();
+			this._intSingleParamMethodInvocationHistoryCollection = new IntSingleParamMethodInvocationHistoryCollection();
+			this._voidWithSideEffectMethodInvocationHistoryCollection = new VoidWithSideEffectMethodInvocationHistoryCollection();
+			this._sumAsyncMethodInvocationHistoryCollection = new SumAsyncMethodInvocationHistoryCollection();
+			this._buildLabelAsyncMethodInvocationHistoryCollection = new BuildLabelAsyncMethodInvocationHistoryCollection();
+			this._refOutWithParamsMethodInvocationHistoryCollection = new RefOutWithParamsMethodInvocationHistoryCollection();
+			this._throwingCalculationMethodInvocationHistoryCollection = new ThrowingCalculationMethodInvocationHistoryCollection();
+			this._intSingleParamMethodImposter = new IntSingleParamMethodImposter(_intSingleParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._voidWithSideEffectMethodImposter = new VoidWithSideEffectMethodImposter(_voidWithSideEffectMethodInvocationHistoryCollection, this._imposterMode);
+			this._sumAsyncMethodImposter = new SumAsyncMethodImposter(_sumAsyncMethodInvocationHistoryCollection, this._imposterMode);
+			this._buildLabelAsyncMethodImposter = new BuildLabelAsyncMethodImposter(_buildLabelAsyncMethodInvocationHistoryCollection, this._imposterMode);
+			this._refOutWithParamsMethodImposter = new RefOutWithParamsMethodImposter(_refOutWithParamsMethodInvocationHistoryCollection, this._imposterMode);
+			this._throwingCalculationMethodImposter = new ThrowingCalculationMethodImposter(_throwingCalculationMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

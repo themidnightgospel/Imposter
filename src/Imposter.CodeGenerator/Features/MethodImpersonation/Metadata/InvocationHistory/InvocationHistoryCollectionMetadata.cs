@@ -8,6 +8,8 @@ internal readonly record struct InvocationHistoryCollectionMetadata
 {
     internal const string AddMethodName = "Add";
 
+    internal const string ClearMethodName = "Clear";
+
     internal const string RecordFailureMethodName = "RecordFailure";
 
     internal const string HeadFieldName = "_invocationHistory";

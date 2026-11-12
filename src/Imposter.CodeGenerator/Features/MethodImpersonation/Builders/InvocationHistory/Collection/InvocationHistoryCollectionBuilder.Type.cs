@@ -65,6 +65,7 @@ internal static partial class InvocationHistoryCollectionBuilder
                     .Build()
             )
             .AddMember(BuildAddMethod(method))
+            .AddMember(BuildClearMethod())
             .AddMember(BuildRecordFailureMethod(method))
             .AddMember(BuildCountMethod(method))
             .AddMember(BuildSnapshotMethod(method, false))

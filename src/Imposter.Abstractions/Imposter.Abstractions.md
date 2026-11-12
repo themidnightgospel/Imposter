@@ -54,7 +54,7 @@ Public API for consumers and the generator. Lives in `src/Imposter.Abstractions`
 
 ## How It’s Used
 
-- `IImposter` provides invocation snapshots.
+- `IImposter` provides invocation snapshots, `ClearInvocations()` and `Reset()`. Clearing preserves configured behavior and stored values; resetting replaces imposter-owned state while retaining the mode and instance. Existing snapshots remain usable and old setup builders are detached by reset.
 - `IImposterInvocation` supplies member identity, a process-wide entry sequence, and synchronous exceptions. Generated method/accessor records provide typed captures. `EventSubscriptionInvocation<THandler>` represents event add/remove accessors. Property getters retain counters and do not enter the ordered history.
 - `InvocationHistory<T>` publishes indexer and custom ref-struct setter records through an intrusive list; generated method histories use an equivalent typed node chain. Shared property setters and event accessors use compact `InvocationBuffer<T>` storage and materialize records on inspection. Snapshots materialize and sort on demand; they keep membership after later calls, but ordinary reference arguments are not copied. Span captures expose `ReadOnlyMemory<T>` over their recorded array.
 - Generic dispatch records the caller's type arguments and captures entry values before evaluating setup predicates. Its inner method implementations and compatible-type adapters skip recording so one interaction produces exactly one record. Output values are recorded after conversion, and synchronous exceptions still propagate modified ref/out arguments to the caller.

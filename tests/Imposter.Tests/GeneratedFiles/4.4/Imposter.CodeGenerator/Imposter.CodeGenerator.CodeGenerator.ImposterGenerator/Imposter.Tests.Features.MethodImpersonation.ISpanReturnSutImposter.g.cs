@@ -15,12 +15,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class ISpanReturnSutImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.ISpanReturnSut>, ISpanReturnSutImposter.ISpanReturnSutSetup
 	{
-		private readonly RentMethodImposter _rentMethodImposter;
-		private readonly TrimMethodImposter _trimMethodImposter;
-		private readonly RepeatMethodImposterCollection _repeatMethodImposterCollection;
-		private readonly RentMethodInvocationHistoryCollection _rentMethodInvocationHistoryCollection;
-		private readonly TrimMethodInvocationHistoryCollection _trimMethodInvocationHistoryCollection;
-		private readonly RepeatMethodInvocationHistoryCollection _repeatMethodInvocationHistoryCollection;
+		private RentMethodImposter _rentMethodImposter;
+		private TrimMethodImposter _trimMethodImposter;
+		private RepeatMethodImposterCollection _repeatMethodImposterCollection;
+		private RentMethodInvocationHistoryCollection _rentMethodInvocationHistoryCollection;
+		private TrimMethodInvocationHistoryCollection _trimMethodInvocationHistoryCollection;
+		private RepeatMethodInvocationHistoryCollection _repeatMethodInvocationHistoryCollection;
 		public IRentMethodImposterBuilder Rent(global::Imposter.Abstractions.Arg<int> size)
 		{
 			return new RentMethodImposter.Builder(_rentMethodImposter, _rentMethodInvocationHistoryCollection, new RentArgumentsCriteria(size));
@@ -36,6 +36,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			return new RepeatMethodImposter<T>.Builder(_repeatMethodImposterCollection, _repeatMethodInvocationHistoryCollection, new RepeatArgumentsCriteria<T>(item, count));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.MethodImpersonation.ISpanReturnSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.ISpanReturnSut>.Instance()
 		{
@@ -176,6 +177,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(RentMethodInvocationHistoryCollection.Node invocationHistory)
@@ -694,6 +700,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(RepeatMethodInvocationHistoryCollection.Node invocationHistory)
@@ -1272,6 +1283,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(TrimMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1658,12 +1674,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 		public ISpanReturnSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._rentMethodInvocationHistoryCollection = new RentMethodInvocationHistoryCollection();
 			this._trimMethodInvocationHistoryCollection = new TrimMethodInvocationHistoryCollection();
 			this._repeatMethodInvocationHistoryCollection = new RepeatMethodInvocationHistoryCollection();
-			this._rentMethodImposter = new RentMethodImposter(_rentMethodInvocationHistoryCollection, invocationBehavior);
-			this._trimMethodImposter = new TrimMethodImposter(_trimMethodInvocationHistoryCollection, invocationBehavior);
-			this._repeatMethodImposterCollection = new RepeatMethodImposterCollection(_repeatMethodInvocationHistoryCollection, invocationBehavior);
+			this._rentMethodImposter = new RentMethodImposter(_rentMethodInvocationHistoryCollection, this._imposterMode);
+			this._trimMethodImposter = new TrimMethodImposter(_trimMethodInvocationHistoryCollection, this._imposterMode);
+			this._repeatMethodImposterCollection = new RepeatMethodImposterCollection(_repeatMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -1674,6 +1691,26 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			invocations.AddRange(_trimMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_repeatMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_rentMethodInvocationHistoryCollection.Clear();
+			_trimMethodInvocationHistoryCollection.Clear();
+			_repeatMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_rentMethodInvocationHistoryCollection.Clear();
+			_trimMethodInvocationHistoryCollection.Clear();
+			_repeatMethodInvocationHistoryCollection.Clear();
+			this._rentMethodInvocationHistoryCollection = new RentMethodInvocationHistoryCollection();
+			this._trimMethodInvocationHistoryCollection = new TrimMethodInvocationHistoryCollection();
+			this._repeatMethodInvocationHistoryCollection = new RepeatMethodInvocationHistoryCollection();
+			this._rentMethodImposter = new RentMethodImposter(_rentMethodInvocationHistoryCollection, this._imposterMode);
+			this._trimMethodImposter = new TrimMethodImposter(_trimMethodInvocationHistoryCollection, this._imposterMode);
+			this._repeatMethodImposterCollection = new RepeatMethodImposterCollection(_repeatMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

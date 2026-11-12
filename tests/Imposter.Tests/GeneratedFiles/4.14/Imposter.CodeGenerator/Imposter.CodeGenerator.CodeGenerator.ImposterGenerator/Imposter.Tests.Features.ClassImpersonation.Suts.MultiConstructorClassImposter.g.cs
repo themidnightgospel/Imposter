@@ -15,13 +15,14 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class MultiConstructorClassImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.MultiConstructorClass>
 	{
-		private readonly CalculateMethodImposter _calculateMethodImposter;
-		private readonly CalculateMethodInvocationHistoryCollection _calculateMethodInvocationHistoryCollection;
+		private CalculateMethodImposter _calculateMethodImposter;
+		private CalculateMethodInvocationHistoryCollection _calculateMethodInvocationHistoryCollection;
 		public ICalculateMethodImposterBuilder Calculate(global::Imposter.Abstractions.Arg<int> input)
 		{
 			return new CalculateMethodImposter.Builder(_calculateMethodImposter, _calculateMethodInvocationHistoryCollection, new CalculateArgumentsCriteria(input));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.ClassImpersonation.Suts.MultiConstructorClass global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.MultiConstructorClass>.Instance()
 		{
@@ -162,6 +163,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(CalculateMethodInvocationHistoryCollection.Node invocationHistory)
@@ -545,36 +551,41 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 		public MultiConstructorClassImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._calculateMethodInvocationHistoryCollection = new CalculateMethodInvocationHistoryCollection();
-			this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, invocationBehavior);
+			this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
 		public MultiConstructorClassImposter(int value, string label, global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._calculateMethodInvocationHistoryCollection = new CalculateMethodInvocationHistoryCollection();
-			this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, invocationBehavior);
+			this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this, value, label);
 		}
 
 		public MultiConstructorClassImposter(global::System.Guid correlationId, global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._calculateMethodInvocationHistoryCollection = new CalculateMethodInvocationHistoryCollection();
-			this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, invocationBehavior);
+			this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this, correlationId);
 		}
 
 		public MultiConstructorClassImposter(in global::System.Guid correlationId, global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._calculateMethodInvocationHistoryCollection = new CalculateMethodInvocationHistoryCollection();
-			this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, invocationBehavior);
+			this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this, in correlationId);
 		}
 
 		public MultiConstructorClassImposter(bool enabled, global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._calculateMethodInvocationHistoryCollection = new CalculateMethodInvocationHistoryCollection();
-			this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, invocationBehavior);
+			this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this, enabled);
 		}
 
@@ -583,6 +594,18 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
 			invocations.AddRange(_calculateMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_calculateMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_calculateMethodInvocationHistoryCollection.Clear();
+			this._calculateMethodInvocationHistoryCollection = new CalculateMethodInvocationHistoryCollection();
+			this._calculateMethodImposter = new CalculateMethodImposter(_calculateMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

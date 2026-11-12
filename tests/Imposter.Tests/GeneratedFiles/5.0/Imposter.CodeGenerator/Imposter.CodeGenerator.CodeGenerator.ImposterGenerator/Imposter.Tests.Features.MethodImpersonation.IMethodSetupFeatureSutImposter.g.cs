@@ -15,52 +15,52 @@ namespace Imposter.Tests.Features.MethodImpersonation
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IMethodSetupFeatureSutImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IMethodSetupFeatureSut>, IMethodSetupFeatureSutImposter.IMethodSetupFeatureSutSetup
 	{
-		private readonly VoidNoParamsMethodImposter _voidNoParamsMethodImposter;
-		private readonly IntNoParamsMethodImposter _intNoParamsMethodImposter;
-		private readonly IntSingleParamMethodImposter _intSingleParamMethodImposter;
-		private readonly IntParamsMethodImposter _intParamsMethodImposter;
-		private readonly IntOutParamMethodImposter _intOutParamMethodImposter;
-		private readonly IntRefParamMethodImposter _intRefParamMethodImposter;
-		private readonly IntParamsParamMethodImposter _intParamsParamMethodImposter;
-		private readonly IntInParamMethodImposter _intInParamMethodImposter;
-		private readonly IntAllRefKindsMethodImposter _intAllRefKindsMethodImposter;
-		private readonly GenericReturnTypeMethodImposterCollection _genericReturnTypeMethodImposterCollection;
-		private readonly GenericSingleParamMethodImposterCollection _genericSingleParamMethodImposterCollection;
-		private readonly GenericSingleRefParamMethodImposterCollection _genericSingleRefParamMethodImposterCollection;
-		private readonly GenericSingleOutParamMethodImposterCollection _genericSingleOutParamMethodImposterCollection;
-		private readonly GenericInnerSingleParamMethodImposterCollection _genericInnerSingleParamMethodImposterCollection;
-		private readonly GenericOutParamMethodImposterCollection _genericOutParamMethodImposterCollection;
-		private readonly GenericInnerOutParamMethodImposterCollection _genericInnerOutParamMethodImposterCollection;
-		private readonly GenericRefParamMethodImposterCollection _genericRefParamMethodImposterCollection;
-		private readonly GenericInnerRefParamMethodImposterCollection _genericInnerRefParamMethodImposterCollection;
-		private readonly GenericParamsParamMethodImposterCollection _genericParamsParamMethodImposterCollection;
-		private readonly GenericInnerParamsParamMethodImposterCollection _genericInnerParamsParamMethodImposterCollection;
-		private readonly GenericAllRefKindMethodImposterCollection _genericAllRefKindMethodImposterCollection;
-		private readonly AsyncTaskIntNoParamsMethodImposter _asyncTaskIntNoParamsMethodImposter;
-		private readonly AsyncValueTaskIntNoParamsMethodImposter _asyncValueTaskIntNoParamsMethodImposter;
-		private readonly VoidNoParamsMethodInvocationHistoryCollection _voidNoParamsMethodInvocationHistoryCollection;
-		private readonly IntNoParamsMethodInvocationHistoryCollection _intNoParamsMethodInvocationHistoryCollection;
-		private readonly IntSingleParamMethodInvocationHistoryCollection _intSingleParamMethodInvocationHistoryCollection;
-		private readonly IntParamsMethodInvocationHistoryCollection _intParamsMethodInvocationHistoryCollection;
-		private readonly IntOutParamMethodInvocationHistoryCollection _intOutParamMethodInvocationHistoryCollection;
-		private readonly IntRefParamMethodInvocationHistoryCollection _intRefParamMethodInvocationHistoryCollection;
-		private readonly IntParamsParamMethodInvocationHistoryCollection _intParamsParamMethodInvocationHistoryCollection;
-		private readonly IntInParamMethodInvocationHistoryCollection _intInParamMethodInvocationHistoryCollection;
-		private readonly IntAllRefKindsMethodInvocationHistoryCollection _intAllRefKindsMethodInvocationHistoryCollection;
-		private readonly GenericReturnTypeMethodInvocationHistoryCollection _genericReturnTypeMethodInvocationHistoryCollection;
-		private readonly GenericSingleParamMethodInvocationHistoryCollection _genericSingleParamMethodInvocationHistoryCollection;
-		private readonly GenericSingleRefParamMethodInvocationHistoryCollection _genericSingleRefParamMethodInvocationHistoryCollection;
-		private readonly GenericSingleOutParamMethodInvocationHistoryCollection _genericSingleOutParamMethodInvocationHistoryCollection;
-		private readonly GenericInnerSingleParamMethodInvocationHistoryCollection _genericInnerSingleParamMethodInvocationHistoryCollection;
-		private readonly GenericOutParamMethodInvocationHistoryCollection _genericOutParamMethodInvocationHistoryCollection;
-		private readonly GenericInnerOutParamMethodInvocationHistoryCollection _genericInnerOutParamMethodInvocationHistoryCollection;
-		private readonly GenericRefParamMethodInvocationHistoryCollection _genericRefParamMethodInvocationHistoryCollection;
-		private readonly GenericInnerRefParamMethodInvocationHistoryCollection _genericInnerRefParamMethodInvocationHistoryCollection;
-		private readonly GenericParamsParamMethodInvocationHistoryCollection _genericParamsParamMethodInvocationHistoryCollection;
-		private readonly GenericInnerParamsParamMethodInvocationHistoryCollection _genericInnerParamsParamMethodInvocationHistoryCollection;
-		private readonly GenericAllRefKindMethodInvocationHistoryCollection _genericAllRefKindMethodInvocationHistoryCollection;
-		private readonly AsyncTaskIntNoParamsMethodInvocationHistoryCollection _asyncTaskIntNoParamsMethodInvocationHistoryCollection;
-		private readonly AsyncValueTaskIntNoParamsMethodInvocationHistoryCollection _asyncValueTaskIntNoParamsMethodInvocationHistoryCollection;
+		private VoidNoParamsMethodImposter _voidNoParamsMethodImposter;
+		private IntNoParamsMethodImposter _intNoParamsMethodImposter;
+		private IntSingleParamMethodImposter _intSingleParamMethodImposter;
+		private IntParamsMethodImposter _intParamsMethodImposter;
+		private IntOutParamMethodImposter _intOutParamMethodImposter;
+		private IntRefParamMethodImposter _intRefParamMethodImposter;
+		private IntParamsParamMethodImposter _intParamsParamMethodImposter;
+		private IntInParamMethodImposter _intInParamMethodImposter;
+		private IntAllRefKindsMethodImposter _intAllRefKindsMethodImposter;
+		private GenericReturnTypeMethodImposterCollection _genericReturnTypeMethodImposterCollection;
+		private GenericSingleParamMethodImposterCollection _genericSingleParamMethodImposterCollection;
+		private GenericSingleRefParamMethodImposterCollection _genericSingleRefParamMethodImposterCollection;
+		private GenericSingleOutParamMethodImposterCollection _genericSingleOutParamMethodImposterCollection;
+		private GenericInnerSingleParamMethodImposterCollection _genericInnerSingleParamMethodImposterCollection;
+		private GenericOutParamMethodImposterCollection _genericOutParamMethodImposterCollection;
+		private GenericInnerOutParamMethodImposterCollection _genericInnerOutParamMethodImposterCollection;
+		private GenericRefParamMethodImposterCollection _genericRefParamMethodImposterCollection;
+		private GenericInnerRefParamMethodImposterCollection _genericInnerRefParamMethodImposterCollection;
+		private GenericParamsParamMethodImposterCollection _genericParamsParamMethodImposterCollection;
+		private GenericInnerParamsParamMethodImposterCollection _genericInnerParamsParamMethodImposterCollection;
+		private GenericAllRefKindMethodImposterCollection _genericAllRefKindMethodImposterCollection;
+		private AsyncTaskIntNoParamsMethodImposter _asyncTaskIntNoParamsMethodImposter;
+		private AsyncValueTaskIntNoParamsMethodImposter _asyncValueTaskIntNoParamsMethodImposter;
+		private VoidNoParamsMethodInvocationHistoryCollection _voidNoParamsMethodInvocationHistoryCollection;
+		private IntNoParamsMethodInvocationHistoryCollection _intNoParamsMethodInvocationHistoryCollection;
+		private IntSingleParamMethodInvocationHistoryCollection _intSingleParamMethodInvocationHistoryCollection;
+		private IntParamsMethodInvocationHistoryCollection _intParamsMethodInvocationHistoryCollection;
+		private IntOutParamMethodInvocationHistoryCollection _intOutParamMethodInvocationHistoryCollection;
+		private IntRefParamMethodInvocationHistoryCollection _intRefParamMethodInvocationHistoryCollection;
+		private IntParamsParamMethodInvocationHistoryCollection _intParamsParamMethodInvocationHistoryCollection;
+		private IntInParamMethodInvocationHistoryCollection _intInParamMethodInvocationHistoryCollection;
+		private IntAllRefKindsMethodInvocationHistoryCollection _intAllRefKindsMethodInvocationHistoryCollection;
+		private GenericReturnTypeMethodInvocationHistoryCollection _genericReturnTypeMethodInvocationHistoryCollection;
+		private GenericSingleParamMethodInvocationHistoryCollection _genericSingleParamMethodInvocationHistoryCollection;
+		private GenericSingleRefParamMethodInvocationHistoryCollection _genericSingleRefParamMethodInvocationHistoryCollection;
+		private GenericSingleOutParamMethodInvocationHistoryCollection _genericSingleOutParamMethodInvocationHistoryCollection;
+		private GenericInnerSingleParamMethodInvocationHistoryCollection _genericInnerSingleParamMethodInvocationHistoryCollection;
+		private GenericOutParamMethodInvocationHistoryCollection _genericOutParamMethodInvocationHistoryCollection;
+		private GenericInnerOutParamMethodInvocationHistoryCollection _genericInnerOutParamMethodInvocationHistoryCollection;
+		private GenericRefParamMethodInvocationHistoryCollection _genericRefParamMethodInvocationHistoryCollection;
+		private GenericInnerRefParamMethodInvocationHistoryCollection _genericInnerRefParamMethodInvocationHistoryCollection;
+		private GenericParamsParamMethodInvocationHistoryCollection _genericParamsParamMethodInvocationHistoryCollection;
+		private GenericInnerParamsParamMethodInvocationHistoryCollection _genericInnerParamsParamMethodInvocationHistoryCollection;
+		private GenericAllRefKindMethodInvocationHistoryCollection _genericAllRefKindMethodInvocationHistoryCollection;
+		private AsyncTaskIntNoParamsMethodInvocationHistoryCollection _asyncTaskIntNoParamsMethodInvocationHistoryCollection;
+		private AsyncValueTaskIntNoParamsMethodInvocationHistoryCollection _asyncValueTaskIntNoParamsMethodInvocationHistoryCollection;
 		public IVoidNoParamsMethodImposterBuilder VoidNoParams()
 		{
 			return new VoidNoParamsMethodImposter.Builder(_voidNoParamsMethodImposter, _voidNoParamsMethodInvocationHistoryCollection);
@@ -176,6 +176,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			return new AsyncValueTaskIntNoParamsMethodImposter.Builder(_asyncValueTaskIntNoParamsMethodImposter, _asyncValueTaskIntNoParamsMethodInvocationHistoryCollection);
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.MethodImpersonation.IMethodSetupFeatureSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IMethodSetupFeatureSut>.Instance()
 		{
@@ -289,6 +290,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(AsyncTaskIntNoParamsMethodInvocationHistoryCollection.Node invocationHistory)
@@ -776,6 +782,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(AsyncValueTaskIntNoParamsMethodInvocationHistoryCollection.Node invocationHistory)
@@ -1358,6 +1369,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(GenericAllRefKindMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1920,6 +1936,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(GenericInnerOutParamMethodInvocationHistoryCollection.Node invocationHistory)
@@ -2519,6 +2540,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(GenericInnerParamsParamMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -3106,6 +3132,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(GenericInnerRefParamMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -3691,6 +3722,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(GenericInnerSingleParamMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -4205,6 +4241,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(GenericOutParamMethodInvocationHistoryCollection.Node invocationHistory)
@@ -4804,6 +4845,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(GenericParamsParamMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -5391,6 +5437,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(GenericRefParamMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -5933,6 +5984,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(GenericReturnTypeMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -6459,6 +6515,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(GenericSingleOutParamMethodInvocationHistoryCollection.Node invocationHistory)
@@ -7019,6 +7080,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(GenericSingleParamMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -7566,6 +7632,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(GenericSingleRefParamMethodInvocationHistoryCollection.Node invocationHistory)
@@ -8177,6 +8248,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(IntAllRefKindsMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -8680,6 +8756,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(IntInParamMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -9129,6 +9210,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(IntNoParamsMethodInvocationHistoryCollection.Node invocationHistory)
@@ -9584,6 +9670,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(IntOutParamMethodInvocationHistoryCollection.Node invocationHistory)
@@ -10108,6 +10199,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(IntParamsMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -10602,6 +10698,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(IntParamsParamMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -11092,6 +11193,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(IntRefParamMethodInvocationHistoryCollection.Node invocationHistory)
@@ -11586,6 +11692,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(IntSingleParamMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -12025,6 +12136,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(VoidNoParamsMethodInvocationHistoryCollection.Node invocationHistory)
@@ -12500,6 +12616,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 		public IMethodSetupFeatureSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._voidNoParamsMethodInvocationHistoryCollection = new VoidNoParamsMethodInvocationHistoryCollection();
 			this._intNoParamsMethodInvocationHistoryCollection = new IntNoParamsMethodInvocationHistoryCollection();
 			this._intSingleParamMethodInvocationHistoryCollection = new IntSingleParamMethodInvocationHistoryCollection();
@@ -12523,29 +12640,29 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			this._genericAllRefKindMethodInvocationHistoryCollection = new GenericAllRefKindMethodInvocationHistoryCollection();
 			this._asyncTaskIntNoParamsMethodInvocationHistoryCollection = new AsyncTaskIntNoParamsMethodInvocationHistoryCollection();
 			this._asyncValueTaskIntNoParamsMethodInvocationHistoryCollection = new AsyncValueTaskIntNoParamsMethodInvocationHistoryCollection();
-			this._voidNoParamsMethodImposter = new VoidNoParamsMethodImposter(_voidNoParamsMethodInvocationHistoryCollection, invocationBehavior);
-			this._intNoParamsMethodImposter = new IntNoParamsMethodImposter(_intNoParamsMethodInvocationHistoryCollection, invocationBehavior);
-			this._intSingleParamMethodImposter = new IntSingleParamMethodImposter(_intSingleParamMethodInvocationHistoryCollection, invocationBehavior);
-			this._intParamsMethodImposter = new IntParamsMethodImposter(_intParamsMethodInvocationHistoryCollection, invocationBehavior);
-			this._intOutParamMethodImposter = new IntOutParamMethodImposter(_intOutParamMethodInvocationHistoryCollection, invocationBehavior);
-			this._intRefParamMethodImposter = new IntRefParamMethodImposter(_intRefParamMethodInvocationHistoryCollection, invocationBehavior);
-			this._intParamsParamMethodImposter = new IntParamsParamMethodImposter(_intParamsParamMethodInvocationHistoryCollection, invocationBehavior);
-			this._intInParamMethodImposter = new IntInParamMethodImposter(_intInParamMethodInvocationHistoryCollection, invocationBehavior);
-			this._intAllRefKindsMethodImposter = new IntAllRefKindsMethodImposter(_intAllRefKindsMethodInvocationHistoryCollection, invocationBehavior);
-			this._genericReturnTypeMethodImposterCollection = new GenericReturnTypeMethodImposterCollection(_genericReturnTypeMethodInvocationHistoryCollection, invocationBehavior);
-			this._genericSingleParamMethodImposterCollection = new GenericSingleParamMethodImposterCollection(_genericSingleParamMethodInvocationHistoryCollection, invocationBehavior);
-			this._genericSingleRefParamMethodImposterCollection = new GenericSingleRefParamMethodImposterCollection(_genericSingleRefParamMethodInvocationHistoryCollection, invocationBehavior);
-			this._genericSingleOutParamMethodImposterCollection = new GenericSingleOutParamMethodImposterCollection(_genericSingleOutParamMethodInvocationHistoryCollection, invocationBehavior);
-			this._genericInnerSingleParamMethodImposterCollection = new GenericInnerSingleParamMethodImposterCollection(_genericInnerSingleParamMethodInvocationHistoryCollection, invocationBehavior);
-			this._genericOutParamMethodImposterCollection = new GenericOutParamMethodImposterCollection(_genericOutParamMethodInvocationHistoryCollection, invocationBehavior);
-			this._genericInnerOutParamMethodImposterCollection = new GenericInnerOutParamMethodImposterCollection(_genericInnerOutParamMethodInvocationHistoryCollection, invocationBehavior);
-			this._genericRefParamMethodImposterCollection = new GenericRefParamMethodImposterCollection(_genericRefParamMethodInvocationHistoryCollection, invocationBehavior);
-			this._genericInnerRefParamMethodImposterCollection = new GenericInnerRefParamMethodImposterCollection(_genericInnerRefParamMethodInvocationHistoryCollection, invocationBehavior);
-			this._genericParamsParamMethodImposterCollection = new GenericParamsParamMethodImposterCollection(_genericParamsParamMethodInvocationHistoryCollection, invocationBehavior);
-			this._genericInnerParamsParamMethodImposterCollection = new GenericInnerParamsParamMethodImposterCollection(_genericInnerParamsParamMethodInvocationHistoryCollection, invocationBehavior);
-			this._genericAllRefKindMethodImposterCollection = new GenericAllRefKindMethodImposterCollection(_genericAllRefKindMethodInvocationHistoryCollection, invocationBehavior);
-			this._asyncTaskIntNoParamsMethodImposter = new AsyncTaskIntNoParamsMethodImposter(_asyncTaskIntNoParamsMethodInvocationHistoryCollection, invocationBehavior);
-			this._asyncValueTaskIntNoParamsMethodImposter = new AsyncValueTaskIntNoParamsMethodImposter(_asyncValueTaskIntNoParamsMethodInvocationHistoryCollection, invocationBehavior);
+			this._voidNoParamsMethodImposter = new VoidNoParamsMethodImposter(_voidNoParamsMethodInvocationHistoryCollection, this._imposterMode);
+			this._intNoParamsMethodImposter = new IntNoParamsMethodImposter(_intNoParamsMethodInvocationHistoryCollection, this._imposterMode);
+			this._intSingleParamMethodImposter = new IntSingleParamMethodImposter(_intSingleParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._intParamsMethodImposter = new IntParamsMethodImposter(_intParamsMethodInvocationHistoryCollection, this._imposterMode);
+			this._intOutParamMethodImposter = new IntOutParamMethodImposter(_intOutParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._intRefParamMethodImposter = new IntRefParamMethodImposter(_intRefParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._intParamsParamMethodImposter = new IntParamsParamMethodImposter(_intParamsParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._intInParamMethodImposter = new IntInParamMethodImposter(_intInParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._intAllRefKindsMethodImposter = new IntAllRefKindsMethodImposter(_intAllRefKindsMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericReturnTypeMethodImposterCollection = new GenericReturnTypeMethodImposterCollection(_genericReturnTypeMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericSingleParamMethodImposterCollection = new GenericSingleParamMethodImposterCollection(_genericSingleParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericSingleRefParamMethodImposterCollection = new GenericSingleRefParamMethodImposterCollection(_genericSingleRefParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericSingleOutParamMethodImposterCollection = new GenericSingleOutParamMethodImposterCollection(_genericSingleOutParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericInnerSingleParamMethodImposterCollection = new GenericInnerSingleParamMethodImposterCollection(_genericInnerSingleParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericOutParamMethodImposterCollection = new GenericOutParamMethodImposterCollection(_genericOutParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericInnerOutParamMethodImposterCollection = new GenericInnerOutParamMethodImposterCollection(_genericInnerOutParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericRefParamMethodImposterCollection = new GenericRefParamMethodImposterCollection(_genericRefParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericInnerRefParamMethodImposterCollection = new GenericInnerRefParamMethodImposterCollection(_genericInnerRefParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericParamsParamMethodImposterCollection = new GenericParamsParamMethodImposterCollection(_genericParamsParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericInnerParamsParamMethodImposterCollection = new GenericInnerParamsParamMethodImposterCollection(_genericInnerParamsParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericAllRefKindMethodImposterCollection = new GenericAllRefKindMethodImposterCollection(_genericAllRefKindMethodInvocationHistoryCollection, this._imposterMode);
+			this._asyncTaskIntNoParamsMethodImposter = new AsyncTaskIntNoParamsMethodImposter(_asyncTaskIntNoParamsMethodInvocationHistoryCollection, this._imposterMode);
+			this._asyncValueTaskIntNoParamsMethodImposter = new AsyncValueTaskIntNoParamsMethodImposter(_asyncValueTaskIntNoParamsMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -12576,6 +12693,106 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			invocations.AddRange(_asyncTaskIntNoParamsMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_asyncValueTaskIntNoParamsMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_voidNoParamsMethodInvocationHistoryCollection.Clear();
+			_intNoParamsMethodInvocationHistoryCollection.Clear();
+			_intSingleParamMethodInvocationHistoryCollection.Clear();
+			_intParamsMethodInvocationHistoryCollection.Clear();
+			_intOutParamMethodInvocationHistoryCollection.Clear();
+			_intRefParamMethodInvocationHistoryCollection.Clear();
+			_intParamsParamMethodInvocationHistoryCollection.Clear();
+			_intInParamMethodInvocationHistoryCollection.Clear();
+			_intAllRefKindsMethodInvocationHistoryCollection.Clear();
+			_genericReturnTypeMethodInvocationHistoryCollection.Clear();
+			_genericSingleParamMethodInvocationHistoryCollection.Clear();
+			_genericSingleRefParamMethodInvocationHistoryCollection.Clear();
+			_genericSingleOutParamMethodInvocationHistoryCollection.Clear();
+			_genericInnerSingleParamMethodInvocationHistoryCollection.Clear();
+			_genericOutParamMethodInvocationHistoryCollection.Clear();
+			_genericInnerOutParamMethodInvocationHistoryCollection.Clear();
+			_genericRefParamMethodInvocationHistoryCollection.Clear();
+			_genericInnerRefParamMethodInvocationHistoryCollection.Clear();
+			_genericParamsParamMethodInvocationHistoryCollection.Clear();
+			_genericInnerParamsParamMethodInvocationHistoryCollection.Clear();
+			_genericAllRefKindMethodInvocationHistoryCollection.Clear();
+			_asyncTaskIntNoParamsMethodInvocationHistoryCollection.Clear();
+			_asyncValueTaskIntNoParamsMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_voidNoParamsMethodInvocationHistoryCollection.Clear();
+			_intNoParamsMethodInvocationHistoryCollection.Clear();
+			_intSingleParamMethodInvocationHistoryCollection.Clear();
+			_intParamsMethodInvocationHistoryCollection.Clear();
+			_intOutParamMethodInvocationHistoryCollection.Clear();
+			_intRefParamMethodInvocationHistoryCollection.Clear();
+			_intParamsParamMethodInvocationHistoryCollection.Clear();
+			_intInParamMethodInvocationHistoryCollection.Clear();
+			_intAllRefKindsMethodInvocationHistoryCollection.Clear();
+			_genericReturnTypeMethodInvocationHistoryCollection.Clear();
+			_genericSingleParamMethodInvocationHistoryCollection.Clear();
+			_genericSingleRefParamMethodInvocationHistoryCollection.Clear();
+			_genericSingleOutParamMethodInvocationHistoryCollection.Clear();
+			_genericInnerSingleParamMethodInvocationHistoryCollection.Clear();
+			_genericOutParamMethodInvocationHistoryCollection.Clear();
+			_genericInnerOutParamMethodInvocationHistoryCollection.Clear();
+			_genericRefParamMethodInvocationHistoryCollection.Clear();
+			_genericInnerRefParamMethodInvocationHistoryCollection.Clear();
+			_genericParamsParamMethodInvocationHistoryCollection.Clear();
+			_genericInnerParamsParamMethodInvocationHistoryCollection.Clear();
+			_genericAllRefKindMethodInvocationHistoryCollection.Clear();
+			_asyncTaskIntNoParamsMethodInvocationHistoryCollection.Clear();
+			_asyncValueTaskIntNoParamsMethodInvocationHistoryCollection.Clear();
+			this._voidNoParamsMethodInvocationHistoryCollection = new VoidNoParamsMethodInvocationHistoryCollection();
+			this._intNoParamsMethodInvocationHistoryCollection = new IntNoParamsMethodInvocationHistoryCollection();
+			this._intSingleParamMethodInvocationHistoryCollection = new IntSingleParamMethodInvocationHistoryCollection();
+			this._intParamsMethodInvocationHistoryCollection = new IntParamsMethodInvocationHistoryCollection();
+			this._intOutParamMethodInvocationHistoryCollection = new IntOutParamMethodInvocationHistoryCollection();
+			this._intRefParamMethodInvocationHistoryCollection = new IntRefParamMethodInvocationHistoryCollection();
+			this._intParamsParamMethodInvocationHistoryCollection = new IntParamsParamMethodInvocationHistoryCollection();
+			this._intInParamMethodInvocationHistoryCollection = new IntInParamMethodInvocationHistoryCollection();
+			this._intAllRefKindsMethodInvocationHistoryCollection = new IntAllRefKindsMethodInvocationHistoryCollection();
+			this._genericReturnTypeMethodInvocationHistoryCollection = new GenericReturnTypeMethodInvocationHistoryCollection();
+			this._genericSingleParamMethodInvocationHistoryCollection = new GenericSingleParamMethodInvocationHistoryCollection();
+			this._genericSingleRefParamMethodInvocationHistoryCollection = new GenericSingleRefParamMethodInvocationHistoryCollection();
+			this._genericSingleOutParamMethodInvocationHistoryCollection = new GenericSingleOutParamMethodInvocationHistoryCollection();
+			this._genericInnerSingleParamMethodInvocationHistoryCollection = new GenericInnerSingleParamMethodInvocationHistoryCollection();
+			this._genericOutParamMethodInvocationHistoryCollection = new GenericOutParamMethodInvocationHistoryCollection();
+			this._genericInnerOutParamMethodInvocationHistoryCollection = new GenericInnerOutParamMethodInvocationHistoryCollection();
+			this._genericRefParamMethodInvocationHistoryCollection = new GenericRefParamMethodInvocationHistoryCollection();
+			this._genericInnerRefParamMethodInvocationHistoryCollection = new GenericInnerRefParamMethodInvocationHistoryCollection();
+			this._genericParamsParamMethodInvocationHistoryCollection = new GenericParamsParamMethodInvocationHistoryCollection();
+			this._genericInnerParamsParamMethodInvocationHistoryCollection = new GenericInnerParamsParamMethodInvocationHistoryCollection();
+			this._genericAllRefKindMethodInvocationHistoryCollection = new GenericAllRefKindMethodInvocationHistoryCollection();
+			this._asyncTaskIntNoParamsMethodInvocationHistoryCollection = new AsyncTaskIntNoParamsMethodInvocationHistoryCollection();
+			this._asyncValueTaskIntNoParamsMethodInvocationHistoryCollection = new AsyncValueTaskIntNoParamsMethodInvocationHistoryCollection();
+			this._voidNoParamsMethodImposter = new VoidNoParamsMethodImposter(_voidNoParamsMethodInvocationHistoryCollection, this._imposterMode);
+			this._intNoParamsMethodImposter = new IntNoParamsMethodImposter(_intNoParamsMethodInvocationHistoryCollection, this._imposterMode);
+			this._intSingleParamMethodImposter = new IntSingleParamMethodImposter(_intSingleParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._intParamsMethodImposter = new IntParamsMethodImposter(_intParamsMethodInvocationHistoryCollection, this._imposterMode);
+			this._intOutParamMethodImposter = new IntOutParamMethodImposter(_intOutParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._intRefParamMethodImposter = new IntRefParamMethodImposter(_intRefParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._intParamsParamMethodImposter = new IntParamsParamMethodImposter(_intParamsParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._intInParamMethodImposter = new IntInParamMethodImposter(_intInParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._intAllRefKindsMethodImposter = new IntAllRefKindsMethodImposter(_intAllRefKindsMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericReturnTypeMethodImposterCollection = new GenericReturnTypeMethodImposterCollection(_genericReturnTypeMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericSingleParamMethodImposterCollection = new GenericSingleParamMethodImposterCollection(_genericSingleParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericSingleRefParamMethodImposterCollection = new GenericSingleRefParamMethodImposterCollection(_genericSingleRefParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericSingleOutParamMethodImposterCollection = new GenericSingleOutParamMethodImposterCollection(_genericSingleOutParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericInnerSingleParamMethodImposterCollection = new GenericInnerSingleParamMethodImposterCollection(_genericInnerSingleParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericOutParamMethodImposterCollection = new GenericOutParamMethodImposterCollection(_genericOutParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericInnerOutParamMethodImposterCollection = new GenericInnerOutParamMethodImposterCollection(_genericInnerOutParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericRefParamMethodImposterCollection = new GenericRefParamMethodImposterCollection(_genericRefParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericInnerRefParamMethodImposterCollection = new GenericInnerRefParamMethodImposterCollection(_genericInnerRefParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericParamsParamMethodImposterCollection = new GenericParamsParamMethodImposterCollection(_genericParamsParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericInnerParamsParamMethodImposterCollection = new GenericInnerParamsParamMethodImposterCollection(_genericInnerParamsParamMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericAllRefKindMethodImposterCollection = new GenericAllRefKindMethodImposterCollection(_genericAllRefKindMethodInvocationHistoryCollection, this._imposterMode);
+			this._asyncTaskIntNoParamsMethodImposter = new AsyncTaskIntNoParamsMethodImposter(_asyncTaskIntNoParamsMethodInvocationHistoryCollection, this._imposterMode);
+			this._asyncValueTaskIntNoParamsMethodImposter = new AsyncValueTaskIntNoParamsMethodImposter(_asyncValueTaskIntNoParamsMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

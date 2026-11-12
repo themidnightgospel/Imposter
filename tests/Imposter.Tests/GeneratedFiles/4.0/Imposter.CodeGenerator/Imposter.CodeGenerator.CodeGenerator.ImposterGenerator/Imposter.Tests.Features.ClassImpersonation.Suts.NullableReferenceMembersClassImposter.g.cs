@@ -15,13 +15,14 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class NullableReferenceMembersClassImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.NullableReferenceMembersClass>
 	{
-		private readonly DescribeMethodImposter _describeMethodImposter;
-		private readonly DescribeMethodInvocationHistoryCollection _describeMethodInvocationHistoryCollection;
+		private DescribeMethodImposter _describeMethodImposter;
+		private DescribeMethodInvocationHistoryCollection _describeMethodInvocationHistoryCollection;
 		public IDescribeMethodImposterBuilder Describe(global::Imposter.Abstractions.Arg<string?> value)
 		{
 			return new DescribeMethodImposter.Builder(_describeMethodImposter, _describeMethodInvocationHistoryCollection, new DescribeArgumentsCriteria(value));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.ClassImpersonation.Suts.NullableReferenceMembersClass global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.NullableReferenceMembersClass>.Instance()
 		{
@@ -162,6 +163,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(DescribeMethodInvocationHistoryCollection.Node invocationHistory)
@@ -545,7 +551,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 		public INamePropertyBuilder Name => _NamePropertyBuilderField;
 
-		private readonly NamePropertyBuilder _NamePropertyBuilderField;
+		private NamePropertyBuilder _NamePropertyBuilderField;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface INamePropertyGetterOutcomeBuilder
 		{
@@ -662,6 +668,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class NamePropertyBuilder : INamePropertyBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposterBuilder.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
 			{
 				return _setterImposter.Snapshot(orderBySequence);
@@ -817,7 +829,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			}
 		}
 
-		private readonly IndexerIndexerBuilder _IndexerIndexer;
+		private IndexerIndexerBuilder _IndexerIndexer;
 		public IIndexerIndexerBuilder this[global::Imposter.Abstractions.Arg<string?> key] => new IndexerIndexerBuilder.InvocationBuilder(_IndexerIndexer, new IndexerIndexerArgumentsCriteria(key));
 		public delegate string? IndexerIndexerDelegate(string? key);
 		public delegate void IndexerIndexerGetterCallback(string? key);
@@ -943,6 +955,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class IndexerIndexerBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposter.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			private readonly DefaultIndexerIndexerBehaviour _IndexerDefaultIndexerBehaviour = new DefaultIndexerIndexerBehaviour();
 			private readonly GetterImposter _getterImposter;
 			private readonly SetterImposter _setterImposter;
@@ -1064,6 +1082,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class GetterImposter
 			{
+				internal void ClearInvocations()
+				{
+					_invocationHistory?.Clear();
+				}
+
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
 				private readonly global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter> _getterInvocationImposters = new global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter>();
 				private global::Imposter.Abstractions.InvocationHistory<IndexerGetterInvocation>? _invocationHistory;
@@ -1349,6 +1372,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class SetterImposter
 			{
+				internal void ClearInvocations()
+				{
+					_invocationHistory?.Clear();
+				}
+
 				private global::Imposter.Abstractions.CallbackCollection<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)>? _callbacks;
 				private global::Imposter.Abstractions.InvocationHistory<IndexerSetterInvocation>? _invocationHistory;
 				private global::Imposter.Abstractions.CallbackCollection<IndexerIndexerArgumentsCriteria>? _baseCriteria;
@@ -1616,10 +1644,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 		public NullableReferenceMembersClassImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._describeMethodInvocationHistoryCollection = new DescribeMethodInvocationHistoryCollection();
-			this._describeMethodImposter = new DescribeMethodImposter(_describeMethodInvocationHistoryCollection, invocationBehavior);
-			this._NamePropertyBuilderField = new NamePropertyBuilder(invocationBehavior);
-			this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.ClassImpersonation.Suts.NullableReferenceMembersClass.this[string? key]");
+			this._describeMethodImposter = new DescribeMethodImposter(_describeMethodInvocationHistoryCollection, this._imposterMode);
+			this._NamePropertyBuilderField = new NamePropertyBuilder(this._imposterMode);
+			this._IndexerIndexer = new IndexerIndexerBuilder(this._imposterMode, "Imposter.Tests.Features.ClassImpersonation.Suts.NullableReferenceMembersClass.this[string? key]");
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -1630,6 +1659,24 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			invocations.AddRange(_NamePropertyBuilderField.Snapshot(false));
 			invocations.AddRange(_IndexerIndexer.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_describeMethodInvocationHistoryCollection.Clear();
+			_NamePropertyBuilderField.ClearInvocations();
+			_IndexerIndexer.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_describeMethodInvocationHistoryCollection.Clear();
+			_NamePropertyBuilderField.ClearInvocations();
+			_IndexerIndexer.ClearInvocations();
+			this._describeMethodInvocationHistoryCollection = new DescribeMethodInvocationHistoryCollection();
+			this._describeMethodImposter = new DescribeMethodImposter(_describeMethodInvocationHistoryCollection, this._imposterMode);
+			this._NamePropertyBuilderField = new NamePropertyBuilder(this._imposterMode);
+			this._IndexerIndexer = new IndexerIndexerBuilder(this._imposterMode, "Imposter.Tests.Features.ClassImpersonation.Suts.NullableReferenceMembersClass.this[string? key]");
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

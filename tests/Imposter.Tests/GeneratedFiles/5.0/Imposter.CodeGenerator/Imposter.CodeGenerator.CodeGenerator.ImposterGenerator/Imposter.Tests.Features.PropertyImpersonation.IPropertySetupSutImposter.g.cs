@@ -15,6 +15,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IPropertySetupSutImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImpersonation.IPropertySetupSut>, IPropertySetupSutImposter.IPropertySetupSutSetup
 	{
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.PropertyImpersonation.IPropertySetupSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.PropertyImpersonation.IPropertySetupSut>.Instance()
 		{
@@ -23,7 +24,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 		public IAgePropertyBuilder Age => _AgePropertyBuilderField;
 
-		private readonly AgePropertyBuilder _AgePropertyBuilderField;
+		private AgePropertyBuilder _AgePropertyBuilderField;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IAgePropertyGetterOutcomeBuilder
 		{
@@ -125,6 +126,12 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class AgePropertyBuilder : IAgePropertyBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposterBuilder.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
 			{
 				return _setterImposter.Snapshot(orderBySequence);
@@ -252,7 +259,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 		public ILastNamePropertyBuilder LastName => _LastNamePropertyBuilderField;
 
-		private readonly LastNamePropertyBuilder _LastNamePropertyBuilderField;
+		private LastNamePropertyBuilder _LastNamePropertyBuilderField;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ILastNamePropertySetterCallbackBuilder
 		{
@@ -315,6 +322,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class LastNamePropertyBuilder : ILastNamePropertyBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_setterImposter.ClearInvocations();
+			}
+
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
 			{
 				return _setterImposter.Snapshot(orderBySequence);
@@ -385,7 +397,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 		public INamePropertyBuilder Name => _NamePropertyBuilderField;
 
-		private readonly NamePropertyBuilder _NamePropertyBuilderField;
+		private NamePropertyBuilder _NamePropertyBuilderField;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface INamePropertyGetterOutcomeBuilder
 		{
@@ -433,6 +445,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class NamePropertyBuilder : INamePropertyBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposterBuilder.ClearInvocations();
+			}
+
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
 			{
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>(), orderBySequence);
@@ -525,9 +542,10 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 		public IPropertySetupSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
-			this._AgePropertyBuilderField = new AgePropertyBuilder(invocationBehavior);
-			this._LastNamePropertyBuilderField = new LastNamePropertyBuilder(invocationBehavior);
-			this._NamePropertyBuilderField = new NamePropertyBuilder(invocationBehavior);
+			this._imposterMode = invocationBehavior;
+			this._AgePropertyBuilderField = new AgePropertyBuilder(this._imposterMode);
+			this._LastNamePropertyBuilderField = new LastNamePropertyBuilder(this._imposterMode);
+			this._NamePropertyBuilderField = new NamePropertyBuilder(this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -538,6 +556,23 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			invocations.AddRange(_LastNamePropertyBuilderField.Snapshot(false));
 			invocations.AddRange(_NamePropertyBuilderField.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_AgePropertyBuilderField.ClearInvocations();
+			_LastNamePropertyBuilderField.ClearInvocations();
+			_NamePropertyBuilderField.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_AgePropertyBuilderField.ClearInvocations();
+			_LastNamePropertyBuilderField.ClearInvocations();
+			_NamePropertyBuilderField.ClearInvocations();
+			this._AgePropertyBuilderField = new AgePropertyBuilder(this._imposterMode);
+			this._LastNamePropertyBuilderField = new LastNamePropertyBuilder(this._imposterMode);
+			this._NamePropertyBuilderField = new NamePropertyBuilder(this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

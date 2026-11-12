@@ -15,12 +15,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IRefStructParameterSutImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IRefStructParameterSut>, IRefStructParameterSutImposter.IRefStructParameterSutSetup
 	{
-		private readonly ReadMethodImposter _readMethodImposter;
-		private readonly AdvanceMethodImposter _advanceMethodImposter;
-		private readonly TryOpenMethodImposter _tryOpenMethodImposter;
-		private readonly ReadMethodInvocationHistoryCollection _readMethodInvocationHistoryCollection;
-		private readonly AdvanceMethodInvocationHistoryCollection _advanceMethodInvocationHistoryCollection;
-		private readonly TryOpenMethodInvocationHistoryCollection _tryOpenMethodInvocationHistoryCollection;
+		private ReadMethodImposter _readMethodImposter;
+		private AdvanceMethodImposter _advanceMethodImposter;
+		private TryOpenMethodImposter _tryOpenMethodImposter;
+		private ReadMethodInvocationHistoryCollection _readMethodInvocationHistoryCollection;
+		private AdvanceMethodInvocationHistoryCollection _advanceMethodInvocationHistoryCollection;
+		private TryOpenMethodInvocationHistoryCollection _tryOpenMethodInvocationHistoryCollection;
 		public IReadMethodImposterBuilder Read(global::Imposter.Abstractions.Arg<int> id)
 		{
 			return new ReadMethodImposter.Builder(_readMethodImposter, _readMethodInvocationHistoryCollection, new ReadArgumentsCriteria(id));
@@ -36,6 +36,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			return new TryOpenMethodImposter.Builder(_tryOpenMethodImposter, _tryOpenMethodInvocationHistoryCollection);
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.MethodImpersonation.IRefStructParameterSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IRefStructParameterSut>.Instance()
 		{
@@ -125,6 +126,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(AdvanceMethodInvocationHistoryCollection.Node invocationHistory)
@@ -586,6 +592,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(ReadMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1037,6 +1048,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(TryOpenMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1425,12 +1441,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 		public IRefStructParameterSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._readMethodInvocationHistoryCollection = new ReadMethodInvocationHistoryCollection();
 			this._advanceMethodInvocationHistoryCollection = new AdvanceMethodInvocationHistoryCollection();
 			this._tryOpenMethodInvocationHistoryCollection = new TryOpenMethodInvocationHistoryCollection();
-			this._readMethodImposter = new ReadMethodImposter(_readMethodInvocationHistoryCollection, invocationBehavior);
-			this._advanceMethodImposter = new AdvanceMethodImposter(_advanceMethodInvocationHistoryCollection, invocationBehavior);
-			this._tryOpenMethodImposter = new TryOpenMethodImposter(_tryOpenMethodInvocationHistoryCollection, invocationBehavior);
+			this._readMethodImposter = new ReadMethodImposter(_readMethodInvocationHistoryCollection, this._imposterMode);
+			this._advanceMethodImposter = new AdvanceMethodImposter(_advanceMethodInvocationHistoryCollection, this._imposterMode);
+			this._tryOpenMethodImposter = new TryOpenMethodImposter(_tryOpenMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -1441,6 +1458,26 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			invocations.AddRange(_advanceMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_tryOpenMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_readMethodInvocationHistoryCollection.Clear();
+			_advanceMethodInvocationHistoryCollection.Clear();
+			_tryOpenMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_readMethodInvocationHistoryCollection.Clear();
+			_advanceMethodInvocationHistoryCollection.Clear();
+			_tryOpenMethodInvocationHistoryCollection.Clear();
+			this._readMethodInvocationHistoryCollection = new ReadMethodInvocationHistoryCollection();
+			this._advanceMethodInvocationHistoryCollection = new AdvanceMethodInvocationHistoryCollection();
+			this._tryOpenMethodInvocationHistoryCollection = new TryOpenMethodInvocationHistoryCollection();
+			this._readMethodImposter = new ReadMethodImposter(_readMethodInvocationHistoryCollection, this._imposterMode);
+			this._advanceMethodImposter = new AdvanceMethodImposter(_advanceMethodInvocationHistoryCollection, this._imposterMode);
+			this._tryOpenMethodImposter = new TryOpenMethodImposter(_tryOpenMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

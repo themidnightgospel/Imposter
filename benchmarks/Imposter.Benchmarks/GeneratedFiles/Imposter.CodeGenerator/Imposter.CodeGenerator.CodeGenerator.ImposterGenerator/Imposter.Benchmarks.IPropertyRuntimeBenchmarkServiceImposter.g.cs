@@ -15,6 +15,7 @@ namespace Imposter.Benchmarks
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IPropertyRuntimeBenchmarkServiceImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Benchmarks.IPropertyRuntimeBenchmarkService>, IPropertyRuntimeBenchmarkServiceImposter.IPropertyRuntimeBenchmarkServiceSetup
 	{
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Benchmarks.IPropertyRuntimeBenchmarkService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Benchmarks.IPropertyRuntimeBenchmarkService>.Instance()
 		{
@@ -23,7 +24,7 @@ namespace Imposter.Benchmarks
 
 		public INumberPropertyBuilder Number => _NumberPropertyBuilderField;
 
-		private readonly NumberPropertyBuilder _NumberPropertyBuilderField;
+		private NumberPropertyBuilder _NumberPropertyBuilderField;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface INumberPropertyGetterOutcomeBuilder
 		{
@@ -125,6 +126,12 @@ namespace Imposter.Benchmarks
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class NumberPropertyBuilder : INumberPropertyBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposterBuilder.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
 			{
 				return _setterImposter.Snapshot(orderBySequence);
@@ -252,7 +259,7 @@ namespace Imposter.Benchmarks
 
 		public ITextPropertyBuilder Text => _TextPropertyBuilderField;
 
-		private readonly TextPropertyBuilder _TextPropertyBuilderField;
+		private TextPropertyBuilder _TextPropertyBuilderField;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ITextPropertyGetterOutcomeBuilder
 		{
@@ -354,6 +361,12 @@ namespace Imposter.Benchmarks
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class TextPropertyBuilder : ITextPropertyBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposterBuilder.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
 			{
 				return _setterImposter.Snapshot(orderBySequence);
@@ -498,8 +511,9 @@ namespace Imposter.Benchmarks
 
 		public IPropertyRuntimeBenchmarkServiceImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
-			this._NumberPropertyBuilderField = new NumberPropertyBuilder(invocationBehavior);
-			this._TextPropertyBuilderField = new TextPropertyBuilder(invocationBehavior);
+			this._imposterMode = invocationBehavior;
+			this._NumberPropertyBuilderField = new NumberPropertyBuilder(this._imposterMode);
+			this._TextPropertyBuilderField = new TextPropertyBuilder(this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -509,6 +523,20 @@ namespace Imposter.Benchmarks
 			invocations.AddRange(_NumberPropertyBuilderField.Snapshot(false));
 			invocations.AddRange(_TextPropertyBuilderField.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_NumberPropertyBuilderField.ClearInvocations();
+			_TextPropertyBuilderField.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_NumberPropertyBuilderField.ClearInvocations();
+			_TextPropertyBuilderField.ClearInvocations();
+			this._NumberPropertyBuilderField = new NumberPropertyBuilder(this._imposterMode);
+			this._TextPropertyBuilderField = new TextPropertyBuilder(this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

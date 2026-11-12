@@ -15,16 +15,16 @@ namespace Imposter.Benchmarks
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class ICallAllocationBenchmarkServiceImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Benchmarks.ICallAllocationBenchmarkService>, ICallAllocationBenchmarkServiceImposter.ICallAllocationBenchmarkServiceSetup
 	{
-		private readonly ReturnTaskMethodImposter _returnTaskMethodImposter;
-		private readonly ReturnValueTaskMethodImposter _returnValueTaskMethodImposter;
-		private readonly ThrowTaskMethodImposter _throwTaskMethodImposter;
-		private readonly ThrowValueTaskMethodImposter _throwValueTaskMethodImposter;
-		private readonly ThrowMethodImposter _throwMethodImposter;
-		private readonly ReturnTaskMethodInvocationHistoryCollection _returnTaskMethodInvocationHistoryCollection;
-		private readonly ReturnValueTaskMethodInvocationHistoryCollection _returnValueTaskMethodInvocationHistoryCollection;
-		private readonly ThrowTaskMethodInvocationHistoryCollection _throwTaskMethodInvocationHistoryCollection;
-		private readonly ThrowValueTaskMethodInvocationHistoryCollection _throwValueTaskMethodInvocationHistoryCollection;
-		private readonly ThrowMethodInvocationHistoryCollection _throwMethodInvocationHistoryCollection;
+		private ReturnTaskMethodImposter _returnTaskMethodImposter;
+		private ReturnValueTaskMethodImposter _returnValueTaskMethodImposter;
+		private ThrowTaskMethodImposter _throwTaskMethodImposter;
+		private ThrowValueTaskMethodImposter _throwValueTaskMethodImposter;
+		private ThrowMethodImposter _throwMethodImposter;
+		private ReturnTaskMethodInvocationHistoryCollection _returnTaskMethodInvocationHistoryCollection;
+		private ReturnValueTaskMethodInvocationHistoryCollection _returnValueTaskMethodInvocationHistoryCollection;
+		private ThrowTaskMethodInvocationHistoryCollection _throwTaskMethodInvocationHistoryCollection;
+		private ThrowValueTaskMethodInvocationHistoryCollection _throwValueTaskMethodInvocationHistoryCollection;
+		private ThrowMethodInvocationHistoryCollection _throwMethodInvocationHistoryCollection;
 		public IReturnTaskMethodImposterBuilder ReturnTask(global::Imposter.Abstractions.Arg<int> key)
 		{
 			return new ReturnTaskMethodImposter.Builder(_returnTaskMethodImposter, _returnTaskMethodInvocationHistoryCollection, new ReturnTaskArgumentsCriteria(key));
@@ -50,6 +50,7 @@ namespace Imposter.Benchmarks
 			return new ThrowMethodImposter.Builder(_throwMethodImposter, _throwMethodInvocationHistoryCollection, new ThrowArgumentsCriteria(key));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Benchmarks.ICallAllocationBenchmarkService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Benchmarks.ICallAllocationBenchmarkService>.Instance()
 		{
@@ -204,6 +205,11 @@ namespace Imposter.Benchmarks
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(ReturnTaskMethodInvocationHistoryCollection.Node invocationHistory)
@@ -740,6 +746,11 @@ namespace Imposter.Benchmarks
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(ReturnValueTaskMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1274,6 +1285,11 @@ namespace Imposter.Benchmarks
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(ThrowMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1778,6 +1794,11 @@ namespace Imposter.Benchmarks
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(ThrowTaskMethodInvocationHistoryCollection.Node invocationHistory)
@@ -2314,6 +2335,11 @@ namespace Imposter.Benchmarks
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(ThrowValueTaskMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -2714,7 +2740,7 @@ namespace Imposter.Benchmarks
 
 		public IChangedEventImposterBuilder Changed => _Changed;
 
-		private readonly ChangedEventImposterBuilder _Changed;
+		private ChangedEventImposterBuilder _Changed;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IChangedEventImposterBuilder : IChangedEventImposterSetupBuilder, IChangedEventImposterVerificationBuilder
 		{
@@ -2753,6 +2779,14 @@ namespace Imposter.Benchmarks
 			private global::Imposter.Abstractions.CallbackCollection<global::System.EventHandler>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<(object? sender, global::System.EventArgs e)>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.EventHandler Handler, object? sender, global::System.EventArgs e)>? _handlerInvocations;
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>> IChangedEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -3089,7 +3123,7 @@ namespace Imposter.Benchmarks
 
 		public IChangedAsyncEventImposterBuilder ChangedAsync => _ChangedAsync;
 
-		private readonly ChangedAsyncEventImposterBuilder _ChangedAsync;
+		private ChangedAsyncEventImposterBuilder _ChangedAsync;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IChangedAsyncEventImposterBuilder : IChangedAsyncEventImposterSetupBuilder, IChangedAsyncEventImposterVerificationBuilder
 		{
@@ -3128,6 +3162,14 @@ namespace Imposter.Benchmarks
 			private global::Imposter.Abstractions.CallbackCollection<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<(object? arg1, global::System.EventArgs arg2)>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task> Handler, object? arg1, global::System.EventArgs arg2)>? _handlerInvocations;
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>> IChangedAsyncEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -3486,7 +3528,7 @@ namespace Imposter.Benchmarks
 			}
 		}
 
-		private readonly IndexerIndexerBuilder _IndexerIndexer;
+		private IndexerIndexerBuilder _IndexerIndexer;
 		public IIndexerIndexerBuilder this[global::Imposter.Abstractions.Arg<int> key] => new IndexerIndexerBuilder.InvocationBuilder(_IndexerIndexer, new IndexerIndexerArgumentsCriteria(key));
 		public delegate int IndexerIndexerDelegate(int key);
 		public delegate void IndexerIndexerGetterCallback(int key);
@@ -3612,6 +3654,12 @@ namespace Imposter.Benchmarks
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class IndexerIndexerBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposter.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			private readonly DefaultIndexerIndexerBehaviour _IndexerDefaultIndexerBehaviour = new DefaultIndexerIndexerBehaviour();
 			private readonly GetterImposter _getterImposter;
 			private readonly SetterImposter _setterImposter;
@@ -3733,6 +3781,11 @@ namespace Imposter.Benchmarks
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class GetterImposter
 			{
+				internal void ClearInvocations()
+				{
+					_invocationHistory?.Clear();
+				}
+
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
 				private readonly global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter> _getterInvocationImposters = new global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter>();
 				private global::Imposter.Abstractions.InvocationHistory<IndexerGetterInvocation>? _invocationHistory;
@@ -3997,6 +4050,11 @@ namespace Imposter.Benchmarks
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class SetterImposter
 			{
+				internal void ClearInvocations()
+				{
+					_invocationHistory?.Clear();
+				}
+
 				private global::Imposter.Abstractions.CallbackCollection<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)>? _callbacks;
 				private global::Imposter.Abstractions.InvocationHistory<IndexerSetterInvocation>? _invocationHistory;
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
@@ -4280,19 +4338,20 @@ namespace Imposter.Benchmarks
 
 		public ICallAllocationBenchmarkServiceImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._returnTaskMethodInvocationHistoryCollection = new ReturnTaskMethodInvocationHistoryCollection();
 			this._returnValueTaskMethodInvocationHistoryCollection = new ReturnValueTaskMethodInvocationHistoryCollection();
 			this._throwTaskMethodInvocationHistoryCollection = new ThrowTaskMethodInvocationHistoryCollection();
 			this._throwValueTaskMethodInvocationHistoryCollection = new ThrowValueTaskMethodInvocationHistoryCollection();
 			this._throwMethodInvocationHistoryCollection = new ThrowMethodInvocationHistoryCollection();
-			this._returnTaskMethodImposter = new ReturnTaskMethodImposter(_returnTaskMethodInvocationHistoryCollection, invocationBehavior);
-			this._returnValueTaskMethodImposter = new ReturnValueTaskMethodImposter(_returnValueTaskMethodInvocationHistoryCollection, invocationBehavior);
-			this._throwTaskMethodImposter = new ThrowTaskMethodImposter(_throwTaskMethodInvocationHistoryCollection, invocationBehavior);
-			this._throwValueTaskMethodImposter = new ThrowValueTaskMethodImposter(_throwValueTaskMethodInvocationHistoryCollection, invocationBehavior);
-			this._throwMethodImposter = new ThrowMethodImposter(_throwMethodInvocationHistoryCollection, invocationBehavior);
+			this._returnTaskMethodImposter = new ReturnTaskMethodImposter(_returnTaskMethodInvocationHistoryCollection, this._imposterMode);
+			this._returnValueTaskMethodImposter = new ReturnValueTaskMethodImposter(_returnValueTaskMethodInvocationHistoryCollection, this._imposterMode);
+			this._throwTaskMethodImposter = new ThrowTaskMethodImposter(_throwTaskMethodInvocationHistoryCollection, this._imposterMode);
+			this._throwValueTaskMethodImposter = new ThrowValueTaskMethodImposter(_throwValueTaskMethodInvocationHistoryCollection, this._imposterMode);
+			this._throwMethodImposter = new ThrowMethodImposter(_throwMethodInvocationHistoryCollection, this._imposterMode);
 			this._Changed = new ChangedEventImposterBuilder();
 			this._ChangedAsync = new ChangedAsyncEventImposterBuilder();
-			this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Benchmarks.ICallAllocationBenchmarkService.this[int key]");
+			this._IndexerIndexer = new IndexerIndexerBuilder(this._imposterMode, "Imposter.Benchmarks.ICallAllocationBenchmarkService.this[int key]");
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -4308,6 +4367,43 @@ namespace Imposter.Benchmarks
 			invocations.AddRange(_ChangedAsync.Snapshot(false));
 			invocations.AddRange(_IndexerIndexer.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_returnTaskMethodInvocationHistoryCollection.Clear();
+			_returnValueTaskMethodInvocationHistoryCollection.Clear();
+			_throwTaskMethodInvocationHistoryCollection.Clear();
+			_throwValueTaskMethodInvocationHistoryCollection.Clear();
+			_throwMethodInvocationHistoryCollection.Clear();
+			_Changed.ClearInvocations();
+			_ChangedAsync.ClearInvocations();
+			_IndexerIndexer.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_returnTaskMethodInvocationHistoryCollection.Clear();
+			_returnValueTaskMethodInvocationHistoryCollection.Clear();
+			_throwTaskMethodInvocationHistoryCollection.Clear();
+			_throwValueTaskMethodInvocationHistoryCollection.Clear();
+			_throwMethodInvocationHistoryCollection.Clear();
+			_Changed.ClearInvocations();
+			_ChangedAsync.ClearInvocations();
+			_IndexerIndexer.ClearInvocations();
+			this._returnTaskMethodInvocationHistoryCollection = new ReturnTaskMethodInvocationHistoryCollection();
+			this._returnValueTaskMethodInvocationHistoryCollection = new ReturnValueTaskMethodInvocationHistoryCollection();
+			this._throwTaskMethodInvocationHistoryCollection = new ThrowTaskMethodInvocationHistoryCollection();
+			this._throwValueTaskMethodInvocationHistoryCollection = new ThrowValueTaskMethodInvocationHistoryCollection();
+			this._throwMethodInvocationHistoryCollection = new ThrowMethodInvocationHistoryCollection();
+			this._returnTaskMethodImposter = new ReturnTaskMethodImposter(_returnTaskMethodInvocationHistoryCollection, this._imposterMode);
+			this._returnValueTaskMethodImposter = new ReturnValueTaskMethodImposter(_returnValueTaskMethodInvocationHistoryCollection, this._imposterMode);
+			this._throwTaskMethodImposter = new ThrowTaskMethodImposter(_throwTaskMethodInvocationHistoryCollection, this._imposterMode);
+			this._throwValueTaskMethodImposter = new ThrowValueTaskMethodImposter(_throwValueTaskMethodInvocationHistoryCollection, this._imposterMode);
+			this._throwMethodImposter = new ThrowMethodImposter(_throwMethodInvocationHistoryCollection, this._imposterMode);
+			this._Changed = new ChangedEventImposterBuilder();
+			this._ChangedAsync = new ChangedAsyncEventImposterBuilder();
+			this._IndexerIndexer = new IndexerIndexerBuilder(this._imposterMode, "Imposter.Benchmarks.ICallAllocationBenchmarkService.this[int key]");
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

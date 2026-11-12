@@ -8,6 +8,9 @@ internal class BlockBuilder
 {
     private readonly List<StatementSyntax> _statements = [];
 
+    internal BlockBuilder AddStatements(BlockBuilder statements) =>
+        AddStatements(statements._statements);
+
     internal BlockBuilder AddStatements(IEnumerable<StatementSyntax> statementSyntaxes)
     {
         _statements.AddRange(statementSyntaxes);

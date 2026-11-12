@@ -15,12 +15,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class ISharedGetSutImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.ISharedGetSut>, ISharedGetSutImposter.ISharedGetSutSetup, ISharedGetSutImposter.IFirstGetSutSetup, ISharedGetSutImposter.ISecondGetSutSetup, ISharedGetSutImposter.IKeyedGetSutSetup
 	{
-		private readonly GetMethodImposter _getMethodImposter;
-		private readonly Get_1MethodImposter _get_1MethodImposter;
-		private readonly Get_2MethodImposter _get_2MethodImposter;
-		private readonly GetMethodInvocationHistoryCollection _getMethodInvocationHistoryCollection;
-		private readonly Get_1MethodInvocationHistoryCollection _get_1MethodInvocationHistoryCollection;
-		private readonly Get_2MethodInvocationHistoryCollection _get_2MethodInvocationHistoryCollection;
+		private GetMethodImposter _getMethodImposter;
+		private Get_1MethodImposter _get_1MethodImposter;
+		private Get_2MethodImposter _get_2MethodImposter;
+		private GetMethodInvocationHistoryCollection _getMethodInvocationHistoryCollection;
+		private Get_1MethodInvocationHistoryCollection _get_1MethodInvocationHistoryCollection;
+		private Get_2MethodInvocationHistoryCollection _get_2MethodInvocationHistoryCollection;
 		public IGetMethodImposterBuilder Get()
 		{
 			return new GetMethodImposter.Builder(_getMethodImposter, _getMethodInvocationHistoryCollection);
@@ -36,6 +36,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			return new Get_2MethodImposter.Builder(_get_2MethodImposter, _get_2MethodInvocationHistoryCollection, new Get_2ArgumentsCriteria(key));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.MethodImpersonation.ISharedGetSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.ISharedGetSut>.Instance()
 		{
@@ -135,6 +136,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(GetMethodInvocationHistoryCollection.Node invocationHistory)
@@ -623,6 +629,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(Get_2MethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1074,6 +1085,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(Get_1MethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1484,12 +1500,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 		public ISharedGetSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._getMethodInvocationHistoryCollection = new GetMethodInvocationHistoryCollection();
 			this._get_1MethodInvocationHistoryCollection = new Get_1MethodInvocationHistoryCollection();
 			this._get_2MethodInvocationHistoryCollection = new Get_2MethodInvocationHistoryCollection();
-			this._getMethodImposter = new GetMethodImposter(_getMethodInvocationHistoryCollection, invocationBehavior);
-			this._get_1MethodImposter = new Get_1MethodImposter(_get_1MethodInvocationHistoryCollection, invocationBehavior);
-			this._get_2MethodImposter = new Get_2MethodImposter(_get_2MethodInvocationHistoryCollection, invocationBehavior);
+			this._getMethodImposter = new GetMethodImposter(_getMethodInvocationHistoryCollection, this._imposterMode);
+			this._get_1MethodImposter = new Get_1MethodImposter(_get_1MethodInvocationHistoryCollection, this._imposterMode);
+			this._get_2MethodImposter = new Get_2MethodImposter(_get_2MethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -1500,6 +1517,26 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			invocations.AddRange(_get_1MethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_get_2MethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_getMethodInvocationHistoryCollection.Clear();
+			_get_1MethodInvocationHistoryCollection.Clear();
+			_get_2MethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_getMethodInvocationHistoryCollection.Clear();
+			_get_1MethodInvocationHistoryCollection.Clear();
+			_get_2MethodInvocationHistoryCollection.Clear();
+			this._getMethodInvocationHistoryCollection = new GetMethodInvocationHistoryCollection();
+			this._get_1MethodInvocationHistoryCollection = new Get_1MethodInvocationHistoryCollection();
+			this._get_2MethodInvocationHistoryCollection = new Get_2MethodInvocationHistoryCollection();
+			this._getMethodImposter = new GetMethodImposter(_getMethodInvocationHistoryCollection, this._imposterMode);
+			this._get_1MethodImposter = new Get_1MethodImposter(_get_1MethodInvocationHistoryCollection, this._imposterMode);
+			this._get_2MethodImposter = new Get_2MethodImposter(_get_2MethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

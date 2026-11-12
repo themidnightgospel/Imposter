@@ -15,12 +15,12 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class MyServiceImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.Methods.UseBaseImplementation.MyService>
 	{
-		private readonly AddMethodImposter _addMethodImposter;
-		private readonly ProcessAsyncMethodImposter _processAsyncMethodImposter;
-		private readonly MightFailMethodImposter _mightFailMethodImposter;
-		private readonly AddMethodInvocationHistoryCollection _addMethodInvocationHistoryCollection;
-		private readonly ProcessAsyncMethodInvocationHistoryCollection _processAsyncMethodInvocationHistoryCollection;
-		private readonly MightFailMethodInvocationHistoryCollection _mightFailMethodInvocationHistoryCollection;
+		private AddMethodImposter _addMethodImposter;
+		private ProcessAsyncMethodImposter _processAsyncMethodImposter;
+		private MightFailMethodImposter _mightFailMethodImposter;
+		private AddMethodInvocationHistoryCollection _addMethodInvocationHistoryCollection;
+		private ProcessAsyncMethodInvocationHistoryCollection _processAsyncMethodInvocationHistoryCollection;
+		private MightFailMethodInvocationHistoryCollection _mightFailMethodInvocationHistoryCollection;
 		public IAddMethodImposterBuilder Add(global::Imposter.Abstractions.Arg<int> a, global::Imposter.Abstractions.Arg<int> b)
 		{
 			return new AddMethodImposter.Builder(_addMethodImposter, _addMethodInvocationHistoryCollection, new AddArgumentsCriteria(a, b));
@@ -36,6 +36,7 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 			return new MightFailMethodImposter.Builder(_mightFailMethodImposter, _mightFailMethodInvocationHistoryCollection, new MightFailArgumentsCriteria(v));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.Docs.Methods.UseBaseImplementation.MyService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.Methods.UseBaseImplementation.MyService>.Instance()
 		{
@@ -190,6 +191,11 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(AddMethodInvocationHistoryCollection.Node invocationHistory)
@@ -706,6 +712,11 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(MightFailMethodInvocationHistoryCollection.Node invocationHistory)
@@ -1237,6 +1248,11 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(ProcessAsyncMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1644,12 +1660,13 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 
 		public MyServiceImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._addMethodInvocationHistoryCollection = new AddMethodInvocationHistoryCollection();
 			this._processAsyncMethodInvocationHistoryCollection = new ProcessAsyncMethodInvocationHistoryCollection();
 			this._mightFailMethodInvocationHistoryCollection = new MightFailMethodInvocationHistoryCollection();
-			this._addMethodImposter = new AddMethodImposter(_addMethodInvocationHistoryCollection, invocationBehavior);
-			this._processAsyncMethodImposter = new ProcessAsyncMethodImposter(_processAsyncMethodInvocationHistoryCollection, invocationBehavior);
-			this._mightFailMethodImposter = new MightFailMethodImposter(_mightFailMethodInvocationHistoryCollection, invocationBehavior);
+			this._addMethodImposter = new AddMethodImposter(_addMethodInvocationHistoryCollection, this._imposterMode);
+			this._processAsyncMethodImposter = new ProcessAsyncMethodImposter(_processAsyncMethodInvocationHistoryCollection, this._imposterMode);
+			this._mightFailMethodImposter = new MightFailMethodImposter(_mightFailMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -1660,6 +1677,26 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 			invocations.AddRange(_processAsyncMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_mightFailMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_addMethodInvocationHistoryCollection.Clear();
+			_processAsyncMethodInvocationHistoryCollection.Clear();
+			_mightFailMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_addMethodInvocationHistoryCollection.Clear();
+			_processAsyncMethodInvocationHistoryCollection.Clear();
+			_mightFailMethodInvocationHistoryCollection.Clear();
+			this._addMethodInvocationHistoryCollection = new AddMethodInvocationHistoryCollection();
+			this._processAsyncMethodInvocationHistoryCollection = new ProcessAsyncMethodInvocationHistoryCollection();
+			this._mightFailMethodInvocationHistoryCollection = new MightFailMethodInvocationHistoryCollection();
+			this._addMethodImposter = new AddMethodImposter(_addMethodInvocationHistoryCollection, this._imposterMode);
+			this._processAsyncMethodImposter = new ProcessAsyncMethodImposter(_processAsyncMethodInvocationHistoryCollection, this._imposterMode);
+			this._mightFailMethodImposter = new MightFailMethodImposter(_mightFailMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

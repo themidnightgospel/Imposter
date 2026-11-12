@@ -15,10 +15,10 @@ namespace Imposter.Tests.Features.Docs.Methods.Verification
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IVerifyServiceImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.Methods.Verification.IVerifyService>, IVerifyServiceImposter.IVerifyServiceSetup
 	{
-		private readonly IncrementMethodImposter _incrementMethodImposter;
-		private readonly CombineMethodImposter _combineMethodImposter;
-		private readonly IncrementMethodInvocationHistoryCollection _incrementMethodInvocationHistoryCollection;
-		private readonly CombineMethodInvocationHistoryCollection _combineMethodInvocationHistoryCollection;
+		private IncrementMethodImposter _incrementMethodImposter;
+		private CombineMethodImposter _combineMethodImposter;
+		private IncrementMethodInvocationHistoryCollection _incrementMethodInvocationHistoryCollection;
+		private CombineMethodInvocationHistoryCollection _combineMethodInvocationHistoryCollection;
 		public IIncrementMethodImposterBuilder Increment(global::Imposter.Abstractions.Arg<int> v)
 		{
 			return new IncrementMethodImposter.Builder(_incrementMethodImposter, _incrementMethodInvocationHistoryCollection, new IncrementArgumentsCriteria(v));
@@ -29,6 +29,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Verification
 			return new CombineMethodImposter.Builder(_combineMethodImposter, _combineMethodInvocationHistoryCollection, new CombineArgumentsCriteria(a, b));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.Docs.Methods.Verification.IVerifyService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.Methods.Verification.IVerifyService>.Instance()
 		{
@@ -183,6 +184,11 @@ namespace Imposter.Tests.Features.Docs.Methods.Verification
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(CombineMethodInvocationHistoryCollection.Node invocationHistory)
@@ -668,6 +674,11 @@ namespace Imposter.Tests.Features.Docs.Methods.Verification
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(IncrementMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1021,10 +1032,11 @@ namespace Imposter.Tests.Features.Docs.Methods.Verification
 
 		public IVerifyServiceImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._incrementMethodInvocationHistoryCollection = new IncrementMethodInvocationHistoryCollection();
 			this._combineMethodInvocationHistoryCollection = new CombineMethodInvocationHistoryCollection();
-			this._incrementMethodImposter = new IncrementMethodImposter(_incrementMethodInvocationHistoryCollection, invocationBehavior);
-			this._combineMethodImposter = new CombineMethodImposter(_combineMethodInvocationHistoryCollection, invocationBehavior);
+			this._incrementMethodImposter = new IncrementMethodImposter(_incrementMethodInvocationHistoryCollection, this._imposterMode);
+			this._combineMethodImposter = new CombineMethodImposter(_combineMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -1034,6 +1046,22 @@ namespace Imposter.Tests.Features.Docs.Methods.Verification
 			invocations.AddRange(_incrementMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_combineMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_incrementMethodInvocationHistoryCollection.Clear();
+			_combineMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_incrementMethodInvocationHistoryCollection.Clear();
+			_combineMethodInvocationHistoryCollection.Clear();
+			this._incrementMethodInvocationHistoryCollection = new IncrementMethodInvocationHistoryCollection();
+			this._combineMethodInvocationHistoryCollection = new CombineMethodInvocationHistoryCollection();
+			this._incrementMethodImposter = new IncrementMethodImposter(_incrementMethodInvocationHistoryCollection, this._imposterMode);
+			this._combineMethodImposter = new CombineMethodImposter(_combineMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

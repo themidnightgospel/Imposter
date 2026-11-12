@@ -5,6 +5,14 @@
 /// </summary>
 public static class ImposterExtensions
 {
+    /// <summary>Clears recorded interactions without changing configured behavior.</summary>
+    /// <param name="imposter">The imposter whose history is cleared.</param>
+    public static void ClearInvocations(this IImposter imposter) => imposter.ClearInvocations();
+
+    /// <summary>Clears imposter-owned state, preserving mode and instance identity.</summary>
+    /// <param name="imposter">The imposter to reset.</param>
+    public static void Reset(this IImposter imposter) => imposter.Reset();
+
     /// <summary>Returns a snapshot of the imposter's recorded interactions in entry order.</summary>
     /// <param name="imposter">The imposter whose interactions are returned.</param>
     public static IReadOnlyList<IImposterInvocation> Invocations(this IImposter imposter) =>

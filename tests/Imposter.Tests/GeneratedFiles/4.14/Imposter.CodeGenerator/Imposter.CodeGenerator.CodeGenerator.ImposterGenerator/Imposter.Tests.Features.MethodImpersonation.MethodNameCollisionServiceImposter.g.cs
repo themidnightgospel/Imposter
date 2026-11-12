@@ -15,14 +15,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class MethodNameCollisionServiceImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.MethodNameCollisionService>
 	{
-		private readonly InvokeMethodImposter _invokeMethodImposter;
-		private readonly AdaptRefMethodImposterCollection _adaptRefMethodImposterCollection;
-		private readonly AdaptOutMethodImposterCollection _adaptOutMethodImposterCollection;
-		private readonly VerifyMethodImposterCollection _verifyMethodImposterCollection;
-		private readonly InvokeMethodInvocationHistoryCollection _invokeMethodInvocationHistoryCollection;
-		private readonly AdaptRefMethodInvocationHistoryCollection _adaptRefMethodInvocationHistoryCollection;
-		private readonly AdaptOutMethodInvocationHistoryCollection _adaptOutMethodInvocationHistoryCollection;
-		private readonly VerifyMethodInvocationHistoryCollection _verifyMethodInvocationHistoryCollection;
+		private InvokeMethodImposter _invokeMethodImposter;
+		private AdaptRefMethodImposterCollection _adaptRefMethodImposterCollection;
+		private AdaptOutMethodImposterCollection _adaptOutMethodImposterCollection;
+		private VerifyMethodImposterCollection _verifyMethodImposterCollection;
+		private InvokeMethodInvocationHistoryCollection _invokeMethodInvocationHistoryCollection;
+		private AdaptRefMethodInvocationHistoryCollection _adaptRefMethodInvocationHistoryCollection;
+		private AdaptOutMethodInvocationHistoryCollection _adaptOutMethodInvocationHistoryCollection;
+		private VerifyMethodInvocationHistoryCollection _verifyMethodInvocationHistoryCollection;
 		public IInvokeMethodImposterBuilder Invoke(global::Imposter.Abstractions.Arg<int> invocationBehavior, global::Imposter.Abstractions.Arg<string> methodDisplayName, global::Imposter.Abstractions.Arg<int> invocationImposter)
 		{
 			return new InvokeMethodImposter.Builder(_invokeMethodImposter, _invokeMethodInvocationHistoryCollection, new InvokeArgumentsCriteria(invocationBehavior, methodDisplayName, invocationImposter));
@@ -43,6 +43,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			return new VerifyMethodImposter<Called>.Builder(_verifyMethodImposterCollection, _verifyMethodInvocationHistoryCollection, new VerifyArgumentsCriteria<Called>(value));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.MethodImpersonation.MethodNameCollisionService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.MethodNameCollisionService>.Instance()
 		{
@@ -207,6 +208,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(AdaptOutMethodInvocationHistoryCollection.Node invocationHistory)
@@ -826,6 +832,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(AdaptRefMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1438,6 +1449,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(InvokeMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1967,6 +1983,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(VerifyMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -2431,14 +2452,15 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 		public MethodNameCollisionServiceImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._invokeMethodInvocationHistoryCollection = new InvokeMethodInvocationHistoryCollection();
 			this._adaptRefMethodInvocationHistoryCollection = new AdaptRefMethodInvocationHistoryCollection();
 			this._adaptOutMethodInvocationHistoryCollection = new AdaptOutMethodInvocationHistoryCollection();
 			this._verifyMethodInvocationHistoryCollection = new VerifyMethodInvocationHistoryCollection();
-			this._invokeMethodImposter = new InvokeMethodImposter(_invokeMethodInvocationHistoryCollection, invocationBehavior);
-			this._adaptRefMethodImposterCollection = new AdaptRefMethodImposterCollection(_adaptRefMethodInvocationHistoryCollection, invocationBehavior);
-			this._adaptOutMethodImposterCollection = new AdaptOutMethodImposterCollection(_adaptOutMethodInvocationHistoryCollection, invocationBehavior);
-			this._verifyMethodImposterCollection = new VerifyMethodImposterCollection(_verifyMethodInvocationHistoryCollection, invocationBehavior);
+			this._invokeMethodImposter = new InvokeMethodImposter(_invokeMethodInvocationHistoryCollection, this._imposterMode);
+			this._adaptRefMethodImposterCollection = new AdaptRefMethodImposterCollection(_adaptRefMethodInvocationHistoryCollection, this._imposterMode);
+			this._adaptOutMethodImposterCollection = new AdaptOutMethodImposterCollection(_adaptOutMethodInvocationHistoryCollection, this._imposterMode);
+			this._verifyMethodImposterCollection = new VerifyMethodImposterCollection(_verifyMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -2450,6 +2472,30 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			invocations.AddRange(_adaptOutMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_verifyMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_invokeMethodInvocationHistoryCollection.Clear();
+			_adaptRefMethodInvocationHistoryCollection.Clear();
+			_adaptOutMethodInvocationHistoryCollection.Clear();
+			_verifyMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_invokeMethodInvocationHistoryCollection.Clear();
+			_adaptRefMethodInvocationHistoryCollection.Clear();
+			_adaptOutMethodInvocationHistoryCollection.Clear();
+			_verifyMethodInvocationHistoryCollection.Clear();
+			this._invokeMethodInvocationHistoryCollection = new InvokeMethodInvocationHistoryCollection();
+			this._adaptRefMethodInvocationHistoryCollection = new AdaptRefMethodInvocationHistoryCollection();
+			this._adaptOutMethodInvocationHistoryCollection = new AdaptOutMethodInvocationHistoryCollection();
+			this._verifyMethodInvocationHistoryCollection = new VerifyMethodInvocationHistoryCollection();
+			this._invokeMethodImposter = new InvokeMethodImposter(_invokeMethodInvocationHistoryCollection, this._imposterMode);
+			this._adaptRefMethodImposterCollection = new AdaptRefMethodImposterCollection(_adaptRefMethodInvocationHistoryCollection, this._imposterMode);
+			this._adaptOutMethodImposterCollection = new AdaptOutMethodImposterCollection(_adaptOutMethodInvocationHistoryCollection, this._imposterMode);
+			this._verifyMethodImposterCollection = new VerifyMethodImposterCollection(_verifyMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

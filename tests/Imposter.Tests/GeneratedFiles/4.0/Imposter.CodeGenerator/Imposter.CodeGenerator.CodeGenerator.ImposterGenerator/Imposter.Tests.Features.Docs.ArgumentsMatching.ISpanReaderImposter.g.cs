@@ -15,13 +15,14 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class ISpanReaderImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.ArgumentsMatching.ISpanReader>, ISpanReaderImposter.ISpanReaderSetup
 	{
-		private readonly TryReadMethodImposter _tryReadMethodImposter;
-		private readonly TryReadMethodInvocationHistoryCollection _tryReadMethodInvocationHistoryCollection;
+		private TryReadMethodImposter _tryReadMethodImposter;
+		private TryReadMethodInvocationHistoryCollection _tryReadMethodInvocationHistoryCollection;
 		public ITryReadMethodImposterBuilder TryRead(global::Imposter.Abstractions.OutReadOnlySpanArg<byte> data)
 		{
 			return new TryReadMethodImposter.Builder(_tryReadMethodImposter, _tryReadMethodInvocationHistoryCollection);
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.Docs.ArgumentsMatching.ISpanReader global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.ArgumentsMatching.ISpanReader>.Instance()
 		{
@@ -131,6 +132,11 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(TryReadMethodInvocationHistoryCollection.Node invocationHistory)
@@ -509,8 +515,9 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 		public ISpanReaderImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._tryReadMethodInvocationHistoryCollection = new TryReadMethodInvocationHistoryCollection();
-			this._tryReadMethodImposter = new TryReadMethodImposter(_tryReadMethodInvocationHistoryCollection, invocationBehavior);
+			this._tryReadMethodImposter = new TryReadMethodImposter(_tryReadMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -519,6 +526,18 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
 			invocations.AddRange(_tryReadMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_tryReadMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_tryReadMethodInvocationHistoryCollection.Clear();
+			this._tryReadMethodInvocationHistoryCollection = new TryReadMethodInvocationHistoryCollection();
+			this._tryReadMethodImposter = new TryReadMethodImposter(_tryReadMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

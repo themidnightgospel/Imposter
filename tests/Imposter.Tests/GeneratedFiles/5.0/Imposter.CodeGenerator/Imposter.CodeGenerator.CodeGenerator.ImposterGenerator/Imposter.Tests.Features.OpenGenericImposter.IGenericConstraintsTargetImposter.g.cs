@@ -15,14 +15,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IGenericConstraintsTargetImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.OpenGenericImposter.IGenericConstraintsTarget>, IGenericConstraintsTargetImposter.IGenericConstraintsTargetSetup
 	{
-		private readonly HandleReferenceMethodImposterCollection _handleReferenceMethodImposterCollection;
-		private readonly CloneStructMethodImposterCollection _cloneStructMethodImposterCollection;
-		private readonly CompareValuesMethodImposterCollection _compareValuesMethodImposterCollection;
-		private readonly CreateInstanceMethodImposterCollection _createInstanceMethodImposterCollection;
-		private readonly HandleReferenceMethodInvocationHistoryCollection _handleReferenceMethodInvocationHistoryCollection;
-		private readonly CloneStructMethodInvocationHistoryCollection _cloneStructMethodInvocationHistoryCollection;
-		private readonly CompareValuesMethodInvocationHistoryCollection _compareValuesMethodInvocationHistoryCollection;
-		private readonly CreateInstanceMethodInvocationHistoryCollection _createInstanceMethodInvocationHistoryCollection;
+		private HandleReferenceMethodImposterCollection _handleReferenceMethodImposterCollection;
+		private CloneStructMethodImposterCollection _cloneStructMethodImposterCollection;
+		private CompareValuesMethodImposterCollection _compareValuesMethodImposterCollection;
+		private CreateInstanceMethodImposterCollection _createInstanceMethodImposterCollection;
+		private HandleReferenceMethodInvocationHistoryCollection _handleReferenceMethodInvocationHistoryCollection;
+		private CloneStructMethodInvocationHistoryCollection _cloneStructMethodInvocationHistoryCollection;
+		private CompareValuesMethodInvocationHistoryCollection _compareValuesMethodInvocationHistoryCollection;
+		private CreateInstanceMethodInvocationHistoryCollection _createInstanceMethodInvocationHistoryCollection;
 		public IHandleReferenceMethodImposterBuilder<TArg> HandleReference<TArg>(global::Imposter.Abstractions.Arg<TArg> value)
 			where TArg : class, new()
 		{
@@ -47,6 +47,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			return new CreateInstanceMethodImposter<TArg>.Builder(_createInstanceMethodImposterCollection, _createInstanceMethodInvocationHistoryCollection);
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.OpenGenericImposter.IGenericConstraintsTarget global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.OpenGenericImposter.IGenericConstraintsTarget>.Instance()
 		{
@@ -207,6 +208,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(CloneStructMethodInvocationHistoryCollection.Node invocationHistory)
@@ -816,6 +822,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(CompareValuesMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1333,6 +1344,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(CreateInstanceMethodInvocationHistoryCollection.Node invocationHistory)
@@ -1922,6 +1938,11 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(HandleReferenceMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -2383,14 +2404,15 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
 		public IGenericConstraintsTargetImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._handleReferenceMethodInvocationHistoryCollection = new HandleReferenceMethodInvocationHistoryCollection();
 			this._cloneStructMethodInvocationHistoryCollection = new CloneStructMethodInvocationHistoryCollection();
 			this._compareValuesMethodInvocationHistoryCollection = new CompareValuesMethodInvocationHistoryCollection();
 			this._createInstanceMethodInvocationHistoryCollection = new CreateInstanceMethodInvocationHistoryCollection();
-			this._handleReferenceMethodImposterCollection = new HandleReferenceMethodImposterCollection(_handleReferenceMethodInvocationHistoryCollection, invocationBehavior);
-			this._cloneStructMethodImposterCollection = new CloneStructMethodImposterCollection(_cloneStructMethodInvocationHistoryCollection, invocationBehavior);
-			this._compareValuesMethodImposterCollection = new CompareValuesMethodImposterCollection(_compareValuesMethodInvocationHistoryCollection, invocationBehavior);
-			this._createInstanceMethodImposterCollection = new CreateInstanceMethodImposterCollection(_createInstanceMethodInvocationHistoryCollection, invocationBehavior);
+			this._handleReferenceMethodImposterCollection = new HandleReferenceMethodImposterCollection(_handleReferenceMethodInvocationHistoryCollection, this._imposterMode);
+			this._cloneStructMethodImposterCollection = new CloneStructMethodImposterCollection(_cloneStructMethodInvocationHistoryCollection, this._imposterMode);
+			this._compareValuesMethodImposterCollection = new CompareValuesMethodImposterCollection(_compareValuesMethodInvocationHistoryCollection, this._imposterMode);
+			this._createInstanceMethodImposterCollection = new CreateInstanceMethodImposterCollection(_createInstanceMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -2402,6 +2424,30 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			invocations.AddRange(_compareValuesMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_createInstanceMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_handleReferenceMethodInvocationHistoryCollection.Clear();
+			_cloneStructMethodInvocationHistoryCollection.Clear();
+			_compareValuesMethodInvocationHistoryCollection.Clear();
+			_createInstanceMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_handleReferenceMethodInvocationHistoryCollection.Clear();
+			_cloneStructMethodInvocationHistoryCollection.Clear();
+			_compareValuesMethodInvocationHistoryCollection.Clear();
+			_createInstanceMethodInvocationHistoryCollection.Clear();
+			this._handleReferenceMethodInvocationHistoryCollection = new HandleReferenceMethodInvocationHistoryCollection();
+			this._cloneStructMethodInvocationHistoryCollection = new CloneStructMethodInvocationHistoryCollection();
+			this._compareValuesMethodInvocationHistoryCollection = new CompareValuesMethodInvocationHistoryCollection();
+			this._createInstanceMethodInvocationHistoryCollection = new CreateInstanceMethodInvocationHistoryCollection();
+			this._handleReferenceMethodImposterCollection = new HandleReferenceMethodImposterCollection(_handleReferenceMethodInvocationHistoryCollection, this._imposterMode);
+			this._cloneStructMethodImposterCollection = new CloneStructMethodImposterCollection(_cloneStructMethodInvocationHistoryCollection, this._imposterMode);
+			this._compareValuesMethodImposterCollection = new CompareValuesMethodImposterCollection(_compareValuesMethodInvocationHistoryCollection, this._imposterMode);
+			this._createInstanceMethodImposterCollection = new CreateInstanceMethodImposterCollection(_createInstanceMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

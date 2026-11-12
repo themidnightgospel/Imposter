@@ -15,16 +15,16 @@ namespace Imposter.Tests.Features.MethodImpersonation
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class ISpanParameterSutImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.ISpanParameterSut>, ISpanParameterSutImposter.ISpanParameterSutSetup
 	{
-		private readonly ParseMethodImposter _parseMethodImposter;
-		private readonly WriteMethodImposter _writeMethodImposter;
-		private readonly ContainsMethodImposterCollection _containsMethodImposterCollection;
-		private readonly CountAsyncMethodImposter _countAsyncMethodImposter;
-		private readonly FillMethodImposterCollection _fillMethodImposterCollection;
-		private readonly ParseMethodInvocationHistoryCollection _parseMethodInvocationHistoryCollection;
-		private readonly WriteMethodInvocationHistoryCollection _writeMethodInvocationHistoryCollection;
-		private readonly ContainsMethodInvocationHistoryCollection _containsMethodInvocationHistoryCollection;
-		private readonly CountAsyncMethodInvocationHistoryCollection _countAsyncMethodInvocationHistoryCollection;
-		private readonly FillMethodInvocationHistoryCollection _fillMethodInvocationHistoryCollection;
+		private ParseMethodImposter _parseMethodImposter;
+		private WriteMethodImposter _writeMethodImposter;
+		private ContainsMethodImposterCollection _containsMethodImposterCollection;
+		private CountAsyncMethodImposter _countAsyncMethodImposter;
+		private FillMethodImposterCollection _fillMethodImposterCollection;
+		private ParseMethodInvocationHistoryCollection _parseMethodInvocationHistoryCollection;
+		private WriteMethodInvocationHistoryCollection _writeMethodInvocationHistoryCollection;
+		private ContainsMethodInvocationHistoryCollection _containsMethodInvocationHistoryCollection;
+		private CountAsyncMethodInvocationHistoryCollection _countAsyncMethodInvocationHistoryCollection;
+		private FillMethodInvocationHistoryCollection _fillMethodInvocationHistoryCollection;
 		public IParseMethodImposterBuilder Parse(global::Imposter.Abstractions.ReadOnlySpanArg<char> text, global::Imposter.Abstractions.Arg<int> start)
 		{
 			return new ParseMethodImposter.Builder(_parseMethodImposter, _parseMethodInvocationHistoryCollection, new ParseArgumentsCriteria(text, start));
@@ -50,6 +50,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			return new FillMethodImposter<T>.Builder(_fillMethodImposterCollection, _fillMethodInvocationHistoryCollection, new FillArgumentsCriteria<T>(buffer, value));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.MethodImpersonation.ISpanParameterSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.ISpanParameterSut>.Instance()
 		{
@@ -216,6 +217,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(ContainsMethodInvocationHistoryCollection.Node invocationHistory)
@@ -832,6 +838,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(CountAsyncMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1384,6 +1395,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(FillMethodInvocationHistoryCollection.Node invocationHistory)
@@ -1977,6 +1993,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(ParseMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -2460,6 +2481,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(WriteMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -2831,16 +2857,17 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 		public ISpanParameterSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._parseMethodInvocationHistoryCollection = new ParseMethodInvocationHistoryCollection();
 			this._writeMethodInvocationHistoryCollection = new WriteMethodInvocationHistoryCollection();
 			this._containsMethodInvocationHistoryCollection = new ContainsMethodInvocationHistoryCollection();
 			this._countAsyncMethodInvocationHistoryCollection = new CountAsyncMethodInvocationHistoryCollection();
 			this._fillMethodInvocationHistoryCollection = new FillMethodInvocationHistoryCollection();
-			this._parseMethodImposter = new ParseMethodImposter(_parseMethodInvocationHistoryCollection, invocationBehavior);
-			this._writeMethodImposter = new WriteMethodImposter(_writeMethodInvocationHistoryCollection, invocationBehavior);
-			this._containsMethodImposterCollection = new ContainsMethodImposterCollection(_containsMethodInvocationHistoryCollection, invocationBehavior);
-			this._countAsyncMethodImposter = new CountAsyncMethodImposter(_countAsyncMethodInvocationHistoryCollection, invocationBehavior);
-			this._fillMethodImposterCollection = new FillMethodImposterCollection(_fillMethodInvocationHistoryCollection, invocationBehavior);
+			this._parseMethodImposter = new ParseMethodImposter(_parseMethodInvocationHistoryCollection, this._imposterMode);
+			this._writeMethodImposter = new WriteMethodImposter(_writeMethodInvocationHistoryCollection, this._imposterMode);
+			this._containsMethodImposterCollection = new ContainsMethodImposterCollection(_containsMethodInvocationHistoryCollection, this._imposterMode);
+			this._countAsyncMethodImposter = new CountAsyncMethodImposter(_countAsyncMethodInvocationHistoryCollection, this._imposterMode);
+			this._fillMethodImposterCollection = new FillMethodImposterCollection(_fillMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -2853,6 +2880,34 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			invocations.AddRange(_countAsyncMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_fillMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_parseMethodInvocationHistoryCollection.Clear();
+			_writeMethodInvocationHistoryCollection.Clear();
+			_containsMethodInvocationHistoryCollection.Clear();
+			_countAsyncMethodInvocationHistoryCollection.Clear();
+			_fillMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_parseMethodInvocationHistoryCollection.Clear();
+			_writeMethodInvocationHistoryCollection.Clear();
+			_containsMethodInvocationHistoryCollection.Clear();
+			_countAsyncMethodInvocationHistoryCollection.Clear();
+			_fillMethodInvocationHistoryCollection.Clear();
+			this._parseMethodInvocationHistoryCollection = new ParseMethodInvocationHistoryCollection();
+			this._writeMethodInvocationHistoryCollection = new WriteMethodInvocationHistoryCollection();
+			this._containsMethodInvocationHistoryCollection = new ContainsMethodInvocationHistoryCollection();
+			this._countAsyncMethodInvocationHistoryCollection = new CountAsyncMethodInvocationHistoryCollection();
+			this._fillMethodInvocationHistoryCollection = new FillMethodInvocationHistoryCollection();
+			this._parseMethodImposter = new ParseMethodImposter(_parseMethodInvocationHistoryCollection, this._imposterMode);
+			this._writeMethodImposter = new WriteMethodImposter(_writeMethodInvocationHistoryCollection, this._imposterMode);
+			this._containsMethodImposterCollection = new ContainsMethodImposterCollection(_containsMethodInvocationHistoryCollection, this._imposterMode);
+			this._countAsyncMethodImposter = new CountAsyncMethodImposter(_countAsyncMethodInvocationHistoryCollection, this._imposterMode);
+			this._fillMethodImposterCollection = new FillMethodImposterCollection(_fillMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

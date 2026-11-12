@@ -23,7 +23,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 		public IAdvancedEventImposterBuilder Advanced => _Advanced;
 
-		private readonly AdvancedEventImposterBuilder _Advanced;
+		private AdvancedEventImposterBuilder _Advanced;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IAdvancedEventImposterBuilder : IAdvancedEventImposterSetupBuilder, IAdvancedEventImposterVerificationBuilder
 		{
@@ -62,6 +62,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.AdvancedHandler>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<bool>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.AdvancedHandler>? _handlerInvocations;
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.AdvancedHandler>> IAdvancedEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -388,7 +396,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 		public IMovedEventImposterBuilder Moved => _Moved;
 
-		private readonly MovedEventImposterBuilder _Moved;
+		private MovedEventImposterBuilder _Moved;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IMovedEventImposterBuilder : IMovedEventImposterSetupBuilder, IMovedEventImposterVerificationBuilder
 		{
@@ -427,6 +435,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.MovedHandler>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<int>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.MovedHandler Handler, int id)>? _handlerInvocations;
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.MovedHandler>> IMovedEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -786,6 +802,20 @@ namespace Imposter.Tests.Features.EventImpersonation
 			invocations.AddRange(_Advanced.Snapshot(false));
 			invocations.AddRange(_Moved.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_Advanced.ClearInvocations();
+			_Moved.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_Advanced.ClearInvocations();
+			_Moved.ClearInvocations();
+			this._Advanced = new AdvancedEventImposterBuilder();
+			this._Moved = new MovedEventImposterBuilder();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

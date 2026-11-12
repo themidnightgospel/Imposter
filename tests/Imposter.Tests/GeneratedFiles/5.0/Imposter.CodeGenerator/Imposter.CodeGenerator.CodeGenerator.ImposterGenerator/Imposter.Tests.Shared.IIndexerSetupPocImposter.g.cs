@@ -15,13 +15,14 @@ namespace Imposter.Tests.Shared
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IIndexerSetupPocImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Shared.IIndexerSetupPoc>, IIndexerSetupPocImposter.IIndexerSetupPocSetup
 	{
-		private readonly IndexerMethodMethodImposter _indexerMethodMethodImposter;
-		private readonly IndexerMethodMethodInvocationHistoryCollection _indexerMethodMethodInvocationHistoryCollection;
+		private IndexerMethodMethodImposter _indexerMethodMethodImposter;
+		private IndexerMethodMethodInvocationHistoryCollection _indexerMethodMethodInvocationHistoryCollection;
 		public IIndexerMethodMethodImposterBuilder IndexerMethod(global::Imposter.Abstractions.Arg<int> name, global::Imposter.Abstractions.Arg<string> lastname, global::Imposter.Abstractions.Arg<global::System.Text.RegularExpressions.Regex> dog)
 		{
 			return new IndexerMethodMethodImposter.Builder(_indexerMethodMethodImposter, _indexerMethodMethodInvocationHistoryCollection, new IndexerMethodArgumentsCriteria(name, lastname, dog));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Shared.IIndexerSetupPoc global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Shared.IIndexerSetupPoc>.Instance()
 		{
@@ -190,6 +191,11 @@ namespace Imposter.Tests.Shared
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(IndexerMethodMethodInvocationHistoryCollection.Node invocationHistory)
@@ -568,8 +574,9 @@ namespace Imposter.Tests.Shared
 
 		public IIndexerSetupPocImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._indexerMethodMethodInvocationHistoryCollection = new IndexerMethodMethodInvocationHistoryCollection();
-			this._indexerMethodMethodImposter = new IndexerMethodMethodImposter(_indexerMethodMethodInvocationHistoryCollection, invocationBehavior);
+			this._indexerMethodMethodImposter = new IndexerMethodMethodImposter(_indexerMethodMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -578,6 +585,18 @@ namespace Imposter.Tests.Shared
 			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
 			invocations.AddRange(_indexerMethodMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_indexerMethodMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_indexerMethodMethodInvocationHistoryCollection.Clear();
+			this._indexerMethodMethodInvocationHistoryCollection = new IndexerMethodMethodInvocationHistoryCollection();
+			this._indexerMethodMethodImposter = new IndexerMethodMethodImposter(_indexerMethodMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

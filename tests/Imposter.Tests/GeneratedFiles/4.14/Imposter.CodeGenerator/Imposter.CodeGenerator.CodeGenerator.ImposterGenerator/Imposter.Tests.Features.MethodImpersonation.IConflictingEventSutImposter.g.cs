@@ -23,7 +23,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 		public IChangedEventImposterBuilder Changed => _Changed;
 
-		private readonly ChangedEventImposterBuilder _Changed;
+		private ChangedEventImposterBuilder _Changed;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IChangedEventImposterBuilder : IChangedEventImposterSetupBuilder, IChangedEventImposterVerificationBuilder
 		{
@@ -62,6 +62,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private global::Imposter.Abstractions.CallbackCollection<global::System.Action>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<bool>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Action>? _handlerInvocations;
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>> IChangedEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -388,7 +396,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 		public IChanged_1EventImposterBuilder Changed_1 => _Changed_1;
 
-		private readonly Changed_1EventImposterBuilder _Changed_1;
+		private Changed_1EventImposterBuilder _Changed_1;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IChanged_1EventImposterBuilder : IChanged_1EventImposterSetupBuilder, IChanged_1EventImposterVerificationBuilder
 		{
@@ -427,6 +435,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private global::Imposter.Abstractions.CallbackCollection<global::System.EventHandler>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<(object? sender, global::System.EventArgs e)>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.EventHandler Handler, object? sender, global::System.EventArgs e)>? _handlerInvocations;
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>> IChanged_1EventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -763,7 +779,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 		public ICustomEventEventImposterBuilder CustomEvent => _CustomEvent;
 
-		private readonly CustomEventEventImposterBuilder _CustomEvent;
+		private CustomEventEventImposterBuilder _CustomEvent;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ICustomEventEventImposterBuilder : ICustomEventEventImposterSetupBuilder, ICustomEventEventImposterVerificationBuilder
 		{
@@ -802,6 +818,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private global::Imposter.Abstractions.CallbackCollection<global::System.Action>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<bool>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Action>? _handlerInvocations;
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>> ICustomEventEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -1180,6 +1204,23 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			invocations.AddRange(_Changed_1.Snapshot(false));
 			invocations.AddRange(_CustomEvent.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_Changed.ClearInvocations();
+			_Changed_1.ClearInvocations();
+			_CustomEvent.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_Changed.ClearInvocations();
+			_Changed_1.ClearInvocations();
+			_CustomEvent.ClearInvocations();
+			this._Changed = new ChangedEventImposterBuilder();
+			this._Changed_1 = new Changed_1EventImposterBuilder();
+			this._CustomEvent = new CustomEventEventImposterBuilder();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

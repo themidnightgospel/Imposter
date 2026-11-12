@@ -23,7 +23,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 		public IHappenedEventImposterBuilder Happened => _Happened;
 
-		private readonly HappenedEventImposterBuilder _Happened;
+		private HappenedEventImposterBuilder _Happened;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IHappenedEventImposterBuilder : IHappenedEventImposterSetupBuilder, IHappenedEventImposterVerificationBuilder
 		{
@@ -62,6 +62,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyHandler>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<int>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyHandler Handler, int value)>? _handlerInvocations;
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyHandler>> IHappenedEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -393,7 +401,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 		public ITaskHappenedEventImposterBuilder TaskHappened => _TaskHappened;
 
-		private readonly TaskHappenedEventImposterBuilder _TaskHappened;
+		private TaskHappenedEventImposterBuilder _TaskHappened;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ITaskHappenedEventImposterBuilder : ITaskHappenedEventImposterSetupBuilder, ITaskHappenedEventImposterVerificationBuilder
 		{
@@ -432,6 +440,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyTaskHandler>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<int>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyTaskHandler Handler, int value)>? _handlerInvocations;
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyTaskHandler>> ITaskHappenedEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -815,6 +831,20 @@ namespace Imposter.Tests.Features.EventImpersonation
 			invocations.AddRange(_Happened.Snapshot(false));
 			invocations.AddRange(_TaskHappened.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_Happened.ClearInvocations();
+			_TaskHappened.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_Happened.ClearInvocations();
+			_TaskHappened.ClearInvocations();
+			this._Happened = new HappenedEventImposterBuilder();
+			this._TaskHappened = new TaskHappenedEventImposterBuilder();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

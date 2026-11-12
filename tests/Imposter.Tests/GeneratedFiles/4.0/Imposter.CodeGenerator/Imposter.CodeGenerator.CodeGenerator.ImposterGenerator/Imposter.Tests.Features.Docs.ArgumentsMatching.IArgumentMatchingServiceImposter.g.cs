@@ -15,20 +15,20 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IArgumentMatchingServiceImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.ArgumentsMatching.IArgumentMatchingService>, IArgumentMatchingServiceImposter.IArgumentMatchingServiceSetup
 	{
-		private readonly AddMethodImposter _addMethodImposter;
-		private readonly IncrementMethodImposter _incrementMethodImposter;
-		private readonly SumMethodImposter _sumMethodImposter;
-		private readonly FormatMethodImposter _formatMethodImposter;
-		private readonly InOnlyMethodImposter _inOnlyMethodImposter;
-		private readonly RefOnlyMethodImposter _refOnlyMethodImposter;
-		private readonly OutOnlyMethodImposter _outOnlyMethodImposter;
-		private readonly AddMethodInvocationHistoryCollection _addMethodInvocationHistoryCollection;
-		private readonly IncrementMethodInvocationHistoryCollection _incrementMethodInvocationHistoryCollection;
-		private readonly SumMethodInvocationHistoryCollection _sumMethodInvocationHistoryCollection;
-		private readonly FormatMethodInvocationHistoryCollection _formatMethodInvocationHistoryCollection;
-		private readonly InOnlyMethodInvocationHistoryCollection _inOnlyMethodInvocationHistoryCollection;
-		private readonly RefOnlyMethodInvocationHistoryCollection _refOnlyMethodInvocationHistoryCollection;
-		private readonly OutOnlyMethodInvocationHistoryCollection _outOnlyMethodInvocationHistoryCollection;
+		private AddMethodImposter _addMethodImposter;
+		private IncrementMethodImposter _incrementMethodImposter;
+		private SumMethodImposter _sumMethodImposter;
+		private FormatMethodImposter _formatMethodImposter;
+		private InOnlyMethodImposter _inOnlyMethodImposter;
+		private RefOnlyMethodImposter _refOnlyMethodImposter;
+		private OutOnlyMethodImposter _outOnlyMethodImposter;
+		private AddMethodInvocationHistoryCollection _addMethodInvocationHistoryCollection;
+		private IncrementMethodInvocationHistoryCollection _incrementMethodInvocationHistoryCollection;
+		private SumMethodInvocationHistoryCollection _sumMethodInvocationHistoryCollection;
+		private FormatMethodInvocationHistoryCollection _formatMethodInvocationHistoryCollection;
+		private InOnlyMethodInvocationHistoryCollection _inOnlyMethodInvocationHistoryCollection;
+		private RefOnlyMethodInvocationHistoryCollection _refOnlyMethodInvocationHistoryCollection;
+		private OutOnlyMethodInvocationHistoryCollection _outOnlyMethodInvocationHistoryCollection;
 		public IAddMethodImposterBuilder Add(global::Imposter.Abstractions.Arg<int> a, global::Imposter.Abstractions.Arg<int> b)
 		{
 			return new AddMethodImposter.Builder(_addMethodImposter, _addMethodInvocationHistoryCollection, new AddArgumentsCriteria(a, b));
@@ -64,6 +64,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 			return new OutOnlyMethodImposter.Builder(_outOnlyMethodImposter, _outOnlyMethodInvocationHistoryCollection);
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.Docs.ArgumentsMatching.IArgumentMatchingService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.ArgumentsMatching.IArgumentMatchingService>.Instance()
 		{
@@ -218,6 +219,11 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(AddMethodInvocationHistoryCollection.Node invocationHistory)
@@ -727,6 +733,11 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(FormatMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1218,6 +1229,11 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(InOnlyMethodInvocationHistoryCollection.Node invocationHistory)
@@ -1712,6 +1728,11 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(IncrementMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -2171,6 +2192,11 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(OutOnlyMethodInvocationHistoryCollection.Node invocationHistory)
@@ -2667,6 +2693,11 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(RefOnlyMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -3159,6 +3190,11 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(SumMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -3569,6 +3605,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 		public IArgumentMatchingServiceImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._addMethodInvocationHistoryCollection = new AddMethodInvocationHistoryCollection();
 			this._incrementMethodInvocationHistoryCollection = new IncrementMethodInvocationHistoryCollection();
 			this._sumMethodInvocationHistoryCollection = new SumMethodInvocationHistoryCollection();
@@ -3576,13 +3613,13 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 			this._inOnlyMethodInvocationHistoryCollection = new InOnlyMethodInvocationHistoryCollection();
 			this._refOnlyMethodInvocationHistoryCollection = new RefOnlyMethodInvocationHistoryCollection();
 			this._outOnlyMethodInvocationHistoryCollection = new OutOnlyMethodInvocationHistoryCollection();
-			this._addMethodImposter = new AddMethodImposter(_addMethodInvocationHistoryCollection, invocationBehavior);
-			this._incrementMethodImposter = new IncrementMethodImposter(_incrementMethodInvocationHistoryCollection, invocationBehavior);
-			this._sumMethodImposter = new SumMethodImposter(_sumMethodInvocationHistoryCollection, invocationBehavior);
-			this._formatMethodImposter = new FormatMethodImposter(_formatMethodInvocationHistoryCollection, invocationBehavior);
-			this._inOnlyMethodImposter = new InOnlyMethodImposter(_inOnlyMethodInvocationHistoryCollection, invocationBehavior);
-			this._refOnlyMethodImposter = new RefOnlyMethodImposter(_refOnlyMethodInvocationHistoryCollection, invocationBehavior);
-			this._outOnlyMethodImposter = new OutOnlyMethodImposter(_outOnlyMethodInvocationHistoryCollection, invocationBehavior);
+			this._addMethodImposter = new AddMethodImposter(_addMethodInvocationHistoryCollection, this._imposterMode);
+			this._incrementMethodImposter = new IncrementMethodImposter(_incrementMethodInvocationHistoryCollection, this._imposterMode);
+			this._sumMethodImposter = new SumMethodImposter(_sumMethodInvocationHistoryCollection, this._imposterMode);
+			this._formatMethodImposter = new FormatMethodImposter(_formatMethodInvocationHistoryCollection, this._imposterMode);
+			this._inOnlyMethodImposter = new InOnlyMethodImposter(_inOnlyMethodInvocationHistoryCollection, this._imposterMode);
+			this._refOnlyMethodImposter = new RefOnlyMethodImposter(_refOnlyMethodInvocationHistoryCollection, this._imposterMode);
+			this._outOnlyMethodImposter = new OutOnlyMethodImposter(_outOnlyMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -3597,6 +3634,42 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 			invocations.AddRange(_refOnlyMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_outOnlyMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_addMethodInvocationHistoryCollection.Clear();
+			_incrementMethodInvocationHistoryCollection.Clear();
+			_sumMethodInvocationHistoryCollection.Clear();
+			_formatMethodInvocationHistoryCollection.Clear();
+			_inOnlyMethodInvocationHistoryCollection.Clear();
+			_refOnlyMethodInvocationHistoryCollection.Clear();
+			_outOnlyMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_addMethodInvocationHistoryCollection.Clear();
+			_incrementMethodInvocationHistoryCollection.Clear();
+			_sumMethodInvocationHistoryCollection.Clear();
+			_formatMethodInvocationHistoryCollection.Clear();
+			_inOnlyMethodInvocationHistoryCollection.Clear();
+			_refOnlyMethodInvocationHistoryCollection.Clear();
+			_outOnlyMethodInvocationHistoryCollection.Clear();
+			this._addMethodInvocationHistoryCollection = new AddMethodInvocationHistoryCollection();
+			this._incrementMethodInvocationHistoryCollection = new IncrementMethodInvocationHistoryCollection();
+			this._sumMethodInvocationHistoryCollection = new SumMethodInvocationHistoryCollection();
+			this._formatMethodInvocationHistoryCollection = new FormatMethodInvocationHistoryCollection();
+			this._inOnlyMethodInvocationHistoryCollection = new InOnlyMethodInvocationHistoryCollection();
+			this._refOnlyMethodInvocationHistoryCollection = new RefOnlyMethodInvocationHistoryCollection();
+			this._outOnlyMethodInvocationHistoryCollection = new OutOnlyMethodInvocationHistoryCollection();
+			this._addMethodImposter = new AddMethodImposter(_addMethodInvocationHistoryCollection, this._imposterMode);
+			this._incrementMethodImposter = new IncrementMethodImposter(_incrementMethodInvocationHistoryCollection, this._imposterMode);
+			this._sumMethodImposter = new SumMethodImposter(_sumMethodInvocationHistoryCollection, this._imposterMode);
+			this._formatMethodImposter = new FormatMethodImposter(_formatMethodInvocationHistoryCollection, this._imposterMode);
+			this._inOnlyMethodImposter = new InOnlyMethodImposter(_inOnlyMethodInvocationHistoryCollection, this._imposterMode);
+			this._refOnlyMethodImposter = new RefOnlyMethodImposter(_refOnlyMethodInvocationHistoryCollection, this._imposterMode);
+			this._outOnlyMethodImposter = new OutOnlyMethodImposter(_outOnlyMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

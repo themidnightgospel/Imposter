@@ -15,13 +15,14 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class ICalculatorImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Benchmarks.ImposterVsAlternatives.SimpleMethodMockingBenchmarks.ICalculator>, ICalculatorImposter.ICalculatorSetup
 	{
-		private readonly SquareMethodImposter _squareMethodImposter;
-		private readonly SquareMethodInvocationHistoryCollection _squareMethodInvocationHistoryCollection;
+		private SquareMethodImposter _squareMethodImposter;
+		private SquareMethodInvocationHistoryCollection _squareMethodInvocationHistoryCollection;
 		public ISquareMethodImposterBuilder Square(global::Imposter.Abstractions.Arg<int> input)
 		{
 			return new SquareMethodImposter.Builder(_squareMethodImposter, _squareMethodInvocationHistoryCollection, new SquareArgumentsCriteria(input));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Benchmarks.ImposterVsAlternatives.SimpleMethodMockingBenchmarks.ICalculator global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Benchmarks.ImposterVsAlternatives.SimpleMethodMockingBenchmarks.ICalculator>.Instance()
 		{
@@ -162,6 +163,11 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(SquareMethodInvocationHistoryCollection.Node invocationHistory)
@@ -538,8 +544,9 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 
 		public ICalculatorImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._squareMethodInvocationHistoryCollection = new SquareMethodInvocationHistoryCollection();
-			this._squareMethodImposter = new SquareMethodImposter(_squareMethodInvocationHistoryCollection, invocationBehavior);
+			this._squareMethodImposter = new SquareMethodImposter(_squareMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -548,6 +555,18 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
 			invocations.AddRange(_squareMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_squareMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_squareMethodInvocationHistoryCollection.Clear();
+			this._squareMethodInvocationHistoryCollection = new SquareMethodInvocationHistoryCollection();
+			this._squareMethodImposter = new SquareMethodImposter(_squareMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

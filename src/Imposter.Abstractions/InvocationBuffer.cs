@@ -13,6 +13,9 @@ public sealed class InvocationBuffer<T>
     public void Add(T value, long sequence, Exception? exception) =>
         LazyInitializer.EnsureInitialized(ref _storage)!.Add(value, sequence, exception);
 
+    /// <summary>Starts an empty generation without invalidating existing snapshots.</summary>
+    public void Clear() => Interlocked.Exchange(ref _storage, null);
+
     /// <summary>Captures the completed-entry chain visible at this point.</summary>
     public Enumerator GetEnumerator()
     {

@@ -153,16 +153,16 @@ ExerciseValue(1.234m);
 ExerciseValue(Guid.NewGuid());
 ExerciseValue<Func<int>>(() => 42);
 
-ExerciseInvocationHistory();
+ExerciseVerificationLifecycle();
 
 Console.WriteLine($"Packed property and verification runtime passed on .NET {Environment.Version}.");
 
-static void ExerciseInvocationHistory()
+static void ExerciseVerificationLifecycle()
 {
     var imposter = new IClockImposter();
     var instance = imposter.Instance();
     var method = imposter.Now();
-    method.Returns(1).Then().Returns(2);
+    method.Returns(1).Then().Returns(2).Then().Returns(3);
     var setter = imposter.Offset.Setter(Arg<int>.Any());
     setter.Callback(_ => { });
     Require(instance.Now() == 1, "configured method result");
@@ -179,11 +179,27 @@ static void ExerciseInvocationHistory()
     method.Called(Count.Twice());
     imposter.Offset.Getter().Called(Count.Once());
 
+    imposter.ClearInvocations();
+    Require(snapshot.Count == 2 && method.Invocations.Count == 0, "detached snapshot after clear");
+    setter.Called(Count.Never());
+    imposter.Offset.Getter().Called(Count.Never());
+    Require(instance.Now() == 3 && instance.Offset == 8, "clear preserves outcome position and stored value");
+    method.Called(Count.Once());
+    imposter.Offset.Getter().Called(Count.Once());
+
+    imposter.Reset();
+    Require(ReferenceEquals(instance, imposter.Instance()), "reset preserves instance identity");
+    Require(method.Invocations.Count == 0 && snapshot.Count == 2, "reset detaches builders and preserves snapshots");
+    method.Returns(99);
+    Require(instance.Now() == 0 && instance.Offset == 0, "reset discards state and old builder configuration");
+
     var strict = new IClockImposter(ImposterMode.Explicit);
+    strict.Now().Returns(42);
+    strict.Reset();
     try
     {
         strict.Instance().Now();
-        throw new Exception("An unconfigured strict method was accepted.");
+        throw new Exception("Reset discarded explicit mode.");
     }
     catch (MissingImposterException missing)
     {

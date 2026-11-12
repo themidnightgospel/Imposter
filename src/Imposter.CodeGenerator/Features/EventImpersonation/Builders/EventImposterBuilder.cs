@@ -20,6 +20,22 @@ internal static class EventImposterBuilder
             .AddBaseType(SimpleBaseType(@event.BuilderInterface.SetupInterfaceTypeSyntax))
             .AddBaseType(SimpleBaseType(@event.BuilderInterface.VerificationInterfaceTypeSyntax))
             .AddMembers(BuildFields(@event))
+            .AddMember(
+                InvocationLifecycleBuilder.Clear([
+                    InvocationLifecycleBuilder.ClearIfInitialized(
+                        @event.Builder.Fields.SubscribeHistory.Name
+                    ),
+                    InvocationLifecycleBuilder.ClearIfInitialized(
+                        @event.Builder.Fields.UnsubscribeHistory.Name
+                    ),
+                    InvocationLifecycleBuilder.ClearIfInitialized(
+                        @event.Builder.Fields.History.Name
+                    ),
+                    InvocationLifecycleBuilder.ClearIfInitialized(
+                        @event.Builder.Fields.HandlerInvocations.Name
+                    ),
+                ])
+            )
             .AddMember(EventHistoryBuilder.Build(@event, true, true))
             .AddMember(EventHistoryBuilder.Build(@event, false, true))
             .AddMember(

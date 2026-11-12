@@ -15,10 +15,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IRefReadOnlyParameterSutImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IRefReadOnlyParameterSut>, IRefReadOnlyParameterSutImposter.IRefReadOnlyParameterSutSetup
 	{
-		private readonly ReadMethodImposter _readMethodImposter;
-		private readonly AcceptsMethodImposterCollection _acceptsMethodImposterCollection;
-		private readonly ReadMethodInvocationHistoryCollection _readMethodInvocationHistoryCollection;
-		private readonly AcceptsMethodInvocationHistoryCollection _acceptsMethodInvocationHistoryCollection;
+		private ReadMethodImposter _readMethodImposter;
+		private AcceptsMethodImposterCollection _acceptsMethodImposterCollection;
+		private ReadMethodInvocationHistoryCollection _readMethodInvocationHistoryCollection;
+		private AcceptsMethodInvocationHistoryCollection _acceptsMethodInvocationHistoryCollection;
 		public IReadMethodImposterBuilder Read(global::Imposter.Abstractions.Arg<int> key)
 		{
 			return new ReadMethodImposter.Builder(_readMethodImposter, _readMethodInvocationHistoryCollection, new ReadArgumentsCriteria(key));
@@ -29,6 +29,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			return new AcceptsMethodImposter<T>.Builder(_acceptsMethodImposterCollection, _acceptsMethodInvocationHistoryCollection, new AcceptsArgumentsCriteria<T>(value));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.MethodImpersonation.IRefReadOnlyParameterSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IRefReadOnlyParameterSut>.Instance()
 		{
@@ -181,6 +182,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(AcceptsMethodInvocationHistoryCollection.Node invocationHistory)
@@ -759,6 +765,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(ReadMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1139,10 +1150,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 		public IRefReadOnlyParameterSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._readMethodInvocationHistoryCollection = new ReadMethodInvocationHistoryCollection();
 			this._acceptsMethodInvocationHistoryCollection = new AcceptsMethodInvocationHistoryCollection();
-			this._readMethodImposter = new ReadMethodImposter(_readMethodInvocationHistoryCollection, invocationBehavior);
-			this._acceptsMethodImposterCollection = new AcceptsMethodImposterCollection(_acceptsMethodInvocationHistoryCollection, invocationBehavior);
+			this._readMethodImposter = new ReadMethodImposter(_readMethodInvocationHistoryCollection, this._imposterMode);
+			this._acceptsMethodImposterCollection = new AcceptsMethodImposterCollection(_acceptsMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -1152,6 +1164,22 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			invocations.AddRange(_readMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_acceptsMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_readMethodInvocationHistoryCollection.Clear();
+			_acceptsMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_readMethodInvocationHistoryCollection.Clear();
+			_acceptsMethodInvocationHistoryCollection.Clear();
+			this._readMethodInvocationHistoryCollection = new ReadMethodInvocationHistoryCollection();
+			this._acceptsMethodInvocationHistoryCollection = new AcceptsMethodInvocationHistoryCollection();
+			this._readMethodImposter = new ReadMethodImposter(_readMethodInvocationHistoryCollection, this._imposterMode);
+			this._acceptsMethodImposterCollection = new AcceptsMethodImposterCollection(_acceptsMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

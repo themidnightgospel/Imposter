@@ -15,13 +15,14 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IComplexServiceImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Benchmarks.ImposterVsAlternatives.ComplexMethodMockingBenchmark.IComplexService>, IComplexServiceImposter.IComplexServiceSetup
 	{
-		private readonly ProcessMethodImposter _processMethodImposter;
-		private readonly ProcessMethodInvocationHistoryCollection _processMethodInvocationHistoryCollection;
+		private ProcessMethodImposter _processMethodImposter;
+		private ProcessMethodInvocationHistoryCollection _processMethodInvocationHistoryCollection;
 		public IProcessMethodImposterBuilder Process(global::Imposter.Abstractions.Arg<string> route, global::Imposter.Abstractions.Arg<int> severity, global::Imposter.Abstractions.Arg<global::Imposter.Benchmarks.ImposterVsAlternatives.ComplexMethodMockingBenchmark.OperationContext> context)
 		{
 			return new ProcessMethodImposter.Builder(_processMethodImposter, _processMethodInvocationHistoryCollection, new ProcessArgumentsCriteria(route, severity, context));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Benchmarks.ImposterVsAlternatives.ComplexMethodMockingBenchmark.IComplexService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Benchmarks.ImposterVsAlternatives.ComplexMethodMockingBenchmark.IComplexService>.Instance()
 		{
@@ -190,6 +191,11 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(ProcessMethodInvocationHistoryCollection.Node invocationHistory)
@@ -568,8 +574,9 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 
 		public IComplexServiceImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._processMethodInvocationHistoryCollection = new ProcessMethodInvocationHistoryCollection();
-			this._processMethodImposter = new ProcessMethodImposter(_processMethodInvocationHistoryCollection, invocationBehavior);
+			this._processMethodImposter = new ProcessMethodImposter(_processMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -578,6 +585,18 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
 			invocations.AddRange(_processMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_processMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_processMethodInvocationHistoryCollection.Clear();
+			this._processMethodInvocationHistoryCollection = new ProcessMethodInvocationHistoryCollection();
+			this._processMethodImposter = new ProcessMethodImposter(_processMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

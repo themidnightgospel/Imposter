@@ -23,7 +23,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 		public IBufferRentedEventImposterBuilder BufferRented => _BufferRented;
 
-		private readonly BufferRentedEventImposterBuilder _BufferRented;
+		private BufferRentedEventImposterBuilder _BufferRented;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IBufferRentedEventImposterBuilder : IBufferRentedEventImposterSetupBuilder, IBufferRentedEventImposterVerificationBuilder
 		{
@@ -62,6 +62,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.BufferRentedHandler>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<byte[]>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.BufferRentedHandler Handler, byte[] buffer)>? _handlerInvocations;
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.BufferRentedHandler>> IBufferRentedEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -394,7 +402,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 		public IDataReadEventImposterBuilder DataRead => _DataRead;
 
-		private readonly DataReadEventImposterBuilder _DataRead;
+		private DataReadEventImposterBuilder _DataRead;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IDataReadEventImposterBuilder : IDataReadEventImposterSetupBuilder, IDataReadEventImposterVerificationBuilder
 		{
@@ -433,6 +441,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.DataReadHandler>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<byte[]>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.DataReadHandler Handler, byte[] data)>? _handlerInvocations;
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.DataReadHandler>> IDataReadEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -792,6 +808,20 @@ namespace Imposter.Tests.Features.EventImpersonation
 			invocations.AddRange(_BufferRented.Snapshot(false));
 			invocations.AddRange(_DataRead.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_BufferRented.ClearInvocations();
+			_DataRead.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_BufferRented.ClearInvocations();
+			_DataRead.ClearInvocations();
+			this._BufferRented = new BufferRentedEventImposterBuilder();
+			this._DataRead = new DataReadEventImposterBuilder();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

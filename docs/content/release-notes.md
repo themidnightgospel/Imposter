@@ -1,8 +1,8 @@
 # Release notes
 
-## Unreleased: invocation history
+## Unreleased: invocation history and lifecycle
 
-Typed invocation snapshots expose recorded method calls, property assignments, indexer accessors, and event subscriptions and unsubscriptions. The following existing behaviors also change:
+Typed invocation snapshots expose recorded method calls, property assignments, indexer accessors, and event subscriptions and unsubscriptions. ClearInvocations and Reset add lifecycle operations. The following existing behaviors also change:
 
 - Generic verification follows the caller's type arguments. When an `object` setup supplies the outcome for a `string` call through an adapter, inspect and verify the `string` invocation.
 - Unmatched Explicit-mode calls on recording members are retained with their synchronous exception, so subsequent count checks can observe those attempts.

@@ -15,12 +15,12 @@ namespace System.Net.Http
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class HttpMessageHandlerImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::System.Net.Http.HttpMessageHandler>
 	{
-		private readonly DisposeMethodImposter _disposeMethodImposter;
-		private readonly SendMethodImposter _sendMethodImposter;
-		private readonly SendAsyncMethodImposter _sendAsyncMethodImposter;
-		private readonly DisposeMethodInvocationHistoryCollection _disposeMethodInvocationHistoryCollection;
-		private readonly SendMethodInvocationHistoryCollection _sendMethodInvocationHistoryCollection;
-		private readonly SendAsyncMethodInvocationHistoryCollection _sendAsyncMethodInvocationHistoryCollection;
+		private DisposeMethodImposter _disposeMethodImposter;
+		private SendMethodImposter _sendMethodImposter;
+		private SendAsyncMethodImposter _sendAsyncMethodImposter;
+		private DisposeMethodInvocationHistoryCollection _disposeMethodInvocationHistoryCollection;
+		private SendMethodInvocationHistoryCollection _sendMethodInvocationHistoryCollection;
+		private SendAsyncMethodInvocationHistoryCollection _sendAsyncMethodInvocationHistoryCollection;
 		public IDisposeMethodImposterBuilder Dispose(global::Imposter.Abstractions.Arg<bool> disposing)
 		{
 			return new DisposeMethodImposter.Builder(_disposeMethodImposter, _disposeMethodInvocationHistoryCollection, new DisposeArgumentsCriteria(disposing));
@@ -36,6 +36,7 @@ namespace System.Net.Http
 			return new SendAsyncMethodImposter.Builder(_sendAsyncMethodImposter, _sendAsyncMethodInvocationHistoryCollection, new SendAsyncArgumentsCriteria(request, cancellationToken));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::System.Net.Http.HttpMessageHandler global::Imposter.Abstractions.IHaveImposterInstance<global::System.Net.Http.HttpMessageHandler>.Instance()
 		{
@@ -166,6 +167,11 @@ namespace System.Net.Http
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(DisposeMethodInvocationHistoryCollection.Node invocationHistory)
@@ -666,6 +672,11 @@ namespace System.Net.Http
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(SendMethodInvocationHistoryCollection.Node invocationHistory)
@@ -1212,6 +1223,11 @@ namespace System.Net.Http
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(SendAsyncMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1613,12 +1629,13 @@ namespace System.Net.Http
 
 		public HttpMessageHandlerImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._disposeMethodInvocationHistoryCollection = new DisposeMethodInvocationHistoryCollection();
 			this._sendMethodInvocationHistoryCollection = new SendMethodInvocationHistoryCollection();
 			this._sendAsyncMethodInvocationHistoryCollection = new SendAsyncMethodInvocationHistoryCollection();
-			this._disposeMethodImposter = new DisposeMethodImposter(_disposeMethodInvocationHistoryCollection, invocationBehavior);
-			this._sendMethodImposter = new SendMethodImposter(_sendMethodInvocationHistoryCollection, invocationBehavior);
-			this._sendAsyncMethodImposter = new SendAsyncMethodImposter(_sendAsyncMethodInvocationHistoryCollection, invocationBehavior);
+			this._disposeMethodImposter = new DisposeMethodImposter(_disposeMethodInvocationHistoryCollection, this._imposterMode);
+			this._sendMethodImposter = new SendMethodImposter(_sendMethodInvocationHistoryCollection, this._imposterMode);
+			this._sendAsyncMethodImposter = new SendAsyncMethodImposter(_sendAsyncMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -1629,6 +1646,26 @@ namespace System.Net.Http
 			invocations.AddRange(_sendMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_sendAsyncMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_disposeMethodInvocationHistoryCollection.Clear();
+			_sendMethodInvocationHistoryCollection.Clear();
+			_sendAsyncMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_disposeMethodInvocationHistoryCollection.Clear();
+			_sendMethodInvocationHistoryCollection.Clear();
+			_sendAsyncMethodInvocationHistoryCollection.Clear();
+			this._disposeMethodInvocationHistoryCollection = new DisposeMethodInvocationHistoryCollection();
+			this._sendMethodInvocationHistoryCollection = new SendMethodInvocationHistoryCollection();
+			this._sendAsyncMethodInvocationHistoryCollection = new SendAsyncMethodInvocationHistoryCollection();
+			this._disposeMethodImposter = new DisposeMethodImposter(_disposeMethodInvocationHistoryCollection, this._imposterMode);
+			this._sendMethodImposter = new SendMethodImposter(_sendMethodInvocationHistoryCollection, this._imposterMode);
+			this._sendAsyncMethodImposter = new SendAsyncMethodImposter(_sendAsyncMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

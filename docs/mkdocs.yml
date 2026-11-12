@@ -88,6 +88,7 @@ nav:
   - Interface-specific Setup: interface-setup.md
   - Verification: verification.md
   - Invocation History: invocation-history.md
+  - Clearing and Resetting: clear-and-reset.md
   - Invocation Performance: invocation-contention.md
   - Implicit vs Explicit: implicit-vs-explicit.md
   - Base Implementation: base-implementation.md

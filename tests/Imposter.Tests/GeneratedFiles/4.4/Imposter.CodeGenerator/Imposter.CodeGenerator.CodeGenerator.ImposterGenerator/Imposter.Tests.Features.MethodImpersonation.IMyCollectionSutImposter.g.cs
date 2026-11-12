@@ -15,12 +15,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IMyCollectionSutImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IMyCollectionSut>, IMyCollectionSutImposter.IMyCollectionSutSetup, IMyCollectionSutImposter.IEnumerableSetup, IMyCollectionSutImposter.IEnumerableSetup_1
 	{
-		private readonly AddMethodImposter _addMethodImposter;
-		private readonly GetEnumeratorMethodImposter _getEnumeratorMethodImposter;
-		private readonly GetEnumerator_1MethodImposter _getEnumerator_1MethodImposter;
-		private readonly AddMethodInvocationHistoryCollection _addMethodInvocationHistoryCollection;
-		private readonly GetEnumeratorMethodInvocationHistoryCollection _getEnumeratorMethodInvocationHistoryCollection;
-		private readonly GetEnumerator_1MethodInvocationHistoryCollection _getEnumerator_1MethodInvocationHistoryCollection;
+		private AddMethodImposter _addMethodImposter;
+		private GetEnumeratorMethodImposter _getEnumeratorMethodImposter;
+		private GetEnumerator_1MethodImposter _getEnumerator_1MethodImposter;
+		private AddMethodInvocationHistoryCollection _addMethodInvocationHistoryCollection;
+		private GetEnumeratorMethodInvocationHistoryCollection _getEnumeratorMethodInvocationHistoryCollection;
+		private GetEnumerator_1MethodInvocationHistoryCollection _getEnumerator_1MethodInvocationHistoryCollection;
 		public IAddMethodImposterBuilder Add(global::Imposter.Abstractions.Arg<string> item)
 		{
 			return new AddMethodImposter.Builder(_addMethodImposter, _addMethodInvocationHistoryCollection, new AddArgumentsCriteria(item));
@@ -36,6 +36,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			return new GetEnumerator_1MethodImposter.Builder(_getEnumerator_1MethodImposter, _getEnumerator_1MethodInvocationHistoryCollection);
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.MethodImpersonation.IMyCollectionSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IMyCollectionSut>.Instance()
 		{
@@ -166,6 +167,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(AddMethodInvocationHistoryCollection.Node invocationHistory)
@@ -590,6 +596,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(GetEnumerator_1MethodInvocationHistoryCollection.Node invocationHistory)
@@ -1037,6 +1048,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(GetEnumeratorMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1389,7 +1405,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 		public ICountPropertyBuilder Count => _CountPropertyBuilderField;
 
-		private readonly CountPropertyBuilder _CountPropertyBuilderField;
+		private CountPropertyBuilder _CountPropertyBuilderField;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ICountPropertyGetterOutcomeBuilder
 		{
@@ -1437,6 +1453,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class CountPropertyBuilder : ICountPropertyBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposterBuilder.ClearInvocations();
+			}
+
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
 			{
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>(), orderBySequence);
@@ -1559,13 +1580,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 		public IMyCollectionSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._addMethodInvocationHistoryCollection = new AddMethodInvocationHistoryCollection();
 			this._getEnumeratorMethodInvocationHistoryCollection = new GetEnumeratorMethodInvocationHistoryCollection();
 			this._getEnumerator_1MethodInvocationHistoryCollection = new GetEnumerator_1MethodInvocationHistoryCollection();
-			this._addMethodImposter = new AddMethodImposter(_addMethodInvocationHistoryCollection, invocationBehavior);
-			this._getEnumeratorMethodImposter = new GetEnumeratorMethodImposter(_getEnumeratorMethodInvocationHistoryCollection, invocationBehavior);
-			this._getEnumerator_1MethodImposter = new GetEnumerator_1MethodImposter(_getEnumerator_1MethodInvocationHistoryCollection, invocationBehavior);
-			this._CountPropertyBuilderField = new CountPropertyBuilder(invocationBehavior);
+			this._addMethodImposter = new AddMethodImposter(_addMethodInvocationHistoryCollection, this._imposterMode);
+			this._getEnumeratorMethodImposter = new GetEnumeratorMethodImposter(_getEnumeratorMethodInvocationHistoryCollection, this._imposterMode);
+			this._getEnumerator_1MethodImposter = new GetEnumerator_1MethodImposter(_getEnumerator_1MethodInvocationHistoryCollection, this._imposterMode);
+			this._CountPropertyBuilderField = new CountPropertyBuilder(this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -1577,6 +1599,29 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			invocations.AddRange(_getEnumerator_1MethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_CountPropertyBuilderField.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_addMethodInvocationHistoryCollection.Clear();
+			_getEnumeratorMethodInvocationHistoryCollection.Clear();
+			_getEnumerator_1MethodInvocationHistoryCollection.Clear();
+			_CountPropertyBuilderField.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_addMethodInvocationHistoryCollection.Clear();
+			_getEnumeratorMethodInvocationHistoryCollection.Clear();
+			_getEnumerator_1MethodInvocationHistoryCollection.Clear();
+			_CountPropertyBuilderField.ClearInvocations();
+			this._addMethodInvocationHistoryCollection = new AddMethodInvocationHistoryCollection();
+			this._getEnumeratorMethodInvocationHistoryCollection = new GetEnumeratorMethodInvocationHistoryCollection();
+			this._getEnumerator_1MethodInvocationHistoryCollection = new GetEnumerator_1MethodInvocationHistoryCollection();
+			this._addMethodImposter = new AddMethodImposter(_addMethodInvocationHistoryCollection, this._imposterMode);
+			this._getEnumeratorMethodImposter = new GetEnumeratorMethodImposter(_getEnumeratorMethodInvocationHistoryCollection, this._imposterMode);
+			this._getEnumerator_1MethodImposter = new GetEnumerator_1MethodImposter(_getEnumerator_1MethodInvocationHistoryCollection, this._imposterMode);
+			this._CountPropertyBuilderField = new CountPropertyBuilder(this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

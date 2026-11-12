@@ -15,14 +15,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class IScopedParameterSutImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IScopedParameterSut>, IScopedParameterSutImposter.IScopedParameterSutSetup
 	{
-		private readonly NameMethodImposter _nameMethodImposter;
-		private readonly SliceMethodImposter _sliceMethodImposter;
-		private readonly CopyMethodImposter _copyMethodImposter;
-		private readonly FirstMethodImposter _firstMethodImposter;
-		private readonly NameMethodInvocationHistoryCollection _nameMethodInvocationHistoryCollection;
-		private readonly SliceMethodInvocationHistoryCollection _sliceMethodInvocationHistoryCollection;
-		private readonly CopyMethodInvocationHistoryCollection _copyMethodInvocationHistoryCollection;
-		private readonly FirstMethodInvocationHistoryCollection _firstMethodInvocationHistoryCollection;
+		private NameMethodImposter _nameMethodImposter;
+		private SliceMethodImposter _sliceMethodImposter;
+		private CopyMethodImposter _copyMethodImposter;
+		private FirstMethodImposter _firstMethodImposter;
+		private NameMethodInvocationHistoryCollection _nameMethodInvocationHistoryCollection;
+		private SliceMethodInvocationHistoryCollection _sliceMethodInvocationHistoryCollection;
+		private CopyMethodInvocationHistoryCollection _copyMethodInvocationHistoryCollection;
+		private FirstMethodInvocationHistoryCollection _firstMethodInvocationHistoryCollection;
 		public INameMethodImposterBuilder Name(global::Imposter.Abstractions.ReadOnlySpanArg<char> text)
 		{
 			return new NameMethodImposter.Builder(_nameMethodImposter, _nameMethodInvocationHistoryCollection, new NameArgumentsCriteria(text));
@@ -43,6 +43,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			return new FirstMethodImposter.Builder(_firstMethodImposter, _firstMethodInvocationHistoryCollection, new FirstArgumentsCriteria(values));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.MethodImpersonation.IScopedParameterSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IScopedParameterSut>.Instance()
 		{
@@ -197,6 +198,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(CopyMethodInvocationHistoryCollection.Node invocationHistory)
@@ -692,6 +698,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(FirstMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1182,6 +1193,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(NameMethodInvocationHistoryCollection.Node invocationHistory)
@@ -1676,6 +1692,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(SliceMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -2068,14 +2089,15 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 		public IScopedParameterSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._nameMethodInvocationHistoryCollection = new NameMethodInvocationHistoryCollection();
 			this._sliceMethodInvocationHistoryCollection = new SliceMethodInvocationHistoryCollection();
 			this._copyMethodInvocationHistoryCollection = new CopyMethodInvocationHistoryCollection();
 			this._firstMethodInvocationHistoryCollection = new FirstMethodInvocationHistoryCollection();
-			this._nameMethodImposter = new NameMethodImposter(_nameMethodInvocationHistoryCollection, invocationBehavior);
-			this._sliceMethodImposter = new SliceMethodImposter(_sliceMethodInvocationHistoryCollection, invocationBehavior);
-			this._copyMethodImposter = new CopyMethodImposter(_copyMethodInvocationHistoryCollection, invocationBehavior);
-			this._firstMethodImposter = new FirstMethodImposter(_firstMethodInvocationHistoryCollection, invocationBehavior);
+			this._nameMethodImposter = new NameMethodImposter(_nameMethodInvocationHistoryCollection, this._imposterMode);
+			this._sliceMethodImposter = new SliceMethodImposter(_sliceMethodInvocationHistoryCollection, this._imposterMode);
+			this._copyMethodImposter = new CopyMethodImposter(_copyMethodInvocationHistoryCollection, this._imposterMode);
+			this._firstMethodImposter = new FirstMethodImposter(_firstMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -2087,6 +2109,30 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			invocations.AddRange(_copyMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_firstMethodInvocationHistoryCollection.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_nameMethodInvocationHistoryCollection.Clear();
+			_sliceMethodInvocationHistoryCollection.Clear();
+			_copyMethodInvocationHistoryCollection.Clear();
+			_firstMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_nameMethodInvocationHistoryCollection.Clear();
+			_sliceMethodInvocationHistoryCollection.Clear();
+			_copyMethodInvocationHistoryCollection.Clear();
+			_firstMethodInvocationHistoryCollection.Clear();
+			this._nameMethodInvocationHistoryCollection = new NameMethodInvocationHistoryCollection();
+			this._sliceMethodInvocationHistoryCollection = new SliceMethodInvocationHistoryCollection();
+			this._copyMethodInvocationHistoryCollection = new CopyMethodInvocationHistoryCollection();
+			this._firstMethodInvocationHistoryCollection = new FirstMethodInvocationHistoryCollection();
+			this._nameMethodImposter = new NameMethodImposter(_nameMethodInvocationHistoryCollection, this._imposterMode);
+			this._sliceMethodImposter = new SliceMethodImposter(_sliceMethodInvocationHistoryCollection, this._imposterMode);
+			this._copyMethodImposter = new CopyMethodImposter(_copyMethodInvocationHistoryCollection, this._imposterMode);
+			this._firstMethodImposter = new FirstMethodImposter(_firstMethodInvocationHistoryCollection, this._imposterMode);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

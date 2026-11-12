@@ -15,10 +15,10 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class AbstractTelemetryServiceImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.AbstractTelemetryService>
 	{
-		private readonly ComputeMethodImposter _computeMethodImposter;
-		private readonly ComputeNullableMethodImposter _computeNullableMethodImposter;
-		private readonly ComputeMethodInvocationHistoryCollection _computeMethodInvocationHistoryCollection;
-		private readonly ComputeNullableMethodInvocationHistoryCollection _computeNullableMethodInvocationHistoryCollection;
+		private ComputeMethodImposter _computeMethodImposter;
+		private ComputeNullableMethodImposter _computeNullableMethodImposter;
+		private ComputeMethodInvocationHistoryCollection _computeMethodInvocationHistoryCollection;
+		private ComputeNullableMethodInvocationHistoryCollection _computeNullableMethodInvocationHistoryCollection;
 		public IComputeMethodImposterBuilder Compute(global::Imposter.Abstractions.Arg<int> value)
 		{
 			return new ComputeMethodImposter.Builder(_computeMethodImposter, _computeMethodInvocationHistoryCollection, new ComputeArgumentsCriteria(value));
@@ -29,6 +29,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			return new ComputeNullableMethodImposter.Builder(_computeNullableMethodImposter, _computeNullableMethodInvocationHistoryCollection, new ComputeNullableArgumentsCriteria(value));
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.ClassImpersonation.Suts.AbstractTelemetryService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.ClassImpersonation.Suts.AbstractTelemetryService>.Instance()
 		{
@@ -169,6 +170,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(ComputeMethodInvocationHistoryCollection.Node invocationHistory)
@@ -663,6 +669,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(ComputeNullableMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1021,7 +1032,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 		public INamePropertyBuilder Name => _NamePropertyBuilderField;
 
-		private readonly NamePropertyBuilder _NamePropertyBuilderField;
+		private NamePropertyBuilder _NamePropertyBuilderField;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface INamePropertyGetterOutcomeBuilder
 		{
@@ -1138,6 +1149,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class NamePropertyBuilder : INamePropertyBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposterBuilder.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
 			{
 				return _setterImposter.Snapshot(orderBySequence);
@@ -1295,7 +1312,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 		public INameNullablePropertyBuilder NameNullable => _NameNullablePropertyBuilderField;
 
-		private readonly NameNullablePropertyBuilder _NameNullablePropertyBuilderField;
+		private NameNullablePropertyBuilder _NameNullablePropertyBuilderField;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface INameNullablePropertyGetterOutcomeBuilder
 		{
@@ -1412,6 +1429,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class NameNullablePropertyBuilder : INameNullablePropertyBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposterBuilder.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot(bool orderBySequence = true)
 			{
 				return _setterImposter.Snapshot(orderBySequence);
@@ -1569,7 +1592,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 		public IStreamAdvancedEventImposterBuilder StreamAdvanced => _StreamAdvanced;
 
-		private readonly StreamAdvancedEventImposterBuilder _StreamAdvanced;
+		private StreamAdvancedEventImposterBuilder _StreamAdvanced;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IStreamAdvancedEventImposterBuilder : IStreamAdvancedEventImposterSetupBuilder, IStreamAdvancedEventImposterVerificationBuilder
 		{
@@ -1608,6 +1631,14 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			private global::Imposter.Abstractions.CallbackCollection<global::System.EventHandler>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<(object? sender, global::System.EventArgs e)>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.EventHandler Handler, object? sender, global::System.EventArgs e)>? _handlerInvocations;
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
+			}
+
 			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>> IStreamAdvancedEventImposterVerificationBuilder.Subscriptions
 			{
 				get
@@ -1942,7 +1973,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			}
 		}
 
-		private readonly IndexerIndexerBuilder _IndexerIndexer;
+		private IndexerIndexerBuilder _IndexerIndexer;
 		public IIndexerIndexerBuilder this[global::Imposter.Abstractions.Arg<int> index] => new IndexerIndexerBuilder.InvocationBuilder(_IndexerIndexer, new IndexerIndexerArgumentsCriteria(index));
 		public delegate int IndexerIndexerDelegate(int index);
 		public delegate void IndexerIndexerGetterCallback(int index);
@@ -2068,6 +2099,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class IndexerIndexerBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposter.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			private readonly DefaultIndexerIndexerBehaviour _IndexerDefaultIndexerBehaviour = new DefaultIndexerIndexerBehaviour();
 			private readonly GetterImposter _getterImposter;
 			private readonly SetterImposter _setterImposter;
@@ -2189,6 +2226,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class GetterImposter
 			{
+				internal void ClearInvocations()
+				{
+					_invocationHistory?.Clear();
+				}
+
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
 				private readonly global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter> _getterInvocationImposters = new global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter>();
 				private global::Imposter.Abstractions.InvocationHistory<IndexerGetterInvocation>? _invocationHistory;
@@ -2453,6 +2495,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class SetterImposter
 			{
+				internal void ClearInvocations()
+				{
+					_invocationHistory?.Clear();
+				}
+
 				private global::Imposter.Abstractions.CallbackCollection<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)>? _callbacks;
 				private global::Imposter.Abstractions.InvocationHistory<IndexerSetterInvocation>? _invocationHistory;
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
@@ -2684,7 +2731,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			IIndexerIndexerSetterBuilder Setter();
 		}
 
-		private readonly Indexer_1IndexerBuilder _Indexer_1Indexer;
+		private Indexer_1IndexerBuilder _Indexer_1Indexer;
 		public IIndexer_1IndexerBuilder this[global::Imposter.Abstractions.Arg<int> index, global::Imposter.Abstractions.Arg<int> indexNullable] => new Indexer_1IndexerBuilder.InvocationBuilder(_Indexer_1Indexer, new Indexer_1IndexerArgumentsCriteria(index, indexNullable));
 		public delegate int? Indexer_1IndexerDelegate(int index, int indexNullable);
 		public delegate void Indexer_1IndexerGetterCallback(int index, int indexNullable);
@@ -2830,6 +2877,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class Indexer_1IndexerBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposter.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			private readonly DefaultIndexer_1IndexerBehaviour _Indexer_1DefaultIndexerBehaviour = new DefaultIndexer_1IndexerBehaviour();
 			private readonly GetterImposter _getterImposter;
 			private readonly SetterImposter _setterImposter;
@@ -2954,6 +3007,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class GetterImposter
 			{
+				internal void ClearInvocations()
+				{
+					_invocationHistory?.Clear();
+				}
+
 				private readonly DefaultIndexer_1IndexerBehaviour _defaultBehaviour;
 				private readonly global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter> _getterInvocationImposters = new global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter>();
 				private global::Imposter.Abstractions.InvocationHistory<Indexer_1GetterInvocation>? _invocationHistory;
@@ -3218,6 +3276,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class SetterImposter
 			{
+				internal void ClearInvocations()
+				{
+					_invocationHistory?.Clear();
+				}
+
 				private global::Imposter.Abstractions.CallbackCollection<(Indexer_1IndexerArgumentsCriteria Criteria, Indexer_1IndexerSetterCallback Callback)>? _callbacks;
 				private global::Imposter.Abstractions.InvocationHistory<Indexer_1SetterInvocation>? _invocationHistory;
 				private readonly DefaultIndexer_1IndexerBehaviour _defaultBehaviour;
@@ -3451,15 +3514,16 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 		public AbstractTelemetryServiceImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._computeMethodInvocationHistoryCollection = new ComputeMethodInvocationHistoryCollection();
 			this._computeNullableMethodInvocationHistoryCollection = new ComputeNullableMethodInvocationHistoryCollection();
-			this._computeMethodImposter = new ComputeMethodImposter(_computeMethodInvocationHistoryCollection, invocationBehavior);
-			this._computeNullableMethodImposter = new ComputeNullableMethodImposter(_computeNullableMethodInvocationHistoryCollection, invocationBehavior);
-			this._NamePropertyBuilderField = new NamePropertyBuilder(invocationBehavior);
-			this._NameNullablePropertyBuilderField = new NameNullablePropertyBuilder(invocationBehavior);
+			this._computeMethodImposter = new ComputeMethodImposter(_computeMethodInvocationHistoryCollection, this._imposterMode);
+			this._computeNullableMethodImposter = new ComputeNullableMethodImposter(_computeNullableMethodInvocationHistoryCollection, this._imposterMode);
+			this._NamePropertyBuilderField = new NamePropertyBuilder(this._imposterMode);
+			this._NameNullablePropertyBuilderField = new NameNullablePropertyBuilder(this._imposterMode);
 			this._StreamAdvanced = new StreamAdvancedEventImposterBuilder();
-			this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.ClassImpersonation.Suts.AbstractTelemetryService.this[int index]");
-			this._Indexer_1Indexer = new Indexer_1IndexerBuilder(invocationBehavior, "Imposter.Tests.Features.ClassImpersonation.Suts.AbstractTelemetryService.this[int index, int indexNullable]");
+			this._IndexerIndexer = new IndexerIndexerBuilder(this._imposterMode, "Imposter.Tests.Features.ClassImpersonation.Suts.AbstractTelemetryService.this[int index]");
+			this._Indexer_1Indexer = new Indexer_1IndexerBuilder(this._imposterMode, "Imposter.Tests.Features.ClassImpersonation.Suts.AbstractTelemetryService.this[int index, int indexNullable]");
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -3474,6 +3538,37 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			invocations.AddRange(_IndexerIndexer.Snapshot(false));
 			invocations.AddRange(_Indexer_1Indexer.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_computeMethodInvocationHistoryCollection.Clear();
+			_computeNullableMethodInvocationHistoryCollection.Clear();
+			_NamePropertyBuilderField.ClearInvocations();
+			_NameNullablePropertyBuilderField.ClearInvocations();
+			_StreamAdvanced.ClearInvocations();
+			_IndexerIndexer.ClearInvocations();
+			_Indexer_1Indexer.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_computeMethodInvocationHistoryCollection.Clear();
+			_computeNullableMethodInvocationHistoryCollection.Clear();
+			_NamePropertyBuilderField.ClearInvocations();
+			_NameNullablePropertyBuilderField.ClearInvocations();
+			_StreamAdvanced.ClearInvocations();
+			_IndexerIndexer.ClearInvocations();
+			_Indexer_1Indexer.ClearInvocations();
+			this._computeMethodInvocationHistoryCollection = new ComputeMethodInvocationHistoryCollection();
+			this._computeNullableMethodInvocationHistoryCollection = new ComputeNullableMethodInvocationHistoryCollection();
+			this._computeMethodImposter = new ComputeMethodImposter(_computeMethodInvocationHistoryCollection, this._imposterMode);
+			this._computeNullableMethodImposter = new ComputeNullableMethodImposter(_computeNullableMethodInvocationHistoryCollection, this._imposterMode);
+			this._NamePropertyBuilderField = new NamePropertyBuilder(this._imposterMode);
+			this._NameNullablePropertyBuilderField = new NameNullablePropertyBuilder(this._imposterMode);
+			this._StreamAdvanced = new StreamAdvancedEventImposterBuilder();
+			this._IndexerIndexer = new IndexerIndexerBuilder(this._imposterMode, "Imposter.Tests.Features.ClassImpersonation.Suts.AbstractTelemetryService.this[int index]");
+			this._Indexer_1Indexer = new Indexer_1IndexerBuilder(this._imposterMode, "Imposter.Tests.Features.ClassImpersonation.Suts.AbstractTelemetryService.this[int index, int indexNullable]");
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

@@ -142,6 +142,9 @@ public class PropertySetter<T>
         Exception? exception
     ) => new RuntimeInvocation(_displayName, value, sequence, exception);
 
+    /// <summary>Clears recorded interactions while preserving configured behavior.</summary>
+    public void ClearInvocations() => _invocationHistory?.Clear();
+
     /// <summary>Returns an entry-ordered snapshot of assignments.</summary>
     public IReadOnlyList<IImposterInvocation> Snapshot() =>
         MatchingInvocations<IImposterInvocation>(Arg<T>.Any());

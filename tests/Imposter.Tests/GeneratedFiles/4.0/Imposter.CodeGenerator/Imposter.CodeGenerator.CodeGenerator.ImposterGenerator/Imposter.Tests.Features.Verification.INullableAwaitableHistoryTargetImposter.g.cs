@@ -15,16 +15,16 @@ namespace Imposter.Tests.Features.Verification
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 	public sealed class INullableAwaitableHistoryTargetImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Verification.INullableAwaitableHistoryTarget>, INullableAwaitableHistoryTargetImposter.INullableAwaitableHistoryTargetSetup
 	{
-		private readonly PlainMethodImposter _plainMethodImposter;
-		private readonly GenericMethodImposter _genericMethodImposter;
-		private readonly RequiredMethodImposter _requiredMethodImposter;
-		private readonly ValueMethodImposter _valueMethodImposter;
-		private readonly GenericValueMethodImposter _genericValueMethodImposter;
-		private readonly PlainMethodInvocationHistoryCollection _plainMethodInvocationHistoryCollection;
-		private readonly GenericMethodInvocationHistoryCollection _genericMethodInvocationHistoryCollection;
-		private readonly RequiredMethodInvocationHistoryCollection _requiredMethodInvocationHistoryCollection;
-		private readonly ValueMethodInvocationHistoryCollection _valueMethodInvocationHistoryCollection;
-		private readonly GenericValueMethodInvocationHistoryCollection _genericValueMethodInvocationHistoryCollection;
+		private PlainMethodImposter _plainMethodImposter;
+		private GenericMethodImposter _genericMethodImposter;
+		private RequiredMethodImposter _requiredMethodImposter;
+		private ValueMethodImposter _valueMethodImposter;
+		private GenericValueMethodImposter _genericValueMethodImposter;
+		private PlainMethodInvocationHistoryCollection _plainMethodInvocationHistoryCollection;
+		private GenericMethodInvocationHistoryCollection _genericMethodInvocationHistoryCollection;
+		private RequiredMethodInvocationHistoryCollection _requiredMethodInvocationHistoryCollection;
+		private ValueMethodInvocationHistoryCollection _valueMethodInvocationHistoryCollection;
+		private GenericValueMethodInvocationHistoryCollection _genericValueMethodInvocationHistoryCollection;
 		public IPlainMethodImposterBuilder Plain()
 		{
 			return new PlainMethodImposter.Builder(_plainMethodImposter, _plainMethodInvocationHistoryCollection);
@@ -50,6 +50,7 @@ namespace Imposter.Tests.Features.Verification
 			return new GenericValueMethodImposter.Builder(_genericValueMethodImposter, _genericValueMethodInvocationHistoryCollection);
 		}
 
+		private readonly global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.Verification.INullableAwaitableHistoryTarget global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Verification.INullableAwaitableHistoryTarget>.Instance()
 		{
@@ -163,6 +164,11 @@ namespace Imposter.Tests.Features.Verification
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(GenericMethodInvocationHistoryCollection.Node invocationHistory)
@@ -650,6 +656,11 @@ namespace Imposter.Tests.Features.Verification
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(GenericValueMethodInvocationHistoryCollection.Node invocationHistory)
@@ -1153,6 +1164,11 @@ namespace Imposter.Tests.Features.Verification
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(PlainMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -1635,6 +1651,11 @@ namespace Imposter.Tests.Features.Verification
 					invocationHistory.Next = head;
 				}
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
 			}
 
 			internal bool RecordFailure(RequiredMethodInvocationHistoryCollection.Node invocationHistory)
@@ -2124,6 +2145,11 @@ namespace Imposter.Tests.Features.Verification
 				while (global::System.Threading.Interlocked.CompareExchange(ref _invocationHistory, invocationHistory, head) != head);
 			}
 
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			internal bool RecordFailure(ValueMethodInvocationHistoryCollection.Node invocationHistory)
 			{
 				Add(invocationHistory);
@@ -2499,7 +2525,7 @@ namespace Imposter.Tests.Features.Verification
 			}
 		}
 
-		private readonly IndexerIndexerBuilder _IndexerIndexer;
+		private IndexerIndexerBuilder _IndexerIndexer;
 		public IIndexerIndexerBuilder this[global::Imposter.Abstractions.Arg<int> key] => new IndexerIndexerBuilder.InvocationBuilder(_IndexerIndexer, new IndexerIndexerArgumentsCriteria(key));
 		public delegate int IndexerIndexerDelegate(int key);
 		public delegate void IndexerIndexerGetterCallback(int key);
@@ -2625,6 +2651,12 @@ namespace Imposter.Tests.Features.Verification
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class IndexerIndexerBuilder
 		{
+			internal void ClearInvocations()
+			{
+				_getterImposter.ClearInvocations();
+				_setterImposter.ClearInvocations();
+			}
+
 			private readonly DefaultIndexerIndexerBehaviour _IndexerDefaultIndexerBehaviour = new DefaultIndexerIndexerBehaviour();
 			private readonly GetterImposter _getterImposter;
 			private readonly SetterImposter _setterImposter;
@@ -2746,6 +2778,11 @@ namespace Imposter.Tests.Features.Verification
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class GetterImposter
 			{
+				internal void ClearInvocations()
+				{
+					_invocationHistory?.Clear();
+				}
+
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
 				private readonly global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter> _getterInvocationImposters = new global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter>();
 				private global::Imposter.Abstractions.InvocationHistory<IndexerGetterInvocation>? _invocationHistory;
@@ -3010,6 +3047,11 @@ namespace Imposter.Tests.Features.Verification
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class SetterImposter
 			{
+				internal void ClearInvocations()
+				{
+					_invocationHistory?.Clear();
+				}
+
 				private global::Imposter.Abstractions.CallbackCollection<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)>? _callbacks;
 				private global::Imposter.Abstractions.InvocationHistory<IndexerSetterInvocation>? _invocationHistory;
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
@@ -3285,17 +3327,18 @@ namespace Imposter.Tests.Features.Verification
 
 		public INullableAwaitableHistoryTargetImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._imposterMode = invocationBehavior;
 			this._plainMethodInvocationHistoryCollection = new PlainMethodInvocationHistoryCollection();
 			this._genericMethodInvocationHistoryCollection = new GenericMethodInvocationHistoryCollection();
 			this._requiredMethodInvocationHistoryCollection = new RequiredMethodInvocationHistoryCollection();
 			this._valueMethodInvocationHistoryCollection = new ValueMethodInvocationHistoryCollection();
 			this._genericValueMethodInvocationHistoryCollection = new GenericValueMethodInvocationHistoryCollection();
-			this._plainMethodImposter = new PlainMethodImposter(_plainMethodInvocationHistoryCollection, invocationBehavior);
-			this._genericMethodImposter = new GenericMethodImposter(_genericMethodInvocationHistoryCollection, invocationBehavior);
-			this._requiredMethodImposter = new RequiredMethodImposter(_requiredMethodInvocationHistoryCollection, invocationBehavior);
-			this._valueMethodImposter = new ValueMethodImposter(_valueMethodInvocationHistoryCollection, invocationBehavior);
-			this._genericValueMethodImposter = new GenericValueMethodImposter(_genericValueMethodInvocationHistoryCollection, invocationBehavior);
-			this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.Verification.INullableAwaitableHistoryTarget.this[int key]");
+			this._plainMethodImposter = new PlainMethodImposter(_plainMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericMethodImposter = new GenericMethodImposter(_genericMethodInvocationHistoryCollection, this._imposterMode);
+			this._requiredMethodImposter = new RequiredMethodImposter(_requiredMethodInvocationHistoryCollection, this._imposterMode);
+			this._valueMethodImposter = new ValueMethodImposter(_valueMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericValueMethodImposter = new GenericValueMethodImposter(_genericValueMethodInvocationHistoryCollection, this._imposterMode);
+			this._IndexerIndexer = new IndexerIndexerBuilder(this._imposterMode, "Imposter.Tests.Features.Verification.INullableAwaitableHistoryTarget.this[int key]");
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -3309,6 +3352,37 @@ namespace Imposter.Tests.Features.Verification
 			invocations.AddRange(_genericValueMethodInvocationHistoryCollection.Snapshot(false));
 			invocations.AddRange(_IndexerIndexer.Snapshot(false));
 			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_plainMethodInvocationHistoryCollection.Clear();
+			_genericMethodInvocationHistoryCollection.Clear();
+			_requiredMethodInvocationHistoryCollection.Clear();
+			_valueMethodInvocationHistoryCollection.Clear();
+			_genericValueMethodInvocationHistoryCollection.Clear();
+			_IndexerIndexer.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			_plainMethodInvocationHistoryCollection.Clear();
+			_genericMethodInvocationHistoryCollection.Clear();
+			_requiredMethodInvocationHistoryCollection.Clear();
+			_valueMethodInvocationHistoryCollection.Clear();
+			_genericValueMethodInvocationHistoryCollection.Clear();
+			_IndexerIndexer.ClearInvocations();
+			this._plainMethodInvocationHistoryCollection = new PlainMethodInvocationHistoryCollection();
+			this._genericMethodInvocationHistoryCollection = new GenericMethodInvocationHistoryCollection();
+			this._requiredMethodInvocationHistoryCollection = new RequiredMethodInvocationHistoryCollection();
+			this._valueMethodInvocationHistoryCollection = new ValueMethodInvocationHistoryCollection();
+			this._genericValueMethodInvocationHistoryCollection = new GenericValueMethodInvocationHistoryCollection();
+			this._plainMethodImposter = new PlainMethodImposter(_plainMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericMethodImposter = new GenericMethodImposter(_genericMethodInvocationHistoryCollection, this._imposterMode);
+			this._requiredMethodImposter = new RequiredMethodImposter(_requiredMethodInvocationHistoryCollection, this._imposterMode);
+			this._valueMethodImposter = new ValueMethodImposter(_valueMethodInvocationHistoryCollection, this._imposterMode);
+			this._genericValueMethodImposter = new GenericValueMethodImposter(_genericValueMethodInvocationHistoryCollection, this._imposterMode);
+			this._IndexerIndexer = new IndexerIndexerBuilder(this._imposterMode, "Imposter.Tests.Features.Verification.INullableAwaitableHistoryTarget.this[int key]");
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
