@@ -93,7 +93,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface ICurrentPropertySetterVerifier
+		public interface ICurrentPropertySetterVerifier : global::Imposter.Abstractions.IInvocationStep
 		{
 			void Called(global::Imposter.Abstractions.Count count);
 			global::System.Collections.Generic.IReadOnlyList<CurrentSetterInvocation> Invocations { get; }
@@ -169,11 +169,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			internal SetterImposter _setterImposter;
 			internal GetterImposterBuilder _getterImposterBuilder;
-			internal CurrentPropertyBuilder(global::Imposter.Abstractions.ImposterMode invocationBehavior)
+			internal CurrentPropertyBuilder(global::Imposter.Abstractions.ImposterMode invocationBehavior, global::Imposter.Abstractions.IImposter owner)
 			{
 				_invocationBehavior = invocationBehavior;
 				_getterImposterBuilder = new GetterImposterBuilder(_invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.RefStructPropertyClass.Current");
-				_setterImposter = new SetterImposter(_invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.RefStructPropertyClass.Current");
+				_setterImposter = new SetterImposter(_invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.RefStructPropertyClass.Current", owner);
 			}
 
 			internal void ClearInvocations()
@@ -328,7 +328,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			internal class SetterImposter : global::Imposter.Abstractions.PassThroughSetter<CurrentSetterInvocation>
 			{
 				private global::Imposter.Abstractions.CallbackCollection<global::System.Tuple<global::Imposter.Abstractions.SetterSetup, CurrentPropertySetterCallback>>? _callbacks;
-				internal SetterImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName) : base(invocationBehavior, propertyDisplayName)
+				internal SetterImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName, global::Imposter.Abstractions.IImposter owner) : base(invocationBehavior, propertyDisplayName, owner)
 				{
 				}
 
@@ -394,6 +394,27 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 						}
 					}
 
+					global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+					{
+						get
+						{
+							return _setterImposter.Owner!;
+						}
+					}
+
+					string global::Imposter.Abstractions.IInvocationStep.Description
+					{
+						get
+						{
+							return "set Current(value: <not captured>)";
+						}
+					}
+
+					bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+					{
+						return _setterImposter.TryFindAfter(sequence, out match);
+					}
+
 					ICurrentPropertySetterContinuationBuilder ICurrentPropertySetterContinuationBuilder.Lenient()
 					{
 						_setup.Lenient();
@@ -445,7 +466,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		public RefStructPropertyClassImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
 			this._imposterMode = invocationBehavior;
-			this._CurrentPropertyBuilderField = new CurrentPropertyBuilder(this._imposterMode);
+			this._CurrentPropertyBuilderField = new CurrentPropertyBuilder(this._imposterMode, this);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -479,7 +500,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		void global::Imposter.Abstractions.IImposter.Reset()
 		{
 			_CurrentPropertyBuilderField.ClearInvocations();
-			this._CurrentPropertyBuilderField = new CurrentPropertyBuilder(this._imposterMode);
+			this._CurrentPropertyBuilderField = new CurrentPropertyBuilder(this._imposterMode, this);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

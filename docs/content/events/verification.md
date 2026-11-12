@@ -33,3 +33,24 @@ Verify handler subscriptions and invocations.
 ## Failures
 
 When verification fails, `VerificationFailedException` is thrown with a message that clearly reports expected vs actual counts.
+
+## Subscription order
+
+The `Subscribed(handlerMatcher)` and `Unsubscribed(handlerMatcher)` overloads without a count create ordered-verification handles. They do not perform an assertion or configure behavior when created.
+
+!!! example "Order event subscription actions"
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Docs/OrderedVerification/OrderedVerificationTests.cs#L36"}
+    var imposter = new IOrderedExampleImposter();
+    var service = imposter.Instance();
+    EventHandler h = (sender, args) => { };
+    var subscribed = imposter.SomethingHappened.Subscribed(Arg<EventHandler>.Is(h));
+    var unsubscribed = imposter.SomethingHappened.Unsubscribed(Arg<EventHandler>.Is(h));
+    service.SomethingHappened += h;
+    service.SomethingHappened -= h;
+    Imposters.InOrder().Then(subscribed).Then(unsubscribed).Verify();
+    imposter.VerifyNoOtherCalls();
+    ```
+
+Handles read current history when `Verify()` runs. Each step selects the earliest matching action after the previous step, including actions whose subscription or unsubscription interceptor threw. Repeated steps require distinct actions. A successful order check covers only the selected actions; a failing check covers none. Steps can be mixed with method, property setter and indexer accessor handles across imposters. See [ordered verification](../ordered-verification.md) for cumulative coverage semantics.
+
+Event raises and handler invocations are test-driven operations and are not ordered interaction steps.

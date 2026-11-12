@@ -1,7 +1,9 @@
 ﻿using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
+using Imposter.CodeGenerator.Features.Shared.Builders;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -17,9 +19,26 @@ internal static partial class SetterImposterBuilderBuilder
         var setter = IdentifierName(property.SetterImposter.Builder.SetterImposterField.Name);
         var criteria = IdentifierName(property.SetterImposter.Builder.RuntimeCriteriaField.Name);
         var record = property.SetterImposter.InvocationTypeSyntax;
+        var isPassedThrough = property.Core.IsPassedThrough;
         var arguments = property.Core.IsPassedThrough
             ? ArgumentList()
             : criteria.ToSingleArgumentList();
+        ExpressionSyntax description = property.Core.IsPassedThrough
+            ? ("set " + property.Core.Name + "(value: <not captured>)").StringLiteral()
+            : ("set " + property.Core.Name + "(value: ")
+                .StringLiteral()
+                .Add(
+                    WellKnownTypes
+                        .Imposter.Abstractions.MatcherDescription.Dot(IdentifierName("Format"))
+                        .Call(
+                            Argument(
+                                IdentifierName(
+                                    property.SetterImposter.Builder.CriteriaField!.Value.Name
+                                )
+                            )
+                        )
+                )
+                .Add(")".StringLiteral());
         return
         [
             new PropertyDeclarationBuilder(
@@ -52,6 +71,28 @@ internal static partial class SetterImposterBuilderBuilder
                     )
                 )
                 .Build(),
+            .. InvocationStepMembersBuilder.Build(
+                PostfixUnaryExpression(
+                    SyntaxKind.SuppressNullableWarningExpression,
+                    setter.Dot(IdentifierName(InvocationStepNames.OwnerPropertyName))
+                ),
+                description,
+                property.Core.CreateNameSet(),
+                (sequence, match) =>
+                    setter
+                        .Dot(IdentifierName(InvocationStepNames.TryFindAfterMethodName))
+                        .Call(
+                            ArgumentListSyntax([
+                                Argument(sequence),
+                                .. (
+                                    isPassedThrough
+                                        ? EmptyArgumentListSyntax
+                                        : criteria.ToSingleArgumentList()
+                                ).Arguments,
+                                Argument(match).WithRefOrOutKeyword(Token(SyntaxKind.OutKeyword)),
+                            ])
+                        )
+            ),
             new MethodDeclarationBuilder(
                 property.SetterImposterBuilderInterface.ContinuationInterfaceTypeSyntax,
                 VerificationSourceNames.LenientMethodName

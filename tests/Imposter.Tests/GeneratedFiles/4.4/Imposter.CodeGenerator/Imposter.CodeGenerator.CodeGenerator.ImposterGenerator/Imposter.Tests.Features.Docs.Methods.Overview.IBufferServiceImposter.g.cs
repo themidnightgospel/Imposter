@@ -158,6 +158,13 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class RentMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal RentMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private RentMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -266,6 +273,25 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter(long sequence, RentArgumentsCriteria criteria, out global::Imposter.Abstractions.InvocationMatch match)
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((IRentMethodInvocationHistory)entry).Matches(criteria))
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -443,7 +469,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IRentMethodImposterBuilder : IRentMethodInvocationImposterGroup, IRentMethodInvocationImposterGroupCallback, RentInvocationVerifier
+		public interface IRentMethodImposterBuilder : IRentMethodInvocationImposterGroup, IRentMethodInvocationImposterGroupCallback, RentInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
@@ -582,6 +608,27 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 					return _rentMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
 
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _rentMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "Rent(" + "size: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.size) + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _rentMethodInvocationHistoryCollection.TryFindAfter(sequence, _argumentsCriteria, out match);
+				}
+
 				IRentMethodInvocationImposterGroupContinuation IRentMethodInvocationImposterGroupContinuation.Lenient()
 				{
 					_invocationImposterGroup.IsLenient = true;
@@ -636,7 +683,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 		public IBufferServiceImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
 			this._imposterMode = invocationBehavior;
-			this._rentMethodInvocationHistoryCollection = new RentMethodInvocationHistoryCollection();
+			this._rentMethodInvocationHistoryCollection = new RentMethodInvocationHistoryCollection(this);
 			this._rentMethodImposter = new RentMethodImposter(_rentMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
@@ -671,7 +718,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 		void global::Imposter.Abstractions.IImposter.Reset()
 		{
 			_rentMethodInvocationHistoryCollection.Clear();
-			this._rentMethodInvocationHistoryCollection = new RentMethodInvocationHistoryCollection();
+			this._rentMethodInvocationHistoryCollection = new RentMethodInvocationHistoryCollection(this);
 			this._rentMethodImposter = new RentMethodImposter(_rentMethodInvocationHistoryCollection, this._imposterMode);
 		}
 

@@ -87,7 +87,8 @@ nav:
   - Arguments Matching: arguments-matching.md
   - Interface-specific Setup: interface-setup.md
   - Verification: verification.md
-  - Verification Completeness: verification-completeness.md
+  - Verification completeness: verification-completeness.md
+  - Ordered verification: ordered-verification.md
   - Invocation History: invocation-history.md
   - Clear and Reset: clear-and-reset.md
   - Implicit vs Explicit: implicit-vs-explicit.md

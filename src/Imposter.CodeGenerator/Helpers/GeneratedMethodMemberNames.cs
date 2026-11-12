@@ -16,6 +16,7 @@ internal static class GeneratedMethodMemberNames
 {
     internal static readonly HashSet<string> Reserved =
     [
+        InvocationStepNames.TryFindAfterMethodName,
         MethodImposterInvokeMethodMetadata.Name,
         ArgumentCriteriaTypeMetadata.AsMethodMetadata.BaseName,
         ArgumentCriteriaTypeMetadata.MatchesMethodMetadata.BaseName,

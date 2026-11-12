@@ -44,6 +44,7 @@ public sealed class InvocationBuffer<T>
         }
 
         internal bool IsValid => _segment is not null;
+        internal InvocationMatch Match => new(_segment!, _index, Sequence);
         internal int Next => _segment!.Next[_index];
 
         /// <summary>Gets the captured payload.</summary>
@@ -61,13 +62,7 @@ public sealed class InvocationBuffer<T>
             Volatile.Read(ref _segment!.Values[_index].SequenceAndCoverage) < 0;
 
         /// <summary>Marks this entry covered without changing its captured values.</summary>
-        internal void MarkVerified()
-        {
-            if (IsVerified)
-                return;
-            ref var stamp = ref _segment!.Values[_index].SequenceAndCoverage;
-            Volatile.Write(ref stamp, Volatile.Read(ref stamp) | long.MinValue);
-        }
+        internal void MarkVerified() => _segment!.MarkVerified(_index);
     }
 
     /// <summary>Enumerates one captured publication head without allocations.</summary>
@@ -184,12 +179,22 @@ public sealed class InvocationBuffer<T>
         internal static int Capacity => SegmentSize;
     }
 
-    internal sealed class Segment(int page)
+    internal sealed class Segment(int page) : IInvocationCoverage
     {
         internal readonly int Page = page;
         internal readonly Data[] Values = new Data[Storage.Capacity];
         internal readonly int[] Next = new int[Storage.Capacity];
         internal Exception?[]? Exceptions;
+
+        void IInvocationCoverage.MarkVerified(int index) => MarkVerified(index);
+
+        internal void MarkVerified(int index)
+        {
+            ref var stamp = ref Values[index].SequenceAndCoverage;
+            var value = Volatile.Read(ref stamp);
+            if (value >= 0)
+                Volatile.Write(ref stamp, value | long.MinValue);
+        }
     }
 
     // Keep links in a separate int array: nesting them in Data would introduce another alignment gap.

@@ -158,6 +158,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class NameMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal NameMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private NameMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -266,6 +273,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter(long sequence, NameArgumentsCriteria criteria, out global::Imposter.Abstractions.InvocationMatch match)
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((INameMethodInvocationHistory)entry).Matches(criteria))
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -459,7 +485,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface INameMethodImposterBuilder : INameMethodInvocationImposterGroup, INameMethodInvocationImposterGroupCallback, NameInvocationVerifier
+		public interface INameMethodImposterBuilder : INameMethodInvocationImposterGroup, INameMethodInvocationImposterGroupCallback, NameInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
@@ -605,6 +631,27 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					return _nameMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
 
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _nameMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "Name(" + "text: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.text) + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _nameMethodInvocationHistoryCollection.TryFindAfter(sequence, _argumentsCriteria, out match);
+				}
+
 				INameMethodInvocationImposterGroupContinuation INameMethodInvocationImposterGroupContinuation.Lenient()
 				{
 					_invocationImposterGroup.IsLenient = true;
@@ -643,7 +690,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public ScopedParameterClassImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
 			this._imposterMode = invocationBehavior;
-			this._nameMethodInvocationHistoryCollection = new NameMethodInvocationHistoryCollection();
+			this._nameMethodInvocationHistoryCollection = new NameMethodInvocationHistoryCollection(this);
 			this._nameMethodImposter = new NameMethodImposter(_nameMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
@@ -678,7 +725,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		void global::Imposter.Abstractions.IImposter.Reset()
 		{
 			_nameMethodInvocationHistoryCollection.Clear();
-			this._nameMethodInvocationHistoryCollection = new NameMethodInvocationHistoryCollection();
+			this._nameMethodInvocationHistoryCollection = new NameMethodInvocationHistoryCollection(this);
 			this._nameMethodImposter = new NameMethodImposter(_nameMethodInvocationHistoryCollection, this._imposterMode);
 		}
 

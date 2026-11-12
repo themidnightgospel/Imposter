@@ -1,4 +1,5 @@
-﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Shared;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationHistory;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -92,4 +93,12 @@ internal static partial class MethodImposterBuilderBuilder
             .Dot(method.WithGenericArguments(InvocationHistoryCollectionMetadata.VerifyMethodName))
             .Call(ArgumentListSyntax(arguments));
     }
+
+    private static BinaryExpressionSyntax BuildExpectedInvocation(
+        in ImposterTargetMethodMetadata method
+    ) =>
+        MethodDiagnosticBuilder.Expected(
+            method,
+            IdentifierName(method.MethodImposter.Builder.ArgumentsCriteriaField.Name)
+        );
 }

@@ -249,6 +249,15 @@ internal static class WellKnownTypes
                 IdentifierName("Count")
             );
 
+            internal static readonly NameSyntax InvocationMatch = QualifiedName(
+                Namespace,
+                IdentifierName("InvocationMatch")
+            );
+
+            internal static readonly NameSyntax IInvocationStep = QualifiedName(
+                Namespace,
+                IdentifierName("IInvocationStep")
+            );
             internal static readonly NameSyntax IImposterVerificationSource = QualifiedName(
                 Namespace,
                 IdentifierName("IImposterVerificationSource")

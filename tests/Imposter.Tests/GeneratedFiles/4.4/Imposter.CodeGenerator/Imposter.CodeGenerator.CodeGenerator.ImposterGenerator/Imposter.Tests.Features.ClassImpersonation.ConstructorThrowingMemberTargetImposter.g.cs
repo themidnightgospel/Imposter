@@ -107,6 +107,13 @@ namespace Imposter.Tests.Features.ClassImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class RunMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal RunMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private RunMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -215,6 +222,25 @@ namespace Imposter.Tests.Features.ClassImpersonation
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((IRunMethodInvocationHistory)entry).Matches())
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -391,7 +417,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IRunMethodImposterBuilder : IRunMethodInvocationImposterGroup, IRunMethodInvocationImposterGroupCallback, RunInvocationVerifier
+		public interface IRunMethodImposterBuilder : IRunMethodInvocationImposterGroup, IRunMethodInvocationImposterGroupCallback, RunInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
@@ -519,6 +545,27 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					return _runMethodInvocationHistoryCollection.Count();
 				}
 
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _runMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "Run(" + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _runMethodInvocationHistoryCollection.TryFindAfter(sequence, out match);
+				}
+
 				IRunMethodInvocationImposterGroupContinuation IRunMethodInvocationImposterGroupContinuation.Lenient()
 				{
 					_invocationImposterGroup.IsLenient = true;
@@ -557,7 +604,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 		public ConstructorThrowingMemberTargetImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
 			this._imposterMode = invocationBehavior;
-			this._runMethodInvocationHistoryCollection = new RunMethodInvocationHistoryCollection();
+			this._runMethodInvocationHistoryCollection = new RunMethodInvocationHistoryCollection(this);
 			this._runMethodImposter = new RunMethodImposter(_runMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
@@ -592,7 +639,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 		void global::Imposter.Abstractions.IImposter.Reset()
 		{
 			_runMethodInvocationHistoryCollection.Clear();
-			this._runMethodInvocationHistoryCollection = new RunMethodInvocationHistoryCollection();
+			this._runMethodInvocationHistoryCollection = new RunMethodInvocationHistoryCollection(this);
 			this._runMethodImposter = new RunMethodImposter(_runMethodInvocationHistoryCollection, this._imposterMode);
 		}
 

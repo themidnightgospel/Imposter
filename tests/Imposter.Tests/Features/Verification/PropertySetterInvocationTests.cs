@@ -84,16 +84,17 @@ namespace Imposter.Tests.Features.Verification
         }
 
         [Fact]
-        public void GivenSetterCalls_WhenVerified_ShouldCoverOnlyMatchingAssignments()
+        public void GivenSetterSteps_WhenVerifiedInOrder_ShouldCoverOnlySelectedAssignments()
         {
             _sut.Instance().Value = 1;
             _sut.Instance().Value = 1;
             _sut.Instance().Value = 2;
 
-            _sut.Value.Setter(2).Called(Count.Once());
+            Imposters.InOrder().Then(_sut.Value.Setter(1)).Then(_sut.Value.Setter(2)).Verify();
 
             Should.Throw<VerificationFailedException>(() => _sut.VerifyNoOtherCalls());
             _sut.Value.Setter(1).Called(Count.Exactly(2));
+            _sut.Value.Setter(2).Called(Count.Once());
             _sut.VerifyNoOtherCalls();
         }
 
@@ -114,6 +115,7 @@ namespace Imposter.Tests.Features.Verification
             var failure = Should.Throw<VerificationFailedException>(() =>
                 _sut.Value.Setter(Arg<int>.Any()).Called(Count.Twice())
             );
+
             failure.PerformedInvocations.ShouldNotBeNull();
             failure.PerformedInvocations.ShouldContain("<7>");
             Should.Throw<VerificationFailedException>(() => _sut.VerifyNoOtherCalls());

@@ -17,10 +17,19 @@ public abstract class PassThroughSetter<TInvocation> : IImposterVerificationSour
 
     /// <summary>Creates setter state.</summary>
     protected PassThroughSetter(ImposterMode mode, string member)
+        : this(mode, member, null) { }
+
+    /// <summary>Creates setter state associated with its owning imposter.</summary>
+    protected PassThroughSetter(ImposterMode mode, string member, IImposter? owner)
     {
         _mode = mode;
         _member = member;
+        Owner = owner;
     }
+
+    /// <summary>The owning imposter.</summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public IImposter? Owner { get; }
 
     /// <summary>Registers an outcome on a setup chain.</summary>
     public void Register(SetterSetup setup)
@@ -92,6 +101,26 @@ public abstract class PassThroughSetter<TInvocation> : IImposterVerificationSour
             foreach (var record in _history)
                 result.Add((TRecord)(object)record);
         return InvocationSnapshots.Order(result, orderBySequence);
+    }
+
+    /// <summary>Selects the earliest assignment after an entry stamp without copying history.</summary>
+    /// <param name="sequence">The exclusive lower entry-stamp bound.</param>
+    /// <param name="match">The selection, or default when no entry matches.</param>
+    public bool TryFindAfter(long sequence, out InvocationMatch match)
+    {
+        var cursor = _history?.GetEnumerator() ?? default;
+        var found = false;
+        match = default;
+        while (cursor.MoveNext())
+        {
+            var record = cursor.Current;
+            if (record.Sequence > sequence && (!found || record.Sequence < match.Sequence))
+            {
+                match = InvocationMatch.FromInvocation(record);
+                found = true;
+            }
+        }
+        return found;
     }
 
     /// <summary>Verifies and covers the observed setter calls.</summary>

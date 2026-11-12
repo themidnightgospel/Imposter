@@ -73,5 +73,7 @@ Mark an optional setup with `Lenient()` to exclude it from the unused-setup chec
 
 Leniency does not hide interactions or change matching, outcomes, or count verification. Event leniency applies to the event's whole setup builder, including its subscription interceptors, unsubscription interceptors, callbacks, and base-implementation setup. Event registrations are tracked individually. Event callbacks become used when a raise actually executes them; a callback registered after the last raise remains unused. The raise itself is not a setup.
 
+For relative call ordering across imposters, see [Ordered verification](ordered-verification.md).
+
 !!! info "Next steps"
     Read [Verification](verification.md) for count checks, [Invocation history](invocation-history.md) to inspect recorded interactions, or [Clearing history and resetting an imposter](clear-and-reset.md) to separate test phases.

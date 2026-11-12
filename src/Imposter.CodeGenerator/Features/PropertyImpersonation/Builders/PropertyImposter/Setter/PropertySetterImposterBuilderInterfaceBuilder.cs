@@ -68,16 +68,18 @@ internal static class PropertySetterImposterBuilderInterfaceBuilder
             property.SetterImposterBuilderInterface.VerificationInterfaceName,
             property.SetterImposterBuilderInterface.CalledMethod
         );
-        result = result.AddMembers(
-            new PropertyDeclarationBuilder(
-                WellKnownTypes.System.Collections.Generic.IReadOnlyList(
-                    property.SetterImposter.InvocationTypeSyntax
-                ),
-                "Invocations"
-            )
-                .WithGetter()
-                .Build()
-        );
+        result = result
+            .AddBaseListTypes(SimpleBaseType(WellKnownTypes.Imposter.Abstractions.IInvocationStep))
+            .AddMembers(
+                new PropertyDeclarationBuilder(
+                    WellKnownTypes.System.Collections.Generic.IReadOnlyList(
+                        property.SetterImposter.InvocationTypeSyntax
+                    ),
+                    "Invocations"
+                )
+                    .WithGetter()
+                    .Build()
+            );
         return result;
     }
 

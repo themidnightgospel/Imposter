@@ -2,6 +2,7 @@
 using System.Linq;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.Shared.BuilderInterface;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
@@ -68,10 +69,11 @@ internal static class IndexerImposterBuilderCommon
 
     internal static BinaryExpressionSyntax ExpectedIndices(
         in ImposterIndexerMetadata indexer,
-        ExpressionSyntax criteria
+        ExpressionSyntax criteria,
+        bool parentheses = false
     )
     {
-        ExpressionSyntax description = "[".StringLiteral();
+        ExpressionSyntax description = (parentheses ? "(" : "[").StringLiteral();
         var first = true;
         foreach (var parameter in indexer.Core.MatchedParameters)
         {
@@ -84,7 +86,7 @@ internal static class IndexerImposterBuilderCommon
                 );
             first = false;
         }
-        return description.Add("]".StringLiteral());
+        return description.Add((parentheses ? ")" : "]").StringLiteral());
     }
 
     private static ArgumentListSyntax BuildIndexerArgumentsArgumentList(
@@ -209,6 +211,13 @@ internal static class IndexerImposterBuilderCommon
             .AddParameter(
                 new ParameterMetadata(indexer.Locals["propertyDisplayName"], WellKnownTypes.String),
                 propertyDisplayNameFieldName
+            )
+            .AddParameter(
+                new ParameterMetadata(
+                    indexer.Locals["owner"],
+                    WellKnownTypes.Imposter.Abstractions.IImposter
+                ),
+                InvocationStepNames.OwnerPropertyName
             )
             .Build();
     }

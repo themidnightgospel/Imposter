@@ -77,12 +77,26 @@ public class PropertySetter<T> : IImposterVerificationSource
     private bool _hasConfiguredSetter;
     private bool _useBaseImplementation;
 
+    /// <summary>The owning imposter, assigned by generated initialization.</summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public IImposter? Owner { get; }
+
     /// <summary>Creates the setter state.</summary>
     protected PropertySetter(PropertyValue<T>? defaultValue, ImposterMode mode, string displayName)
+        : this(defaultValue, mode, displayName, null) { }
+
+    /// <summary>Creates setter state associated with its owning imposter.</summary>
+    protected PropertySetter(
+        PropertyValue<T>? defaultValue,
+        ImposterMode mode,
+        string displayName,
+        IImposter? owner
+    )
     {
         _defaultValue = defaultValue;
         _mode = mode;
         _displayName = displayName;
+        Owner = owner;
     }
 
     /// <summary>Registers a callback for matching assignments.</summary>
@@ -101,6 +115,31 @@ public class PropertySetter<T> : IImposterVerificationSource
     {
         if (Interlocked.CompareExchange(ref setup.State.Registered, 1, 0) == 0)
             LazyInitializer.EnsureInitialized(ref _setups)!.Push(setup);
+    }
+
+    /// <summary>Selects the earliest matching assignment without materializing a record.</summary>
+    /// <param name="criteria">The assignment matcher.</param>
+    /// <param name="sequence">The exclusive lower entry-stamp bound.</param>
+    /// <param name="match">The selection, or default when no entry matches.</param>
+    public bool TryFindAfter(long sequence, Arg<T> criteria, out InvocationMatch match)
+    {
+        var cursor = _invocationHistory?.GetEnumerator() ?? default;
+        var found = false;
+        match = default;
+        while (cursor.MoveNext())
+        {
+            var entry = cursor.Current;
+            if (
+                entry.Sequence > sequence
+                && (!found || entry.Sequence < match.Sequence)
+                && criteria.Matches(entry.Value)
+            )
+            {
+                match = entry.Match;
+                found = true;
+            }
+        }
+        return found;
     }
 
     /// <summary>Verifies matching assignments.</summary>

@@ -184,6 +184,13 @@ namespace Imposter.Tests.Features.CallAllocations
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class ContainsMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal ContainsMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private ContainsMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -292,6 +299,25 @@ namespace Imposter.Tests.Features.CallAllocations
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter<T>(long sequence, ContainsArgumentsCriteria<T> criteria, out global::Imposter.Abstractions.InvocationMatch match)
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((IContainsMethodInvocationHistory)entry).Matches<T>(criteria))
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -536,7 +562,7 @@ namespace Imposter.Tests.Features.CallAllocations
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IContainsMethodImposterBuilder<T> : IContainsMethodInvocationImposterGroup<T>, IContainsMethodInvocationImposterGroupCallback<T>, ContainsInvocationVerifier<T>
+		public interface IContainsMethodImposterBuilder<T> : IContainsMethodInvocationImposterGroup<T>, IContainsMethodInvocationImposterGroupCallback<T>, ContainsInvocationVerifier<T>, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
@@ -756,6 +782,27 @@ namespace Imposter.Tests.Features.CallAllocations
 					return _containsMethodInvocationHistoryCollection.Count<T>(_argumentsCriteria);
 				}
 
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _containsMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "Contains(" + "items: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.items) + ", item: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.item) + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _containsMethodInvocationHistoryCollection.TryFindAfter<T>(sequence, _argumentsCriteria, out match);
+				}
+
 				IContainsMethodInvocationImposterGroupContinuation<T> IContainsMethodInvocationImposterGroupContinuation<T>.Lenient()
 				{
 					_invocationImposterGroup.IsLenient = true;
@@ -810,7 +857,7 @@ namespace Imposter.Tests.Features.CallAllocations
 		public ISpanAdapterAllocationSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
 			this._imposterMode = invocationBehavior;
-			this._containsMethodInvocationHistoryCollection = new ContainsMethodInvocationHistoryCollection();
+			this._containsMethodInvocationHistoryCollection = new ContainsMethodInvocationHistoryCollection(this);
 			this._containsMethodImposterCollection = new ContainsMethodImposterCollection(_containsMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
@@ -845,7 +892,7 @@ namespace Imposter.Tests.Features.CallAllocations
 		void global::Imposter.Abstractions.IImposter.Reset()
 		{
 			_containsMethodInvocationHistoryCollection.Clear();
-			this._containsMethodInvocationHistoryCollection = new ContainsMethodInvocationHistoryCollection();
+			this._containsMethodInvocationHistoryCollection = new ContainsMethodInvocationHistoryCollection(this);
 			this._containsMethodImposterCollection = new ContainsMethodImposterCollection(_containsMethodInvocationHistoryCollection, this._imposterMode);
 		}
 

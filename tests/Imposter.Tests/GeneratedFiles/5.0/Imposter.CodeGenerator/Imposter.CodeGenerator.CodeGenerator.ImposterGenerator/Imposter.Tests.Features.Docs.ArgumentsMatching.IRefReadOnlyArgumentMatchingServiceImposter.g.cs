@@ -158,6 +158,13 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class DoubleMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal DoubleMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private DoubleMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -266,6 +273,25 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter(long sequence, DoubleArgumentsCriteria criteria, out global::Imposter.Abstractions.InvocationMatch match)
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((IDoubleMethodInvocationHistory)entry).Matches(criteria))
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -443,7 +469,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IDoubleMethodImposterBuilder : IDoubleMethodInvocationImposterGroup, IDoubleMethodInvocationImposterGroupCallback, DoubleInvocationVerifier
+		public interface IDoubleMethodImposterBuilder : IDoubleMethodInvocationImposterGroup, IDoubleMethodInvocationImposterGroupCallback, DoubleInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
@@ -582,6 +608,27 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					return _doubleMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
 
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _doubleMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "Double(" + "value: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.value) + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _doubleMethodInvocationHistoryCollection.TryFindAfter(sequence, _argumentsCriteria, out match);
+				}
+
 				IDoubleMethodInvocationImposterGroupContinuation IDoubleMethodInvocationImposterGroupContinuation.Lenient()
 				{
 					_invocationImposterGroup.IsLenient = true;
@@ -636,7 +683,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		public IRefReadOnlyArgumentMatchingServiceImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
 			this._imposterMode = invocationBehavior;
-			this._doubleMethodInvocationHistoryCollection = new DoubleMethodInvocationHistoryCollection();
+			this._doubleMethodInvocationHistoryCollection = new DoubleMethodInvocationHistoryCollection(this);
 			this._doubleMethodImposter = new DoubleMethodImposter(_doubleMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
@@ -671,7 +718,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		void global::Imposter.Abstractions.IImposter.Reset()
 		{
 			_doubleMethodInvocationHistoryCollection.Clear();
-			this._doubleMethodInvocationHistoryCollection = new DoubleMethodInvocationHistoryCollection();
+			this._doubleMethodInvocationHistoryCollection = new DoubleMethodInvocationHistoryCollection(this);
 			this._doubleMethodImposter = new DoubleMethodImposter(_doubleMethodInvocationHistoryCollection, this._imposterMode);
 		}
 

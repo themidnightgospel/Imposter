@@ -2,7 +2,7 @@
 
 namespace Imposter.Abstractions;
 
-/// <summary>Describes matchers for generated setup verification without evaluating predicates.</summary>
+/// <summary>Describes matchers for generated setup and step descriptions without evaluating predicates.</summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
 public static class MatcherDescription
 {

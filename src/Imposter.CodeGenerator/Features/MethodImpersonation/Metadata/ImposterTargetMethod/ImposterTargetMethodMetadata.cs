@@ -137,6 +137,7 @@ internal readonly struct ImposterTargetMethodMetadata
         );
         Locals = new LocalNamesMetadata(
             ReservedParameterNames.CreateNameSet(),
+            "owner",
             "findings",
             "item",
             "descriptions",

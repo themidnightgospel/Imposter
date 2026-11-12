@@ -127,6 +127,13 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class TryReadMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal TryReadMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private TryReadMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -235,6 +242,25 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((ITryReadMethodInvocationHistory)entry).Matches())
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -416,7 +442,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface ITryReadMethodImposterBuilder : ITryReadMethodInvocationImposterGroup, ITryReadMethodInvocationImposterGroupCallback, TryReadInvocationVerifier
+		public interface ITryReadMethodImposterBuilder : ITryReadMethodInvocationImposterGroup, ITryReadMethodInvocationImposterGroupCallback, TryReadInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
@@ -553,6 +579,27 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					return _tryReadMethodInvocationHistoryCollection.Count();
 				}
 
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _tryReadMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "TryRead(" + "data: " + "any" + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _tryReadMethodInvocationHistoryCollection.TryFindAfter(sequence, out match);
+				}
+
 				ITryReadMethodInvocationImposterGroupContinuation ITryReadMethodInvocationImposterGroupContinuation.Lenient()
 				{
 					_invocationImposterGroup.IsLenient = true;
@@ -607,7 +654,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		public ISpanReaderImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
 			this._imposterMode = invocationBehavior;
-			this._tryReadMethodInvocationHistoryCollection = new TryReadMethodInvocationHistoryCollection();
+			this._tryReadMethodInvocationHistoryCollection = new TryReadMethodInvocationHistoryCollection(this);
 			this._tryReadMethodImposter = new TryReadMethodImposter(_tryReadMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
@@ -642,7 +689,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		void global::Imposter.Abstractions.IImposter.Reset()
 		{
 			_tryReadMethodInvocationHistoryCollection.Clear();
-			this._tryReadMethodInvocationHistoryCollection = new TryReadMethodInvocationHistoryCollection();
+			this._tryReadMethodInvocationHistoryCollection = new TryReadMethodInvocationHistoryCollection(this);
 			this._tryReadMethodImposter = new TryReadMethodImposter(_tryReadMethodInvocationHistoryCollection, this._imposterMode);
 		}
 

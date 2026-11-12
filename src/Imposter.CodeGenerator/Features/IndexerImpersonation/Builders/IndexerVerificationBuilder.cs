@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
+using Imposter.CodeGenerator.Features.Shared.Builders;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -84,6 +85,32 @@ internal static class IndexerVerificationBuilder
                     )
                 ),
             ])
+        );
+    }
+
+    internal static MemberDeclarationSyntax[] Step(in ImposterIndexerMetadata indexer, bool getter)
+    {
+        var builder = getter
+            ? indexer.GetterImplementation.Builder
+            : indexer.SetterImplementation.Builder;
+        var imposter = IdentifierName(builder.ImposterFieldName);
+        var criteria = IdentifierName(builder.CriteriaFieldName);
+        return InvocationStepMembersBuilder.Build(
+            imposter.Dot(IdentifierName(InvocationStepNames.OwnerPropertyName)),
+            ((getter ? "get " : "set ") + indexer.Core.Name)
+                .StringLiteral()
+                .Add(ExpectedIndices(indexer, criteria, parentheses: true)),
+            indexer.Core.CreateParameterNameSet(),
+            (sequence, match) =>
+                imposter
+                    .Dot(IdentifierName(InvocationStepNames.TryFindAfterMethodName))
+                    .Call(
+                        ArgumentListSyntax([
+                            Argument(sequence),
+                            Argument(criteria),
+                            Argument(match).WithRefOrOutKeyword(Token(SyntaxKind.OutKeyword)),
+                        ])
+                    )
         );
     }
 

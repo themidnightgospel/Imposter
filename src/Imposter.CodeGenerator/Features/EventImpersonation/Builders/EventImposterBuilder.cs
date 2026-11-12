@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.Shared.Builders;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -24,6 +25,10 @@ internal static class EventImposterBuilder
             )
             .AddMembers(EventVerificationSourceBuilder.Build(@event))
             .AddMembers(BuildFields(@event))
+            .AddMember(BuildConstructor(@event))
+            .AddMember(EventInvocationStepBuilder.Build(@event))
+            .AddMember(EventInvocationStepBuilder.Selector(@event, true, true))
+            .AddMember(EventInvocationStepBuilder.Selector(@event, false, true))
             .AddMember(EventHistoryBuilder.Build(@event, true, true))
             .AddMember(EventHistoryBuilder.Build(@event, false, true))
             .AddMember(
@@ -114,6 +119,13 @@ internal static class EventImposterBuilder
 
         members.AddRange(EventImposterSubscriptionsBuilder.BuildFields(@event));
         members.AddRange(EventImposterRaiseBuilder.BuildFields(@event));
+        members.Add(
+            SingleVariableField(
+                WellKnownTypes.Imposter.Abstractions.IImposter,
+                InvocationStepNames.OwnerPropertyName,
+                TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword))
+            )
+        );
         members.Add(SingleVariableField(@event.Builder.Fields.SubscribeUsed));
         members.Add(SingleVariableField(@event.Builder.Fields.UnsubscribeUsed));
         members.Add(SingleVariableField(@event.Builder.Fields.CallbacksUsed));
@@ -128,6 +140,24 @@ internal static class EventImposterBuilder
 
         return members.ToArray();
     }
+
+    private static ConstructorDeclarationSyntax BuildConstructor(in ImposterEventMetadata @event) =>
+        new ConstructorBuilder(@event.Builder.Name)
+            .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
+            .AddParameter(
+                ParameterSyntax(
+                    WellKnownTypes.Imposter.Abstractions.IImposter,
+                    @event.Locals["owner"]
+                )
+            )
+            .WithBody(
+                Block(
+                    IdentifierName(InvocationStepNames.OwnerPropertyName)
+                        .Assign(IdentifierName(@event.Locals["owner"]))
+                        .ToStatementSyntax()
+                )
+            )
+            .Build();
 
     private static MethodDeclarationSyntax? BuildUseBaseImplementationMethod(
         in ImposterEventMetadata @event

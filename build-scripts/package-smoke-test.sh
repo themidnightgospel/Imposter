@@ -173,6 +173,8 @@ static void ExerciseVerificationLifecycle()
 
     ExpectVerification(() => setter.Called(Count.Twice()), "count failure");
     ExpectVerification(() => imposter.VerifyNoOtherCalls(), "failed count must not cover calls");
+    Imposters.InOrder().Then(method).Then(setter).Verify();
+    imposter.VerifyNoOtherCalls();
     method.Called(Count.Once());
     setter.Called(Count.Once());
     imposter.VerifyNoOtherCalls();

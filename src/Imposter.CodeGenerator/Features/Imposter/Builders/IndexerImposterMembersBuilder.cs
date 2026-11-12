@@ -87,6 +87,7 @@ internal readonly ref struct IndexerImposterMembersBuilder(
                         SyntaxFactoryHelper.ArgumentListSyntax([
                             Argument(invocationBehavior),
                             Argument(propertyDisplayLiteral),
+                            Argument(ThisExpression()),
                         ])
                     )
                 )

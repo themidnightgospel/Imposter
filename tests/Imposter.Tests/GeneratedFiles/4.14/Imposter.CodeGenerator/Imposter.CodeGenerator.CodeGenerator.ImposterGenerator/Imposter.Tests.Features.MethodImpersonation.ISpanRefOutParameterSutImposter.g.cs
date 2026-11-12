@@ -179,6 +179,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class AdvanceMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal AdvanceMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private AdvanceMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -287,6 +294,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter(long sequence, AdvanceArgumentsCriteria criteria, out global::Imposter.Abstractions.InvocationMatch match)
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((IAdvanceMethodInvocationHistory)entry).Matches(criteria))
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -464,7 +490,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IAdvanceMethodImposterBuilder : IAdvanceMethodInvocationImposterGroup, IAdvanceMethodInvocationImposterGroupCallback, AdvanceInvocationVerifier
+		public interface IAdvanceMethodImposterBuilder : IAdvanceMethodInvocationImposterGroup, IAdvanceMethodInvocationImposterGroupCallback, AdvanceInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
@@ -601,6 +627,27 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				int AdvanceInvocationVerifier.CallCount()
 				{
 					return _advanceMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+				}
+
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _advanceMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "Advance(" + "buffer: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.buffer) + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _advanceMethodInvocationHistoryCollection.TryFindAfter(sequence, _argumentsCriteria, out match);
 				}
 
 				IAdvanceMethodInvocationImposterGroupContinuation IAdvanceMethodInvocationImposterGroupContinuation.Lenient()
@@ -757,6 +804,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class FillMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal FillMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private FillMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -865,6 +919,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter(long sequence, FillArgumentsCriteria criteria, out global::Imposter.Abstractions.InvocationMatch match)
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((IFillMethodInvocationHistory)entry).Matches(criteria))
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -1030,7 +1103,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IFillMethodImposterBuilder : IFillMethodInvocationImposterGroup, IFillMethodInvocationImposterGroupCallback, FillInvocationVerifier
+		public interface IFillMethodImposterBuilder : IFillMethodInvocationImposterGroup, IFillMethodInvocationImposterGroupCallback, FillInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
@@ -1152,6 +1225,27 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				int FillInvocationVerifier.CallCount()
 				{
 					return _fillMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+				}
+
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _fillMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "Fill(" + "buffer: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.buffer) + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _fillMethodInvocationHistoryCollection.TryFindAfter(sequence, _argumentsCriteria, out match);
 				}
 
 				IFillMethodInvocationImposterGroupContinuation IFillMethodInvocationImposterGroupContinuation.Lenient()
@@ -1287,6 +1381,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class TryGetMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal TryGetMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private TryGetMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -1395,6 +1496,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter<T>(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((ITryGetMethodInvocationHistory)entry).Matches<T>())
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -1641,7 +1761,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface ITryGetMethodImposterBuilder<T> : ITryGetMethodInvocationImposterGroup<T>, ITryGetMethodInvocationImposterGroupCallback<T>, TryGetInvocationVerifier<T>
+		public interface ITryGetMethodImposterBuilder<T> : ITryGetMethodInvocationImposterGroup<T>, ITryGetMethodInvocationImposterGroupCallback<T>, TryGetInvocationVerifier<T>, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
@@ -1837,6 +1957,27 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					return _tryGetMethodInvocationHistoryCollection.Count<T>();
 				}
 
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _tryGetMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "TryGet(" + "items: " + "any" + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _tryGetMethodInvocationHistoryCollection.TryFindAfter<T>(sequence, out match);
+				}
+
 				ITryGetMethodInvocationImposterGroupContinuation<T> ITryGetMethodInvocationImposterGroupContinuation<T>.Lenient()
 				{
 					_invocationImposterGroup.IsLenient = true;
@@ -1970,6 +2111,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class TryReadMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal TryReadMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private TryReadMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -2078,6 +2226,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((ITryReadMethodInvocationHistory)entry).Matches())
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -2259,7 +2426,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface ITryReadMethodImposterBuilder : ITryReadMethodInvocationImposterGroup, ITryReadMethodInvocationImposterGroupCallback, TryReadInvocationVerifier
+		public interface ITryReadMethodImposterBuilder : ITryReadMethodInvocationImposterGroup, ITryReadMethodInvocationImposterGroupCallback, TryReadInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
@@ -2396,6 +2563,27 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					return _tryReadMethodInvocationHistoryCollection.Count();
 				}
 
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _tryReadMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "TryRead(" + "data: " + "any" + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _tryReadMethodInvocationHistoryCollection.TryFindAfter(sequence, out match);
+				}
+
 				ITryReadMethodInvocationImposterGroupContinuation ITryReadMethodInvocationImposterGroupContinuation.Lenient()
 				{
 					_invocationImposterGroup.IsLenient = true;
@@ -2468,10 +2656,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public ISpanRefOutParameterSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
 			this._imposterMode = invocationBehavior;
-			this._tryReadMethodInvocationHistoryCollection = new TryReadMethodInvocationHistoryCollection();
-			this._advanceMethodInvocationHistoryCollection = new AdvanceMethodInvocationHistoryCollection();
-			this._fillMethodInvocationHistoryCollection = new FillMethodInvocationHistoryCollection();
-			this._tryGetMethodInvocationHistoryCollection = new TryGetMethodInvocationHistoryCollection();
+			this._tryReadMethodInvocationHistoryCollection = new TryReadMethodInvocationHistoryCollection(this);
+			this._advanceMethodInvocationHistoryCollection = new AdvanceMethodInvocationHistoryCollection(this);
+			this._fillMethodInvocationHistoryCollection = new FillMethodInvocationHistoryCollection(this);
+			this._tryGetMethodInvocationHistoryCollection = new TryGetMethodInvocationHistoryCollection(this);
 			this._tryReadMethodImposter = new TryReadMethodImposter(_tryReadMethodInvocationHistoryCollection, this._imposterMode);
 			this._advanceMethodImposter = new AdvanceMethodImposter(_advanceMethodInvocationHistoryCollection, this._imposterMode);
 			this._fillMethodImposter = new FillMethodImposter(_fillMethodInvocationHistoryCollection, this._imposterMode);
@@ -2518,10 +2706,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			_advanceMethodInvocationHistoryCollection.Clear();
 			_fillMethodInvocationHistoryCollection.Clear();
 			_tryGetMethodInvocationHistoryCollection.Clear();
-			this._tryReadMethodInvocationHistoryCollection = new TryReadMethodInvocationHistoryCollection();
-			this._advanceMethodInvocationHistoryCollection = new AdvanceMethodInvocationHistoryCollection();
-			this._fillMethodInvocationHistoryCollection = new FillMethodInvocationHistoryCollection();
-			this._tryGetMethodInvocationHistoryCollection = new TryGetMethodInvocationHistoryCollection();
+			this._tryReadMethodInvocationHistoryCollection = new TryReadMethodInvocationHistoryCollection(this);
+			this._advanceMethodInvocationHistoryCollection = new AdvanceMethodInvocationHistoryCollection(this);
+			this._fillMethodInvocationHistoryCollection = new FillMethodInvocationHistoryCollection(this);
+			this._tryGetMethodInvocationHistoryCollection = new TryGetMethodInvocationHistoryCollection(this);
 			this._tryReadMethodImposter = new TryReadMethodImposter(_tryReadMethodInvocationHistoryCollection, this._imposterMode);
 			this._advanceMethodImposter = new AdvanceMethodImposter(_advanceMethodInvocationHistoryCollection, this._imposterMode);
 			this._fillMethodImposter = new FillMethodImposter(_fillMethodInvocationHistoryCollection, this._imposterMode);

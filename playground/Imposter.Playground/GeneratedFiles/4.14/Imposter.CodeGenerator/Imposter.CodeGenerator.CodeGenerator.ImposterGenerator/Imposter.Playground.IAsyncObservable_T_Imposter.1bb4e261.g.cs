@@ -148,6 +148,13 @@ namespace Imposter.Playground
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class OnNextMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal OnNextMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private OnNextMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -256,6 +263,25 @@ namespace Imposter.Playground
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter(long sequence, OnNextArgumentsCriteria criteria, out global::Imposter.Abstractions.InvocationMatch match)
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((IOnNextMethodInvocationHistory)entry).Matches(criteria))
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -421,7 +447,7 @@ namespace Imposter.Playground
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IOnNextMethodImposterBuilder : IOnNextMethodInvocationImposterGroup, IOnNextMethodInvocationImposterGroupCallback, OnNextInvocationVerifier
+		public interface IOnNextMethodImposterBuilder : IOnNextMethodInvocationImposterGroup, IOnNextMethodInvocationImposterGroupCallback, OnNextInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
@@ -545,6 +571,27 @@ namespace Imposter.Playground
 					return _onNextMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
 
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _onNextMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "OnNext(" + "item: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.item) + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _onNextMethodInvocationHistoryCollection.TryFindAfter(sequence, _argumentsCriteria, out match);
+				}
+
 				IOnNextMethodInvocationImposterGroupContinuation IOnNextMethodInvocationImposterGroupContinuation.Lenient()
 				{
 					_invocationImposterGroup.IsLenient = true;
@@ -599,7 +646,7 @@ namespace Imposter.Playground
 		public IAsyncObservableImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
 			this._imposterMode = invocationBehavior;
-			this._onNextMethodInvocationHistoryCollection = new OnNextMethodInvocationHistoryCollection();
+			this._onNextMethodInvocationHistoryCollection = new OnNextMethodInvocationHistoryCollection(this);
 			this._onNextMethodImposter = new OnNextMethodImposter(_onNextMethodInvocationHistoryCollection, this._imposterMode);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
@@ -634,7 +681,7 @@ namespace Imposter.Playground
 		void global::Imposter.Abstractions.IImposter.Reset()
 		{
 			_onNextMethodInvocationHistoryCollection.Clear();
-			this._onNextMethodInvocationHistoryCollection = new OnNextMethodInvocationHistoryCollection();
+			this._onNextMethodInvocationHistoryCollection = new OnNextMethodInvocationHistoryCollection(this);
 			this._onNextMethodImposter = new OnNextMethodImposter(_onNextMethodInvocationHistoryCollection, this._imposterMode);
 		}
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.Shared.Builders;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -109,6 +110,13 @@ internal static partial class IndexerSetterBuilder
             .AddMember(
                 SingleVariableField(setter.HasConfiguredSetterField, SyntaxKind.PrivateKeyword)
             )
+            .AddMember(
+                SingleVariableField(
+                    WellKnownTypes.Imposter.Abstractions.IImposter,
+                    InvocationStepNames.OwnerPropertyName,
+                    TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.ReadOnlyKeyword))
+                )
+            )
             .AddMember(BuildSetterConstructor(indexer))
             .AddMember(BuildSetterCallbackMethod(indexer))
             .AddBaseType(
@@ -119,6 +127,7 @@ internal static partial class IndexerSetterBuilder
             .AddMember(BuildSetterSetMethod(indexer, baseCriteriaLoop, invokedBaseIdentifier))
             .AddMember(IndexerHistoryBuilder.Snapshot(indexer, false))
             .AddMember(IndexerHistoryBuilder.Matching(indexer, false))
+            .AddMember(IndexerInvocationStepBuilder.Build(indexer, false))
             .AddMember(BuildEnsureSetterConfiguredMethod(indexer))
             .AddMember(BuildMarkSetterConfiguredMethod(indexer))
             .AddMember(useBaseImplementationMethod)

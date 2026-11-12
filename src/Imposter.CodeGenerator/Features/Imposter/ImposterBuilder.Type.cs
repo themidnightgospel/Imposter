@@ -431,7 +431,11 @@ internal readonly ref struct ImposterBuilder
                 imposterGenerationContext.Imposter.Methods.Select(method =>
                     ThisExpression()
                         .Dot(IdentifierName(method.InvocationHistory.Collection.AsField.Name))
-                        .Assign(method.InvocationHistory.Collection.Syntax.New())
+                        .Assign(
+                            method.InvocationHistory.Collection.Syntax.New(
+                                ThisExpression().ToSingleArgumentList()
+                            )
+                        )
                         .ToStatementSyntax()
                 )
             )

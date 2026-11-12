@@ -162,6 +162,13 @@ namespace System.Net.Http
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class DisposeMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal DisposeMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private DisposeMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -270,6 +277,25 @@ namespace System.Net.Http
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter(long sequence, DisposeArgumentsCriteria criteria, out global::Imposter.Abstractions.InvocationMatch match)
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((IDisposeMethodInvocationHistory)entry).Matches(criteria))
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -449,7 +475,7 @@ namespace System.Net.Http
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IDisposeMethodImposterBuilder : IDisposeMethodInvocationImposterGroup, IDisposeMethodInvocationImposterGroupCallback, DisposeInvocationVerifier
+		public interface IDisposeMethodImposterBuilder : IDisposeMethodInvocationImposterGroup, IDisposeMethodInvocationImposterGroupCallback, DisposeInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
@@ -578,6 +604,27 @@ namespace System.Net.Http
 				int DisposeInvocationVerifier.CallCount()
 				{
 					return _disposeMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+				}
+
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _disposeMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "Dispose(" + "disposing: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.disposing) + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _disposeMethodInvocationHistoryCollection.TryFindAfter(sequence, _argumentsCriteria, out match);
 				}
 
 				IDisposeMethodInvocationImposterGroupContinuation IDisposeMethodInvocationImposterGroupContinuation.Lenient()
@@ -758,6 +805,13 @@ namespace System.Net.Http
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class SendMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal SendMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private SendMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -866,6 +920,25 @@ namespace System.Net.Http
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter(long sequence, SendArgumentsCriteria criteria, out global::Imposter.Abstractions.InvocationMatch match)
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((ISendMethodInvocationHistory)entry).Matches(criteria))
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -1059,7 +1132,7 @@ namespace System.Net.Http
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface ISendMethodImposterBuilder : ISendMethodInvocationImposterGroup, ISendMethodInvocationImposterGroupCallback, SendInvocationVerifier
+		public interface ISendMethodImposterBuilder : ISendMethodInvocationImposterGroup, ISendMethodInvocationImposterGroupCallback, SendInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
@@ -1204,6 +1277,27 @@ namespace System.Net.Http
 				int SendInvocationVerifier.CallCount()
 				{
 					return _sendMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+				}
+
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _sendMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "Send(" + "request: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.request) + ", cancellationToken: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.cancellationToken) + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _sendMethodInvocationHistoryCollection.TryFindAfter(sequence, _argumentsCriteria, out match);
 				}
 
 				ISendMethodInvocationImposterGroupContinuation ISendMethodInvocationImposterGroupContinuation.Lenient()
@@ -1398,6 +1492,13 @@ namespace System.Net.Http
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class SendAsyncMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal SendAsyncMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private SendAsyncMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -1506,6 +1607,25 @@ namespace System.Net.Http
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter(long sequence, SendAsyncArgumentsCriteria criteria, out global::Imposter.Abstractions.InvocationMatch match)
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((ISendAsyncMethodInvocationHistory)entry).Matches(criteria))
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -1711,7 +1831,7 @@ namespace System.Net.Http
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface ISendAsyncMethodImposterBuilder : ISendAsyncMethodInvocationImposterGroup, ISendAsyncMethodInvocationImposterGroupCallback, SendAsyncInvocationVerifier
+		public interface ISendAsyncMethodImposterBuilder : ISendAsyncMethodInvocationImposterGroup, ISendAsyncMethodInvocationImposterGroupCallback, SendAsyncInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
@@ -1865,6 +1985,27 @@ namespace System.Net.Http
 					return _sendAsyncMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
 
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _sendAsyncMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "SendAsync(" + "request: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.request) + ", cancellationToken: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.cancellationToken) + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _sendAsyncMethodInvocationHistoryCollection.TryFindAfter(sequence, _argumentsCriteria, out match);
+				}
+
 				ISendAsyncMethodInvocationImposterGroupContinuation ISendAsyncMethodInvocationImposterGroupContinuation.Lenient()
 				{
 					_invocationImposterGroup.IsLenient = true;
@@ -1903,9 +2044,9 @@ namespace System.Net.Http
 		public HttpMessageHandlerImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
 			this._imposterMode = invocationBehavior;
-			this._disposeMethodInvocationHistoryCollection = new DisposeMethodInvocationHistoryCollection();
-			this._sendMethodInvocationHistoryCollection = new SendMethodInvocationHistoryCollection();
-			this._sendAsyncMethodInvocationHistoryCollection = new SendAsyncMethodInvocationHistoryCollection();
+			this._disposeMethodInvocationHistoryCollection = new DisposeMethodInvocationHistoryCollection(this);
+			this._sendMethodInvocationHistoryCollection = new SendMethodInvocationHistoryCollection(this);
+			this._sendAsyncMethodInvocationHistoryCollection = new SendAsyncMethodInvocationHistoryCollection(this);
 			this._disposeMethodImposter = new DisposeMethodImposter(_disposeMethodInvocationHistoryCollection, this._imposterMode);
 			this._sendMethodImposter = new SendMethodImposter(_sendMethodInvocationHistoryCollection, this._imposterMode);
 			this._sendAsyncMethodImposter = new SendAsyncMethodImposter(_sendAsyncMethodInvocationHistoryCollection, this._imposterMode);
@@ -1948,9 +2089,9 @@ namespace System.Net.Http
 			_disposeMethodInvocationHistoryCollection.Clear();
 			_sendMethodInvocationHistoryCollection.Clear();
 			_sendAsyncMethodInvocationHistoryCollection.Clear();
-			this._disposeMethodInvocationHistoryCollection = new DisposeMethodInvocationHistoryCollection();
-			this._sendMethodInvocationHistoryCollection = new SendMethodInvocationHistoryCollection();
-			this._sendAsyncMethodInvocationHistoryCollection = new SendAsyncMethodInvocationHistoryCollection();
+			this._disposeMethodInvocationHistoryCollection = new DisposeMethodInvocationHistoryCollection(this);
+			this._sendMethodInvocationHistoryCollection = new SendMethodInvocationHistoryCollection(this);
+			this._sendAsyncMethodInvocationHistoryCollection = new SendAsyncMethodInvocationHistoryCollection(this);
 			this._disposeMethodImposter = new DisposeMethodImposter(_disposeMethodInvocationHistoryCollection, this._imposterMode);
 			this._sendMethodImposter = new SendMethodImposter(_sendMethodInvocationHistoryCollection, this._imposterMode);
 			this._sendAsyncMethodImposter = new SendAsyncMethodImposter(_sendAsyncMethodInvocationHistoryCollection, this._imposterMode);

@@ -28,6 +28,7 @@ public class IndexerInvocationNameCollisionTests
             _ = getter.Invocations;
             setter.Called(Count.Once());
             getter.Called(Count.Once());
+            Imposters.InOrder().Then(setter).Then(getter).Verify();
             """,
             nameof(GivenOptionalIndexerKey_WhenGeneratingEntryConstructors_ShouldCompile)
         );
@@ -58,6 +59,7 @@ public class IndexerInvocationNameCollisionTests
             _ = getter.Invocations;
             setter.Called(Count.Once());
             getter.Called(Count.Once());
+            Imposters.InOrder().Then(setter).Then(getter).Verify();
             imposter.ClearInvocations();
             _ = target[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
             """,

@@ -136,6 +136,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class CreateMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal CreateMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private CreateMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -247,6 +254,26 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter<T>(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				where T : allows ref struct
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((ICreateMethodInvocationHistory)entry).Matches<T>())
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -483,7 +510,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface ICreateMethodImposterBuilder<T> : ICreateMethodInvocationImposterGroup<T>, ICreateMethodInvocationImposterGroupCallback<T>, CreateInvocationVerifier<T> where T : allows ref struct
+		public interface ICreateMethodImposterBuilder<T> : ICreateMethodInvocationImposterGroup<T>, ICreateMethodInvocationImposterGroupCallback<T>, CreateInvocationVerifier<T>, global::Imposter.Abstractions.IInvocationStep where T : allows ref struct
 		{
 		}
 
@@ -615,6 +642,27 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					return _createMethodInvocationHistoryCollection.Count<T>();
 				}
 
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _createMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "Create(" + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _createMethodInvocationHistoryCollection.TryFindAfter<T>(sequence, out match);
+				}
+
 				ICreateMethodInvocationImposterGroupContinuation<T> ICreateMethodInvocationImposterGroupContinuation<T>.Lenient()
 				{
 					_invocationImposterGroup.IsLenient = true;
@@ -732,6 +780,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class EchoMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal EchoMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private EchoMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -843,6 +898,26 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter<T>(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				where T : allows ref struct
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((IEchoMethodInvocationHistory)entry).Matches<T>())
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -1079,7 +1154,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IEchoMethodImposterBuilder<T> : IEchoMethodInvocationImposterGroup<T>, IEchoMethodInvocationImposterGroupCallback<T>, EchoInvocationVerifier<T> where T : allows ref struct
+		public interface IEchoMethodImposterBuilder<T> : IEchoMethodInvocationImposterGroup<T>, IEchoMethodInvocationImposterGroupCallback<T>, EchoInvocationVerifier<T>, global::Imposter.Abstractions.IInvocationStep where T : allows ref struct
 		{
 		}
 
@@ -1209,6 +1284,27 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				int EchoInvocationVerifier<T>.CallCount()
 				{
 					return _echoMethodInvocationHistoryCollection.Count<T>();
+				}
+
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _echoMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "Echo(" + "value: " + "<unrecorded>" + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _echoMethodInvocationHistoryCollection.TryFindAfter<T>(sequence, out match);
 				}
 
 				IEchoMethodInvocationImposterGroupContinuation<T> IEchoMethodInvocationImposterGroupContinuation<T>.Lenient()
@@ -1389,6 +1485,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class MeasureMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal MeasureMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private MeasureMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -1500,6 +1603,26 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter<T>(long sequence, MeasureArgumentsCriteria<T> criteria, out global::Imposter.Abstractions.InvocationMatch match)
+				where T : allows ref struct
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((IMeasureMethodInvocationHistory)entry).Matches<T>(criteria))
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -1748,7 +1871,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IMeasureMethodImposterBuilder<T> : IMeasureMethodInvocationImposterGroup<T>, IMeasureMethodInvocationImposterGroupCallback<T>, MeasureInvocationVerifier<T> where T : allows ref struct
+		public interface IMeasureMethodImposterBuilder<T> : IMeasureMethodInvocationImposterGroup<T>, IMeasureMethodInvocationImposterGroupCallback<T>, MeasureInvocationVerifier<T>, global::Imposter.Abstractions.IInvocationStep where T : allows ref struct
 		{
 		}
 
@@ -1890,6 +2013,27 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					return _measureMethodInvocationHistoryCollection.Count<T>(_argumentsCriteria);
 				}
 
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _measureMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "Measure(" + "value: " + "<unrecorded>" + ", scale: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.scale) + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _measureMethodInvocationHistoryCollection.TryFindAfter<T>(sequence, _argumentsCriteria, out match);
+				}
+
 				IMeasureMethodInvocationImposterGroupContinuation<T> IMeasureMethodInvocationImposterGroupContinuation<T>.Lenient()
 				{
 					_invocationImposterGroup.IsLenient = true;
@@ -2007,6 +2151,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class ResetMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal ResetMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private ResetMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -2118,6 +2269,26 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter<T>(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				where T : allows ref struct
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((IResetMethodInvocationHistory)entry).Matches<T>())
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -2351,7 +2522,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IResetMethodImposterBuilder<T> : IResetMethodInvocationImposterGroup<T>, IResetMethodInvocationImposterGroupCallback<T>, ResetInvocationVerifier<T> where T : allows ref struct
+		public interface IResetMethodImposterBuilder<T> : IResetMethodInvocationImposterGroup<T>, IResetMethodInvocationImposterGroupCallback<T>, ResetInvocationVerifier<T>, global::Imposter.Abstractions.IInvocationStep where T : allows ref struct
 		{
 		}
 
@@ -2475,6 +2646,27 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					return _resetMethodInvocationHistoryCollection.Count<T>();
 				}
 
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _resetMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "Reset(" + "value: " + "<unrecorded>" + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _resetMethodInvocationHistoryCollection.TryFindAfter<T>(sequence, out match);
+				}
+
 				IResetMethodInvocationImposterGroupContinuation<T> IResetMethodInvocationImposterGroupContinuation<T>.Lenient()
 				{
 					_invocationImposterGroup.IsLenient = true;
@@ -2551,10 +2743,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public IAllowsRefStructSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
 			this._imposterMode = invocationBehavior;
-			this._measureMethodInvocationHistoryCollection = new MeasureMethodInvocationHistoryCollection();
-			this._echoMethodInvocationHistoryCollection = new EchoMethodInvocationHistoryCollection();
-			this._createMethodInvocationHistoryCollection = new CreateMethodInvocationHistoryCollection();
-			this._resetMethodInvocationHistoryCollection = new ResetMethodInvocationHistoryCollection();
+			this._measureMethodInvocationHistoryCollection = new MeasureMethodInvocationHistoryCollection(this);
+			this._echoMethodInvocationHistoryCollection = new EchoMethodInvocationHistoryCollection(this);
+			this._createMethodInvocationHistoryCollection = new CreateMethodInvocationHistoryCollection(this);
+			this._resetMethodInvocationHistoryCollection = new ResetMethodInvocationHistoryCollection(this);
 			this._measureMethodImposterCollection = new MeasureMethodImposterCollection(_measureMethodInvocationHistoryCollection, this._imposterMode);
 			this._echoMethodImposterCollection = new EchoMethodImposterCollection(_echoMethodInvocationHistoryCollection, this._imposterMode);
 			this._createMethodImposterCollection = new CreateMethodImposterCollection(_createMethodInvocationHistoryCollection, this._imposterMode);
@@ -2601,10 +2793,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			_echoMethodInvocationHistoryCollection.Clear();
 			_createMethodInvocationHistoryCollection.Clear();
 			_resetMethodInvocationHistoryCollection.Clear();
-			this._measureMethodInvocationHistoryCollection = new MeasureMethodInvocationHistoryCollection();
-			this._echoMethodInvocationHistoryCollection = new EchoMethodInvocationHistoryCollection();
-			this._createMethodInvocationHistoryCollection = new CreateMethodInvocationHistoryCollection();
-			this._resetMethodInvocationHistoryCollection = new ResetMethodInvocationHistoryCollection();
+			this._measureMethodInvocationHistoryCollection = new MeasureMethodInvocationHistoryCollection(this);
+			this._echoMethodInvocationHistoryCollection = new EchoMethodInvocationHistoryCollection(this);
+			this._createMethodInvocationHistoryCollection = new CreateMethodInvocationHistoryCollection(this);
+			this._resetMethodInvocationHistoryCollection = new ResetMethodInvocationHistoryCollection(this);
 			this._measureMethodImposterCollection = new MeasureMethodImposterCollection(_measureMethodInvocationHistoryCollection, this._imposterMode);
 			this._echoMethodImposterCollection = new EchoMethodImposterCollection(_echoMethodInvocationHistoryCollection, this._imposterMode);
 			this._createMethodImposterCollection = new CreateMethodImposterCollection(_createMethodInvocationHistoryCollection, this._imposterMode);

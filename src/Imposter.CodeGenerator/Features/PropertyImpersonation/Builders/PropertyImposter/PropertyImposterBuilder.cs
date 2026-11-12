@@ -172,6 +172,13 @@ internal static partial class PropertyImposterBuilder
         var constructorBuilder = new ConstructorBuilder(property.ImposterBuilder.Name)
             .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
             .AddParameter(ParameterSyntax(property.ImposterBuilder.InvocationBehaviorParameter));
+        if (property.Core.HasSetter)
+            constructorBuilder.AddParameter(
+                ParameterSyntax(
+                    WellKnownTypes.Imposter.Abstractions.IImposter,
+                    property.Core.Locals["owner"]
+                )
+            );
 
         var bodyBuilder = new BlockBuilder();
 
@@ -225,6 +232,7 @@ internal static partial class PropertyImposterBuilder
                 .Assign(
                     property.ImposterBuilder.SetterImposterField.Type.New(
                         ArgumentListSyntax(accessorImposterArguments)
+                            .AddArguments(Argument(IdentifierName(property.Core.Locals["owner"])))
                     )
                 );
 

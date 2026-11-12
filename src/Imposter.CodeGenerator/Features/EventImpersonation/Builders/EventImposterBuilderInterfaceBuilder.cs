@@ -109,7 +109,10 @@ internal static class EventImposterBuilderInterfaceBuilder
                 )
             )
             .Build();
-        return result;
+        return result.AddMembers(
+            EventInvocationStepBuilder.Selector(@event, true, false),
+            EventInvocationStepBuilder.Selector(@event, false, false)
+        );
     }
 
     // Raise takes the event delegate's parameters, which the core metadata holds as syntax.

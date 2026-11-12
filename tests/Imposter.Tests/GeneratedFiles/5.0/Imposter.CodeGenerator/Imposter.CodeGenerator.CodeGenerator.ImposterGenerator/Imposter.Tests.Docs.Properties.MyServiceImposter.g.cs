@@ -124,6 +124,13 @@ namespace Imposter.Tests.Docs.Properties
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class ReadProtectedMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal ReadProtectedMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private ReadProtectedMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -232,6 +239,25 @@ namespace Imposter.Tests.Docs.Properties
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((IReadProtectedMethodInvocationHistory)entry).Matches())
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -422,7 +448,7 @@ namespace Imposter.Tests.Docs.Properties
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IReadProtectedMethodImposterBuilder : IReadProtectedMethodInvocationImposterGroup, IReadProtectedMethodInvocationImposterGroupCallback, ReadProtectedInvocationVerifier
+		public interface IReadProtectedMethodImposterBuilder : IReadProtectedMethodInvocationImposterGroup, IReadProtectedMethodInvocationImposterGroupCallback, ReadProtectedInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
@@ -563,6 +589,27 @@ namespace Imposter.Tests.Docs.Properties
 				int ReadProtectedInvocationVerifier.CallCount()
 				{
 					return _readProtectedMethodInvocationHistoryCollection.Count();
+				}
+
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _readProtectedMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "ReadProtected(" + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _readProtectedMethodInvocationHistoryCollection.TryFindAfter(sequence, out match);
 				}
 
 				IReadProtectedMethodInvocationImposterGroupContinuation IReadProtectedMethodInvocationImposterGroupContinuation.Lenient()
@@ -719,6 +766,13 @@ namespace Imposter.Tests.Docs.Properties
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public class WriteProtectedMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal WriteProtectedMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private WriteProtectedMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
@@ -827,6 +881,25 @@ namespace Imposter.Tests.Docs.Properties
 				}
 
 				return global::Imposter.Abstractions.InvocationSnapshots.Order(result, true);
+			}
+
+			internal bool TryFindAfter(long sequence, WriteProtectedArgumentsCriteria criteria, out global::Imposter.Abstractions.InvocationMatch match)
+			{
+				match = default(global::Imposter.Abstractions.InvocationMatch);
+				var found = false;
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((entry.Sequence > sequence) && (!found || entry.Sequence < match.Sequence)) && ((IWriteProtectedMethodInvocationHistory)entry).Matches(criteria))
+					{
+						match = global::Imposter.Abstractions.InvocationMatch.FromInvocation(entry);
+						found = true;
+					}
+
+					entry = entry.Next;
+				}
+
+				return found;
 			}
 
 			internal void Clear()
@@ -1006,7 +1079,7 @@ namespace Imposter.Tests.Docs.Properties
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IWriteProtectedMethodImposterBuilder : IWriteProtectedMethodInvocationImposterGroup, IWriteProtectedMethodInvocationImposterGroupCallback, WriteProtectedInvocationVerifier
+		public interface IWriteProtectedMethodImposterBuilder : IWriteProtectedMethodInvocationImposterGroup, IWriteProtectedMethodInvocationImposterGroupCallback, WriteProtectedInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
@@ -1137,6 +1210,27 @@ namespace Imposter.Tests.Docs.Properties
 					return _writeProtectedMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
 
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+				{
+					get
+					{
+						return _writeProtectedMethodInvocationHistoryCollection.Owner;
+					}
+				}
+
+				string global::Imposter.Abstractions.IInvocationStep.Description
+				{
+					get
+					{
+						return "WriteProtected(" + "value: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.value) + ")";
+					}
+				}
+
+				bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+				{
+					return _writeProtectedMethodInvocationHistoryCollection.TryFindAfter(sequence, _argumentsCriteria, out match);
+				}
+
 				IWriteProtectedMethodInvocationImposterGroupContinuation IWriteProtectedMethodInvocationImposterGroupContinuation.Lenient()
 				{
 					_invocationImposterGroup.IsLenient = true;
@@ -1241,7 +1335,7 @@ namespace Imposter.Tests.Docs.Properties
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IProtectedAgePropertySetterVerifier
+		public interface IProtectedAgePropertySetterVerifier : global::Imposter.Abstractions.IInvocationStep
 		{
 			void Called(global::Imposter.Abstractions.Count count);
 			global::System.Collections.Generic.IReadOnlyList<ProtectedAgeSetterInvocation> Invocations { get; }
@@ -1326,12 +1420,12 @@ namespace Imposter.Tests.Docs.Properties
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			internal SetterImposter _setterImposter;
 			internal GetterImposterBuilder _getterImposterBuilder;
-			internal ProtectedAgePropertyBuilder(global::Imposter.Abstractions.ImposterMode invocationBehavior)
+			internal ProtectedAgePropertyBuilder(global::Imposter.Abstractions.ImposterMode invocationBehavior, global::Imposter.Abstractions.IImposter owner)
 			{
 				_defaultPropertyBehaviour = new global::Imposter.Abstractions.PropertyValue<int>();
 				_invocationBehavior = invocationBehavior;
 				_getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Docs.Properties.MyService.ProtectedAge");
-				_setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Docs.Properties.MyService.ProtectedAge");
+				_setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Docs.Properties.MyService.ProtectedAge", owner);
 			}
 
 			internal void ClearInvocations()
@@ -1414,7 +1508,7 @@ namespace Imposter.Tests.Docs.Properties
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			internal class SetterImposter : global::Imposter.Abstractions.PropertySetter<int>
 			{
-				internal SetterImposter(global::Imposter.Abstractions.PropertyValue<int> _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName) : base(_defaultPropertyBehaviour, invocationBehavior, propertyDisplayName)
+				internal SetterImposter(global::Imposter.Abstractions.PropertyValue<int> _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName, global::Imposter.Abstractions.IImposter owner) : base(_defaultPropertyBehaviour, invocationBehavior, propertyDisplayName, owner)
 				{
 				}
 
@@ -1442,6 +1536,27 @@ namespace Imposter.Tests.Docs.Properties
 						{
 							return _setterImposter.MatchingInvocations<ProtectedAgeSetterInvocation>(_runtimeCriteria);
 						}
+					}
+
+					global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter
+					{
+						get
+						{
+							return _setterImposter.Owner!;
+						}
+					}
+
+					string global::Imposter.Abstractions.IInvocationStep.Description
+					{
+						get
+						{
+							return "set ProtectedAge(value: " + global::Imposter.Abstractions.MatcherDescription.Format(_runtimeCriteria) + ")";
+						}
+					}
+
+					bool global::Imposter.Abstractions.IInvocationStep.TryFindAfter(long sequence, out global::Imposter.Abstractions.InvocationMatch match)
+					{
+						return _setterImposter.TryFindAfter(sequence, _runtimeCriteria, out match);
 					}
 
 					IProtectedAgePropertySetterContinuationBuilder IProtectedAgePropertySetterContinuationBuilder.Lenient()
@@ -1495,11 +1610,11 @@ namespace Imposter.Tests.Docs.Properties
 		public MyServiceImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
 			this._imposterMode = invocationBehavior;
-			this._readProtectedMethodInvocationHistoryCollection = new ReadProtectedMethodInvocationHistoryCollection();
-			this._writeProtectedMethodInvocationHistoryCollection = new WriteProtectedMethodInvocationHistoryCollection();
+			this._readProtectedMethodInvocationHistoryCollection = new ReadProtectedMethodInvocationHistoryCollection(this);
+			this._writeProtectedMethodInvocationHistoryCollection = new WriteProtectedMethodInvocationHistoryCollection(this);
 			this._readProtectedMethodImposter = new ReadProtectedMethodImposter(_readProtectedMethodInvocationHistoryCollection, this._imposterMode);
 			this._writeProtectedMethodImposter = new WriteProtectedMethodImposter(_writeProtectedMethodInvocationHistoryCollection, this._imposterMode);
-			this._ProtectedAgePropertyBuilderField = new ProtectedAgePropertyBuilder(this._imposterMode);
+			this._ProtectedAgePropertyBuilderField = new ProtectedAgePropertyBuilder(this._imposterMode, this);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -1539,11 +1654,11 @@ namespace Imposter.Tests.Docs.Properties
 			_readProtectedMethodInvocationHistoryCollection.Clear();
 			_writeProtectedMethodInvocationHistoryCollection.Clear();
 			_ProtectedAgePropertyBuilderField.ClearInvocations();
-			this._readProtectedMethodInvocationHistoryCollection = new ReadProtectedMethodInvocationHistoryCollection();
-			this._writeProtectedMethodInvocationHistoryCollection = new WriteProtectedMethodInvocationHistoryCollection();
+			this._readProtectedMethodInvocationHistoryCollection = new ReadProtectedMethodInvocationHistoryCollection(this);
+			this._writeProtectedMethodInvocationHistoryCollection = new WriteProtectedMethodInvocationHistoryCollection(this);
 			this._readProtectedMethodImposter = new ReadProtectedMethodImposter(_readProtectedMethodInvocationHistoryCollection, this._imposterMode);
 			this._writeProtectedMethodImposter = new WriteProtectedMethodImposter(_writeProtectedMethodInvocationHistoryCollection, this._imposterMode);
-			this._ProtectedAgePropertyBuilderField = new ProtectedAgePropertyBuilder(this._imposterMode);
+			this._ProtectedAgePropertyBuilderField = new ProtectedAgePropertyBuilder(this._imposterMode, this);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
