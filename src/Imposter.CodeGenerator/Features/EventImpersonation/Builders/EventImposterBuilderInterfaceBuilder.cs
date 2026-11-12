@@ -1,9 +1,12 @@
-﻿using Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
+﻿using System.Linq;
+using Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 using Imposter.CodeGenerator.Helpers;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.Features.Shared.Builders.InterfaceMethodBuilder;
+using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.EventImpersonation.Builders;
@@ -109,10 +112,22 @@ internal static class EventImposterBuilderInterfaceBuilder
                 )
             )
             .Build();
-        return result.AddMembers(
-            EventInvocationStepBuilder.Selector(@event, true, false),
-            EventInvocationStepBuilder.Selector(@event, false, false)
-        );
+        var becauseName = @event.Locals["because"];
+        return result
+            .AddMembers(
+                EventInvocationStepBuilder.Selector(@event, true, false),
+                EventInvocationStepBuilder.Selector(@event, false, false)
+            )
+            .AddMembers(
+                result
+                    .Members.OfType<MethodDeclarationSyntax>()
+                    .Select(method =>
+                        method.AddParameterListParameters(
+                            ParameterSyntax(WellKnownTypes.String.ToNullableType(), becauseName)
+                        )
+                    )
+                    .ToArray()
+            );
     }
 
     // Raise takes the event delegate's parameters, which the core metadata holds as syntax.

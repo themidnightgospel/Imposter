@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.Shared.Builders;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -62,6 +63,13 @@ internal static class PropertyAccessorStateBuilder
                 PropertyAccessorStateMetadata.PropertyDisplayNameParameter,
                 PropertyAccessorStateMetadata.PropertyDisplayNameField.Name
             )
+            .AddParameter(
+                new ParameterMetadata(
+                    property.Core.Locals["owner"],
+                    WellKnownTypes.Imposter.Abstractions.IImposter
+                ),
+                InvocationStepNames.OwnerPropertyName
+            )
             .Build();
     }
 
@@ -80,9 +88,24 @@ internal static class PropertyAccessorStateBuilder
     ) =>
         ThrowStatement(
             WellKnownTypes.Imposter.Abstractions.MissingImposterException.New(
-                IdentifierName(PropertyAccessorStateMetadata.PropertyDisplayNameField.Name)
-                    .Add(state.MissingImposterSuffix.StringLiteral())
-                    .ToSingleArgumentList()
+                ArgumentListSyntax([
+                    Argument(
+                        IdentifierName(PropertyAccessorStateMetadata.PropertyDisplayNameField.Name)
+                            .Add(state.MissingImposterSuffix.StringLiteral())
+                    ),
+                    Argument(
+                        "get "
+                            .StringLiteral()
+                            .Add(
+                                IdentifierName(
+                                    PropertyAccessorStateMetadata.PropertyDisplayNameField.Name
+                                )
+                            )
+                    ),
+                    Argument(
+                        WellKnownTypes.System.Collections.Generic.List(WellKnownTypes.String).New()
+                    ),
+                ])
             )
         );
 }

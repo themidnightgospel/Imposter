@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis;
@@ -21,30 +22,35 @@ internal static class EventImposterVerificationBuilder
         IdentifierName(@event.Locals["entry"]);
 
     internal static MethodDeclarationSyntax BuildSubscribedVerificationMethod(
-        in ImposterEventMetadata @event
+        in ImposterEventMetadata @event,
+        bool withReason = false
     ) =>
         BuildSubscriptionVerificationMethod(
             @event,
             @event.Builder.Methods.Subscribed,
             @event.Builder.Fields.SubscribeHistory,
-            "subscribed"
+            "subscribed",
+            withReason
         );
 
     internal static MethodDeclarationSyntax BuildUnsubscribedVerificationMethod(
-        in ImposterEventMetadata @event
+        in ImposterEventMetadata @event,
+        bool withReason = false
     ) =>
         BuildSubscriptionVerificationMethod(
             @event,
             @event.Builder.Methods.Unsubscribed,
             @event.Builder.Fields.UnsubscribeHistory,
-            "unsubscribed"
+            "unsubscribed",
+            withReason
         );
 
     private static MethodDeclarationSyntax BuildSubscriptionVerificationMethod(
         in ImposterEventMetadata @event,
         in CriteriaMethodMetadata method,
         in FieldMetadata history,
-        string action
+        string action,
+        bool withReason
     )
     {
         var eventName = @event.Core.Name;
@@ -56,7 +62,24 @@ internal static class EventImposterVerificationBuilder
             .WithExplicitInterfaceSpecifier(@event.BuilderInterface.VerificationInterfaceTypeSyntax)
             .AddParameter(ParameterSyntax(method.CriteriaParameter))
             .AddParameter(ParameterSyntax(@event.Builder.Methods.CountParameter))
-            .WithBody(BuildSubscriptionVerificationBody(@event, method, history, eventName, action))
+            .AddParameter(
+                withReason
+                    ? ParameterSyntax(
+                        WellKnownTypes.String.ToNullableType(),
+                        @event.Locals["because"]
+                    )
+                    : null
+            )
+            .WithBody(
+                BuildSubscriptionVerificationBody(
+                    @event,
+                    method,
+                    history,
+                    eventName,
+                    action,
+                    withReason
+                )
+            )
             .Build();
     }
 
@@ -65,7 +88,8 @@ internal static class EventImposterVerificationBuilder
         in CriteriaMethodMetadata method,
         in FieldMetadata historyField,
         string eventName,
-        string action
+        string action,
+        bool withReason
     )
     {
         var history = IdentifierName(historyField.Name);
@@ -137,7 +161,10 @@ internal static class EventImposterVerificationBuilder
                             action,
                             handler.Dot(IdentifierName("Value"))
                         ),
-                    @event.Builder.Methods.CountParameter.Name
+                    @event.Builder.Methods.CountParameter.Name,
+                    eventName,
+                    Expected(eventName, action, [("handler", method.CriteriaParameter.Name)]),
+                    withReason
                 )
             ),
             cursor.Assign(snapshot).ToStatementSyntax(),
@@ -147,12 +174,14 @@ internal static class EventImposterVerificationBuilder
     }
 
     internal static MethodDeclarationSyntax BuildRaisedVerificationMethod(
-        in ImposterEventMetadata @event
+        in ImposterEventMetadata @event,
+        bool withReason = false
     )
     {
         var eventName = @event.Core.Name;
         var parameters = @event.Core.MatchedParameters;
         var historyEntry = @event.Builder.Fields.HistoryEntry;
+        var criteriaParameters = @event.Builder.Methods.RaisedCriteriaParameters;
 
         return new MethodDeclarationBuilder(
             @event.BuilderInterface.VerificationInterfaceTypeSyntax,
@@ -165,12 +194,21 @@ internal static class EventImposterVerificationBuilder
                 )
             )
             .AddParameter(ParameterSyntax(@event.Builder.Methods.CountParameter))
+            .AddParameter(
+                withReason
+                    ? ParameterSyntax(
+                        WellKnownTypes.String.ToNullableType(),
+                        @event.Locals["because"]
+                    )
+                    : null
+            )
             .WithBody(
                 BuildHistoryVerificationBody(
                     @event,
+                    withReason,
                     historyField: @event.Builder.Fields.History,
-                    criteriaParameterNames: @event.Builder.Methods.RaisedCriteriaParameters.Select(
-                        criteria => criteria.Name
+                    criteriaParameters: criteriaParameters.Select(
+                        (criteria, index) => (parameters[index].Name, criteria.Name)
                     ),
                     predicate: BuildRaisedPredicate(@event),
                     descriptionFactory: entry =>
@@ -198,7 +236,8 @@ internal static class EventImposterVerificationBuilder
     }
 
     internal static MethodDeclarationSyntax BuildHandlerInvokedVerificationMethod(
-        in ImposterEventMetadata @event
+        in ImposterEventMetadata @event,
+        bool withReason = false
     )
     {
         var method = @event.Builder.Methods.HandlerInvoked;
@@ -214,11 +253,20 @@ internal static class EventImposterVerificationBuilder
             .WithExplicitInterfaceSpecifier(@event.BuilderInterface.VerificationInterfaceTypeSyntax)
             .AddParameter(ParameterSyntax(method.HandlerCriteriaParameter))
             .AddParameter(ParameterSyntax(@event.Builder.Methods.CountParameter))
+            .AddParameter(
+                withReason
+                    ? ParameterSyntax(
+                        WellKnownTypes.String.ToNullableType(),
+                        @event.Locals["because"]
+                    )
+                    : null
+            )
             .WithBody(
                 BuildHistoryVerificationBody(
                     @event,
+                    withReason,
                     historyField: @event.Builder.Fields.HandlerInvocations,
-                    criteriaParameterNames: [criteriaName],
+                    criteriaParameters: [("handler", criteriaName)],
                     predicate: Matches(criteriaName, handlerInvocationEntry.Handler(Entry(@event))),
                     descriptionFactory: entry =>
                         BuildHandlerInvocationDescription(
@@ -235,8 +283,9 @@ internal static class EventImposterVerificationBuilder
     // The predicate and the description read the history entry as Entry.
     private static BlockSyntax BuildHistoryVerificationBody(
         in ImposterEventMetadata @event,
+        bool withReason,
         in FieldMetadata historyField,
-        IEnumerable<string> criteriaParameterNames,
+        IEnumerable<(string Name, string CriteriaParameterName)> criteriaParameters,
         ExpressionSyntax predicate,
         Func<ExpressionSyntax, ExpressionSyntax> descriptionFactory
     )
@@ -244,7 +293,7 @@ internal static class EventImposterVerificationBuilder
         var countParameterName = @event.Builder.Methods.CountParameter.Name;
 
         var blockBuilder = new BlockBuilder();
-        foreach (var criteriaParameterName in criteriaParameterNames)
+        foreach (var (_, criteriaParameterName) in criteriaParameters)
         {
             blockBuilder.AddStatement(ThrowIfNull(criteriaParameterName));
         }
@@ -257,7 +306,21 @@ internal static class EventImposterVerificationBuilder
             countParameterName,
             IdentifierName(historyField.Name),
             predicate,
-            BuildHistoryFailureBody(@event, historyField, descriptionFactory, countParameterName)
+            BuildHistoryFailureBody(
+                @event,
+                historyField,
+                descriptionFactory,
+                countParameterName,
+                @event.Core.Name,
+                Expected(
+                    @event.Core.Name,
+                    historyField.Name == @event.Builder.Fields.History.Name
+                        ? "raised"
+                        : "handler invoked",
+                    criteriaParameters
+                ),
+                withReason
+            )
         );
 
         blockBuilder.AddStatement(ReturnThis);
@@ -313,7 +376,10 @@ internal static class EventImposterVerificationBuilder
         in ImposterEventMetadata @event,
         in FieldMetadata historyField,
         Func<ExpressionSyntax, ExpressionSyntax> descriptionFactory,
-        string countParameterName
+        string countParameterName,
+        string member,
+        ExpressionSyntax expected,
+        bool withReason
     )
     {
         var stringListType = WellKnownTypes.System.Collections.Generic.List(WellKnownTypes.String);
@@ -342,13 +408,53 @@ internal static class EventImposterVerificationBuilder
             ThrowStatement(
                 WellKnownTypes.Imposter.Abstractions.VerificationFailedException.New(
                     ArgumentListSyntax([
+                        Argument(member.StringLiteral()),
+                        Argument(expected),
                         Argument(IdentifierName(countParameterName)),
                         Argument(IdentifierName(@event.Locals["actual"])),
                         Argument(JoinWithNewLines(performedInvocations)),
+                        Argument(withReason ? IdentifierName(@event.Locals["because"]) : Null),
+                        Argument(
+                            ConditionalExpression(
+                                BinaryExpression(
+                                    SyntaxKind.EqualsExpression,
+                                    performedInvocations.Dot(IdentifierName("Count")),
+                                    NumericLiteral(0)
+                                ),
+                                WellKnownTypes
+                                    .Imposter.Abstractions.DiagnosticValue.Dot(
+                                        IdentifierName("OtherInteractions")
+                                    )
+                                    .Call(
+                                        Argument(
+                                            IdentifierName(InvocationStepNames.OwnerPropertyName)
+                                        )
+                                    ),
+                                Null
+                            )
+                        ),
                     ])
                 )
             )
         );
+    }
+
+    private static BinaryExpressionSyntax Expected(
+        string member,
+        string action,
+        IEnumerable<(string Name, string CriteriaParameterName)> criteria
+    )
+    {
+        ExpressionSyntax result = BuildActionDescription(member, action).Add("(".StringLiteral());
+        var first = true;
+        foreach (var (name, criteriaParameterName) in criteria)
+        {
+            result = result
+                .Add(((first ? "" : ", ") + name + ": ").StringLiteral())
+                .Add(IdentifierName(criteriaParameterName).Dot(IdentifierName("ToString")).Call());
+            first = false;
+        }
+        return result.Add(")".StringLiteral());
     }
 
     private static BinaryExpressionSyntax BuildSubscriptionDescription(

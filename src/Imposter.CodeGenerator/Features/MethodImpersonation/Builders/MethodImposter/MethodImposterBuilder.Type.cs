@@ -44,6 +44,7 @@ internal static partial class MethodImposterBuilder
                     : null
             )
             .AddMember(BuildFindMatchingInvocationImposterGroupMethod(method))
+            .AddMember(BuildConfiguredSetupsMethod(method))
             .AddMember(InvokeMethod(method, !method.Model.IsGenericMethod))
             .AddMember(
                 method.Model.IsGenericMethod

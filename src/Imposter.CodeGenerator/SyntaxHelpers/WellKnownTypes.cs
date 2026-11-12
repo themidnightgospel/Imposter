@@ -234,9 +234,9 @@ internal static class WellKnownTypes
             internal static TypeSyntax EventSubscriptionInvocation(TypeSyntax handlerType) =>
                 GenericType(Namespace, "EventSubscriptionInvocation", handlerType);
 
-            internal static readonly NameSyntax MatcherDescription = QualifiedName(
+            internal static readonly NameSyntax DiagnosticValue = QualifiedName(
                 Namespace,
-                IdentifierName("MatcherDescription")
+                IdentifierName("DiagnosticValue")
             );
 
             internal static readonly NameSyntax VerificationFailedException = QualifiedName(

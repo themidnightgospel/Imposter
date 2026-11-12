@@ -4,6 +4,7 @@ using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.GetterImpos
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata.GetterImposterBuilderInterface;
 using Imposter.CodeGenerator.Features.Shared.BuilderInterface;
 using Imposter.CodeGenerator.Features.Shared.Builders;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -39,6 +40,13 @@ internal static partial class GetterImposterBuilderBuilder
         }
 
         builder = builder
+            .AddMember(
+                SingleVariableField(
+                    WellKnownTypes.Imposter.Abstractions.IImposter.ToNullableType(),
+                    InvocationStepNames.OwnerPropertyName,
+                    TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.ReadOnlyKeyword))
+                )
+            )
             .AddMember(
                 LazyCollectionSyntaxHelper.Field(property.GetterImposterBuilder.ReturnValuesField)
             )
@@ -94,6 +102,13 @@ internal static partial class GetterImposterBuilderBuilder
             )
             .AddMembers(BuildThenMethods(property))
             .AddMembers(BuildCounterVerificationMembers(property))
+            .AddMember(
+                BuildGetterCalledMethod(
+                    property.GetterImposterBuilder,
+                    property.GetterImposterBuilderInterface,
+                    true
+                )
+            )
             .AddMember(
                 property.Core.GetterSupportsBaseImplementation
                     ? BuildUseBaseImplementationMethod(property)
@@ -306,7 +321,8 @@ internal static partial class GetterImposterBuilderBuilder
 
     private static MethodDeclarationSyntax BuildGetterCalledMethod(
         in PropertyGetterImposterBuilderMetadata builder,
-        in PropertyGetterImposterBuilderInterfaceMetadata builderInterface
+        in PropertyGetterImposterBuilderInterfaceMetadata builderInterface,
+        bool withReason = false
     )
     {
         var count = IdentifierName(builderInterface.CalledMethod.CountParameter.Name);
@@ -317,12 +333,30 @@ internal static partial class GetterImposterBuilderBuilder
         )
             .WithExplicitInterfaceSpecifier(builderInterface.VerificationInterfaceTypeSyntax)
             .AddParameter(ParameterSyntax(builderInterface.CalledMethod.CountParameter));
+        if (withReason)
+            method.AddParameter(ParameterSyntax(builderInterface.CalledMethod.BecauseParameter));
         return method
             .WithBody(
                 Block(
                     IdentifierName(builder.VerificationField.Name)
                         .Dot(IdentifierName("Verify"))
-                        .Call(Argument(count))
+                        .Call([
+                            Argument(count),
+                            Argument(
+                                IdentifierName(
+                                        PropertyAccessorStateMetadata.PropertyDisplayNameField.Name
+                                    )
+                                    .Add(" (getter)".StringLiteral())
+                            ),
+                            Argument(
+                                withReason
+                                    ? IdentifierName(
+                                        builderInterface.CalledMethod.BecauseParameter.Name
+                                    )
+                                    : Null
+                            ),
+                            Argument(IdentifierName(InvocationStepNames.OwnerPropertyName)),
+                        ])
                         .ToStatementSyntax()
                 )
             )

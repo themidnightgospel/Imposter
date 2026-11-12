@@ -165,7 +165,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
@@ -336,9 +336,10 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
 			internal volatile bool IsUsed;
 			internal volatile bool IsLenient;
+			internal object? _outcomeDescriptions;
 			public override string ToString()
 			{
-				return "SaveAsync(" + "name: " + global::Imposter.Abstractions.MatcherDescription.Format(ArgumentsCriteria.name) + ")";
+				return "SaveAsync(" + "name: " + ArgumentsCriteria.name.ToString() + ")" + " -> " + global::Imposter.Abstractions.DiagnosticValue.Outcomes(_outcomeDescriptions);
 			}
 
 			internal volatile bool HasConfiguredOutcome;
@@ -508,6 +509,8 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
 			global::System.Collections.Generic.IReadOnlyList<SaveAsyncInvocation> Invocations { get; }
+
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -538,6 +541,18 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 				return null;
 			}
 
+			public global::System.Collections.Generic.List<string> GetConfiguredSetups()
+			{
+				var setups = new global::System.Collections.Generic.List<string>();
+				foreach (var group in _invocationImposters)
+				{
+					if (group.HasConfiguredOutcome)
+						setups.Add(group.ToString());
+				}
+
+				return setups;
+			}
+
 			public global::System.Threading.Tasks.Task<int> Invoke(string name)
 			{
 				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
@@ -548,7 +563,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					if (matchingInvocationImposterGroup == default)
 					{
 						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-							throw new global::Imposter.Abstractions.MissingImposterException("Task<int> IAsyncCallbackService.SaveAsync(string name)");
+							throw new global::Imposter.Abstractions.MissingImposterException("SaveAsync", "SaveAsync(" + "name: " + global::Imposter.Abstractions.DiagnosticValue.Format(capturedname) + ")", GetConfiguredSetups(), "Task<int> IAsyncCallbackService.SaveAsync(string name)");
 						matchingInvocationImposterGroup = SaveAsyncMethodInvocationImposterGroup.Default;
 					}
 
@@ -585,6 +600,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					{
 						throw new TException();
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, global::Imposter.Abstractions.DiagnosticValue.Throws<TException>());
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -595,6 +611,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					{
 						throw exception;
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -605,6 +622,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					{
 						throw exceptionGenerator.Invoke(name);
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -612,6 +630,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 				ISaveAsyncMethodInvocationImposterGroupContinuation ISaveAsyncMethodInvocationImposterGroupCallback.Callback(SaveAsyncCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Callback");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -619,6 +638,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 				ISaveAsyncMethodInvocationImposterGroupContinuation ISaveAsyncMethodInvocationImposterGroup.Returns(SaveAsyncDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -626,6 +646,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 				ISaveAsyncMethodInvocationImposterGroupContinuation ISaveAsyncMethodInvocationImposterGroup.Returns(global::System.Threading.Tasks.Task<int> value)
 				{
 					_currentInvocationImposter.Returns(value);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -633,6 +654,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 				ISaveAsyncMethodInvocationImposterGroupContinuation ISaveAsyncMethodInvocationImposterGroup.ReturnsAsync(int value)
 				{
 					_currentInvocationImposter.ReturnsAsync(value);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "ReturnsAsync");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -640,6 +662,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 				ISaveAsyncMethodInvocationImposterGroupContinuation ISaveAsyncMethodInvocationImposterGroup.ThrowsAsync(global::System.Exception exception)
 				{
 					_currentInvocationImposter.ThrowsAsync(exception);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "ThrowsAsync");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -655,7 +678,16 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					var invocationCount = _saveAsyncMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
 					if (!count.Matches(invocationCount))
 					{
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _saveAsyncMethodInvocationHistoryCollection.ToString());
+						throw new global::Imposter.Abstractions.VerificationFailedException("SaveAsync", "SaveAsync(" + "name: " + _argumentsCriteria.name.ToString() + ")", count, invocationCount, _saveAsyncMethodInvocationHistoryCollection.ToString(), null, _saveAsyncMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_saveAsyncMethodInvocationHistoryCollection.Owner) : null);
+					}
+				}
+
+				void SaveAsyncInvocationVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+				{
+					var invocationCount = _saveAsyncMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
+					if (!count.Matches(invocationCount))
+					{
+						throw new global::Imposter.Abstractions.VerificationFailedException("SaveAsync", "SaveAsync(" + "name: " + _argumentsCriteria.name.ToString() + ")", count, invocationCount, _saveAsyncMethodInvocationHistoryCollection.ToString(), because, _saveAsyncMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_saveAsyncMethodInvocationHistoryCollection.Owner) : null);
 					}
 				}
 
@@ -676,7 +708,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 				{
 					get
 					{
-						return "SaveAsync(" + "name: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.name) + ")";
+						return "SaveAsync(" + "name: " + _argumentsCriteria.name.ToString() + ")";
 					}
 				}
 

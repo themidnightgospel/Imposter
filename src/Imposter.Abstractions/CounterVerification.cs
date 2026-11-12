@@ -27,12 +27,36 @@ public sealed class CounterVerification
     /// <summary>Excludes the accessor setup from unused-setup verification.</summary>
     public void Lenient() => _lenient = true;
 
-    /// <summary>Verifies and covers the number of interactions observed by this check.</summary>
+    /// <summary>Verifies and covers the observed count without member-specific diagnostics.</summary>
     /// <param name="expected">The expected count.</param>
     public void Verify(Count expected)
     {
         if (!_counter.Verify(expected, out var count))
             throw new VerificationFailedException(expected, count);
+    }
+
+    /// <summary>Verifies and covers the number of interactions observed by this check.</summary>
+    /// <param name="expected">The expected count.</param>
+    /// <param name="member">The accessor description.</param>
+    /// <param name="because">An optional reason for the expectation.</param>
+    /// <param name="owner">The owning imposter, used to describe other interactions on failure.</param>
+    public void Verify(
+        Count expected,
+        string member,
+        string? because = null,
+        IImposter? owner = null
+    )
+    {
+        if (!_counter.Verify(expected, out var count))
+            throw new VerificationFailedException(
+                member,
+                member,
+                expected,
+                count,
+                count == 0 ? null : count + " interaction(s)",
+                because,
+                count == 0 && owner is not null ? DiagnosticValue.OtherInteractions(owner) : null
+            );
     }
 
     /// <summary>Clears history and coverage without affecting configured setup usage.</summary>

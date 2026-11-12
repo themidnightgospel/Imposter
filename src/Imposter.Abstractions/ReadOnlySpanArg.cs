@@ -17,10 +17,11 @@
 /// </remarks>
 public sealed class ReadOnlySpanArg<T>
 {
-    private static readonly ReadOnlySpanArg<T> AnyInstance = new(_ => true);
+    private static readonly ReadOnlySpanArg<T> AnyInstance = new(_ => true, description: "any");
 
     private readonly Func<T[], bool> _matches;
     private readonly T[]? _expected;
+    private readonly string? _description;
 
     private ReadOnlySpanArg(
         Func<T[], bool> matches,
@@ -30,12 +31,22 @@ public sealed class ReadOnlySpanArg<T>
     {
         _matches = matches;
         _expected = expected;
+        _description = description;
     }
 
-    internal string DescribeMatcher() =>
-        ReferenceEquals(this, AnyInstance) ? "any"
-        : _expected is null ? "<predicate>"
-        : "[" + string.Join(", ", _expected.Select(value => MatcherDescription.Value(value))) + "]";
+    /// <summary>Returns a new matcher with the given diagnostic description.</summary>
+    /// <param name="description">Text to display instead of the default description.</param>
+    /// <exception cref="ArgumentNullException">The description is null.</exception>
+    public ReadOnlySpanArg<T> Describe(string description) =>
+        new(
+            _matches,
+            _expected,
+            description ?? throw new ArgumentNullException(nameof(description))
+        );
+
+    /// <summary>Describes the matcher without evaluating its predicate or comparer.</summary>
+    public override string ToString() =>
+        _description ?? (_expected is null ? "<predicate>" : DiagnosticValue.Sequence(_expected));
 
     /// <summary>
     /// Determines whether the copy of a span argument satisfies this matcher.

@@ -42,9 +42,7 @@ internal readonly ref struct PropertyImposterMembersBuilder(
                     property.ImposterBuilder.Syntax.New(
                         SyntaxFactoryHelper.ArgumentListSyntax([
                             Argument(invocationBehavior),
-                            .. property.Core.HasSetter
-                                ? new[] { Argument(ThisExpression()) }
-                                : System.Array.Empty<ArgumentSyntax>(),
+                            Argument(ThisExpression()),
                         ])
                     )
                 )

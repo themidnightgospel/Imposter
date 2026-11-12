@@ -66,7 +66,7 @@ jobs:
       # exceptions to report them on the test thread. Drop those two rules only when all locations are under
       # tests/; retain findings with source or unresolved locations.
       # The two retention tests deliberately force GC to prove that cleared history releases objects.
-      # MatcherDescription deliberately catches arbitrary user ToString failures so verification diagnostics preserve the
+      # DiagnosticValue deliberately catches arbitrary user ToString failures so diagnostics preserve the
       # original verification failure. Allow only these exact rule/file pairs, with every location resolved;
       # calls to GC elsewhere and other production catch-all clauses remain reported.
       - name: Drop generated output and intentional findings
@@ -101,7 +101,7 @@ jobs:
                       or (
                         .ruleId == "cs/catch-of-all-exceptions"
                         and all(.locations[]?;
-                          (.physicalLocation.artifactLocation.uri // "") == "src/Imposter.Abstractions/MatcherDescription.cs"
+                          (.physicalLocation.artifactLocation.uri // "") == "src/Imposter.Abstractions/DiagnosticValue.cs"
                         )
                       )
                     )

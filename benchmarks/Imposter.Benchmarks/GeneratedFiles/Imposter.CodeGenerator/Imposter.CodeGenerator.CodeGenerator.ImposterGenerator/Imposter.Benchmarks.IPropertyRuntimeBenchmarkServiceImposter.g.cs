@@ -52,6 +52,7 @@ namespace Imposter.Benchmarks
 		public interface INumberPropertyGetterVerifier
 		{
 			void Called(global::Imposter.Abstractions.Count count);
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -86,6 +87,7 @@ namespace Imposter.Benchmarks
 		public interface INumberPropertySetterVerifier : global::Imposter.Abstractions.IInvocationStep
 		{
 			void Called(global::Imposter.Abstractions.Count count);
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 			global::System.Collections.Generic.IReadOnlyList<NumberSetterInvocation> Invocations { get; }
 		}
 
@@ -165,7 +167,7 @@ namespace Imposter.Benchmarks
 			{
 				_defaultPropertyBehaviour = new global::Imposter.Abstractions.PropertyValue<int>();
 				_invocationBehavior = invocationBehavior;
-				_getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Benchmarks.IPropertyRuntimeBenchmarkService.Number");
+				_getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Benchmarks.IPropertyRuntimeBenchmarkService.Number", owner);
 				_setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Benchmarks.IPropertyRuntimeBenchmarkService.Number", owner);
 			}
 
@@ -178,7 +180,7 @@ namespace Imposter.Benchmarks
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			internal class GetterImposterBuilder : global::Imposter.Abstractions.PropertyGetter<int>, INumberPropertyGetterBuilder, INumberPropertyGetterFluentBuilder
 			{
-				internal GetterImposterBuilder(global::Imposter.Abstractions.PropertyValue<int> _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName) : base(_defaultPropertyBehaviour, invocationBehavior, propertyDisplayName)
+				internal GetterImposterBuilder(global::Imposter.Abstractions.PropertyValue<int> _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName, global::Imposter.Abstractions.IImposter owner) : base(_defaultPropertyBehaviour, invocationBehavior, propertyDisplayName, owner)
 				{
 				}
 
@@ -210,6 +212,11 @@ namespace Imposter.Benchmarks
 				{
 					base.Callback(callback);
 					return this;
+				}
+
+				void INumberPropertyGetterVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+				{
+					base.Called(count, because);
 				}
 
 				INumberPropertyGetterContinuationBuilder INumberPropertyGetterContinuationBuilder.Lenient()
@@ -274,7 +281,7 @@ namespace Imposter.Benchmarks
 					{
 						get
 						{
-							return "set Number(value: " + global::Imposter.Abstractions.MatcherDescription.Format(_runtimeCriteria) + ")";
+							return "set Number(value: " + _runtimeCriteria.ToString() + ")";
 						}
 					}
 
@@ -298,6 +305,11 @@ namespace Imposter.Benchmarks
 					void INumberPropertySetterVerifier.Called(global::Imposter.Abstractions.Count count)
 					{
 						_setterImposter.Called(_runtimeCriteria, count);
+					}
+
+					void INumberPropertySetterVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+					{
+						_setterImposter.Called(_runtimeCriteria, count, because);
 					}
 
 					INumberPropertySetterFluentBuilder INumberPropertySetterContinuationBuilder.Then()
@@ -348,6 +360,7 @@ namespace Imposter.Benchmarks
 		public interface ITextPropertyGetterVerifier
 		{
 			void Called(global::Imposter.Abstractions.Count count);
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -382,6 +395,7 @@ namespace Imposter.Benchmarks
 		public interface ITextPropertySetterVerifier : global::Imposter.Abstractions.IInvocationStep
 		{
 			void Called(global::Imposter.Abstractions.Count count);
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 			global::System.Collections.Generic.IReadOnlyList<TextSetterInvocation> Invocations { get; }
 		}
 
@@ -461,7 +475,7 @@ namespace Imposter.Benchmarks
 			{
 				_defaultPropertyBehaviour = new global::Imposter.Abstractions.PropertyValue<string>();
 				_invocationBehavior = invocationBehavior;
-				_getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Benchmarks.IPropertyRuntimeBenchmarkService.Text");
+				_getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Benchmarks.IPropertyRuntimeBenchmarkService.Text", owner);
 				_setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Benchmarks.IPropertyRuntimeBenchmarkService.Text", owner);
 			}
 
@@ -474,7 +488,7 @@ namespace Imposter.Benchmarks
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			internal class GetterImposterBuilder : global::Imposter.Abstractions.PropertyGetter<string>, ITextPropertyGetterBuilder, ITextPropertyGetterFluentBuilder
 			{
-				internal GetterImposterBuilder(global::Imposter.Abstractions.PropertyValue<string> _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName) : base(_defaultPropertyBehaviour, invocationBehavior, propertyDisplayName)
+				internal GetterImposterBuilder(global::Imposter.Abstractions.PropertyValue<string> _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName, global::Imposter.Abstractions.IImposter owner) : base(_defaultPropertyBehaviour, invocationBehavior, propertyDisplayName, owner)
 				{
 				}
 
@@ -506,6 +520,11 @@ namespace Imposter.Benchmarks
 				{
 					base.Callback(callback);
 					return this;
+				}
+
+				void ITextPropertyGetterVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+				{
+					base.Called(count, because);
 				}
 
 				ITextPropertyGetterContinuationBuilder ITextPropertyGetterContinuationBuilder.Lenient()
@@ -570,7 +589,7 @@ namespace Imposter.Benchmarks
 					{
 						get
 						{
-							return "set Text(value: " + global::Imposter.Abstractions.MatcherDescription.Format(_runtimeCriteria) + ")";
+							return "set Text(value: " + _runtimeCriteria.ToString() + ")";
 						}
 					}
 
@@ -594,6 +613,11 @@ namespace Imposter.Benchmarks
 					void ITextPropertySetterVerifier.Called(global::Imposter.Abstractions.Count count)
 					{
 						_setterImposter.Called(_runtimeCriteria, count);
+					}
+
+					void ITextPropertySetterVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+					{
+						_setterImposter.Called(_runtimeCriteria, count, because);
 					}
 
 					ITextPropertySetterFluentBuilder ITextPropertySetterContinuationBuilder.Then()

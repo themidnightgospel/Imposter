@@ -37,6 +37,14 @@ internal static class MethodImposterInvocationVerifierInterfaceBuilder
                     .WithGetter()
                     .Build()
             )
+            .AddMember(
+                InterfaceMethod(
+                    called.ReturnType,
+                    called.Name,
+                    called.CountParameter,
+                    called.BecauseParameter
+                )
+            )
             .Build();
     }
 }

@@ -54,7 +54,11 @@ public abstract class PassThroughSetter<TInvocation> : IImposterVerificationSour
     protected void EnsureConfigured()
     {
         if (_mode == ImposterMode.Explicit && !_configured)
-            throw new MissingImposterException(_member);
+            throw new MissingImposterException(
+                _member,
+                "set " + _member + "(value: <not captured>)",
+                Array.Empty<string>()
+            );
     }
 
     /// <summary>Marks base setup execution and returns whether to delegate.</summary>
@@ -124,14 +128,25 @@ public abstract class PassThroughSetter<TInvocation> : IImposterVerificationSour
     }
 
     /// <summary>Verifies and covers the observed setter calls.</summary>
-    public void Called(Count count)
+    public void Called(Count count) => Called(count, null);
+
+    /// <summary>Verifies and covers observed setter calls with a reason.</summary>
+    public void Called(Count count, string? because)
     {
         var head = _history?.Head;
         var actual = 0;
         for (var record = head; record is not null; record = (TInvocation?)record.Next)
             actual++;
         if (!count.Matches(actual))
-            throw new VerificationFailedException(count, actual);
+            throw new VerificationFailedException(
+                _member + " (setter)",
+                "set " + _member + "(value: <not captured>)",
+                count,
+                actual,
+                actual == 0 ? null : actual + " interaction(s)",
+                because,
+                head is null && Owner is not null ? DiagnosticValue.OtherInteractions(Owner) : null
+            );
         for (var record = head; record is not null; record = (TInvocation?)record.Next)
             ((IVerifiableInvocation)record).MarkVerified();
     }
@@ -168,5 +183,9 @@ public abstract class PassThroughSetter<TInvocation> : IImposterVerificationSour
         "set "
         + record.Member
         + "(value: <not captured>)"
-        + (record.Exception is null ? string.Empty : " threw " + record.Exception);
+        + (
+            record.Exception is null
+                ? string.Empty
+                : " threw " + DiagnosticValue.Format(record.Exception)
+        );
 }

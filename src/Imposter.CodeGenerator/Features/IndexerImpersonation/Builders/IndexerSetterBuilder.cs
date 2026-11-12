@@ -229,6 +229,10 @@ internal static partial class IndexerSetterBuilder
                 ParameterSyntax(indexer.ArgumentsCriteria.TypeSyntax, setter.CriteriaParameterName)
             )
             .AddParameter(countParameter)
+            .AddParameter(
+                ParameterSyntax(WellKnownTypes.String.ToNullableType(), indexer.Locals["because"])
+                    .WithDefault(EqualsValueClause(Null))
+            )
             .WithBody(
                 IndexerVerificationBuilder.BuildBody(
                     indexer,
@@ -242,7 +246,19 @@ internal static partial class IndexerSetterBuilder
                             descriptionExpression,
                             IsHistoryNullable: true
                         ),
-                        indexer.Locals["performedInvocations"]
+                        IdentifierName(indexer.Locals["performedInvocations"]),
+                        IdentifierName(setter.PropertyDisplayNameField.Name),
+                        "set "
+                            .StringLiteral()
+                            .Add(IdentifierName(setter.PropertyDisplayNameField.Name))
+                            .Add(
+                                ExpectedIndices(
+                                    indexer,
+                                    IdentifierName(setter.CriteriaParameterName)
+                                )
+                            ),
+                        IdentifierName(indexer.Locals["because"]),
+                        IdentifierName(InvocationStepNames.OwnerPropertyName)
                     )
                 )
             )
@@ -299,7 +315,12 @@ internal static partial class IndexerSetterBuilder
 
         var bodyBuilder = new BlockBuilder()
             .AddStatement(
-                IdentifierName(setter.EnsureSetterConfiguredMethodName).Call().ToStatementSyntax()
+                IdentifierName(setter.EnsureSetterConfiguredMethodName)
+                    .Call(
+                        ArgumentListSyntax(indexer.Core.ParameterArguments)
+                            .AddArguments(Argument(value))
+                    )
+                    .ToStatementSyntax()
             )
             .AddStatement(
                 defaultBehaviourField is null
@@ -512,12 +533,55 @@ internal static partial class IndexerSetterBuilder
     {
         var setter = indexer.SetterImplementation;
 
+        ExpressionSyntax actual = "set "
+            .StringLiteral()
+            .Add(IdentifierName(setter.PropertyDisplayNameField.Name))
+            .Add(BuildIndices(indexer, IdentifierName(setter.ArgumentsVariableName)))
+            .Add(" = ".StringLiteral())
+            .Add(
+                indexer.Core.IsValuePassedThrough
+                    ? "<unrecorded>".StringLiteral()
+                    : Invocation(IdentifierName(setter.ValueParameterName))
+            );
         return EnsureConfiguredMethod(
-            setter.EnsureSetterConfiguredMethodName,
-            setter.InvocationBehaviorField.Name,
-            VolatileRead(setter.HasConfiguredSetterField.Name),
-            Block(ThrowMissingImposter(setter.PropertyDisplayNameField.Name, setter.SetterSuffix))
-        );
+                setter.EnsureSetterConfiguredMethodName,
+                setter.InvocationBehaviorField.Name,
+                VolatileRead(setter.HasConfiguredSetterField.Name),
+                new BlockBuilder()
+                    .AddStatement(
+                        indexer.Core.MatchedParameters.Length > 0
+                            ? CreateArgumentsDeclaration(indexer, setter.ArgumentsVariableName)
+                            : null
+                    )
+                    .AddStatement(
+                        ThrowStatement(
+                            WellKnownTypes.Imposter.Abstractions.MissingImposterException.New(
+                                ArgumentListSyntax([
+                                    Argument(
+                                        IdentifierName(setter.PropertyDisplayNameField.Name)
+                                            .Add(setter.SetterSuffix.StringLiteral())
+                                    ),
+                                    Argument(actual),
+                                    Argument(
+                                        WellKnownTypes
+                                            .System.Collections.Generic.List(WellKnownTypes.String)
+                                            .New()
+                                    ),
+                                ])
+                            )
+                        )
+                    )
+                    .Build()
+            )
+            .WithParameterList(
+                ParameterList(SeparatedList(indexer.Core.ParameterSyntaxes))
+                    .AddParameters(
+                        ParameterSyntax(
+                            indexer.Core.NullableAwareKeptTypeSyntax,
+                            setter.ValueParameterName
+                        )
+                    )
+            );
     }
 
     private static MethodDeclarationSyntax BuildMarkSetterConfiguredMethod(

@@ -34,6 +34,14 @@ namespace Imposter.Tests.Features.Verification
                 $"SomethingHappened raised sender: <{typeof(object).FullName}> e: <{typeof(EventArgs).FullName}>",
             };
             entries.ShouldBe(expectedEntries);
+            exception.Expected.ShouldBe("SomethingHappened raised(sender: any, e: any)");
+            exception.Message.ShouldBe(
+                "Expected SomethingHappened raised(sender: any, e: any) exactly 3 time(s), performed 2 times."
+                    + Environment.NewLine
+                    + "Performed invocations of SomethingHappened:"
+                    + Environment.NewLine
+                    + string.Join(Environment.NewLine, expectedEntries)
+            );
             exception.MessageShouldDescribeCounts(expectedCount, 2);
         }
 
@@ -63,6 +71,9 @@ namespace Imposter.Tests.Features.Verification
                     $"SomethingHappened handler invoked handler: <{typeof(EventHandler).FullName}> sender: <{typeof(EventPerformedInvocationExceptionMessageTests).FullName}> e: <{typeof(EventArgs).FullName}>",
                 }
             );
+            exception.Expected.ShouldBe(
+                "SomethingHappened handler invoked(handler: <System.EventHandler>)"
+            );
             exception.MessageShouldDescribeCounts(expectedCount, 1);
         }
 
@@ -81,6 +92,9 @@ namespace Imposter.Tests.Features.Verification
             var entries = exception.ReadEntries();
             entries.ShouldBe(
                 new[] { $"SomethingHappened subscribed handler: <{typeof(EventHandler).FullName}>" }
+            );
+            exception.Expected.ShouldBe(
+                "SomethingHappened subscribed(handler: <System.EventHandler>)"
             );
             exception.MessageShouldDescribeCounts(expectedCount, 1);
         }
@@ -104,6 +118,9 @@ namespace Imposter.Tests.Features.Verification
                 {
                     $"SomethingHappened unsubscribed handler: <{typeof(EventHandler).FullName}>",
                 }
+            );
+            exception.Expected.ShouldBe(
+                "SomethingHappened unsubscribed(handler: <System.EventHandler>)"
             );
             exception.MessageShouldDescribeCounts(expectedCount, 1);
         }

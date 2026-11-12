@@ -40,10 +40,13 @@ internal static partial class IndexerGetterBuilder
             )
             .AddMember(SinglePrivateReadonlyVariableField(invocation.DefaultBehaviourField))
             .AddMember(LazyCollectionSyntaxHelper.Field(invocation.ReturnValuesField))
+            .AddMember(LazyCollectionSyntaxHelper.Field(invocation.CallbacksField))
             .AddMember(
-                LazyCollectionSyntaxHelper
-                    .Field(invocation.CallbacksField)
-                    .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
+                SingleVariableField(
+                    WellKnownTypes.Object.ToNullableType(),
+                    OutcomeDescriptionsFieldName,
+                    SyntaxKind.InternalKeyword
+                )
             )
             .AddMember(
                 new MethodDeclarationBuilder(WellKnownTypes.String, "ToString")
@@ -60,6 +63,18 @@ internal static partial class IndexerGetterBuilder
                                             indexer,
                                             IdentifierName(invocation.CriteriaField.Name)
                                         )
+                                    )
+                                    .Add(" -> ".StringLiteral())
+                                    .Add(
+                                        WellKnownTypes
+                                            .Imposter.Abstractions.DiagnosticValue.Dot(
+                                                IdentifierName("Outcomes")
+                                            )
+                                            .Call(
+                                                Argument(
+                                                    IdentifierName(OutcomeDescriptionsFieldName)
+                                                )
+                                            )
                                     )
                             )
                         )

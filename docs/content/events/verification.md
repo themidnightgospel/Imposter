@@ -32,7 +32,9 @@ Verify handler subscriptions and invocations.
 
 ## Failures
 
-When verification fails, `VerificationFailedException` is thrown with a message that clearly reports expected vs actual counts.
+When verification fails, `VerificationFailedException` names the event action and its argument matchers, for example `SomethingHappened raised(sender: any, e: any)`, and reports expected and actual matching counts. Recorded details include every action of that kind for the event, including nonmatching actions; formatting does not evaluate predicates again.
+
+All four count checks have an optional reason overload: `Subscribed(handlerMatcher, count, string? because)`, `Unsubscribed(handlerMatcher, count, string? because)`, `HandlerInvoked(handlerMatcher, count, string? because)`, and `Raised(senderMatcher, argsMatcher, count, string? because)` (with matcher parameters matching the delegate signature). A nonempty reason appends a `Because:` line on failure. Null and empty reasons are omitted; passing checks have the same behavior. See [Failure messages](../failure-messages.md).
 
 ## Subscription order
 

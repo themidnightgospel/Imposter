@@ -104,6 +104,7 @@ internal static partial class IndexerGetterBuilder
             )
             .AddMembers(IndexerVerificationBuilder.Source(indexer, true))
             .AddMember(BuildGetterCalledMethod(indexer))
+            .AddMember(BuildGetterConfiguredSetups(indexer))
             .AddMember(BuildPropertyDisplayNameProperty(getter))
             .AddMember(BuildGetterBuilder(indexer))
             .AddMember(BuildGetterInvocationImposter(indexer))
@@ -191,9 +192,24 @@ internal static partial class IndexerGetterBuilder
                 Block(
                     ThrowStatement(
                         WellKnownTypes.Imposter.Abstractions.MissingImposterException.New(
-                            IdentifierName(getter.PropertyDisplayNameField.Name)
-                                .Add(getter.GetterSuffix.StringLiteral())
-                                .ToSingleArgumentList()
+                            ArgumentListSyntax([
+                                Argument(
+                                    IdentifierName(getter.PropertyDisplayNameField.Name)
+                                        .Add(getter.GetterSuffix.StringLiteral())
+                                ),
+                                Argument(
+                                    "get "
+                                        .StringLiteral()
+                                        .Add(IdentifierName(getter.PropertyDisplayNameField.Name))
+                                        .Add(
+                                            BuildIndices(
+                                                indexer,
+                                                IdentifierName(getter.ArgumentsVariableName)
+                                            )
+                                        )
+                                ),
+                                Argument(IdentifierName(getter.ConfiguredSetupsMethodName).Call()),
+                            ])
                         )
                     )
                 )
@@ -377,6 +393,10 @@ internal static partial class IndexerGetterBuilder
                 ParameterSyntax(indexer.ArgumentsCriteria.TypeSyntax, getter.CriteriaParameterName)
             )
             .AddParameter(ParameterSyntax(countParameter))
+            .AddParameter(
+                ParameterSyntax(WellKnownTypes.String.ToNullableType(), indexer.Locals["because"])
+                    .WithDefault(EqualsValueClause(Null))
+            )
             .WithBody(
                 IndexerVerificationBuilder.BuildBody(
                     indexer,
@@ -390,7 +410,19 @@ internal static partial class IndexerGetterBuilder
                             entryDescription,
                             IsHistoryNullable: true
                         ),
-                        indexer.Locals["performedInvocations"]
+                        IdentifierName(indexer.Locals["performedInvocations"]),
+                        IdentifierName(getter.PropertyDisplayNameField.Name),
+                        "get "
+                            .StringLiteral()
+                            .Add(IdentifierName(getter.PropertyDisplayNameField.Name))
+                            .Add(
+                                ExpectedIndices(
+                                    indexer,
+                                    IdentifierName(getter.CriteriaParameterName)
+                                )
+                            ),
+                        IdentifierName(indexer.Locals["because"]),
+                        IdentifierName(InvocationStepNames.OwnerPropertyName)
                     )
                 )
             )

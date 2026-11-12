@@ -155,7 +155,7 @@ namespace System.Net.Http
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
@@ -326,9 +326,10 @@ namespace System.Net.Http
 			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
 			internal volatile bool IsUsed;
 			internal volatile bool IsLenient;
+			internal object? _outcomeDescriptions;
 			public override string ToString()
 			{
-				return "Dispose(" + "disposing: " + global::Imposter.Abstractions.MatcherDescription.Format(ArgumentsCriteria.disposing) + ")";
+				return "Dispose(" + "disposing: " + ArgumentsCriteria.disposing.ToString() + ")" + " -> " + global::Imposter.Abstractions.DiagnosticValue.Outcomes(_outcomeDescriptions);
 			}
 
 			internal volatile bool HasConfiguredOutcome;
@@ -472,6 +473,8 @@ namespace System.Net.Http
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
 			global::System.Collections.Generic.IReadOnlyList<DisposeInvocation> Invocations { get; }
+
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -502,6 +505,18 @@ namespace System.Net.Http
 				return null;
 			}
 
+			public global::System.Collections.Generic.List<string> GetConfiguredSetups()
+			{
+				var setups = new global::System.Collections.Generic.List<string>();
+				foreach (var group in _invocationImposters)
+				{
+					if (group.HasConfiguredOutcome)
+						setups.Add(group.ToString());
+				}
+
+				return setups;
+			}
+
 			public void Invoke(bool disposing, DisposeDelegate? baseImplementation = null)
 			{
 				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
@@ -512,7 +527,7 @@ namespace System.Net.Http
 					if (matchingInvocationImposterGroup == default)
 					{
 						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-							throw new global::Imposter.Abstractions.MissingImposterException("virtual void HttpMessageHandler.Dispose(bool disposing)");
+							throw new global::Imposter.Abstractions.MissingImposterException("Dispose", "Dispose(" + "disposing: " + global::Imposter.Abstractions.DiagnosticValue.Format(captureddisposing) + ")", GetConfiguredSetups(), "virtual void HttpMessageHandler.Dispose(bool disposing)");
 						matchingInvocationImposterGroup = DisposeMethodInvocationImposterGroup.Default;
 					}
 
@@ -548,6 +563,7 @@ namespace System.Net.Http
 					{
 						throw new TException();
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, global::Imposter.Abstractions.DiagnosticValue.Throws<TException>());
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -558,6 +574,7 @@ namespace System.Net.Http
 					{
 						throw exception;
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -568,6 +585,7 @@ namespace System.Net.Http
 					{
 						throw exceptionGenerator.Invoke(disposing);
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -575,6 +593,7 @@ namespace System.Net.Http
 				IDisposeMethodInvocationImposterGroupContinuation IDisposeMethodInvocationImposterGroupCallback.Callback(DisposeCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Callback");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -582,6 +601,7 @@ namespace System.Net.Http
 				IDisposeMethodInvocationImposterGroupContinuation IDisposeMethodInvocationImposterGroup.UseBaseImplementation()
 				{
 					_currentInvocationImposter.UseBaseImplementation();
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "UseBaseImplementation");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -597,7 +617,16 @@ namespace System.Net.Http
 					var invocationCount = _disposeMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
 					if (!count.Matches(invocationCount))
 					{
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _disposeMethodInvocationHistoryCollection.ToString());
+						throw new global::Imposter.Abstractions.VerificationFailedException("Dispose", "Dispose(" + "disposing: " + _argumentsCriteria.disposing.ToString() + ")", count, invocationCount, _disposeMethodInvocationHistoryCollection.ToString(), null, _disposeMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_disposeMethodInvocationHistoryCollection.Owner) : null);
+					}
+				}
+
+				void DisposeInvocationVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+				{
+					var invocationCount = _disposeMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
+					if (!count.Matches(invocationCount))
+					{
+						throw new global::Imposter.Abstractions.VerificationFailedException("Dispose", "Dispose(" + "disposing: " + _argumentsCriteria.disposing.ToString() + ")", count, invocationCount, _disposeMethodInvocationHistoryCollection.ToString(), because, _disposeMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_disposeMethodInvocationHistoryCollection.Owner) : null);
 					}
 				}
 
@@ -618,7 +647,7 @@ namespace System.Net.Http
 				{
 					get
 					{
-						return "Dispose(" + "disposing: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.disposing) + ")";
+						return "Dispose(" + "disposing: " + _argumentsCriteria.disposing.ToString() + ")";
 					}
 				}
 
@@ -798,7 +827,7 @@ namespace System.Net.Http
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
@@ -969,9 +998,10 @@ namespace System.Net.Http
 			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
 			internal volatile bool IsUsed;
 			internal volatile bool IsLenient;
+			internal object? _outcomeDescriptions;
 			public override string ToString()
 			{
-				return "Send(" + "request: " + global::Imposter.Abstractions.MatcherDescription.Format(ArgumentsCriteria.request) + ", cancellationToken: " + global::Imposter.Abstractions.MatcherDescription.Format(ArgumentsCriteria.cancellationToken) + ")";
+				return "Send(" + "request: " + ArgumentsCriteria.request.ToString() + ", cancellationToken: " + ArgumentsCriteria.cancellationToken.ToString() + ")" + " -> " + global::Imposter.Abstractions.DiagnosticValue.Outcomes(_outcomeDescriptions);
 			}
 
 			internal volatile bool HasConfiguredOutcome;
@@ -1129,6 +1159,8 @@ namespace System.Net.Http
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
 			global::System.Collections.Generic.IReadOnlyList<SendInvocation> Invocations { get; }
+
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1159,6 +1191,18 @@ namespace System.Net.Http
 				return null;
 			}
 
+			public global::System.Collections.Generic.List<string> GetConfiguredSetups()
+			{
+				var setups = new global::System.Collections.Generic.List<string>();
+				foreach (var group in _invocationImposters)
+				{
+					if (group.HasConfiguredOutcome)
+						setups.Add(group.ToString());
+				}
+
+				return setups;
+			}
+
 			public global::System.Net.Http.HttpResponseMessage Invoke(global::System.Net.Http.HttpRequestMessage request, global::System.Threading.CancellationToken cancellationToken, SendDelegate? baseImplementation = null)
 			{
 				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
@@ -1170,7 +1214,7 @@ namespace System.Net.Http
 					if (matchingInvocationImposterGroup == default)
 					{
 						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-							throw new global::Imposter.Abstractions.MissingImposterException("virtual HttpResponseMessage HttpMessageHandler.Send(HttpRequestMessage request, CancellationToken cancellationToken)");
+							throw new global::Imposter.Abstractions.MissingImposterException("Send", "Send(" + "request: " + global::Imposter.Abstractions.DiagnosticValue.Format(capturedrequest) + ", cancellationToken: " + global::Imposter.Abstractions.DiagnosticValue.Format(capturedcancellationToken) + ")", GetConfiguredSetups(), "virtual HttpResponseMessage HttpMessageHandler.Send(HttpRequestMessage request, CancellationToken cancellationToken)");
 						matchingInvocationImposterGroup = SendMethodInvocationImposterGroup.Default;
 					}
 
@@ -1207,6 +1251,7 @@ namespace System.Net.Http
 					{
 						throw new TException();
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, global::Imposter.Abstractions.DiagnosticValue.Throws<TException>());
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1217,6 +1262,7 @@ namespace System.Net.Http
 					{
 						throw exception;
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1227,6 +1273,7 @@ namespace System.Net.Http
 					{
 						throw exceptionGenerator.Invoke(request, cancellationToken);
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1234,6 +1281,7 @@ namespace System.Net.Http
 				ISendMethodInvocationImposterGroupContinuation ISendMethodInvocationImposterGroupCallback.Callback(SendCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Callback");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1241,6 +1289,7 @@ namespace System.Net.Http
 				ISendMethodInvocationImposterGroupContinuation ISendMethodInvocationImposterGroup.Returns(SendDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1248,6 +1297,7 @@ namespace System.Net.Http
 				ISendMethodInvocationImposterGroupContinuation ISendMethodInvocationImposterGroup.Returns(global::System.Net.Http.HttpResponseMessage value)
 				{
 					_currentInvocationImposter.Returns(value);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1255,6 +1305,7 @@ namespace System.Net.Http
 				ISendMethodInvocationImposterGroupContinuation ISendMethodInvocationImposterGroup.UseBaseImplementation()
 				{
 					_currentInvocationImposter.UseBaseImplementation();
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "UseBaseImplementation");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1270,7 +1321,16 @@ namespace System.Net.Http
 					var invocationCount = _sendMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
 					if (!count.Matches(invocationCount))
 					{
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _sendMethodInvocationHistoryCollection.ToString());
+						throw new global::Imposter.Abstractions.VerificationFailedException("Send", "Send(" + "request: " + _argumentsCriteria.request.ToString() + ", cancellationToken: " + _argumentsCriteria.cancellationToken.ToString() + ")", count, invocationCount, _sendMethodInvocationHistoryCollection.ToString(), null, _sendMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_sendMethodInvocationHistoryCollection.Owner) : null);
+					}
+				}
+
+				void SendInvocationVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+				{
+					var invocationCount = _sendMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
+					if (!count.Matches(invocationCount))
+					{
+						throw new global::Imposter.Abstractions.VerificationFailedException("Send", "Send(" + "request: " + _argumentsCriteria.request.ToString() + ", cancellationToken: " + _argumentsCriteria.cancellationToken.ToString() + ")", count, invocationCount, _sendMethodInvocationHistoryCollection.ToString(), because, _sendMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_sendMethodInvocationHistoryCollection.Owner) : null);
 					}
 				}
 
@@ -1291,7 +1351,7 @@ namespace System.Net.Http
 				{
 					get
 					{
-						return "Send(" + "request: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.request) + ", cancellationToken: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.cancellationToken) + ")";
+						return "Send(" + "request: " + _argumentsCriteria.request.ToString() + ", cancellationToken: " + _argumentsCriteria.cancellationToken.ToString() + ")";
 					}
 				}
 
@@ -1485,7 +1545,7 @@ namespace System.Net.Http
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
@@ -1656,9 +1716,10 @@ namespace System.Net.Http
 			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
 			internal volatile bool IsUsed;
 			internal volatile bool IsLenient;
+			internal object? _outcomeDescriptions;
 			public override string ToString()
 			{
-				return "SendAsync(" + "request: " + global::Imposter.Abstractions.MatcherDescription.Format(ArgumentsCriteria.request) + ", cancellationToken: " + global::Imposter.Abstractions.MatcherDescription.Format(ArgumentsCriteria.cancellationToken) + ")";
+				return "SendAsync(" + "request: " + ArgumentsCriteria.request.ToString() + ", cancellationToken: " + ArgumentsCriteria.cancellationToken.ToString() + ")" + " -> " + global::Imposter.Abstractions.DiagnosticValue.Outcomes(_outcomeDescriptions);
 			}
 
 			internal volatile bool HasConfiguredOutcome;
@@ -1828,6 +1889,8 @@ namespace System.Net.Http
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
 			global::System.Collections.Generic.IReadOnlyList<SendAsyncInvocation> Invocations { get; }
+
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1858,6 +1921,18 @@ namespace System.Net.Http
 				return null;
 			}
 
+			public global::System.Collections.Generic.List<string> GetConfiguredSetups()
+			{
+				var setups = new global::System.Collections.Generic.List<string>();
+				foreach (var group in _invocationImposters)
+				{
+					if (group.HasConfiguredOutcome)
+						setups.Add(group.ToString());
+				}
+
+				return setups;
+			}
+
 			public global::System.Threading.Tasks.Task<global::System.Net.Http.HttpResponseMessage> Invoke(global::System.Net.Http.HttpRequestMessage request, global::System.Threading.CancellationToken cancellationToken)
 			{
 				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
@@ -1869,7 +1944,7 @@ namespace System.Net.Http
 					if (matchingInvocationImposterGroup == default)
 					{
 						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-							throw new global::Imposter.Abstractions.MissingImposterException("abstract Task<HttpResponseMessage> HttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)");
+							throw new global::Imposter.Abstractions.MissingImposterException("SendAsync", "SendAsync(" + "request: " + global::Imposter.Abstractions.DiagnosticValue.Format(capturedrequest) + ", cancellationToken: " + global::Imposter.Abstractions.DiagnosticValue.Format(capturedcancellationToken) + ")", GetConfiguredSetups(), "abstract Task<HttpResponseMessage> HttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)");
 						matchingInvocationImposterGroup = SendAsyncMethodInvocationImposterGroup.Default;
 					}
 
@@ -1906,6 +1981,7 @@ namespace System.Net.Http
 					{
 						throw new TException();
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, global::Imposter.Abstractions.DiagnosticValue.Throws<TException>());
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1916,6 +1992,7 @@ namespace System.Net.Http
 					{
 						throw exception;
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1926,6 +2003,7 @@ namespace System.Net.Http
 					{
 						throw exceptionGenerator.Invoke(request, cancellationToken);
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1933,6 +2011,7 @@ namespace System.Net.Http
 				ISendAsyncMethodInvocationImposterGroupContinuation ISendAsyncMethodInvocationImposterGroupCallback.Callback(SendAsyncCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Callback");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1940,6 +2019,7 @@ namespace System.Net.Http
 				ISendAsyncMethodInvocationImposterGroupContinuation ISendAsyncMethodInvocationImposterGroup.Returns(SendAsyncDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1947,6 +2027,7 @@ namespace System.Net.Http
 				ISendAsyncMethodInvocationImposterGroupContinuation ISendAsyncMethodInvocationImposterGroup.Returns(global::System.Threading.Tasks.Task<global::System.Net.Http.HttpResponseMessage> value)
 				{
 					_currentInvocationImposter.Returns(value);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1954,6 +2035,7 @@ namespace System.Net.Http
 				ISendAsyncMethodInvocationImposterGroupContinuation ISendAsyncMethodInvocationImposterGroup.ReturnsAsync(global::System.Net.Http.HttpResponseMessage value)
 				{
 					_currentInvocationImposter.ReturnsAsync(value);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "ReturnsAsync");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1961,6 +2043,7 @@ namespace System.Net.Http
 				ISendAsyncMethodInvocationImposterGroupContinuation ISendAsyncMethodInvocationImposterGroup.ThrowsAsync(global::System.Exception exception)
 				{
 					_currentInvocationImposter.ThrowsAsync(exception);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "ThrowsAsync");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1976,7 +2059,16 @@ namespace System.Net.Http
 					var invocationCount = _sendAsyncMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
 					if (!count.Matches(invocationCount))
 					{
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _sendAsyncMethodInvocationHistoryCollection.ToString());
+						throw new global::Imposter.Abstractions.VerificationFailedException("SendAsync", "SendAsync(" + "request: " + _argumentsCriteria.request.ToString() + ", cancellationToken: " + _argumentsCriteria.cancellationToken.ToString() + ")", count, invocationCount, _sendAsyncMethodInvocationHistoryCollection.ToString(), null, _sendAsyncMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_sendAsyncMethodInvocationHistoryCollection.Owner) : null);
+					}
+				}
+
+				void SendAsyncInvocationVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+				{
+					var invocationCount = _sendAsyncMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
+					if (!count.Matches(invocationCount))
+					{
+						throw new global::Imposter.Abstractions.VerificationFailedException("SendAsync", "SendAsync(" + "request: " + _argumentsCriteria.request.ToString() + ", cancellationToken: " + _argumentsCriteria.cancellationToken.ToString() + ")", count, invocationCount, _sendAsyncMethodInvocationHistoryCollection.ToString(), because, _sendAsyncMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_sendAsyncMethodInvocationHistoryCollection.Owner) : null);
 					}
 				}
 
@@ -1997,7 +2089,7 @@ namespace System.Net.Http
 				{
 					get
 					{
-						return "SendAsync(" + "request: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.request) + ", cancellationToken: " + global::Imposter.Abstractions.MatcherDescription.Format(_argumentsCriteria.cancellationToken) + ")";
+						return "SendAsync(" + "request: " + _argumentsCriteria.request.ToString() + ", cancellationToken: " + _argumentsCriteria.cancellationToken.ToString() + ")";
 					}
 				}
 

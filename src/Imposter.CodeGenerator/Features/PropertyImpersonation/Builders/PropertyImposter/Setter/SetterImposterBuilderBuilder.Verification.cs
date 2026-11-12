@@ -28,15 +28,9 @@ internal static partial class SetterImposterBuilderBuilder
             : ("set " + property.Core.Name + "(value: ")
                 .StringLiteral()
                 .Add(
-                    WellKnownTypes
-                        .Imposter.Abstractions.MatcherDescription.Dot(IdentifierName("Format"))
-                        .Call(
-                            Argument(
-                                IdentifierName(
-                                    property.SetterImposter.Builder.CriteriaField!.Value.Name
-                                )
-                            )
-                        )
+                    IdentifierName(property.SetterImposter.Builder.CriteriaField!.Value.Name)
+                        .Dot(IdentifierName("ToString"))
+                        .Call()
                 )
                 .Add(")".StringLiteral());
         return

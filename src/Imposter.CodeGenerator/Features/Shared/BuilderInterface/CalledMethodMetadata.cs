@@ -12,6 +12,7 @@ internal readonly struct CalledMethodMetadata
     internal readonly TypeSyntax ReturnType;
 
     internal readonly ParameterMetadata CountParameter;
+    internal readonly ParameterMetadata BecauseParameter;
 
     public CalledMethodMetadata(NameSet names)
     {
@@ -19,6 +20,10 @@ internal readonly struct CalledMethodMetadata
         CountParameter = new ParameterMetadata(
             names.Use("count"),
             WellKnownTypes.Imposter.Abstractions.Count
+        );
+        BecauseParameter = new ParameterMetadata(
+            names.Use("because"),
+            WellKnownTypes.String.ToNullableType()
         );
     }
 }

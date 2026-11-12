@@ -54,6 +54,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		public interface ICurrentPropertyGetterVerifier
 		{
 			void Called(global::Imposter.Abstractions.Count count);
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -96,6 +97,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		public interface ICurrentPropertySetterVerifier : global::Imposter.Abstractions.IInvocationStep
 		{
 			void Called(global::Imposter.Abstractions.Count count);
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 			global::System.Collections.Generic.IReadOnlyList<CurrentSetterInvocation> Invocations { get; }
 		}
 
@@ -172,7 +174,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			internal CurrentPropertyBuilder(global::Imposter.Abstractions.ImposterMode invocationBehavior, global::Imposter.Abstractions.IImposter owner)
 			{
 				_invocationBehavior = invocationBehavior;
-				_getterImposterBuilder = new GetterImposterBuilder(_invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.RefStructPropertyClass.Current");
+				_getterImposterBuilder = new GetterImposterBuilder(_invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.RefStructPropertyClass.Current", owner);
 				_setterImposter = new SetterImposter(_invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.RefStructPropertyClass.Current", owner);
 			}
 
@@ -185,6 +187,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			internal class GetterImposterBuilder : global::Imposter.Abstractions.IImposterVerificationSource, ICurrentPropertyGetterBuilder, ICurrentPropertyGetterFluentBuilder, ICurrentPropertyGetterUseBaseImplementationBuilder
 			{
+				internal readonly global::Imposter.Abstractions.IImposter? Owner;
 				private global::Imposter.Abstractions.ReturnValueSequence<CurrentPropertyReturnHandler>? _returnValues;
 				private global::Imposter.Abstractions.CallbackCollection<global::System.Action>? _callbacks;
 				private volatile CurrentPropertyReturnHandler _lastReturnValue = baseImplementation => baseImplementation != null ? baseImplementation() : default !;
@@ -192,10 +195,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 				private readonly string _propertyDisplayName;
 				private bool _hasConfiguredReturn;
-				internal GetterImposterBuilder(global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName)
+				internal GetterImposterBuilder(global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName, global::Imposter.Abstractions.IImposter owner)
 				{
 					this._invocationBehavior = invocationBehavior;
 					this._propertyDisplayName = propertyDisplayName;
+					this.Owner = owner;
 				}
 
 				private void AddReturnValue(CurrentPropertyReturnHandler valueGenerator)
@@ -237,7 +241,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 				void ICurrentPropertyGetterVerifier.Called(global::Imposter.Abstractions.Count count)
 				{
-					_verification.Verify(count);
+					_verification.Verify(count, _propertyDisplayName + " (getter)", null, Owner);
 				}
 
 				ICurrentPropertyGetterFluentBuilder ICurrentPropertyGetterContinuationBuilder.Then()
@@ -271,6 +275,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 					return this;
 				}
 
+				void ICurrentPropertyGetterVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+				{
+					_verification.Verify(count, _propertyDisplayName + " (getter)", because, Owner);
+				}
+
 				internal void UseBaseImplementation()
 				{
 					AddReturnValue((CurrentPropertyDelegate? baseImplementation) =>
@@ -278,7 +287,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 						if (baseImplementation != null)
 							return baseImplementation();
 						else
-							throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
+							throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)", "get " + _propertyDisplayName, new global::System.Collections.Generic.List<string>());
 					});
 				}
 
@@ -320,7 +329,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 				private void EnsureGetterConfigured()
 				{
 					if ((_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit) && !_hasConfiguredReturn)
-						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
+						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)", "get " + _propertyDisplayName, new global::System.Collections.Generic.List<string>());
 				}
 			}
 
@@ -430,6 +439,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 					void ICurrentPropertySetterVerifier.Called(global::Imposter.Abstractions.Count count)
 					{
 						_setterImposter.Called(count);
+					}
+
+					void ICurrentPropertySetterVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+					{
+						_setterImposter.Called(count, because);
 					}
 
 					ICurrentPropertySetterUseBaseImplementationBuilder ICurrentPropertySetterContinuationBuilder.Then()

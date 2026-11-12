@@ -214,6 +214,7 @@ namespace Imposter.Tests.Features.CallAllocations
         // snapshot, while history retains a separate entry copy. Arbitrary predicates keep isolation.
         [Theory]
         [InlineData(0)]
+        [InlineData(1)]
         [InlineData(2)]
         public void GivenGenericMethodWithSpan_WhenCalledWithItsOwnTypeArgument_ShouldNotCopyTheSpanForAnAdapter(
             int matcherKind
@@ -223,6 +224,7 @@ namespace Imposter.Tests.Features.CallAllocations
             var matcher = matcherKind switch
             {
                 0 => ReadOnlySpanArg<int>.Any(),
+                1 => ReadOnlySpanArg<int>.Any().Describe("any values"),
                 _ => ReadOnlySpanArg<int>.Is(1, 2, 3, 4),
             };
             sut.Contains<int>(matcher, Arg<int>.Any()).Returns(true);
@@ -452,15 +454,15 @@ namespace Imposter.Tests.Features.CallAllocations
                 .ShouldBeLessThanOrEqualTo(400);
         }
 
-        // Then() adds a step, sequence node and Returns closure. Completeness tracking retains no
-        // diagnostic labels, so this three-step chain keeps the original 736-byte allocation ceiling.
+        // Then() adds its step, sequence node and Returns closure. Retaining all three diagnostic outcome labels
+        // grows immutable label arrays during setup; the measured total for this three-step chain is 816 bytes.
         [Fact]
         public void GivenMethodSequence_WhenSetUp_ShouldOnlyAllocateEachStep()
         {
             AllocatedBytesPerSetup(sut =>
                     sut.Square(Arg<int>.Any()).Returns(1).Then().Returns(2).Then().Returns(3)
                 )
-                .ShouldBeLessThanOrEqualTo(736);
+                .ShouldBeLessThanOrEqualTo(816);
         }
 
         // Like Returns, Throws keeps one closure over its argument. The step wrapped it in a second one, which took

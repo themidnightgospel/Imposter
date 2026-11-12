@@ -88,13 +88,13 @@ A compact list of the core types and fluent members you’ll use most. This is n
   - `Throws<TException>()`
   - `Callback(Action action)` / `Callback(Action<...parameters...> action)`
   - `Then()` — chain next behavior (return/throw/etc.) for subsequent matching calls
-  - `Called(Count count)` — verify invocation frequency
+  - `Called(Count count)` / `Called(Count count, string? because)` — verify invocation frequency with an optional reason
 - A method whose type parameter allows ref structs: the setup takes matchers for the other parameters only, as in `imposter.Measure<Gauge>(Arg<int>.Any())`, and applies to calls with the same type arguments only (see [Type parameters that allow ref structs](generics.md#type-parameters-that-allow-ref-structs))
 
 ## Property Setups (generated)
 
-- Getter: `imposter.Property.Getter()` → supports `Returns(...)`, `Throws(...)`, `Callback(...)`, `Then()`, `Called(Count)`
-- Setter: `imposter.Property.Setter(Arg<T> valueMatcher)` → supports `Callback(...)`, `Called(Count)`
+- Getter: `imposter.Property.Getter()` → supports `Returns(...)`, `Throws(...)`, `Callback(...)`, `Then()`, `Called(Count)` / `Called(Count, string? because)`
+- Setter: `imposter.Property.Setter(Arg<T> valueMatcher)` → supports `Callback(...)`, `Called(Count)` / `Called(Count, string? because)`
 - A property of another `ref struct` type: the getter's `Returns` takes only a delegate, and `Setter()` takes no matcher (see [Ref struct properties](properties/index.md#ref-struct-properties))
 - Base implementation: `UseBaseImplementation()` (when applicable for classes)
 
@@ -104,8 +104,8 @@ A compact list of the core types and fluent members you’ll use most. This is n
 ## Indexer Setups (generated)
 
 - Indexer access: `imposter[Arg<T1>..., Arg<TN>...]`
-  - Getter: `.Getter()` → `Returns(...)`, `Throws(...)`, `Callback(...)`, `Then()`, `Called(Count)`
-  - Setter: `.Setter()` / `.Setter(Arg<TValue> valueMatcher)` → `Callback(...)`, `Called(Count)`
+  - Getter: `.Getter()` → `Returns(...)`, `Throws(...)`, `Callback(...)`, `Then()`, `Called(Count)` / `Called(Count, string? because)`
+  - Setter: `.Setter()` / `.Setter(Arg<TValue> valueMatcher)` → `Callback(...)`, `Called(Count)` / `Called(Count, string? because)`
   - Base implementation: `UseBaseImplementation()`
   - An indexer of another `ref struct` type: the getter's `Returns` takes only the delegate that gets the keys (see [Ref struct values](indexers/index.md#ref-struct-values))
   - A key of another `ref struct` type takes no `Arg<T>`; an indexer with no other keys, or whose other keys are another indexer's, is set up by a method such as `imposter.Indexer()` (see [Ref struct keys](indexers/index.md#ref-struct-keys))
@@ -114,7 +114,9 @@ A compact list of the core types and fluent members you’ll use most. This is n
 
 - Raise: `imposter.Event.Raise(object? sender, EventArgs args)` (or concrete event args type)
 - Verify:
-  - `imposter.Event.Subscribed(Arg<Delegate>.Is(handler), Count count)`
-  - `imposter.Event.HandlerInvoked(Arg<Delegate>.Is(handler), Count count)`
+  - `imposter.Event.Subscribed(Arg<Delegate>.Is(handler), Count count)` / `Subscribed(..., Count count, string? because)`
+  - `imposter.Event.Unsubscribed(Arg<Delegate>.Is(handler), Count count)` / `Unsubscribed(..., Count count, string? because)`
+  - `imposter.Event.HandlerInvoked(Arg<Delegate>.Is(handler), Count count)` / `HandlerInvoked(..., Count count, string? because)`
+  - `imposter.Event.Raised(senderMatcher, argsMatcher, Count count)` / `Raised(..., Count count, string? because)`
 
 See also: [Cheat Sheet](cheat-sheet.md) and [Limitations](limitations.md).

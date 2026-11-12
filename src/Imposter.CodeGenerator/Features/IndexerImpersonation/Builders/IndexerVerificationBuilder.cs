@@ -208,30 +208,15 @@ internal static class IndexerVerificationBuilder
                                     )
                                 )
                                 .And(
-                                    ParenthesizedExpression(
-                                        BinaryExpression(
-                                            SyntaxKind.LogicalOrExpression,
-                                            IdentifierName(indexer.Locals["setup"])
-                                                .Dot(
-                                                    IdentifierName(
-                                                        IndexerGetterImposterMetadata
-                                                            .GetterInvocationMetadata
-                                                            .HasConfiguredReturnFieldName
-                                                    )
-                                                ),
-                                            IdentifierName(indexer.Locals["setup"])
-                                                .Dot(
-                                                    IdentifierName(
-                                                        indexer
-                                                            .GetterImplementation
-                                                            .Invocation
-                                                            .CallbacksField
-                                                            .Name
-                                                    )
-                                                )
-                                                .IsNotNull()
+                                    IdentifierName(indexer.Locals["setup"])
+                                        .Dot(
+                                            IdentifierName(
+                                                IndexerGetterImposterMetadata
+                                                    .GetterInvocationMetadata
+                                                    .OutcomeDescriptionsFieldName
+                                            )
                                         )
-                                    )
+                                        .IsNotNull()
                                 ),
                             YieldStatement(
                                 SyntaxKind.YieldReturnStatement,

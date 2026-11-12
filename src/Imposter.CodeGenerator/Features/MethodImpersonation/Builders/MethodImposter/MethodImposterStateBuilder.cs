@@ -1,7 +1,9 @@
 ﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationHistory;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.MethodImposter;
 
@@ -22,6 +24,18 @@ internal static class MethodImposterStateBuilder
             className,
             [historyField, modeField]
         );
+        if (method.Model.IsGenericMethod && className == method.MethodImposter.Collection.Name)
+            constructor = constructor.WithBody(
+                constructor.Body!.AddStatements(
+                    IdentifierName(method.InvocationHistory.Collection.AsField.Name)
+                        .Dot(
+                            IdentifierName(InvocationHistoryCollectionMetadata.SetupSourceFieldName)
+                        )
+                        .Assign(ThisExpression())
+                        .ToStatementSyntax()
+                )
+            );
+
         return [historyField, modeField, constructor];
     }
 

@@ -138,6 +138,6 @@ public sealed class EventSubscriptionInvocation<THandler> : InvocationRecord
     public override string ToString() =>
         Member
         + (IsSubscription ? " subscribed " : " unsubscribed ")
-        + Handler
-        + (Exception is null ? string.Empty : " threw " + Exception);
+        + DiagnosticValue.Format(Handler)
+        + (Exception is null ? string.Empty : " threw " + DiagnosticValue.Format(Exception));
 }

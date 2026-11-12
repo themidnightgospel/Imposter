@@ -35,8 +35,8 @@ public abstract class PropertySetterInvocation<T> : InvocationRecord
         "set "
         + Member
         + " = "
-        + StoredValue
-        + (Exception is null ? string.Empty : " threw " + Exception);
+        + DiagnosticValue.Format(StoredValue)
+        + (Exception is null ? string.Empty : " threw " + DiagnosticValue.Format(Exception));
 }
 
 /// <summary>Tracks the use and leniency of one property setter builder chain.</summary>
@@ -46,9 +46,21 @@ public sealed class PropertySetterSetup<T>
 {
     internal readonly Arg<T> Criteria;
     internal SetterSetupState State;
+    private object? _outcomes;
+    internal readonly object DescriptionSource;
 
     /// <summary>Creates a setup for assignments matching the criteria.</summary>
-    public PropertySetterSetup(Arg<T> criteria) => Criteria = criteria;
+    public PropertySetterSetup(Arg<T> criteria)
+        : this(criteria, criteria) { }
+
+    /// <summary>Creates a setup retaining original matcher information for failure diagnostics.</summary>
+    /// <param name="criteria">The runtime matching adapter.</param>
+    /// <param name="descriptionSource">The original matcher, formatted only on failure.</param>
+    public PropertySetterSetup(Arg<T> criteria, object descriptionSource)
+    {
+        Criteria = criteria;
+        DescriptionSource = descriptionSource;
+    }
 
     /// <summary>Excludes this setup chain from unused setup verification.</summary>
     public void Lenient() => State.IsLenient = true;
@@ -58,8 +70,15 @@ public sealed class PropertySetterSetup<T>
 
     internal bool IsUnused => !State.IsLenient && Volatile.Read(ref State.Used) == 0;
 
+    internal void DescribeOutcome(string kind) => DiagnosticValue.AddOutcome(ref _outcomes, kind);
+
     internal string Describe(string member) =>
-        "set " + member + "(value: " + MatcherDescription.Format(Criteria) + ")";
+        "set "
+        + member
+        + "(value: "
+        + DiagnosticValue.FormatMatcher(DescriptionSource)
+        + ") -> "
+        + DiagnosticValue.Outcomes(Volatile.Read(ref _outcomes));
 }
 
 /// <summary>Implements callbacks, history and invocation for generated property setters.</summary>
@@ -106,13 +125,14 @@ public class PropertySetter<T> : IImposterVerificationSource
     /// <summary>Registers a callback belonging to one builder chain.</summary>
     public void Callback(PropertySetterSetup<T> setup, Action<T> callback)
     {
-        Register(setup);
+        Register(setup, "Callback");
         LazyInitializer.EnsureInitialized(ref _callbacks)!.Add((setup, callback));
         _hasConfiguredSetter = true;
     }
 
-    private void Register(PropertySetterSetup<T> setup)
+    private void Register(PropertySetterSetup<T> setup, string kind)
     {
+        setup.DescribeOutcome(kind);
         if (Interlocked.CompareExchange(ref setup.State.Registered, 1, 0) == 0)
             LazyInitializer.EnsureInitialized(ref _setups)!.Push(setup);
     }
@@ -143,13 +163,28 @@ public class PropertySetter<T> : IImposterVerificationSource
     }
 
     /// <summary>Verifies matching assignments.</summary>
-    public void Called(Arg<T> criteria, Count count)
+    public void Called(Arg<T> criteria, Count count) => Called(criteria, count, null);
+
+    /// <summary>Verifies matching assignments with a reason.</summary>
+    public void Called(Arg<T> criteria, Count count, string? because) =>
+        Verify(criteria, count, because, criteria);
+
+    /// <summary>Verifies assignments using a setup's original matcher for failure diagnostics.</summary>
+    /// <param name="setup">The runtime criteria and original matcher.</param>
+    /// <param name="count">The expected invocation count.</param>
+    /// <param name="because">An optional reason for the expectation.</param>
+    public void Called(PropertySetterSetup<T> setup, Count count, string? because = null) =>
+        Verify(setup.Criteria, count, because, setup.DescriptionSource);
+
+    private void Verify(Arg<T> criteria, Count count, string? because, object descriptionSource)
     {
         var snapshot = _invocationHistory?.GetEnumerator() ?? default;
         var cursor = snapshot;
         var actual = 0;
+        var hasEntries = false;
         while (cursor.MoveNext())
         {
+            hasEntries = true;
             if (criteria.Matches(cursor.Current.Value))
                 actual++;
         }
@@ -166,9 +201,17 @@ public class PropertySetter<T> : IImposterVerificationSource
         while (cursor.MoveNext())
             performed.Add(Describe(cursor.Current));
         throw new VerificationFailedException(
+            _displayName + " (setter)",
+            "set "
+                + _displayName
+                + "(value: "
+                + DiagnosticValue.FormatMatcher(descriptionSource)
+                + ")",
             count,
             actual,
-            string.Join(Environment.NewLine, performed)
+            string.Join(Environment.NewLine, performed),
+            because,
+            !hasEntries && Owner is not null ? DiagnosticValue.OtherInteractions(Owner) : null
         );
     }
 
@@ -179,7 +222,7 @@ public class PropertySetter<T> : IImposterVerificationSource
     /// <summary>Configures base invocation belonging to the supplied builder chain.</summary>
     public void UseBaseImplementation(PropertySetterSetup<T> setup)
     {
-        Register(setup);
+        Register(setup, "UseBaseImplementation");
         setup.State.UsesBase = true;
         _hasConfiguredSetter = true;
         _useBaseImplementation = true;
@@ -196,7 +239,7 @@ public class PropertySetter<T> : IImposterVerificationSource
             if (!RecordAndShouldCallBase(value))
                 return;
             if (baseImplementation is null)
-                throw MissingImposter();
+                throw MissingImposter(value);
             baseImplementation(value);
         }
         catch (Exception exception)
@@ -214,7 +257,7 @@ public class PropertySetter<T> : IImposterVerificationSource
     protected bool RecordAndShouldCallBase(T value)
     {
         if (_mode == ImposterMode.Explicit && !_hasConfiguredSetter)
-            throw MissingImposter();
+            throw MissingImposter(value);
         if (_callbacks is not null)
             foreach (var registration in _callbacks)
                 if (registration.Setup.Criteria.Matches(value))
@@ -327,10 +370,23 @@ public class PropertySetter<T> : IImposterVerificationSource
         "set "
         + _displayName
         + " = "
-        + "<"
-        + (invocation.Value?.ToString() ?? "null")
-        + ">"
-        + (invocation.Exception is null ? string.Empty : " threw " + invocation.Exception);
+        + DiagnosticValue.Format(invocation.Value)
+        + (
+            invocation.Exception is null
+                ? string.Empty
+                : " threw " + DiagnosticValue.Format(invocation.Exception)
+        );
 
-    private MissingImposterException MissingImposter() => new(_displayName + " (setter)");
+    private MissingImposterException MissingImposter(T value)
+    {
+        var descriptions = new List<string>();
+        if (_setups is not null)
+            foreach (var setup in _setups)
+                descriptions.Add(setup.Describe(_displayName));
+        return new MissingImposterException(
+            _displayName + " (setter)",
+            "set " + _displayName + "(value: " + DiagnosticValue.Format(value) + ")",
+            descriptions
+        );
+    }
 }

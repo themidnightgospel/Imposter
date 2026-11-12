@@ -33,7 +33,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
         }
 
         [Fact]
-        public void GivenExplicitMode_WhenVoidMethodMissingSetup_ShouldExposeFullSignature()
+        public void GivenExplicitMode_WhenVoidMethodMissingSetup_ShouldRetainSignatureAndUseBareMemberMessage()
         {
             var sut = new IMethodSetupFeatureSutImposter(ImposterMode.Explicit);
 
@@ -41,7 +41,11 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 sut.Instance().VoidNoParams()
             );
             exception.MethodName.ShouldBe("void IMethodSetupFeatureSut.VoidNoParams()");
-            exception.Message.ShouldContain("void IMethodSetupFeatureSut.VoidNoParams()");
+            exception.Message.ShouldBe(
+                "No setup matched VoidNoParams()."
+                    + System.Environment.NewLine
+                    + "Configured setups for VoidNoParams: none."
+            );
         }
 
         [Fact]

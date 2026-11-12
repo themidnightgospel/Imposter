@@ -19,6 +19,15 @@ internal static partial class InvocationHistoryCollectionBuilder
         return new ClassDeclarationBuilder(method.InvocationHistory.Collection.Name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddMember(
+                method.Model.IsGenericMethod
+                    ? SingleVariableField(
+                        method.MethodImposter.Collection.Syntax.ToNullableType(),
+                        InvocationHistoryCollectionMetadata.SetupSourceFieldName,
+                        SyntaxKind.InternalKeyword
+                    )
+                    : null
+            )
+            .AddMember(
                 new PropertyDeclarationBuilder(
                     WellKnownTypes.Imposter.Abstractions.IImposter,
                     InvocationStepNames.OwnerPropertyName

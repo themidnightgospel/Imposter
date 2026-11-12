@@ -24,6 +24,14 @@ internal static class MethodImposterNonGenericInterfaceBuilder
             )
             .AddMember(
                 new MethodDeclarationBuilder(
+                    WellKnownTypes.System.Collections.Generic.List(WellKnownTypes.String),
+                    method.MethodImposter.ConfiguredSetupsMethodName
+                )
+                    .WithSemicolon()
+                    .Build()
+            )
+            .AddMember(
+                new MethodDeclarationBuilder(
                     NullableType(
                         method.MethodImposter.GenericInterface.SyntaxWithTargetGenericArguments
                     ),

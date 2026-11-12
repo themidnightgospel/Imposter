@@ -1,6 +1,7 @@
 ﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.Shared;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationHistory;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -39,7 +40,10 @@ internal static partial class MethodImposterBuilderBuilder
                     : EmptyArgumentListSyntax
             );
 
-    private static MethodDeclarationSyntax BuildCalledMethod(in ImposterTargetMethodMetadata method)
+    private static MethodDeclarationSyntax BuildCalledMethod(
+        in ImposterTargetMethodMetadata method,
+        bool withReason = false
+    )
     {
         var called = method.InvocationVerifierInterface.CalledMethod;
         var count = IdentifierName(called.CountParameter.Name);
@@ -49,6 +53,8 @@ internal static partial class MethodImposterBuilderBuilder
         var builder = new MethodDeclarationBuilder(called.ReturnType, called.Name).AddParameter(
             ParameterSyntax(called.CountParameter)
         );
+        if (withReason)
+            builder.AddParameter(ParameterSyntax(called.BecauseParameter));
         return builder
             .WithExplicitInterfaceSpecifier(method.InvocationVerifierInterface.Syntax)
             .WithBody(
@@ -64,10 +70,47 @@ internal static partial class MethodImposterBuilderBuilder
                             ThrowStatement(
                                 WellKnownTypes.Imposter.Abstractions.VerificationFailedException.New(
                                     ArgumentListSyntax([
+                                        Argument(method.Model.Name.StringLiteral()),
+                                        Argument(BuildExpectedInvocation(method)),
                                         Argument(count),
                                         Argument(invocationCount),
                                         Argument(
                                             invocationHistory.Dot(IdentifierName("ToString")).Call()
+                                        ),
+                                        Argument(
+                                            withReason
+                                                ? IdentifierName(called.BecauseParameter.Name)
+                                                : Null
+                                        ),
+                                        Argument(
+                                            ConditionalExpression(
+                                                BinaryExpression(
+                                                    Microsoft
+                                                        .CodeAnalysis
+                                                        .CSharp
+                                                        .SyntaxKind
+                                                        .EqualsExpression,
+                                                    invocationHistory
+                                                        .Dot(IdentifierName("Snapshot"))
+                                                        .Call()
+                                                        .Dot(IdentifierName("Count")),
+                                                    NumericLiteral(0)
+                                                ),
+                                                WellKnownTypes
+                                                    .Imposter.Abstractions.DiagnosticValue.Dot(
+                                                        IdentifierName("OtherInteractions")
+                                                    )
+                                                    .Call(
+                                                        Argument(
+                                                            invocationHistory.Dot(
+                                                                IdentifierName(
+                                                                    InvocationStepNames.OwnerPropertyName
+                                                                )
+                                                            )
+                                                        )
+                                                    ),
+                                                Null
+                                            )
                                         ),
                                     ])
                                 )

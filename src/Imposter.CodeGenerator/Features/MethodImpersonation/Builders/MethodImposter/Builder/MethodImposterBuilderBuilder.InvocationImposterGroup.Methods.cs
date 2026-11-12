@@ -24,7 +24,23 @@ internal static partial class MethodImposterBuilderBuilder
             .WithTypeParameters(throws.ExceptionTypeParameter.TypeParameterList)
             .WithExplicitInterfaceSpecifier(throws.InterfaceSyntax)
             .WithBody(
-                ForwardToCurrentInvocationImposter(method, throws.Name, Argument(throwNewException))
+                ForwardToCurrentInvocationImposter(
+                    method,
+                    throws.Name,
+                    WellKnownTypes
+                        .Imposter.Abstractions.DiagnosticValue.Dot(
+                            GenericName(
+                                Identifier("Throws"),
+                                TypeArgumentList(
+                                    SingletonSeparatedList<TypeSyntax>(
+                                        IdentifierName(throws.ExceptionTypeParameter.Name)
+                                    )
+                                )
+                            )
+                        )
+                        .Call(),
+                    Argument(throwNewException)
+                )
             )
             .Build();
     }
@@ -205,6 +221,13 @@ internal static partial class MethodImposterBuilderBuilder
         in ImposterTargetMethodMetadata method,
         string name,
         params ArgumentSyntax[] arguments
+    ) => ForwardToCurrentInvocationImposter(method, name, name.StringLiteral(), arguments);
+
+    private static BlockSyntax ForwardToCurrentInvocationImposter(
+        in ImposterTargetMethodMetadata method,
+        string name,
+        ExpressionSyntax description,
+        params ArgumentSyntax[] arguments
     )
     {
         var currentInvocationImposter = IdentifierName(
@@ -213,6 +236,24 @@ internal static partial class MethodImposterBuilderBuilder
 
         return Block(
             currentInvocationImposter.Dot(IdentifierName(name)).Call(arguments).ToStatementSyntax(),
+            WellKnownTypes
+                .Imposter.Abstractions.DiagnosticValue.Dot(IdentifierName("AddOutcome"))
+                .Call([
+                    RefArgument(
+                        IdentifierName(
+                                method.MethodImposter.Builder.InvocationImposterGroupField.Name
+                            )
+                            .Dot(
+                                IdentifierName(
+                                    method
+                                        .MethodInvocationImposterGroup
+                                        .OutcomeDescriptionsFieldName
+                                )
+                            )
+                    ),
+                    Argument(description),
+                ])
+                .ToStatementSyntax(),
             IdentifierName(method.MethodImposter.Builder.InvocationImposterGroupField.Name)
                 .Dot(
                     IdentifierName(

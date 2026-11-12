@@ -78,7 +78,7 @@ namespace Imposter.Tests.Features.Verification
                     .Verify()
             );
 
-            failure.Message.ShouldContain("unsubscribed");
+            failure.Expected.ShouldContain("unsubscribed");
             Should.Throw<VerificationFailedException>(() => _sut.VerifyNoOtherCalls());
             _sut.Changed.Subscribed(handler, Count.Once());
             _sut.VerifyNoOtherCalls();
@@ -90,11 +90,13 @@ namespace Imposter.Tests.Features.Verification
             Action<int> handler = _ => { };
             Action<int> other = _ => { };
             var evaluations = 0;
-            var matcher = Arg<Action<int>>.Is(candidate =>
-            {
-                evaluations++;
-                return candidate == handler;
-            });
+            var matcher = Arg<Action<int>>
+                .Is(candidate =>
+                {
+                    evaluations++;
+                    return candidate == handler;
+                })
+                .Describe("chosen listener");
             var step = _sut.Changed.Unsubscribed(matcher);
             evaluations.ShouldBe(0);
             _sut.Instance().Changed -= other;

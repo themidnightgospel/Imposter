@@ -24,10 +24,38 @@ internal static class MethodDiagnosticBuilder
             ExpressionSyntax matcher =
                 parameter.Model.IsPassedThrough ? "<unrecorded>".StringLiteral()
                 : parameter.Model.RefKind == RefKind.Out ? "any".StringLiteral()
-                : WellKnownTypes
-                    .Imposter.Abstractions.MatcherDescription.Dot(IdentifierName("Format"))
-                    .Call(Argument(criteria.Dot(IdentifierName(parameter.Name))));
+                : criteria
+                    .Dot(IdentifierName(parameter.Name))
+                    .Dot(IdentifierName("ToString"))
+                    .Call();
             description = description.Add(matcher);
+        }
+        return description.Add(")".StringLiteral());
+    }
+
+    internal static BinaryExpressionSyntax Actual(in ImposterTargetMethodMetadata method)
+    {
+        ExpressionSyntax description = (method.Model.Name + "(").StringLiteral();
+        var first = true;
+        foreach (var parameter in method.Parameters.AllParameterMetadata)
+        {
+            description = description.Add(
+                ((first ? "" : ", ") + parameter.Model.Name + ": ").StringLiteral()
+            );
+            first = false;
+            ExpressionSyntax value =
+                parameter.Model.IsPassedThrough || parameter.Model.RefKind == RefKind.Out
+                    ? "<unrecorded>".StringLiteral()
+                    : WellKnownTypes
+                        .Imposter.Abstractions.DiagnosticValue.Dot(IdentifierName("Format"))
+                        .Call(
+                            Argument(
+                                IdentifierName(
+                                    method.InvocationHistory.ArgumentFields[parameter.Name]
+                                )
+                            )
+                        );
+            description = description.Add(value);
         }
         return description.Add(")".StringLiteral());
     }

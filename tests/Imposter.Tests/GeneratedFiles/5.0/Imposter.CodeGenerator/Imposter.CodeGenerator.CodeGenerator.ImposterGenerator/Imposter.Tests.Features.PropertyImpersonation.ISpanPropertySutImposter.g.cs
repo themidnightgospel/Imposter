@@ -52,6 +52,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		public interface IBufferPropertyGetterVerifier
 		{
 			void Called(global::Imposter.Abstractions.Count count);
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -86,6 +87,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		public interface IBufferPropertySetterVerifier : global::Imposter.Abstractions.IInvocationStep
 		{
 			void Called(global::Imposter.Abstractions.Count count);
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 			global::System.Collections.Generic.IReadOnlyList<BufferSetterInvocation> Invocations { get; }
 		}
 
@@ -165,7 +167,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			{
 				_defaultPropertyBehaviour = new global::Imposter.Abstractions.PropertyValue<byte[]>();
 				_invocationBehavior = invocationBehavior;
-				_getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.ISpanPropertySut.Buffer");
+				_getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.ISpanPropertySut.Buffer", owner);
 				_setterImposter = new SetterImposter(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.ISpanPropertySut.Buffer", owner);
 			}
 
@@ -178,6 +180,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			internal class GetterImposterBuilder : global::Imposter.Abstractions.IImposterVerificationSource, IBufferPropertyGetterBuilder, IBufferPropertyGetterFluentBuilder
 			{
+				internal readonly global::Imposter.Abstractions.IImposter? Owner;
 				private global::Imposter.Abstractions.ReturnValueSequence<global::System.Func<global::System.Func<byte[]>?, byte[]>>? _returnValues;
 				private global::Imposter.Abstractions.CallbackCollection<global::System.Action>? _callbacks;
 				private volatile global::System.Func<global::System.Func<byte[]>?, byte[]> _lastReturnValue = _ => default !;
@@ -186,11 +189,12 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 				private readonly string _propertyDisplayName;
 				private bool _hasConfiguredReturn;
-				internal GetterImposterBuilder(global::Imposter.Abstractions.PropertyValue<byte[]> _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName)
+				internal GetterImposterBuilder(global::Imposter.Abstractions.PropertyValue<byte[]> _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName, global::Imposter.Abstractions.IImposter owner)
 				{
 					this._defaultPropertyBehaviour = _defaultPropertyBehaviour;
 					this._invocationBehavior = invocationBehavior;
 					this._propertyDisplayName = propertyDisplayName;
+					this.Owner = owner;
 				}
 
 				private void AddReturnValue(global::System.Func<global::System.Func<byte[]>?, byte[]> valueGenerator)
@@ -239,7 +243,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 				void IBufferPropertyGetterVerifier.Called(global::Imposter.Abstractions.Count count)
 				{
-					_verification.Verify(count);
+					_verification.Verify(count, _propertyDisplayName + " (getter)", null, Owner);
 				}
 
 				IBufferPropertyGetterFluentBuilder IBufferPropertyGetterContinuationBuilder.Then()
@@ -266,6 +270,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 				{
 					_verification.Lenient();
 					return this;
+				}
+
+				void IBufferPropertyGetterVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+				{
+					_verification.Verify(count, _propertyDisplayName + " (getter)", because, Owner);
 				}
 
 				internal byte[] Get(global::System.Func<byte[]>? baseImplementation = null)
@@ -299,7 +308,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 				private void EnsureGetterConfigured()
 				{
 					if ((_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit) && !_hasConfiguredReturn)
-						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
+						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)", "get " + _propertyDisplayName, new global::System.Collections.Generic.List<string>());
 				}
 			}
 
@@ -331,7 +340,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 						this._setterImposter = _setterImposter;
 						this._criteria = _criteria;
 						_runtimeCriteria = global::Imposter.Abstractions.Arg<byte[]>.Is(setterValue => _criteria.Matches(setterValue));
-						_setup = new global::Imposter.Abstractions.PropertySetterSetup<byte[]>(_runtimeCriteria);
+						_setup = new global::Imposter.Abstractions.PropertySetterSetup<byte[]>(_runtimeCriteria, _criteria);
 					}
 
 					private readonly global::Imposter.Abstractions.PropertySetterSetup<byte[]> _setup;
@@ -355,7 +364,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 					{
 						get
 						{
-							return "set Buffer(value: " + global::Imposter.Abstractions.MatcherDescription.Format(_criteria) + ")";
+							return "set Buffer(value: " + _criteria.ToString() + ")";
 						}
 					}
 
@@ -378,7 +387,12 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 					void IBufferPropertySetterVerifier.Called(global::Imposter.Abstractions.Count count)
 					{
-						_setterImposter.Called(_runtimeCriteria, count);
+						_setterImposter.Called(_setup, count);
+					}
+
+					void IBufferPropertySetterVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+					{
+						_setterImposter.Called(_setup, count, because);
 					}
 
 					IBufferPropertySetterFluentBuilder IBufferPropertySetterContinuationBuilder.Then()
@@ -429,6 +443,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		public interface INamePropertyGetterVerifier
 		{
 			void Called(global::Imposter.Abstractions.Count count);
+			void Called(global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -479,11 +494,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			private readonly global::Imposter.Abstractions.PropertyValue<char[]> _defaultPropertyBehaviour;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			internal GetterImposterBuilder _getterImposterBuilder;
-			internal NamePropertyBuilder(global::Imposter.Abstractions.ImposterMode invocationBehavior)
+			internal NamePropertyBuilder(global::Imposter.Abstractions.ImposterMode invocationBehavior, global::Imposter.Abstractions.IImposter owner)
 			{
 				_defaultPropertyBehaviour = new global::Imposter.Abstractions.PropertyValue<char[]>();
 				_invocationBehavior = invocationBehavior;
-				_getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.ISpanPropertySut.Name");
+				_getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.PropertyImpersonation.ISpanPropertySut.Name", owner);
 			}
 
 			internal void ClearInvocations()
@@ -494,6 +509,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			internal class GetterImposterBuilder : global::Imposter.Abstractions.IImposterVerificationSource, INamePropertyGetterBuilder, INamePropertyGetterFluentBuilder
 			{
+				internal readonly global::Imposter.Abstractions.IImposter? Owner;
 				private global::Imposter.Abstractions.ReturnValueSequence<global::System.Func<global::System.Func<char[]>?, char[]>>? _returnValues;
 				private global::Imposter.Abstractions.CallbackCollection<global::System.Action>? _callbacks;
 				private volatile global::System.Func<global::System.Func<char[]>?, char[]> _lastReturnValue = _ => default !;
@@ -502,11 +518,12 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 				private readonly string _propertyDisplayName;
 				private bool _hasConfiguredReturn;
-				internal GetterImposterBuilder(global::Imposter.Abstractions.PropertyValue<char[]> _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName)
+				internal GetterImposterBuilder(global::Imposter.Abstractions.PropertyValue<char[]> _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName, global::Imposter.Abstractions.IImposter owner)
 				{
 					this._defaultPropertyBehaviour = _defaultPropertyBehaviour;
 					this._invocationBehavior = invocationBehavior;
 					this._propertyDisplayName = propertyDisplayName;
+					this.Owner = owner;
 				}
 
 				private void AddReturnValue(global::System.Func<global::System.Func<char[]>?, char[]> valueGenerator)
@@ -555,7 +572,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 
 				void INamePropertyGetterVerifier.Called(global::Imposter.Abstractions.Count count)
 				{
-					_verification.Verify(count);
+					_verification.Verify(count, _propertyDisplayName + " (getter)", null, Owner);
 				}
 
 				INamePropertyGetterFluentBuilder INamePropertyGetterContinuationBuilder.Then()
@@ -582,6 +599,11 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 				{
 					_verification.Lenient();
 					return this;
+				}
+
+				void INamePropertyGetterVerifier.Called(global::Imposter.Abstractions.Count count, string? because)
+				{
+					_verification.Verify(count, _propertyDisplayName + " (getter)", because, Owner);
 				}
 
 				internal char[] Get(global::System.Func<char[]>? baseImplementation = null)
@@ -615,7 +637,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 				private void EnsureGetterConfigured()
 				{
 					if ((_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit) && !_hasConfiguredReturn)
-						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
+						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)", "get " + _propertyDisplayName, new global::System.Collections.Generic.List<string>());
 				}
 			}
 
@@ -646,7 +668,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 		{
 			this._imposterMode = invocationBehavior;
 			this._BufferPropertyBuilderField = new BufferPropertyBuilder(this._imposterMode, this);
-			this._NamePropertyBuilderField = new NamePropertyBuilder(this._imposterMode);
+			this._NamePropertyBuilderField = new NamePropertyBuilder(this._imposterMode, this);
 			this._imposterInstance = new ImposterTargetInstance(this);
 		}
 
@@ -684,7 +706,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			_BufferPropertyBuilderField.ClearInvocations();
 			_NamePropertyBuilderField.ClearInvocations();
 			this._BufferPropertyBuilderField = new BufferPropertyBuilder(this._imposterMode, this);
-			this._NamePropertyBuilderField = new NamePropertyBuilder(this._imposterMode);
+			this._NamePropertyBuilderField = new NamePropertyBuilder(this._imposterMode, this);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
