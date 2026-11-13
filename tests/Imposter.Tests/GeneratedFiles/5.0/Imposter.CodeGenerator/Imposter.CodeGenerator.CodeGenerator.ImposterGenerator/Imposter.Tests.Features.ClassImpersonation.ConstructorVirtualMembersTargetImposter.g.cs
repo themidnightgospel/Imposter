@@ -3110,10 +3110,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 				{
 					foreach (var entry in _history)
 					{
-						if (true)
-						{
-							actual++;
-						}
+						actual++;
 					}
 				}
 
@@ -3147,10 +3144,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 				{
 					foreach (var entry in _history)
 					{
-						if (true)
-						{
-							actual++;
-						}
+						actual++;
 					}
 				}
 
