@@ -218,8 +218,13 @@ internal static class EventImposterVerificationBuilder
             .Build();
     }
 
-    private static ExpressionSyntax BuildRaisedPredicate(in ImposterEventMetadata @event)
+    private static ExpressionSyntax? BuildRaisedPredicate(in ImposterEventMetadata @event)
     {
+        if (@event.Core.MatchedParameters.Length == 0)
+        {
+            return null;
+        }
+
         var historyEntry = @event.Builder.Fields.HistoryEntry;
         var entry = Entry(@event);
         var criteria = @event.Builder.Methods.RaisedCriteriaParameters;
@@ -231,7 +236,6 @@ internal static class EventImposterVerificationBuilder
                         historyEntry.ParameterValue(entry, parameter)
                     )
             )
-            .DefaultIfEmpty(True)
             .Aggregate((current, next) => current.And(next));
     }
 
@@ -286,7 +290,7 @@ internal static class EventImposterVerificationBuilder
         bool withReason,
         in FieldMetadata historyField,
         IEnumerable<(string Name, string CriteriaParameterName)> criteriaParameters,
-        ExpressionSyntax predicate,
+        ExpressionSyntax? predicate,
         Func<ExpressionSyntax, ExpressionSyntax> descriptionFactory
     )
     {
@@ -336,7 +340,7 @@ internal static class EventImposterVerificationBuilder
         BlockBuilder blockBuilder,
         string countParameterName,
         ExpressionSyntax history,
-        ExpressionSyntax predicate,
+        ExpressionSyntax? predicate,
         BlockSyntax failureBody
     )
     {
@@ -349,21 +353,16 @@ internal static class EventImposterVerificationBuilder
                 NumericLiteral(0)
             )
         );
+        var incrementBody = Block(
+            PostfixUnaryExpression(SyntaxKind.PostIncrementExpression, actual).ToStatementSyntax()
+        );
         blockBuilder.AddStatement(
             LazyCollectionSyntaxHelper.UnlessNull(
                 ForEachStatement(
                     Var,
                     Entry(@event).Identifier,
                     history,
-                    Block(
-                        IfStatement(
-                            predicate,
-                            Block(
-                                PostfixUnaryExpression(SyntaxKind.PostIncrementExpression, actual)
-                                    .ToStatementSyntax()
-                            )
-                        )
-                    )
+                    predicate is null ? incrementBody : Block(IfStatement(predicate, incrementBody))
                 )
             )
         );

@@ -527,10 +527,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				{
 					foreach (var entry in _history)
 					{
-						if (true)
-						{
-							actual++;
-						}
+						actual++;
 					}
 				}
 
@@ -564,10 +561,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				{
 					foreach (var entry in _history)
 					{
-						if (true)
-						{
-							actual++;
-						}
+						actual++;
 					}
 				}
 
@@ -1913,10 +1907,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				{
 					foreach (var entry in _history)
 					{
-						if (true)
-						{
-							actual++;
-						}
+						actual++;
 					}
 				}
 
@@ -1950,10 +1941,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				{
 					foreach (var entry in _history)
 					{
-						if (true)
-						{
-							actual++;
-						}
+						actual++;
 					}
 				}
 

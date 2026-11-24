@@ -527,10 +527,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 				{
 					foreach (var entry in _history)
 					{
-						if (true)
-						{
-							actual++;
-						}
+						actual++;
 					}
 				}
 
@@ -564,10 +561,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 				{
 					foreach (var entry in _history)
 					{
-						if (true)
-						{
-							actual++;
-						}
+						actual++;
 					}
 				}
 

@@ -5878,10 +5878,7 @@ namespace Imposter.Tests.Features.InterfaceSetup
 				{
 					foreach (var entry in _history)
 					{
-						if (true)
-						{
-							actual++;
-						}
+						actual++;
 					}
 				}
 
@@ -5915,10 +5912,7 @@ namespace Imposter.Tests.Features.InterfaceSetup
 				{
 					foreach (var entry in _history)
 					{
-						if (true)
-						{
-							actual++;
-						}
+						actual++;
 					}
 				}
 
@@ -6561,10 +6555,7 @@ namespace Imposter.Tests.Features.InterfaceSetup
 				{
 					foreach (var entry in _history)
 					{
-						if (true)
-						{
-							actual++;
-						}
+						actual++;
 					}
 				}
 
@@ -6598,10 +6589,7 @@ namespace Imposter.Tests.Features.InterfaceSetup
 				{
 					foreach (var entry in _history)
 					{
-						if (true)
-						{
-							actual++;
-						}
+						actual++;
 					}
 				}
 

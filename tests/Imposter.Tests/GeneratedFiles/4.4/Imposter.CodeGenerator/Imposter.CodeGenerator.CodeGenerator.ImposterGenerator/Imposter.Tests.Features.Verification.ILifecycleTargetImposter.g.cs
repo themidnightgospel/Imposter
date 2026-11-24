@@ -4101,10 +4101,7 @@ namespace Imposter.Tests.Features.Verification
 				{
 					foreach (var entry in _history)
 					{
-						if (true)
-						{
-							actual++;
-						}
+						actual++;
 					}
 				}
 
@@ -4138,10 +4135,7 @@ namespace Imposter.Tests.Features.Verification
 				{
 					foreach (var entry in _history)
 					{
-						if (true)
-						{
-							actual++;
-						}
+						actual++;
 					}
 				}
 
